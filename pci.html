@@ -1,0 +1,124 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="img/favicon.ico">
+
+    <title>OwlH Master</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- fontawesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+
+    <!-- Custom styles for this template -->
+    <link href="css/offcanvas.css" rel="stylesheet">
+  </head>
+
+  <body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+      <img class="mr-3" src="img/owlhblack.png" alt=""  height="30"><a class="navbar-brand mr-auto mr-lg-0" href="home.html"><small>Master </small><i class="text-warning">OwlHMDemo01</i> | </a>
+      <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item ">
+            <a class="nav-link" href="home.html">Dashboard <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item ">
+            <a class="nav-link" href="nodes.html">Nodes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="openrules.html">Open Rules</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="pci.html">Enrichment</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="response.html">Adapt & Response</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="kibana.html">Kibana</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Settings</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="usettings.html">User Settings</a>
+              <a class="dropdown-item" href="osettings.html">OwlH Settings</a>
+              <a class="dropdown-item" href="login.html">Close Session</a>
+            </div>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-light-green rounded shadow-sm">
+        <img class="mr-3" src="img/owlhblack.png" alt=""  height="48">
+        <div class="lh-100">
+          <h3 class="mb-0 text-white lh-100">Enrichment</h3>
+          <small>Log Enrichment and fields mapping</small>
+        </div>
+      </div>
+
+<ul class="list-unstyled">
+  <li class="media">
+    <img class="mr-3" src="img/pci-dss-200.png" alt="pci-dss" height="30px">
+    <div class="media-body">
+      <h5 class="mt-0 mb-1"><strong>PCI-DSS v3.2.1</strong></h5>
+      OwlH PCI-DSS mapping for Suricata SIDS.
+      Map is done by SID <-> PCI Control. 
+      <div class="row pt-4">
+          <div class="col-md-4">
+            <h2><i class="fas fa-list"></i> Configure PCI Map</h2>
+            <span style="font-size: 20px; color: Dodgerblue;"><a class="btn" href="https://github.com/owlh/owlhpci/blob/master/pci_3.2.yaml"><i class="fas fa-search"></i> List</a></span><span style="font-size: 20px; color:  #0D98BA;" ><a class="btn disabled" href="pci.html"> <i class="fas fa-plus-circle"></i> Add</a></span>
+          </div>
+          <div class="col-md-4">
+            <h2><i class="fas fa-download"></i> Download PCI Map</h2>
+            <span style="font-size: 20px; color: Dodgerblue;" ><a class="btn" href="https://raw.githubusercontent.com/owlh/owlhpci/master/pci_3.2.yaml"><i class="fas fa-download"></i> Download</a></span>
+          </div>
+          <div class="col-md-4">
+            <h2><i class="fas fa-upload"></i> Publish</h2>
+            <span style="font-size: 20px; color: Dodgerblue; "><a class="btn disabled" href="pci.html"><i class="fas fa-sync"></i> Sync with your Logstash Servers</a></span>
+          </div>
+        </div>
+    </div>
+  </li>
+  <li class="media my-4">
+    <img class="mr-3" src="img/wazuh.png" alt="Wazuh Mapping" width="30px">
+    <div class="media-body">
+      <h5 class="mt-0 mb-1"><strong>Wazuh Indeces Mapping</strong></h5>
+      <div class="row pt-4">
+          <div class="col-md-6">
+            <h2><i class="fas fa-list"></i> NIDS event Field Mapping</h2>
+            <span style="font-size: 20px; color: Dodgerblue;"><a class="btn" href="http://documentation.owlh.net/en/latest/main/OwlHBro.html#logstash-filter"><i class="fas fa-search"></i> BRO</a><a class="btn" href="http://documentation.owlh.net/en/latest/main/OwlHWazuh.html#modify-ip-data-mapping"><i class="fas fa-search"></i> Suricata</a></span><span style="font-size: 20px; color:  #0D98BA;" ><a class="btn disabled" href="pci.html"> <i class="fas fa-plus-circle"></i> Add</a></span>
+          </div>
+          <div class="col-md-6">
+            <h2><i class="fas fa-upload"></i> Publish</h2>
+            <span style="font-size: 20px; color: Dodgerblue; "><a class="btn disabled" href="pci.html"><i class="fas fa-sync"></i> Sync with your Logstash Servers</a></span>
+          </div>
+      </div>
+    </div>
+  </li>
+</ul>
+    </main>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="css/site/docs/4.1/assets/js/vendor/popper.min.js"></script>
+    <script src="css/dist/js/bootstrap.min.js"></script>
+    <script src="css/site/docs/4.1/assets/js/vendor/holder.min.js"></script>
+    <script src="js/offcanvas.js"></script>
+  </body>
+</html>
+

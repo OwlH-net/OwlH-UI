@@ -111,7 +111,7 @@ function clearLogField() {
 function DeleteNode(node) {
   var logAll = document.getElementById('logAll');
   //alog (node);
-  var nodeurl = 'https://192.168.14.13:50001/v1/node'+node;
+  var nodeurl = 'https://192.168.14.13:50001/v1/node/'+node;
   //alog (nodeurl)
   axios({
     method: 'delete',
@@ -335,7 +335,7 @@ function PingZeek(nid) {
   ip = "192.168.14.13"
   port = "50001"
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/suricata/' + nid;
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/zeek/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -370,7 +370,7 @@ function PingWazuh(nid) {
   ip = "192.168.14.13"
   port = "50001"
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/suricata/' + nid;
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/wazuh/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -401,3 +401,9 @@ function PingWazuh(nid) {
   return false;
   //comment
 }
+/*
+function loadRuleset() {
+  alog("LECTURA DE RULESET DESDE OWLH.JS");
+  var cancel = document.getElementById('divconfigform');
+  document.getElementById('divconfigform').style.display = "none";
+}*/

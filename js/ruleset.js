@@ -15,32 +15,32 @@ function GetAllRules() {
       });   
   }
 
-  function generateAllRulesHTMLOutput(response) {
-    var rules = response.data;
-    var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                '<thead>                                                      ' +
-                '<tr>                                                         ' +
-                '<th>Sid</th>                                                 ' +
-                '<th>Status</th>                                              ' +
-                '<th>Description</th>                                         ' +
-                '<th>IP info</th>                                             ' +
-                '<th>Rule</th>                                                ' +
-                '</tr>                                                        ' +
-                '</thead>                                                     ' +
-                '<tbody >                                                     ' 
-    for (rule in rules) {
-    html = html + '<tr><td>'+
-        rules[rule]["sid"]                                                    +
-        '</td><td>                                                            '+
-        rules[rule]["enabled"]                                                +
-        '</td><td>                                                            '+
-        rules[rule]["msg"]                                                    +
-        '</td><td>                                                            '+
-        rules[rule]["ip"]                                                     +
-        '</td><td>                                                            '+
-        rules[rule]["raw"]                                                    +
-        '</td></tr>                                                           '
-    }
-    html = html + '  </tbody></table>';
-    return  html;
+function generateAllRulesHTMLOutput(response) {
+  var rules = response.data;
+  var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+              '<thead>                                                      ' +
+              '<tr>                                                         ' +
+              '<th>Sid</th>                                                 ' +
+              '<th>Status</th>                                              ' +
+              '<th>Description</th>                                         ' +
+              '<th>IP info</th>                                             ' +
+              '<th>Details</th>                                             ' +
+              '</tr>                                                        ' +
+              '</thead>                                                     ' +
+              '<tbody >                                                     ' 
+  for (rule in rules) {
+  html = html + '<tr><td>'+
+      rules[rule]["sid"]                                                    +
+      '</td><td>                                                            '+
+      rules[rule]["enabled"]                                                +
+      '</td><td>                                                            '+
+      rules[rule]["msg"]                                                    +
+      '</td><td>                                                            '+
+      rules[rule]["ip"]                                                     +
+      '</td><td>                                                            '+
+      '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'"><button type="submit" class="btn btn-primary">Details</button></a> '+
+      '</td></tr>                                                           '
   }
+  html = html + '  </tbody></table>';
+  return  html;
+}

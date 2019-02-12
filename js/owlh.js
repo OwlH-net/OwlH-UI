@@ -21,8 +21,6 @@ function showConfig(oip, oname, oport, onid){
   */
 }
 
-
-
 function alog(txt) {
     var logAll = document.getElementById('logAll');
     logAll.innerHTML = logAll.innerHTML + "<br/>" + txt;
@@ -256,7 +254,7 @@ function generateAllNodesHTMLOutput(response) {
         '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
         '  <span style="font-size: 15px; color: grey;" >                                   ' +
         '    <i class="fas fa-stop-circle" title="Stop Suricata"></i>                     ' +
-        '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
+        '    <i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#myModal"></i> ' +
         '    <i class="fas fa-code" title="Ruleset Management"></i>                       ' +
         '  </span>                                                                        ' +
         '  </p>                                                                           ' +
@@ -407,3 +405,7 @@ function loadRuleset() {
   var cancel = document.getElementById('divconfigform');
   document.getElementById('divconfigform').style.display = "none";
 }*/
+
+function modalWindowEdit() {
+  document.getElementById('modal-window').style.display = "block";
+}

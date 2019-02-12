@@ -1,10 +1,14 @@
 document.addEventListener('DOMContentLoaded', GetAllRules(), false);
 
 function GetAllRules() {
+
+    var url = new URL(window.location.href);
+    var uuid = url.searchParams.get("ruleset");
+
     var resultElement = document.getElementById('ruleset-table');
     var ip = "https://192.168.14.13";
     var port = ":50001";
-    var route = "/ruleset";
+    var route = "/ruleset/rules/"+uuid; // añadir uuid
     //axios.get('https://192.168.14.13:50001/v1/ruleset')
     axios.get(ip+port+'/v1'+route)
       .then(function (response) {

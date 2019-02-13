@@ -88,4 +88,73 @@ function cancelNode(){
   document.getElementById('divconfigform').style.display = "none";
 }
 
+function loadBPF(nid){
+
+  var inputBPF = document.getElementById('recipient-name');
+  var headerBPF = document.getElementById('bpf-header');
+  var footerBPF = document.getElementById("modal-footer-btn");
+  var saveBTN = document.getElementById("btn-save-changes");
+  
+  headerBPF.innerHTML = "BPF - "+nid;
+  //saveBTN.onclick = saveBPF(nid)
+
+  
+  footerBPF.innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveBPF(\''+nid+'\')" id="btn-save-changes">Save changes</button>';
+                        //'<button type="button" class="btn btn-primary" onclick="saveBPF('+nid+')">Save changes</button>';
+
+  //saveBTN.addEventListener('click', saveBPF(nid));
+
+  ip = "192.168.14.13";
+  port = "50001";
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/suricata/'+nid+'/bpf';
+  //var response = '';
+  axios({
+    method: 'get',
+    url: nodeurl,
+    timeout: 30000
+  })
+    .then(function (response) {
+      if('bpf' in response.data){
+        inputBPF.value=response.data.bpf;     
+      }else{
+        inputBPF.value='';
+        headerBPF.innerHTML = headerBPF.innerHTML + '<br> Not defined';
+      }
+    })
+    .catch(function (error) {
+      windowModalLog.innerHTML = error+"++<br>";
+    });   
+
+    //saveBTN.onclick = saveBPF(nid); 
+}
+
+
+
+function saveBPF(nid){
+  var inputBPF = document.getElementById('recipient-name');
+  ip = "192.168.14.13";
+  port = "50001";
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/suricata/'+nid+'/bpf';
+
+  var jsonbpfdata = {}
+  jsonbpfdata["nid"] = nid;
+  jsonbpfdata["bpf"] = inputBPF.value;
+  var bpfjson = JSON.stringify(jsonbpfdata);
+
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000,
+    data: bpfjson
+  })
+    .then(function (response) {
+      //logAll.innerHTML = logAll.innerHTML + '<br/> Modify success';
+      return true;
+    })
+    .catch(function (error) {
+      //logAll.innerHTML = logAll.innerHTML + '<br/> Modify error - ';
+      return false;
+    });   
+}
 

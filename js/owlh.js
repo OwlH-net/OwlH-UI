@@ -254,7 +254,7 @@ function generateAllNodesHTMLOutput(response) {
         '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
         '  <span style="font-size: 15px; color: grey;" >                                   ' +
         '    <i class="fas fa-stop-circle" title="Stop Suricata"></i>                     ' +
-        '    <i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#myModal"></i> ' +
+        '    <i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#myModal" onclick="loadBPF(\''+nid+'\')"></i> ' +
         '    <i class="fas fa-code" title="Ruleset Management"></i>                       ' +
         '  </span>                                                                        ' +
         '  </p>                                                                           ' +

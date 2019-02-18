@@ -88,7 +88,17 @@ function PingNode(nid) {
   return "false";
 }
 
+
+
 function GetAllNodes() {
+
+  // var obj = { name: "John", age: 30, city: "New York" };
+  // var myJSON = JSON.stringify(obj.name);
+  // console.log(myJSON);
+
+
+
+
   var resultElement = document.getElementById('nodes-table');
   //alog("Vamos a darle caña");
   axios.get('https://192.168.14.13:50001/v1/node')
@@ -254,8 +264,8 @@ function generateAllNodesHTMLOutput(response) {
         '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
         '  <span style="font-size: 15px; color: grey;" >                                   ' +
         '    <i class="fas fa-stop-circle" title="Stop Suricata"></i>                     ' +
-        '    <i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#myModal" onclick="loadBPF(\''+nid+'\')"></i> ' +
-        '    <i class="fas fa-code" title="Ruleset Management"></i>                       ' +
+        '    <i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')"></i> ' +
+        '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+nid+'\')"></i>                        ' +
         '  </span>                                                                        ' +
         '  </p>                                                                           ' +
         '  <p><img  src="img/bro.png" alt="" width="30"> <span id="'+nid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
@@ -399,13 +409,7 @@ function PingWazuh(nid) {
   return false;
   //comment
 }
-/*
-function loadRuleset() {
-  alog("LECTURA DE RULESET DESDE OWLH.JS");
-  var cancel = document.getElementById('divconfigform');
-  document.getElementById('divconfigform').style.display = "none";
-}*/
 
-function modalWindowEdit() {
-  document.getElementById('modal-window').style.display = "block";
-}
+// function modalWindowEdit() {
+//   document.getElementById('modal-window').style.display = "block";
+// }

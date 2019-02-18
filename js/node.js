@@ -93,17 +93,12 @@ function loadBPF(nid){
   var inputBPF = document.getElementById('recipient-name');
   var headerBPF = document.getElementById('bpf-header');
   var footerBPF = document.getElementById("modal-footer-btn");
-  var saveBTN = document.getElementById("btn-save-changes");
+  //var saveBTN = document.getElementById("btn-save-changes");
   
   headerBPF.innerHTML = "BPF - "+nid;
-  //saveBTN.onclick = saveBPF(nid)
-
   
   footerBPF.innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
                         '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveBPF(\''+nid+'\')" id="btn-save-changes">Save changes</button>';
-                        //'<button type="button" class="btn btn-primary" onclick="saveBPF('+nid+')">Save changes</button>';
-
-  //saveBTN.addEventListener('click', saveBPF(nid));
 
   ip = "192.168.14.13";
   port = "50001";
@@ -125,8 +120,6 @@ function loadBPF(nid){
     .catch(function (error) {
       windowModalLog.innerHTML = error+"++<br>";
     });   
-
-    //saveBTN.onclick = saveBPF(nid); 
 }
 
 
@@ -149,12 +142,100 @@ function saveBPF(nid){
     data: bpfjson
   })
     .then(function (response) {
-      //logAll.innerHTML = logAll.innerHTML + '<br/> Modify success';
       return true;
     })
     .catch(function (error) {
-      //logAll.innerHTML = logAll.innerHTML + '<br/> Modify error - ';
       return false;
     });   
 }
 
+
+function loadRuleset(nid){
+
+  var modalWindow = document.getElementById('modal-ruleset-management');
+  
+  modalWindow.innerHTML = 
+  '<div class="modal-dialog modal-lg">'+
+    '<div class="modal-content">'+
+
+      '<div class="modal-header">'+
+        '<h4 class="modal-title" id="ruleset-manager-header">Rules</h4>'+
+        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+      '</div>'+
+
+      '<div class="modal-body" id="ruleset-manager-footer-table">'+ 
+      '</div>'+
+
+      '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
+        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+        //'<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-save-changes">Save changes</button>'+
+      '</div>'+
+
+    '</div>'+
+  '</div>';
+
+  var resultElement = document.getElementById('ruleset-manager-footer-table');
+  var ip = "https://192.168.14.13";
+  var port = ":50001";
+  var route = "/ruleset";
+  axios.get(ip+port+'/v1'+route)
+    .then(function (response) {
+      resultElement.innerHTML = generateAllRulesModal(response, nid);
+    })
+    .catch(function (error) {
+      resultElement.innerHTML = generateAllRulesModal(error);
+    }); 
+  
+  }
+  
+function generateAllRulesModal(response, nid) {
+  var rules = response.data;
+  var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+              '<thead>                                                      ' +
+              '<tr>                                                         ' +
+              '<th width="30%">Name</th>                                    ' +
+              '<th>Description</th>                                         ' +
+              '<th width="15%">Options</th>                                 ' +
+              '</tr>                                                        ' +
+              '</thead>                                                     ' +
+              '<tbody >                                                     ' 
+  for (rule in rules) {
+  html = html + '<tr><td width="30%">'+
+      rules[rule]["name"]                                                     +
+      '</td><td>                                                            ' +
+      rules[rule]["desc"]                                                     +
+      '</td><td width="15%">                                                ' +
+      '<button type="submit" class="btn btn-primary" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
+      '</td></tr>                                                           '
+  }
+  html = html + '  </tbody></table>';
+  return html;
+}
+
+
+function saveRuleSelected(rule, nid){
+  ip = "192.168.14.13";
+  port = "50001";
+  var urlSetRuleset = 'https://'+ ip + ':' + port + '/v1/ruleset/set';
+
+  var jsonRuleUID = {}
+  jsonRuleUID["nid"] = nid;
+  jsonRuleUID["rule_uid"] = rule;
+  var uidJSON = JSON.stringify(jsonRuleUID);
+  console.log(uidJSON);
+  axios({
+    method: 'put',
+    url: urlSetRuleset,
+    timeout: 30000,
+    data: uidJSON
+  })
+    .then(function (response) {
+      console.log("true "+response);
+      return true;
+    })
+    .catch(function (error) {
+      console.log("false "+ error);
+      return false;
+    }); 
+
+}

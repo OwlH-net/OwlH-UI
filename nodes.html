@@ -82,7 +82,7 @@
 
     <main role="main" class="container">
       <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
-        <img class="mr-3" src="img/owlhblack.png" alt=""  height="48">
+        <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
         <div class="lh-100">
           <h3 class="mb-0 text-white lh-100">NIDS nodes</h3>
           <small>Summary</small>
@@ -90,133 +90,133 @@
       </div>
       <div class="container" id="nodes-table">
       </div>
-      
-      
+    
+    
       <div style="display: none" class="container" id="logAll"> LOG-
       </div>
     
+    
+    
+      <!--
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Name</th>
+          <th scope="col">Status</th>
+          <th scope="col">Tags <span style="font-size: 10px;" ><a href="tags.html"><i class="fas fa-cog" title="Manage Tags"></i></a></span></th>
+          <th scope="col">Services</th>
+          <th scope="col">Actions</th>
+    
+        </tr>
+      </thead>
       
-
-<!--
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">Name</th>
-      <th scope="col">Status</th>
-      <th scope="col">Tags <span style="font-size: 10px;" ><a href="tags.html"><i class="fas fa-cog" title="Manage Tags"></i></a></span></th>
-      <th scope="col">Services</th>
-      <th scope="col">Actions</th>
-
-    </tr>
-  </thead>
-  
-
-  <tbody >
-    <tr >
-      <th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>
-      <td class="align-middle">        
-        <strong>node-demo-02</strong>
-        <p class="text-muted small">192.168.1.218</p>
-      </td>
-      <td class="align-middle"><span class="badge bg-success align-text-bottom text-white">ON-LINE</span></td>
-      <td class="align-middle">@mdo</td>
-      <td class="align-middle"><p><img src="img/suricata.png" alt="" width="30"> 
-        <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span> | 
-        <span style="font-size: 15px; color: red;" >          
-          <i class="fas fa-stop-circle" title="Stop Suricata"></i>
-          <i class="fas fa-cog" title="Configuration"></i>
-          <i class="fas fa-code" title="Ruleset Management"></i>
-        </span>
-        </p>
-        <p><img  src="img/bro.png" alt="" width="30"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span> | 
-        <span style="font-size: 15px; color: red;" >          
-          <i class="fas fa-stop-circle" title="Stop Node"></i>
-          <i class="fas fa-cog" title="Configuration"></i>
-          <i class="fas fa-crosshairs" title="Policy Management"></i>
-        </span>
-        </p>
-          <p><img src="img/wazuh.png" alt="" width="30"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span>
-          | 
-        <span style="font-size: 15px; color: red;" >          
-          <i class="fas fa-stop-circle" title="Stop Node"></i>
-          <i class="fas fa-cog" title="Configuration"></i>
-        </span></p>
-      </td>
-      <td class="align-middle">
-        <span style="font-size: 20px; color: Dodgerblue;" >
-          <i class="fas fa-arrow-alt-circle-down" title="Node Status"></i>
-          <i class="fas fa-stop-circle" title="Stop Node"></i>
-          <i class="fas fa-cogs" title="Configuration"></i>
-          <i class="fas fa-sync-alt" title="Sync"></i>
-          <i onclick="DeleteNode('hola');" class="fas fa-trash-alt" title="Delete Node"></i>
-        </span>
-      </td>
-    </tr>
-  </tbody>
-
-
-</table>
--->
-
-    <small class="d-block text-right mt-3">
-      <a class="btn" id="addnids" href="#" onclick="addNids()">Add NIDS</a>
-    </small>
-
-    <div class="container" style="display: none" id="nidsform">
-      <form id="nodedetails">
-        <div class="form-row" style="" id="">
-          <div class="form-group col-md-6">
-            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-              <div class="input-group-prepend">
-                <span class="input-group-text wt-125">Node Name</span>
+    
+      <tbody >
+        <tr >
+          <th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>
+          <td class="align-middle">        
+            <strong>node-demo-02</strong>
+            <p class="text-muted small">192.168.1.218</p>
+          </td>
+          <td class="align-middle"><span class="badge bg-success align-text-bottom text-white">ON-LINE</span></td>
+          <td class="align-middle">@mdo</td>
+          <td class="align-middle"><p><img src="img/suricata.png" alt="" width="30"> 
+            <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span> | 
+            <span style="font-size: 15px; color: red;" >          
+              <i class="fas fa-stop-circle" title="Stop Suricata"></i>
+              <i class="fas fa-cog" title="Configuration"></i>
+              <i class="fas fa-code" title="Ruleset Management"></i>
+            </span>
+            </p>
+            <p><img  src="img/bro.png" alt="" width="30"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span> | 
+            <span style="font-size: 15px; color: red;" >          
+              <i class="fas fa-stop-circle" title="Stop Node"></i>
+              <i class="fas fa-cog" title="Configuration"></i>
+              <i class="fas fa-crosshairs" title="Policy Management"></i>
+            </span>
+            </p>
+              <p><img src="img/wazuh.png" alt="" width="30"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span>
+              | 
+            <span style="font-size: 15px; color: red;" >          
+              <i class="fas fa-stop-circle" title="Stop Node"></i>
+              <i class="fas fa-cog" title="Configuration"></i>
+            </span></p>
+          </td>
+          <td class="align-middle">
+            <span style="font-size: 20px; color: Dodgerblue;" >
+              <i class="fas fa-arrow-alt-circle-down" title="Node Status"></i>
+              <i class="fas fa-stop-circle" title="Stop Node"></i>
+              <i class="fas fa-cogs" title="Configuration"></i>
+              <i class="fas fa-sync-alt" title="Sync"></i>
+              <i onclick="DeleteNode('hola');" class="fas fa-trash-alt" title="Delete Node"></i>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    
+    
+    </table>
+    -->
+    
+      <small class="d-block text-right mt-3">
+        <a class="btn" id="addnids" href="#" onclick="addNids()">Add NIDS</a>
+      </small>
+    
+      <div class="container" style="display: none" id="nidsform">
+        <form id="nodedetails">
+          <div class="form-row" style="" id="">
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node Name</span>
+                </div>
+                <input type="text" class="form-control" id="nodename" placeholder="node-name" required>
               </div>
-              <input type="text" class="form-control" id="nodename" placeholder="node-name" required>
             </div>
           </div>
-        </div>
-        <div class="form-row" style="" id="">
-          <div class="form-group col-md-6">
-            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-              <div class="input-group-prepend">
-                <span class="input-group-text wt-125">Node IP</span>
+          <div class="form-row" style="" id="">
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node IP</span>
+                </div>
+                <input type="text" class="form-control" id="nodeip" placeholder="x.x.x.x" required>
               </div>
-              <input type="text" class="form-control" id="nodeip" placeholder="x.x.x.x" required>
+            </div>
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node Port</span>
+                </div>
+                <input type="text" class="form-control" id="nodeport" placeholder="10443" required>
+              </div>
             </div>
           </div>
-          <div class="form-group col-md-6">
-            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-              <div class="input-group-prepend">
-                <span class="input-group-text wt-125">Node Port</span>
+          <div class="form-row" style="" id="">
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node Type</span>
+                </div>
+                <select id="nodetype" class="form-control">
+                  <option selected>Choose...</option>
+                  <option>NIDS</option>
+                  <option>STAP</option>
+                  <option>eBPF</option>
+                </select>
               </div>
-              <input type="text" class="form-control" id="nodeport" placeholder="10443" required>
+            </div>
+            <div class="form-group col-md-6">
+              <button type="submit" class="btn btn-primary" onclick="addNode()">Add</button>
             </div>
           </div>
-        </div>
-        <div class="form-row" style="" id="">
-          <div class="form-group col-md-6">
-            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-              <div class="input-group-prepend">
-                <span class="input-group-text wt-125">Node Type</span>
-              </div>
-              <select id="nodetype" class="form-control">
-                <option selected>Choose...</option>
-                <option>NIDS</option>
-                <option>STAP</option>
-                <option>eBPF</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group col-md-6">
-            <button type="submit" class="btn btn-primary" onclick="addNode()">Add</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  
-
-    <!--Mostrar formulario para modificar información e los nodos (IP, nid y puerto del nodo)-->
-    <div class="container" style="display: none" id="divconfigform">
+        </form>
+      </div>
+    
+    
+      <!--Mostrar formulario para modificar información e los nodos (IP, nid y puerto del nodo)-->
+      <div class="container" style="display: none" id="divconfigform">
         <form id="configform">
           <div class="form-row" style="" id="">
             <div class="form-group col-md-6">
@@ -247,54 +247,44 @@
               </div>
             </div>
           </div>
-
+    
           <div class="form-group col-md-6">
             <tr>
               <th><a href="#" onclick="modifyNode()">Modify</a></th>
               <th><a href="#" onclick="cancelNode()">Cancel</a></th>
             </tr>
           </div>
-
-
-<!--
-          <div class="form-group col-md-6">
-            <a href="#" onclick="modifyNode()">Modify</a>
-          </div>
-          <div class="form-group col-md-6">
-            <a href="#" onclick="cancelNode()">Cancel</a>
-          </div>
-        -->
-
-        </div>
-
-        <!-- The Modal -->
-        <div class="modal" id="myModal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-        
-              <!-- Modal Header -->
-              <div class="modal-header">
-                <h4 class="modal-title" id="bpf-header">BPF</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-              </div>
-        
-              <!-- Modal body -->
-              <div class="modal-body" id="modal-footer-inputtext">
-                <input type="text" class="form-control" id="recipient-name">                
-              </div>
-        
-              <!-- Modal footer -->
-              <div class="modal-footer" id="modal-footer-btn">
-                <!-- Buttons -->
-              </div>
-        
+    
+    
+      </div>
+    
+      <!-- The Modal -->
+      <div class="modal fade" id="modal-change-bpf">
+        <div class="modal-dialog">
+          <div class="modal-content">
+    
+            <div class="modal-header">
+              <h4 class="modal-title" id="bpf-header">BPF</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
+    
+            <div class="modal-body" id="modal-footer-inputtext">
+              <input type="text" class="form-control" id="recipient-name">
+            </div>
+    
+            <div class="modal-footer" id="modal-footer-btn">
+              <!-- Buttons -->
+            </div>
+    
           </div>
         </div>
+      </div>
+    
+      <!-- Modal ruleset management -->
+      <div class="modal fade bd-example-modal-lg" id="modal-ruleset-management">
+      </div>
 
-      </form>
-    </div>
-  </main>
+    </main>
 
 
 
@@ -313,6 +303,7 @@
     <script src="js/owlh.js"></script>
     <script src="js/node.js"></script>
     <script src="js/modal.js"></script>
+    <!-- <script type="text/javascript" src="/conf/main.json"></script> -->
 
   </body>
 </html>

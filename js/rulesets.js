@@ -5,7 +5,6 @@ function GetAllRules() {
     var ip = "https://192.168.14.13";
     var port = ":50001";
     var route = "/ruleset";
-    //axios.get('https://192.168.14.13:50001/v1/ruleset')
     axios.get(ip+port+'/v1'+route)
       .then(function (response) {
         resultElement.innerHTML = generateAllRulesHTMLOutput(response);
@@ -35,7 +34,6 @@ function GetAllRules() {
         '</td><td>                                                            '+
         rules[rule]["desc"]                                                    +
         '</td><td>                                                            '+
-        //'<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'"><button type="submit" class="btn btn-primary">Details</button></a> '+
         '<a href="ruleset.html?ruleset='+rule+'"><button type="submit" class="btn btn-primary">Details</button></a> '+
         '</td></tr>                                                           '
     }

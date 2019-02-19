@@ -205,7 +205,7 @@ function generateAllRulesModal(response, nid) {
       '</td><td>                                                            ' +
       rules[rule]["desc"]                                                     +
       '</td><td width="15%">                                                ' +
-      '<button type="submit" class="btn btn-primary" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
+      '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
       '</td></tr>                                                           '
   }
   html = html + '  </tbody></table>';
@@ -222,7 +222,6 @@ function saveRuleSelected(rule, nid){
   jsonRuleUID["nid"] = nid;
   jsonRuleUID["rule_uid"] = rule;
   var uidJSON = JSON.stringify(jsonRuleUID);
-  console.log(uidJSON);
   axios({
     method: 'put',
     url: urlSetRuleset,
@@ -230,11 +229,10 @@ function saveRuleSelected(rule, nid){
     data: uidJSON
   })
     .then(function (response) {
-      console.log("true "+response);
+      getRuleUID(nid);
       return true;
     })
     .catch(function (error) {
-      console.log("false "+ error);
       return false;
     }); 
 

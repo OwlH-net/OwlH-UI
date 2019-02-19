@@ -194,10 +194,13 @@ function generateAllNodesHTMLOutput(response) {
     //online=true;
     //alog (online); 
 
+    getRuleUID(nid);
+
   html = html + '<tr>                                                                     '+
       '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
       ' <td class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
-      ' <p class="text-muted small">' + nodes[node]['ip'] + '</p>'                        +
+      ' <p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
+      ' <i class="fas fa-code" title="Ruleset Management"></i> <span id="'+nid+'-ruleset" class="text-muted small"></span>'                        +
       '</td>'                                                                             +
       '<td class="align-middle">                                                        ';
   html = html + '<span id="'+nid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span></td>';
@@ -410,6 +413,41 @@ function PingWazuh(nid) {
   //comment
 }
 
-// function modalWindowEdit() {
-//   document.getElementById('modal-window').style.display = "block";
-// }
+function getRuleUID(nid){
+  ip = "192.168.14.13"
+  port = "50001"
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/' + nid;//cambiar esto
+  axios({
+    method: 'get',
+    url: nodeurl,
+    timeout: 30000
+  })    
+    .then(function (response) {
+      getRuleName(response.data, nid);
+      return true;
+    })
+    .catch(function (error) {
+      console.log("GetRuleUID False-->"+error);
+      return false;
+    }); 
+}
+
+function getRuleName(uuid, nid){
+  ip = "192.168.14.13"
+  port = "50001"
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/name/' + uuid;//cambiar esto
+  axios({
+    method: 'get',
+    url: nodeurl,
+    timeout: 30000
+  })    
+    .then(function (response) {
+      document.getElementById(nid+'-ruleset').innerHTML = response.data;
+      console.log("getRuleName True->"+response.data);
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log("getRuleName False-->"+error);
+      return false;
+    }); 
+}

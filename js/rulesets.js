@@ -73,10 +73,6 @@ function GetAllRules() {
 
   function saveClonedRuleset(name, path){
     var newName = document.getElementById('input-clone-ruleset').value;
-
-
-    //pasar por JSON el nombre del que se quiere clonar y el nuevo nombre.
-
     ip = "192.168.14.13";
     port = "50001";
     var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/clone';

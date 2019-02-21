@@ -165,7 +165,6 @@ function generateAllNodesHTMLOutput(response) {
   var nodes = response.data;
   var isOnline;// = false;
   var suricataStatus = false;
-  //alog ("vamos a empezar la tabla");
   var html =  '<table class="table table-hover">                            ' +
               '<thead>                                                      ' +
               '<tr>                                                         ' +
@@ -179,14 +178,14 @@ function generateAllNodesHTMLOutput(response) {
               '</thead>                                                     ' +
               '<tbody >'
   for (node in nodes) {
-    //alog("pues vamos a crear la tabla con los nodos")
-    //alog("node - " + nodes[node]['ip'] + "-" + nodes[node]['port'])
     if (nodes[node]['port'] != undefined) {
       port = nodes[node]['port'];
     } else {
       port = "10443";
     }
-    var nid = nodes[node]['name'].replace(/ /gi, "-") + "-" + nodes[node]['ip'].replace(/\./gi, "-");
+    //var nid = nodes[node]['name'].replace(/ /gi, "-") + "-" + nodes[node]['ip'].replace(/\./gi, "-");
+    var nid = node;
+
     //alog ("nid - " + nid);
     PingNode(nid);
     //suricataStatus = PingSuricata(nid);
@@ -289,11 +288,9 @@ function generateAllNodesHTMLOutput(response) {
     html = html +   '</td>                                                                            ' +
       '<td class="align-middle">                                                        ' +
       '  <span style="font-size: 20px; color: Dodgerblue;" >                            ' +
-      '    <i class="fas fa-arrow-alt-circle-down" title="Node Status"></i>             ' +
+      '    <i class="fas fa-arrow-alt-circle-down" title="Node Status" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>             ' +
       '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
-      '    <i class="fas fa-cogs" title="Configuration" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +//icono configuration
-      //'    <a href="config-node.php?nid='+nid+'&name='+name+'&port='+port+'"><i class="fas fa-cogs" title="Configuration"></i></a>           ' +
-      //'    <a href="config-node.php" onclick="DeleteNode('+"'"+node+"'"+');"><i class="fas fa-cogs" title="Configuration"></i></a>           ' +
+      '    <i class="fas fa-cogs" title="Configuration" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +
       '    <i class="fas fa-sync-alt" title="Sync"></i>                                 ' +
       '    <a style="font-size: 20px; color: Dodgerblue;" onclick="DeleteNode('+"'"+node+"'"+');"> ' +
       '      <i class="fas fa-trash-alt" title="Delete Node" ></i>                         ' +
@@ -306,6 +303,26 @@ function generateAllNodesHTMLOutput(response) {
   html = html + '  </tbody></table>';
   return  html;
 }
+
+function sendRulesetToNode(nid){
+  ip = "192.168.14.13"
+  port = "50001"
+  alog("ping node - " + nid);
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/ruleset/set/' + nid;
+  alog(" url -> " + nodeurl);
+  axios({
+    method: 'get',
+    url: nodeurl,
+    timeout: 30000
+  })
+  .then(function (response) {
+    return true;
+  })
+  .catch(function (error) {
+    return false;
+  });
+}
+
 
 function PingSuricata(nid) {
   ip = "192.168.14.13"
@@ -416,7 +433,7 @@ function PingWazuh(nid) {
 function getRuleUID(nid){
   ip = "192.168.14.13"
   port = "50001"
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/' + nid;//cambiar esto
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/' + nid;
   axios({
     method: 'get',
     url: nodeurl,
@@ -435,7 +452,7 @@ function getRuleUID(nid){
 function getRuleName(uuid, nid){
   ip = "192.168.14.13"
   port = "50001"
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/name/' + uuid;//cambiar esto
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/name/' + uuid;
   axios({
     method: 'get',
     url: nodeurl,

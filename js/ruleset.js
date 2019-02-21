@@ -24,9 +24,10 @@ function generateAllRulesHTMLOutput(response, uuid) {
   var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
               '<thead>                                                      ' +
               '<tr>                                                         ' +
-              '<th style="width: 10%">Sid</th>                                                 ' +
-              '<th style="width: 10%">Status</th>                                              ' +
+              '<th style="width: 10%">Sid</th>                              ' +
+              '<th style="width: 10%">Status</th>                           ' +
               '<th>Description</th>                                         ' +
+              '<th>Notes</th>                                               ' +
               '<th>IP info</th>                                             ' +
               '<th>Details</th>                                             ' +
               '</tr>                                                        ' +
@@ -39,21 +40,28 @@ function generateAllRulesHTMLOutput(response, uuid) {
     }else{
       ruleStatus = "Enable"
     }
-  html = html + '<tr><td>'+
+    console.log(rules[rule]["sid"]);
+    html = html + '<tr><td>'+
       rules[rule]["sid"]                                                    +
-      '</td><td>                                                            '+
+      '</td><td>                                                           '+
       rules[rule]["enabled"]                                                +
-      '</td><td>                                                            '+
+      '</td><td>                                                           '+
       rules[rule]["msg"]                                                    +
-      '</td><td>                                                            '+
+      '</td><td>'                                                           +
+      rules[rule]["note"]                                                   +      
+      '</td><td>                                                           '+
       rules[rule]["ip"]                                                     +
-      '</td><td>                                                            '+
+      '</td><td>                                                           '+
       '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'&uuid='+uuid+'"><button type="submit" class="btn btn-primary">Rules</button></a> '+
       '<button type="submit" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" class="btn btn-secondary">'+ruleStatus+'</button> '+
       '<button type="submit" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')" class="btn btn-secondary">Notes</button>'+
-      '</td></tr>                                                           '
+      '</td></tr>'
   }
   html = html + '  </tbody></table>';
+  
+  console.log("End function")
+
+
   return  html;
 }
 
@@ -84,10 +92,6 @@ function changeRulesetStatus(sid, uuid, action){
 }
 
 function modalNotes(sid, uuid){
-  ip = "192.168.14.13";
-  port = "50001";
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/getnote/'+uuid+'/'+sid;
-
   var modalWindow = document.getElementById('modal-ruleset-note');
   modalWindow.innerHTML = 
   '<div class="modal-dialog" role="document">'+
@@ -110,8 +114,17 @@ function modalNotes(sid, uuid){
 
     '</div>'+
   '</div>';
+  //console.log("NOTA "+getRuleNote("note-column-rule"));
+  getRuleNote("ruleset-notes", uuid, sid);
+}
 
-  var loadNote = document.getElementById('ruleset-notes');
+function getRuleNote(elementID, uuid, sid){
+  console.log (elementID+" "+uuid+" "+sid)
+  ip = "192.168.14.13";
+  port = "50001";
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/getnote/'+uuid+'/'+sid;
+
+  var loadNote = document.getElementById(elementID);
   axios({
     method: 'get',
     url: nodeurl,
@@ -119,13 +132,21 @@ function modalNotes(sid, uuid){
   })
     .then(function (response) {
       console.log(response.data);
-      loadNote.value = response.data;
+      //control if data is null --> Object 
+      if (typeof(response.data) === 'object'){
+        loadNote.value = '';
+      }else {
+        loadNote.value = response.data;
+      }
+      
+      //loadNote.innerHTML = response.data;
       return true;
     })
     .catch(function (error) {
       return false;
     });
 }
+
 
 function rulesetNotes(sid, uuid){
   var textAreaNote = document.getElementById('ruleset-notes').value;

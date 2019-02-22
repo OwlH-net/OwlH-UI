@@ -52,11 +52,8 @@ function addNode() {
     var ntype = document.getElementById('nodetype').value;
     var logAll = document.getElementById('logAll');
 
-    var nid = nname.replace(/ /gi, "-") + "-" + nip.replace(/\./g, "-");
-
     var nodejson = {}
     nodejson["name"] = nname;
-    nodejson["id"] = nid;
     nodejson["port"] = nport;
     nodejson["ip"] = nip;
     nodejson["type"] = ntype;

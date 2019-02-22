@@ -279,24 +279,25 @@ function generateAllNodesHTMLOutput(response) {
         '  </p>                                                                           ' +
         '    <p><img src="img/wazuh.png" alt="" width="30"> <span id="'+nid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                         ' +
         '   |                                                                             ' +
-        '  <span style="font-size: 15px; color: grey;" >                                   ' +
+        '  <span style="font-size: 15px; color: grey;" >                                  ' +
         '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
         '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
         '  </span></p> ';                      
       //}
     
-    html = html +   '</td>                                                                            ' +
+    html = html +   '</td>                                                              ' +
       '<td class="align-middle">                                                        ' +
       '  <span style="font-size: 20px; color: Dodgerblue;" >                            ' +
       '    <i class="fas fa-arrow-alt-circle-down" title="Node Status" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>             ' +
       '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
       '    <i class="fas fa-cogs" title="Configuration" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +
       '    <i class="fas fa-sync-alt" title="Sync"></i>                                 ' +
+      '    <a href="edit.html" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
       '    <a style="font-size: 20px; color: Dodgerblue;" onclick="DeleteNode('+"'"+node+"'"+');"> ' +
       '      <i class="fas fa-trash-alt" title="Delete Node" ></i>                         ' +
       '    </a>                                                                            ' +
-      '  </span>' +
-      '</td>                                                                            ' +
+      '  </span>                                                                           ' +
+      '</td>                                                                               ' +
       '</tr>';
 
   }

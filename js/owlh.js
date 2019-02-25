@@ -292,7 +292,8 @@ function generateAllNodesHTMLOutput(response) {
       '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
       '    <i class="fas fa-cogs" title="Configuration" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +
       '    <i class="fas fa-sync-alt" title="Sync"></i>                                 ' +
-      '    <a href="edit.html" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
+      //'    <a href="edit.html" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
+      '    <a href="edit.html?uuid='+node+'&file=main.conf" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
       '    <a style="font-size: 20px; color: Dodgerblue;" onclick="DeleteNode('+"'"+node+"'"+');"> ' +
       '      <i class="fas fa-trash-alt" title="Delete Node" ></i>                         ' +
       '    </a>                                                                            ' +

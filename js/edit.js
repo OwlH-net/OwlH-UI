@@ -22,9 +22,13 @@ function loadFileIntoTextarea(){
     })
     .then(function (response) {
         console.log(response);
-        txtArea.innerHTML = response.data.content;
+        txtArea.innerHTML = response.data.fileContent;
         uuidHidden.innerHTML = response.data.nodeUUID;
-        fileName.innerHTML = response.data.file;
+        fileName.innerHTML = response.data.fileName;
+
+        console.log(txtArea);
+        console.log(uuidHidden);
+        console.log(fileName);
         return true;
     })
     .catch(function (error) {

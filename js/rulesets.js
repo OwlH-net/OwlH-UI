@@ -34,7 +34,7 @@ function GetAllRules() {
         '</td><td>                                                            '+
         rules[rule]["desc"]                                                    +
         '</td><td>                                                            '+
-        '<a href="ruleset.html?ruleset='+rule+'"><button type="submit" class="btn btn-primary">Details</button></a> '+
+        '<a href="ruleset.html?uuid='+rule+'&rule='+rules[rule]["name"]+'"><button type="submit" class="btn btn-primary">Details</button></a> '+
         '<button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-clone" onclick="cloneRuleset(\''+rules[rule]["name"]+'\', \''+rules[rule]["path"]+'\')">Clone</button>       '+
         '</td></tr>                                                           '
     }

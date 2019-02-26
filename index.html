@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -12,25 +13,220 @@
     <!-- Bootstrap core CSS -->
     <link href="css/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+
     <!-- Custom styles for this template -->
-    <link href="css/signin.css" rel="stylesheet">
+    <link href="css/offcanvas.css" rel="stylesheet">
   </head>
 
-  <body class="text-center">
-    <form class="form-signin">
-      <img class="mb-4" src="img/owlh-logo.png" alt="" width="72" >
-      <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-      <label for="inputEmail" class="sr-only">Email address</label>
-      <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-      <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
+  <body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <img class="mr-3" src="img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
+        href="nodes.html"><small>Master </small><i class="text-warning">OwlHMDemo01</i> | </a>
+      <!-- <img class="mr-3" src="img/owlhblack.png" alt=""  height="30"><a class="navbar-brand mr-auto mr-lg-0" href="home.html"><small>Master </small><i class="text-warning">OwlHMDemo01</i> | </a> -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+
+      <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <!-- <li class="nav-item ">
+            <a class="nav-link" href="home.html">Dashboard <span class="sr-only">(current)</span></a>
+          </li> -->
+          <li class="nav-item active">
+            <a class="nav-link" href="nodes.html">Nodes</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="openrules.html">Open Rules</a>
+          </li> -->
+          <li class="nav-item">
+              <a class="nav-link" href="rulesets.html">Open Rules</span></a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="pci.html">Enrichment</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" href="response.html">Adapt & Response</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="kibana.html">Kibana</a>
+          </li>
+          <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Settings</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="usettings.html">User Settings</a>
+              <a class="dropdown-item" href="osettings.html">OwlH Settings</a>
+              <a class="dropdown-item" href="login.html">Close Session</a>
+            </div>
+          </li> -->
+        </ul>
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit" formaction="home.html">Sign in</button>
-      <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
-    </form>
+    </nav>
+
+
+    <main role="main" class="container">
+      <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
+        <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
+        <div class="lh-100">
+          <h3 class="mb-0 text-white lh-100">NIDS nodes</h3>
+          <small>Summary</small>
+        </div>
+      </div>
+      <div class="container" id="nodes-table">
+      </div>
+    
+    
+      <div style="display: none" class="container" id="logAll"> LOG-
+      </div>
+    
+    
+      <small class="d-block text-right mt-3">
+        <a class="btn" id="addnids" href="#" onclick="addNids()">Add NIDS</a>
+      </small>
+    
+      <div class="container" style="display: none" id="nidsform">
+        <form id="nodedetails">
+          <div class="form-row" style="" id="">
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node Name</span>
+                </div>
+                <input type="text" class="form-control" id="nodename" placeholder="node-name" required>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" style="" id="">
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node IP</span>
+                </div>
+                <input type="text" class="form-control" id="nodeip" placeholder="x.x.x.x" required>
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node Port</span>
+                </div>
+                <input type="text" class="form-control" id="nodeport" placeholder="10443" required>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" style="" id="">
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node Type</span>
+                </div>
+                <select id="nodetype" class="form-control">
+                  <option selected>Choose...</option>
+                  <option>NIDS</option>
+                  <option>STAP</option>
+                  <option>eBPF</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <button type="submit" class="btn btn-primary" onclick="addNode()">Add</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    
+    
+      <!--Mostrar formulario para modificar información e los nodos (IP, nid y puerto del nodo)-->
+      <div class="container" style="display: none" id="divconfigform">
+        <form id="configform">
+          <div class="form-row" style="" id="">
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node Name</span>
+                </div>
+                <input type="text" class="form-control" id="cfgnodename" placeholder="node-name" required>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" style="" id="">
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node IP</span>
+                </div>
+                <input type="text" class="form-control" id="cfgnodeip" placeholder="x.x.x.x" required>
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text wt-125">Node Port</span>
+                </div>
+                <input type="text" class="form-control" id="cfgnodeport" placeholder="10443" required>
+                <input type="hidden" class="form-control" id="cfgnodeid" placeholder="10443" required>
+              </div>
+            </div>
+          </div>
+    
+          <div class="form-group col-md-6">
+            <tr>
+              <th><a href="#" onclick="modifyNode()">Modify</a></th>
+              <th><a href="#" onclick="cancelNode()">Cancel</a></th>
+            </tr>
+          </div>
+    
+    
+      </div>
+    
+      <!-- The Modal -->
+      <div class="modal fade" id="modal-change-bpf">
+        <div class="modal-dialog">
+          <div class="modal-content">
+    
+            <div class="modal-header">
+              <h4 class="modal-title" id="bpf-header">BPF</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+    
+            <div class="modal-body" id="modal-footer-inputtext">
+              <input type="text" class="form-control" id="recipient-name">
+            </div>
+    
+            <div class="modal-footer" id="modal-footer-btn">
+              <!-- Buttons -->
+            </div>
+    
+          </div>
+        </div>
+      </div>
+    
+      <!-- Modal ruleset management -->
+      <div class="modal fade bd-example-modal-lg" id="modal-ruleset-management">
+      </div>
+
+    </main>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="node_modules/axios/dist/axios.js"></script> 
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="css/site/docs/4.1/assets/js/vendor/popper.min.js"></script>
+    <script src="css/dist/js/bootstrap.min.js"></script>
+    <script src="css/site/docs/4.1/assets/js/vendor/holder.min.js"></script>
+    <script src="js/offcanvas.js"></script>
+    <script src="js/owlh.js"></script>
+    <script src="js/node.js"></script>
+    <script src="js/modal.js"></script>
+    <!-- <script type="text/javascript" src="/conf/main.json"></script> -->
+
   </body>
 </html>
+

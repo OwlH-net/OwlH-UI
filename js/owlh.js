@@ -91,19 +91,9 @@ function PingNode(nid) {
 
 
 function GetAllNodes() {
-
-  // var obj = { name: "John", age: 30, city: "New York" };
-  // var myJSON = JSON.stringify(obj.name);
-  // console.log(myJSON);
-
-
-
-
   var resultElement = document.getElementById('nodes-table');
-  //alog("Vamos a darle caña");
   axios.get('https://192.168.14.13:50001/v1/node')
     .then(function (response) {
-      //alog("tenemos respuesta - todos los nodos");
       resultElement.innerHTML = generateAllNodesHTMLOutput(response);
     })
     .catch(function (error) {
@@ -183,15 +173,10 @@ function generateAllNodesHTMLOutput(response) {
     } else {
       port = "10443";
     }
-    //var nid = nodes[node]['name'].replace(/ /gi, "-") + "-" + nodes[node]['ip'].replace(/\./gi, "-");
     var nid = node;
 
-    //alog ("nid - " + nid);
     PingNode(nid);
-    //suricataStatus = PingSuricata(nid);
     alog("isONLINE-->"+PingNode(nid));
-    //online=true;
-    //alog (online); 
 
     getRuleUID(nid);
 
@@ -204,96 +189,35 @@ function generateAllNodesHTMLOutput(response) {
       '<td class="align-middle">                                                        ';
   html = html + '<span id="'+nid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span></td>';
       html = html + ' <td class="align-middle">'+nodes[node]['milana']+'</td><td class="align-middle">';
-
-      /*
-
-      if (isOnline){
-        
-        if (nodes[node]['suricata'] != undefined) {
-          html = html +'<p><img src="img/suricata.png" alt="" width="30"> '      +
-          '  <span id="'+nid+'-suricata" class="badge badge-pill bg-success align-text-bottom text-white">ON</span> |' + 
-          '  <span style="font-size: 15px; color: red;" >                                   ' +
-          '    <i class="fas fa-stop-circle" title="Stop Suricata"></i>                     ' +
-          '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-          '    <i class="fas fa-code" title="Ruleset Management"></i>                       ' +
-          '  </span>                                                                        ' +
-          '  </p>                                                                           '; 
-        } else {
-          html = html +'<p><img src="img/suricata.png" alt="" width="30"> '      +
-          '  <span id="'+nid+'-suricata" class="badge badge-pill bg-danger align-text-bottom text-white">OFF</span> |' + 
-          '  <span style="font-size: 15px; color: red;" >                                   ' +
-          '    <i class="fas fa-play-circle" title="Start Suricata"></i>                     ' +
-          '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-          '    <i class="fas fa-code" title="Ruleset Management"></i>                       ' +
-          '  </span>                                                                        ' +
-          '  </p>                                                                           '; 
-        }
-        if (nodes[node]['bro'] != undefined) {
-          html = html +' <p><img  src="img/bro.png" alt="" width="30"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span> |                                       ' +
-        '  <span style="font-size: 15px; color: red;" >                                   ' +
-        '    <i class="fas fa-stop-circle" title="Stop Bro"></i>                         ' +
-        '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-        '    <i class="fas fa-crosshairs" title="Policy Management"></i>                  ' +
-        '  </span>                                                                        ' +
-        '  </p>                                                                            '; 
-        } else {
-          html = html +' <p><img  src="img/bro.png" alt="" width="30"> <span class="badge badge-pill bg-danger align-text-bottom text-white">OFF</span> |                                       ' +
-        '  <span style="font-size: 15px; color: red;" >                                   ' +
-        '    <i class="fas fa-play-circle" title="Start Bro"></i>                         ' +
-        '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-        '    <i class="fas fa-crosshairs" title="Policy Management"></i>                  ' +
-        '  </span>                                                                        ' +
-        '  </p>                                                                            '; 
-        }
-        if (nodes[node]['wazuh'] != undefined) {
-          html = html +'<p><img src="img/wazuh.png" alt="" width="30"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span>                                         ' +
-        '   |                                                                             ' +
-        '  <span style="font-size: 15px; color: red;" >                                   ' +
-        '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
-        '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-        '  </span></p>                                                                         '; 
-        } else {
-          html = html +'<p><img src="img/wazuh.png" alt="" width="30"> <span class="badge badge-pill bg-danger align-text-bottom text-white">OFF</span>                                         ' +
-        '   |                                                                             ' +
-        '  <span style="font-size: 15px; color: red;" >                                   ' +
-        '    <i class="fas fa-play-circle" title="Start Wazuh"></i>                         ' +
-        '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-        '  </span></p>                                                                           '; 
-        }
-      } else {
-        */
-        html = html +'<p><img src="img/suricata.png" alt="" width="30"> '      +
-        '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
-        '  <span style="font-size: 15px; color: grey;" >                                   ' +
-        '    <i class="fas fa-stop-circle" title="Stop Suricata"></i>                     ' +
-        '    <i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')"></i> ' +
-        '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+nid+'\')"></i>                        ' +
-        '  </span>                                                                        ' +
-        '  </p>                                                                           ' +
-        '  <p><img  src="img/bro.png" alt="" width="30"> <span id="'+nid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
-        '  <span style="font-size: 15px; color: grey;" >                                   ' +
-        '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
-        '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-        '    <i class="fas fa-crosshairs" title="Policy Management"></i>                  ' +
-        '  </span>                                                                        ' +
-        '  </p>                                                                           ' +
-        '    <p><img src="img/wazuh.png" alt="" width="30"> <span id="'+nid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                         ' +
-        '   |                                                                             ' +
-        '  <span style="font-size: 15px; color: grey;" >                                  ' +
-        '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
-        '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-        '  </span></p> ';                      
-      //}
-    
-    html = html +   '</td>                                                              ' +
+      html = html +'<p><img src="img/suricata.png" alt="" width="30"> '      +
+      '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
+      '  <span style="font-size: 15px; color: grey;" >                                   ' +
+      '    <i class="fas fa-stop-circle" title="Stop Suricata"></i>                     ' +
+      '    <i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')"></i> ' +
+      '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+nid+'\')"></i>                        ' +
+      '  </span>                                                                        ' +
+      '  </p>                                                                           ' +
+      '  <p><img  src="img/bro.png" alt="" width="30"> <span id="'+nid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
+      '  <span style="font-size: 15px; color: grey;" >                                   ' +
+      '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
+      '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
+      '    <i class="fas fa-crosshairs" title="Policy Management"></i>                  ' +
+      '  </span>                                                                        ' +
+      '  </p>                                                                           ' +
+      '    <p><img src="img/wazuh.png" alt="" width="30"> <span id="'+nid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                         ' +
+      '   |                                                                             ' +
+      '  <span style="font-size: 15px; color: grey;" >                                  ' +
+      '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
+      '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
+      '  </span></p> ';                      
+      html = html +   '</td>                                                              ' +
       '<td class="align-middle">                                                        ' +
       '  <span style="font-size: 20px; color: Dodgerblue;" >                            ' +
-      '    <i class="fas fa-arrow-alt-circle-down" title="Node Status" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>             ' +
+      '    <a href="files.html?uuid='+node+'&node='+nodes[node]['name']+'"><i class="fas fa-arrow-alt-circle-down" title="Node Status"></i></a>             ' +
       '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
       '    <i class="fas fa-cogs" title="Configuration" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +
-      '    <i class="fas fa-sync-alt" title="Sync"></i>                                 ' +
-      //'    <a href="edit.html" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
-      '    <a href="edit.html?uuid='+node+'&file=main.conf" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
+      '    <i class="fas fa-sync-alt" title="Sync" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>                                 ' +
+      '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
       '    <a style="font-size: 20px; color: Dodgerblue;" onclick="DeleteNode('+"'"+node+"'"+');"> ' +
       '      <i class="fas fa-trash-alt" title="Delete Node" ></i>                         ' +
       '    </a>                                                                            ' +
@@ -302,7 +226,7 @@ function generateAllNodesHTMLOutput(response) {
       '</tr>';
 
   }
-  html = html + '  </tbody></table>';
+  html = html + '</tbody></table>';
   return  html;
 }
 
@@ -446,7 +370,6 @@ function getRuleUID(nid){
       return true;
     })
     .catch(function (error) {
-      console.log("GetRuleUID False-->"+error);
       return false;
     }); 
 }
@@ -462,11 +385,9 @@ function getRuleName(uuid, nid){
   })    
     .then(function (response) {
       document.getElementById(nid+'-ruleset').innerHTML = response.data;
-      console.log("getRuleName True->"+response.data);
       return response.data;
     })
     .catch(function (error) {
-      console.log("getRuleName False-->"+error);
       return false;
     }); 
 }

@@ -3,16 +3,25 @@ document.addEventListener('DOMContentLoaded', GetAllRules(), false);
 function GetAllRules() {
 
     var url = new URL(window.location.href);
-    var uuid = url.searchParams.get("ruleset");
+    var uuid = url.searchParams.get("uuid");
+    var rule = url.searchParams.get("rule");
 
     var resultElement = document.getElementById('ruleset-table');
+    var bannerTitle = document.getElementById('banner-title-ruleset');
+    var progressBar = document.getElementById('progressBar-ruleset');
+    var progressBarDiv = document.getElementById('progressBar-ruleset-div');
+    
+    bannerTitle.innerHTML = "Ruleset: "+rule;
+    
     var ip = "https://192.168.14.13";
     var port = ":50001";
     var route = "/ruleset/rules/"+uuid;
-    //axios.get('https://192.168.14.13:50001/v1/ruleset')
+
     axios.get(ip+port+'/v1'+route)
       .then(function (response) {
         resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid);
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
       })
       .catch(function (error) {
         resultElement.innerHTML = generateAllRulesHTMLOutput(error);

@@ -71,36 +71,33 @@ function GetAllRules() {
  
   }
 
-  function saveClonedRuleset(name, path){
-    var newName = document.getElementById('input-clone-ruleset').value;
-    ip = "192.168.14.13";
-    port = "50001";
-    var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/clone';
-  
-    var jsonbpfdata = {}
-    jsonbpfdata["cloned"] = name;
-    jsonbpfdata["new"] = newName;
-    jsonbpfdata["path"] = path;
-    var bpfjson = JSON.stringify(jsonbpfdata);
+function saveClonedRuleset(name, path){
+  var newName = document.getElementById('input-clone-ruleset').value;
+  ip = "192.168.14.13";
+  port = "50001";
+  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/clone';
 
-    if(newName != ""){
-      axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: bpfjson
+  var jsonbpfdata = {}
+  jsonbpfdata["cloned"] = name;
+  jsonbpfdata["new"] = newName;
+  jsonbpfdata["path"] = path;
+  var bpfjson = JSON.stringify(jsonbpfdata);
+
+  if(newName != ""){
+    axios({
+      method: 'put',
+      url: nodeurl,
+      timeout: 30000,
+      data: bpfjson
+    })
+      .then(function (response) {
+        return true;
       })
-        .then(function (response) {
-          return true;
-        })
-        .catch(function (error) {
-          return false;
-        });  
-    }else{
-      //alert window
-      alert("You must enter a new ruleset name");
-    }
- 
-
-
+      .catch(function (error) {
+        return false;
+      });  
+  }else{
+    //alert window
+    alert("You must enter a new ruleset name");
   }
+}

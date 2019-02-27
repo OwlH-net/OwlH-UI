@@ -94,6 +94,7 @@ body {
 .bg-blue-grey { background-color: #607D8B; }
 .bg-low-green { background-color: #00cc00; }
 .bg-low-blue { background-color: #337ab7; }
+.low-blue { color: #337ab7; }
 
 
 .lh-100 { line-height: 1; }

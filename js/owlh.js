@@ -204,11 +204,17 @@ function generateAllNodesHTMLOutput(response) {
       '    <i class="fas fa-crosshairs" title="Policy Management"></i>                  ' +
       '  </span>                                                                        ' +
       '  </p>                                                                           ' +
-      '    <p><img src="img/wazuh.png" alt="" width="30"> <span id="'+nid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                         ' +
+      '  <p><img src="img/wazuh.png" alt="" width="30"> <span id="'+nid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                         ' +
       '   |                                                                             ' +
       '  <span style="font-size: 15px; color: grey;" >                                  ' +
       '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
       '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
+      '  </span></p> '+
+      '  <p><i class="fas fa-plug fa-lg"></i>   <span id="'+nid+'-softtap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                         ' +
+      '   |                                                                             ' +
+      '  <span style="font-size: 15px; color: grey;">                                   ' +
+      '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
+      '    <a href="stap.html?uuid='+nid+'"><i class="fas fa-cog" title="Configuration" style="color: grey;"></i><a>                             ' +
       '  </span></p> ';                      
       html = html +   '</td>                                                              ' +
       '<td class="align-middle">                                                        ' +

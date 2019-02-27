@@ -33,27 +33,28 @@ function generateAllRulesHTMLOutput(response, uuid) {
   var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
               '<thead>                                                      ' +
               '<tr>                                                         ' +
-              '<th style="width: 10%">Sid</th>                              ' +
               '<th style="width: 10%">Status</th>                           ' +
+              '<th style="width: 10%">Sid</th>                              ' +
               '<th>Description</th>                                         ' +
               '<th>Notes</th>                                               ' +
               '<th>IP info</th>                                             ' +
-              '<th>Details</th>                                             ' +
+              '<th>Actions</th>                                             ' +
               '</tr>                                                        ' +
               '</thead>                                                     ' +
               '<tbody >                                                     ' 
   for (rule in rules) {
     var ruleStatus;
     if (rules[rule]["enabled"] == "Enabled") {
-      ruleStatus = "Disable"
+      ruleStatus = "Disable";
+      icon = '<i class="fas fa-check-circle" style="color:green;"></i>'
     }else{
-      ruleStatus = "Enable"
+      ruleStatus = "Enable";
+      icon = '<i class="fas fa-times-circle" style="color:red;"></i>'
     }
-    console.log(rules[rule]["sid"]);
-    html = html + '<tr><td>'+
-      rules[rule]["sid"]                                                    +
+    html = html + '<tr><td id="'+rules[rule]["sid"]+'-rule-status">'+
+      icon                                                                  +
       '</td><td>                                                           '+
-      rules[rule]["enabled"]                                                +
+      rules[rule]["sid"]                                                    +
       '</td><td>                                                           '+
       rules[rule]["msg"]                                                    +
       '</td><td>'                                                           +
@@ -61,15 +62,16 @@ function generateAllRulesHTMLOutput(response, uuid) {
       '</td><td>                                                           '+
       rules[rule]["ip"]                                                     +
       '</td><td>                                                           '+
-      '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'&uuid='+uuid+'"><button type="submit" class="btn btn-primary">Rules</button></a> '+
-      '<button type="submit" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" class="btn btn-secondary">'+ruleStatus+'</button> '+
-      '<button type="submit" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')" class="btn btn-secondary">Notes</button>'+
+      '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'&uuid='+uuid+'"><i class="fas fa-eye low-blue"></i></a> '+
+      //'<button type="submit" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" class="btn btn-secondary" id="'+rules[rule]["sid"]+'-change-status">'+ruleStatus+'</button> '+
+      '<a href="#" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" id="'+rules[rule]["sid"]+'-change-status"><i class="fas fa-exchange-alt low-blue"></i></a>                                                                            '+
+      '<a href="#" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')"><i class="fas fa-file-signature low-blue"></i></a>                                                                                '+
+      //'<button type="submit" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')" class="btn btn-secondary">Notes</button>'+
       '</td></tr>'
   }
-  html = html + '  </tbody></table>';
+  html = html + '</tbody></table>';
   
   console.log("End function")
-
 
   return  html;
 }
@@ -93,6 +95,13 @@ function changeRulesetStatus(sid, uuid, action){
     data: bpfjson
   })
     .then(function (response) {
+      if (action == "Disable"){
+        document.getElementById(sid+'-rule-status').innerHTML = '<i class="fas fa-times-circle" style="color:red;"></i>';
+        document.getElementById(sid+'-change-status').onclick = function () {changeRulesetStatus(sid,uuid,"Enable");};
+      } else {
+        document.getElementById(sid+'-rule-status').innerHTML = '<i class="fas fa-check-circle" style="color:green;"></i>';
+        document.getElementById(sid+'-change-status').onclick = function () {changeRulesetStatus(sid,uuid,"Disable");};
+      }
       return true
     })
     .catch(function (error) {
@@ -123,7 +132,6 @@ function modalNotes(sid, uuid){
 
     '</div>'+
   '</div>';
-  //console.log("NOTA "+getRuleNote("note-column-rule"));
   getRuleNote("ruleset-notes", uuid, sid);
 }
 
@@ -140,15 +148,13 @@ function getRuleNote(elementID, uuid, sid){
     timeout: 30000
   })
     .then(function (response) {
-      console.log(response.data);
-      //control if data is null --> Object 
+      console.log("RESPONSE");
       if (typeof(response.data) === 'object'){
         loadNote.value = '';
       }else {
         loadNote.value = response.data;
       }
       
-      //loadNote.innerHTML = response.data;
       return true;
     })
     .catch(function (error) {

@@ -214,7 +214,7 @@ function generateAllNodesHTMLOutput(response) {
       '   |                                                                             ' +
       '  <span style="font-size: 15px; color: grey;">                                   ' +
       '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
-      '    <a href="stap.html?uuid='+nid+'"><i class="fas fa-cog" title="Configuration" style="color: grey;"></i><a>                             ' +
+      '    <a href="stap.html?uuid='+nid+'&node='+nodes[node]['name']+'"><i class="fas fa-cog" title="Configuration" style="color: grey;"></i><a>                             ' +
       '  </span></p> ';                      
       html = html +   '</td>                                                              ' +
       '<td class="align-middle">                                                        ' +

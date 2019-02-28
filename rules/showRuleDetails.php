@@ -109,7 +109,7 @@
                     echo '<div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
                         <img class="mr-3" src="../img/owlhblack.png" alt="" height="48">
                         <div class="lh-100">
-                            <h3 class="mb-0 text-white lh-100"> SID! '.$sid.' - '.$matches[1].'</h3>
+                            <h3 class="mb-0 text-white lh-100"> SID '.$sid.' - '.$matches[1].'</h3>
                             <small>Rule info</small>
                         </div>
                     </div>';

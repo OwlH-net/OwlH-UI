@@ -116,7 +116,6 @@ function generateAllServerHTMLOutput(response) {
   }
   
   function loadServerDetails(server){
-    console.log("----"+server);  
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
     var addserver = document.getElementById('servers-detail');
@@ -128,7 +127,6 @@ function generateAllServerHTMLOutput(response) {
     }
 
     var urlServer = 'https://192.168.14.13:50001/v1/stap/server/'+uuid+"/"+server;
-    console.log(urlServer);
     axios({
         method: 'get',
         url: urlServer,
@@ -136,9 +134,7 @@ function generateAllServerHTMLOutput(response) {
     })
     .then(function (response) {
         serverData = response.data[server]; 
-        console.log("datos ip");
-        console.log(response.data[server]['ip']);
-        addserver.innerHTML = 
+        var htmDetails =
         '<h3 class="mb-0 low-blue lh-100">'+response.data[server]['name']+' server details</h3>                                                              '+
         '<table class="table table-hover">                                      ' +    
             '<thead>                                                            '+
@@ -148,100 +144,19 @@ function generateAllServerHTMLOutput(response) {
                     '<th scope="col" colspan="15%">Actions</th>                                 ' +
                 '</tr>                                                        ' +
             '</thead>                                                                           '+
-            '</tbody>                                                                           '+
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">IP</i></td>                                 ' +
-                    '<td id class="align-middle" >'+serverData['ip']+'</i></td>                                         ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">Name</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['name']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">filter_path</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['filter_path']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">bro_on</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['bro_on']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">pidfile</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['pidfile']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">inventory</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['inventory']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                                                
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">max_mem</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['max_mem']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">max_cpu</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['max_cpu']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">default_interface</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['default_interface']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">owlh_interface</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['owlh_interface']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">logfile</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['logfile']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">max_storage</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['max_storage']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">local_pcap_path</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['local_pcap_path']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">pcap_path</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['pcap_path']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                                                                                                                
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">suricata_on</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['suricata_on']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                                                                                                                
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">owlh_user</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['owlh_user']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                                                                                                                
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">owlh_user_key</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['owlh_user_key']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">capture_time</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['capture_time']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                
+            '</tbody>                                                                   ';
+                for (nameDetail in response.data[server]){                                                                        
+                    htmDetails = htmDetails +
+                    '<tr>                                                                                                   ' +
+                        '<td id class="align-middle">'+nameDetail+'</td>                                                    ' +
+                        '<td id class="align-middle" >'+response.data[server][nameDetail]+'</td>                            ' +
+                        '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
+                    '</tr>                                                                                                  ' ;
+                }
+            htmDetails = htmDetails +
             '</tbody>                                                                                                   ' +
         '</table>                                                                                                       ' ;    
-
+        addserver.innerHTML = htmDetails
         return true;   
     })
     .catch(function (error) {

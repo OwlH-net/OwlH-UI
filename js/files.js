@@ -8,10 +8,9 @@ function getAllFiles(){
   var banner = document.getElementById('title-banner');
   banner.innerHTML = "Node: "+node;
 
-  var ip = "https://192.168.14.13";
-  var port = ":50001";
-  var route = "/getAllFiles";
-  var nodeurl = ip+port+'/v1/node'+route+'/'+uuid
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/getAllFiles/'+uuid;
 
   axios({
     method: 'get',
@@ -51,3 +50,15 @@ function generateAllFilesOutput(response, node) {
     html = html + '</tbody></table>';
     return  html;
 }
+function loadJSONdata(){
+  console.log("Loading JSON");
+  $.getJSON('../conf/ui.conf', function(data) {
+    console.log("getJSON");
+    var ipLoad = document.getElementById('ip-master'); 
+    ipLoad.value = data.master.ip;
+    var portLoad = document.getElementById('port-master');
+    portLoad.value = data.master.port;
+    getAllFiles();   
+  });
+}
+loadJSONdata();

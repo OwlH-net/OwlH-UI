@@ -59,16 +59,13 @@
 
             <div>
                 <?php
-                    //Llamar API con el sid
-                    //Controlar que el sid no existe. Gestionar fallos.
-                    //Recoger la rule en RAW desde la API
-                    //Meter el RAW en $line
+                    //call API with sid
+                    //check if sid exists. manage failures.
+                    //take a raw rule from API
+                    //put raw inside $line
                     $sid = htmlspecialchars($_GET['sid']);
                     $uuid = htmlspecialchars($_GET['uuid']);
-                    //$url = 'https://192.168.14.13:50001/v1/ruleset/rule/'.$sid;
                     $url = 'https://192.168.14.13:50001/v1/ruleset/rule/'.$sid.'/'.$uuid;
-                    //$parse_array = array('sidPHP' => $sid, 'uuidPHP' => $uuid);
-                    //$jsonPathAPI = json_encode($parse_array);
 
                     function CallAPI($method, $url, $data = false){
                         $curl = curl_init();

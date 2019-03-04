@@ -2,11 +2,11 @@ document.addEventListener('DOMContentLoaded', GetAllRules(), false);
 
 function GetAllRules() {
     var resultElement = document.getElementById('rulesets-table');
-    var ip = "https://192.168.14.13";
-    var port = ":50001";
-    var route = "/ruleset";
-    axios.get(ip+port+'/v1'+route)
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
       .then(function (response) {
+        'https://'+ipmaster+':'+portmaster+'/v1/ruleset'
         resultElement.innerHTML = generateAllRulesHTMLOutput(response);
       })
       .catch(function (error) {
@@ -34,7 +34,7 @@ function GetAllRules() {
         '</td><td>                                                            '+
         rules[rule]["desc"]                                                    +
         '</td><td>                                                            '+
-        '<a href="ruleset.html?uuid='+rule+'&rule='+rules[rule]["name"]+'"><button type="submit" class="btn btn-primary">Details</button></a> '+
+        '<a class="btn btn-primary" href="ruleset.html?uuid='+rule+'&rule='+rules[rule]["name"]+'">Details</a> '+
         '<button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-clone" onclick="cloneRuleset(\''+rules[rule]["name"]+'\', \''+rules[rule]["path"]+'\')">Clone</button>       '+
         '</td></tr>                                                           '
     }
@@ -73,9 +73,9 @@ function GetAllRules() {
 
 function saveClonedRuleset(name, path){
   var newName = document.getElementById('input-clone-ruleset').value;
-  ip = "192.168.14.13";
-  port = "50001";
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/clone';
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/clone';
 
   var jsonbpfdata = {}
   jsonbpfdata["cloned"] = name;
@@ -101,3 +101,16 @@ function saveClonedRuleset(name, path){
     alert("You must enter a new ruleset name");
   }
 }
+
+function loadJSONdata(){
+  console.log("Loading JSON");
+  $.getJSON('../conf/ui.conf', function(data) {
+    console.log("getJSON");
+    var ipLoad = document.getElementById('ip-master'); 
+    ipLoad.value = data.master.ip;
+    var portLoad = document.getElementById('port-master');
+    portLoad.value = data.master.port;
+    GetAllRules();   
+  });
+}
+loadJSONdata();

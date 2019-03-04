@@ -81,21 +81,27 @@
                 <div id="progressBar-ruleset" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
             </div>
 
-            <!--fila de cada regla-->
+            <!--Every rule row-->
             <div class="container" id="ruleset-table">
             </div>
 
             <!-- Modal note ruleset -->
             <div class="modal fade" id="modal-ruleset-note"> 
             </div>
-
+            <!-- Load master ip/port -->
+            <div id="load-json-data" style="display: none;">
+                <input id="ip-master" type="text" class="form-control">
+                <input id="port-master" type="text" class="form-control">
+            </div>
         </main>
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
+        <!-- <script src="js/owlh.js"></script> -->
         <script src="node_modules/axios/dist/axios.js"></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script>window.jQuery || document.write('<script src="css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script> -->
+        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
         <script src="css/site/docs/4.1/assets/js/vendor/popper.min.js"></script>
         <script src="css/dist/js/bootstrap.min.js"></script>
         <script src="css/site/docs/4.1/assets/js/vendor/holder.min.js"></script>

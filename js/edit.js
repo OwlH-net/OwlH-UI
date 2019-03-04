@@ -14,9 +14,9 @@ function loadFileIntoTextarea(){
     title.innerHTML = "File: "+file;
     subtitle.innerHTML = "Node: "+node;
 
-    ip = "192.168.14.13";
-    port = "50001";
-    var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/loadfile/'+uuid+'/'+file;
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadfile/'+uuid+'/'+file;
         
     axios({
         method: 'get',
@@ -40,9 +40,9 @@ function saveFileChanged() {
     var fileHidden = document.getElementById('file-hidden-text');
     var fileContent = document.getElementById('inputTextToSave');
 
-    ip = "192.168.14.13";
-    port = "50001";
-    var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/savefile';
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/savefile';
     
     var nodejson = {}
     nodejson["uuid"] = uuidHidden.value;
@@ -67,3 +67,16 @@ function saveFileChanged() {
 function closeFileChanged(){
     window.history.back();
 }
+
+function loadJSONdata(){
+    console.log("Loading JSON");
+    $.getJSON('../conf/ui.conf', function(data) {
+      console.log("getJSON");
+      var ipLoad = document.getElementById('ip-master'); 
+      ipLoad.value = data.master.ip;
+      var portLoad = document.getElementById('port-master');
+      portLoad.value = data.master.port;
+      loadFileIntoTextarea();   
+    });
+  }
+  loadJSONdata();

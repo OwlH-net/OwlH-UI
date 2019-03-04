@@ -1,5 +1,18 @@
+//document.addEventListener('DOMContentLoaded', loadJSONdata(), false);
+// document.addEventListener('DOMContentLoaded', GetAllNodes(), false);
 
-document.addEventListener('DOMContentLoaded', GetAllNodes(), false);
+function loadJSONdata(){
+  console.log("Loading JSON");
+  
+  $.getJSON('../conf/ui.conf', function(data) {
+    console.log("getJSON");
+    var ipLoad = document.getElementById('ip-master'); 
+    ipLoad.value = data.master.ip;
+    var portLoad = document.getElementById('port-master');
+    portLoad.value = data.master.port;
+    GetAllNodes();   
+  });
+}
 
 function showConfig(oip, oname, oport, onid){
   var cfgform = document.getElementById('divconfigform');
@@ -30,30 +43,32 @@ function alog(txt) {
 function performGetRequest1() {
   var resultElement = document.getElementById('getResult1');
   var logAll = document.getElementById('logAll');
-
-
   logAll.innerHTML = ' >> hola';
   resultElement.innerHTML = ' -- entrando en get';
 
-  axios.get('https://192.168.14.13:50001/v1/master')
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+
+  axios.get('https://'+ipmaster+':'+portmaster+'/v1/master')
     .then(function (response) {
-      logAll.innerHTML = logAll.innerHTML + ' <br />  >> dentro del get - success' + response;
+      logAll.innerHTML = logAll.innerHTML + ' <br />  >> inside get - success' + response;
       resultElement.innerHTML = generateSuccessHTMLOutput(response);
     })
     .catch(function (error) {
-      logAll.innerHTML = logAll.innerHTML + ' <br /> >> dentro del get - error -> ' + error;
+      logAll.innerHTML = logAll.innerHTML + ' <br /> >> inside get - error -> ' + error;
       //resultElement.innerHTML = generateErrorHTMLOutput(error);
     });   
 
-  logAll.innerHTML = logAll.innerHTML + '-- saliendo en get';
+  logAll.innerHTML = logAll.innerHTML + '-- get exit';
 }
 
 function PingNode(nid) {
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   //alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/ping/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ping/' + nid;
   //alog(" url -> " + nodeurl);
+  
   axios({
     method: 'get',
     url: nodeurl,
@@ -88,12 +103,30 @@ function PingNode(nid) {
   return "false";
 }
 
-
-
 function GetAllNodes() {
+  console.log("Entrando en GetAllNodes");
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   var resultElement = document.getElementById('nodes-table');
-  axios.get('https://192.168.14.13:50001/v1/node')
-    .then(function (response) {
+  var i=0;
+  while(document.getElementById('ip-master').value==''){
+    console.log('ip master is empty');
+    console.log('-->'+document.getElementById('ip-master').value);
+    setTimeout(function(){
+      console.log("Waiting master");
+    }, 1000);
+
+    console.log(i);
+    i++;
+
+    if(i === 10){
+      console.log("Exit");
+      break;
+    }
+  }
+  console.log('qweqwe'+ipmaster+portmaster);
+  axios.get('https://'+ipmaster+':'+portmaster+'/v1/node')
+  .then(function (response) {
       resultElement.innerHTML = generateAllNodesHTMLOutput(response);
     })
     .catch(function (error) {
@@ -108,9 +141,10 @@ function clearLogField() {
 
 function DeleteNode(node) {
   var logAll = document.getElementById('logAll');
-  //alog (node);
-  var nodeurl = 'https://192.168.14.13:50001/v1/node/'+node;
-  //alog (nodeurl)
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/'+node;
+
   axios({
     method: 'delete',
     url: nodeurl,
@@ -237,10 +271,10 @@ function generateAllNodesHTMLOutput(response) {
 }
 
 function sendRulesetToNode(nid){
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/ruleset/set/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/set/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -257,10 +291,10 @@ function sendRulesetToNode(nid){
 
 
 function PingSuricata(nid) {
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/suricata/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -292,10 +326,10 @@ function PingSuricata(nid) {
 }
 
 function PingZeek(nid) {
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/zeek/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/zeek/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -327,10 +361,10 @@ function PingZeek(nid) {
 }
 
 function PingWazuh(nid) {
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/wazuh/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/wazuh/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -363,9 +397,9 @@ function PingWazuh(nid) {
 }
 
 function getRuleUID(nid){
-  ip = "192.168.14.13"
-  port = "50001"
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/' + nid;
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/get/' + nid;
   axios({
     method: 'get',
     url: nodeurl,
@@ -381,9 +415,9 @@ function getRuleUID(nid){
 }
 
 function getRuleName(uuid, nid){
-  ip = "192.168.14.13"
-  port = "50001"
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/name/' + uuid;
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + uuid;
   axios({
     method: 'get',
     url: nodeurl,
@@ -397,3 +431,6 @@ function getRuleName(uuid, nid){
       return false;
     }); 
 }
+
+//load json data from local file
+loadJSONdata();

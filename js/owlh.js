@@ -226,7 +226,7 @@ function generateAllNodesHTMLOutput(response) {
       html = html +'<p><img src="img/suricata.png" alt="" width="30"> '      +
       '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
       '  <span style="font-size: 15px; color: grey;" >                                   ' +
-      '    <i class="fas fa-stop-circle" title="Stop Suricata"></i>                     ' +
+      '    <i class="fas fa-stop-circle" id="'+nid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+nid+'\')"></i>                     ' +
       '    <i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')"></i> ' +
       '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+nid+'\')"></i>                        ' +
       '  </span>                                                                        ' +
@@ -289,6 +289,45 @@ function sendRulesetToNode(nid){
   });
 }
 
+//Run suricata system
+function RunSuricata(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/RunSuricata/' + nid;
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000
+  })
+    .then(function (response) {
+      console.log("Launch suricata");
+      // GetAllNodes();
+    })
+    .catch(function error(){
+      console.log(error);
+    });
+
+  GetAllNodes();
+}
+
+//Stop suricata system
+function StopSuricata(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/StopSuricata/' + nid;
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000,
+  })
+    .then(function (response) {
+      console.log("Kill Suricata service");
+      GetAllNodes();
+    })
+    .catch(function error(){
+      console.log(error);
+    });
+}
 
 function PingSuricata(nid) {
   var ipmaster = document.getElementById('ip-master').value;
@@ -302,21 +341,40 @@ function PingSuricata(nid) {
     timeout: 30000
   })
     .then(function (response) {
-      //logAll.innerHTML = logAll.innerHTML + '<br/> success';
-      if (response.data.status=='false') {
-        alog("suricata status FALSE==>"+nid);
-        document.getElementById(nid+'-suricata').className = "badge bg-danger align-text-bottom text-white";
-        document.getElementById(nid+'-suricata').innerHTML = "OFF";
-      } else {
-        alog("suricata info TRUE==>"+nid);
-        document.getElementById(nid+'-suricata').className = "badge bg-success align-text-bottom text-white";
-        document.getElementById(nid+'-suricata').innerHTML = "ON";
+      console.log("bin--"+response.data.bin);
+      console.log("path--"+response.data.path);
+      console.log("running--"+response.data.running);
+
+      if (!response.data.path && !response.data.bin) {
+        console.log("!path && !bin");
+        alog("suricata status N/A==>"+nid);
+        document.getElementById(nid+'-suricata').className = "badge bg-dark align-text-bottom text-white";
+        document.getElementById(nid+'-suricata').innerHTML = "N/A";
+        document.getElementById(nid+'-suricata-icon').className = "fas fa-play-circle";
+        document.getElementById(nid+'-suricata-icon').onclick = function(){ RunSuricata(nid);};
+        document.getElementById(nid+'-suricata-icon').title = "Run Suricata";
+      } else if (response.data.path || response.data.bin){
+        console.log("path && bin");
+        if(response.data.running){
+          console.log("running");
+          document.getElementById(nid+'-suricata').className = "badge bg-success align-text-bottom text-white";
+          document.getElementById(nid+'-suricata').innerHTML = "ON";
+          document.getElementById(nid+'-suricata-icon').className = "fas fa-stop-circle";
+          document.getElementById(nid+'-suricata-icon').onclick = function(){ StopSuricata(nid);};
+          document.getElementById(nid+'-suricata-icon').title = "Stop Suricata";
+        }else{
+          console.log("!running");
+          document.getElementById(nid+'-suricata').className = "badge bg-danger align-text-bottom text-white";
+          document.getElementById(nid+'-suricata').innerHTML = "OFF";
+          document.getElementById(nid+'-suricata-icon').className = "fas fa-play-circle";
+          document.getElementById(nid+'-suricata-icon').onclick = function(){ RunSuricata(nid);};
+          document.getElementById(nid+'-suricata-icon').title = "Run Suricata";
+        }
       }
       return true;
     })
     .catch(function (error) {
       alog("suricata info N/A==>"+nid);
-      //logAll.innerHTML = logAll.innerHTML + '<br/> error >> ' + nid + ' >> ' + error;
       document.getElementById(nid+'-suricata').className = "badge bg-dark align-text-bottom text-white";
       document.getElementById(nid+'-suricata').innerHTML = "N/A";
 

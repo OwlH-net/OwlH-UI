@@ -4,7 +4,14 @@ function GetAllRules() {
     var resultElement = document.getElementById('rulesets-table');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
+    var urlAllRules = 'https://'+ipmaster+':'+portmaster+'/v1/ruleset';
+    const agent = new https.Agent({rejectUnauthorized:false})
+    axios({
+      method:'get',
+      url: urlAllRules,
+      httpsAgent: agent,
+      timeout: 30000
+    })
       .then(function (response) {
         'https://'+ipmaster+':'+portmaster+'/v1/ruleset'
         resultElement.innerHTML = generateAllRulesHTMLOutput(response);

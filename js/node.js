@@ -67,13 +67,15 @@ function addNode() {
 }
 
 function modifyNode() {
-  var logAll = document.getElementById('logAll');
+  // var logAll = document.getElementById('logAll');
   alog (node);
   var name = document.getElementById('cfgnodename').value;
   var ip = document.getElementById('cfgnodeip').value;
   var port = document.getElementById('cfgnodeport').value;
   var nid = document.getElementById('cfgnodeid').value;
-  var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
+  // var ipmaster = document.getElementById('ip-master').value;
+  // var portmaster = document.getElementById('port-master').value;
+  //var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
   alog (ip)
   
   var nodejson = {}
@@ -81,6 +83,7 @@ function modifyNode() {
     nodejson["port"] = port;
     nodejson["ip"] = ip;
     nodejson["id"] = nid;
+    console.log(nodejson);
     var nodeJSON = JSON.stringify(nodejson);
     err = axiosModifyNode(nodeJSON);
 }

@@ -58,6 +58,9 @@ function GetAllServers() {
     var uuid = urlWeb.searchParams.get("uuid");
     var node = urlWeb.searchParams.get("node");
 
+    PingStap()
+    
+
     var tableServer = document.getElementById('servers-table');
     var subtitleBanner = document.getElementById('subtitle-servers-list');
     subtitleBanner.innerHTML = 'Servers for node: '+node;
@@ -72,7 +75,6 @@ function GetAllServers() {
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
         tableServer.innerHTML = generateAllServerHTMLOutput(response);
         return true;
     })
@@ -102,19 +104,42 @@ function generateAllServerHTMLOutput(response) {
                 '<tbody>                                                      ' ;
 
     for (server in servers) {
-  
+        PingStapServer(server);
         html = html + 
         '<tr>                                                                     '+
             '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
             '<td class="align-middle">' + servers[server]['ip'] + '</td>'+
             '<td class="align-middle">' + servers[server]['name'] + '</td>'+
-            '<td class="align-middle"> <span class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>'+  
-            '<td class="align-middle">                                                           ' +
-            '  <span style="font-size: 20px; color: Dodgerblue;" >                               ' +
-            '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                          ' +
-            '  </span>                                                                           ' +
-            '</td>                                                                               ' +
-        '</tr>                                                                                   ' ;
+        //     console.log("Server :"+server+"  ^^^^  "+servers[server]['status']+" -- "+servers[server]['ip']+"  --  "+servers[server]['name']);
+        //    if (servers[server]['status'] == "true"){
+                // html = html + '<td class="align-middle"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span>              '+
+                '<td class="align-middle"> <span id="'+server+'-server-stap" class="badge badge-pill bg-success align-text-bottom text-white">ON</span>              '+
+                '<td class="align-middle">                                                                                                             ' +
+                '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
+                '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
+                '       <i class="fas fa-stop-circle low-blue" title="Stop server" id="'+server+'-server-icon-stap" onclick="StopStapServer(\''+server+'\')"></i>                       ' +
+                '  </span>                                                                                                                             ' +
+                '</td>' ;
+            // }else if (servers[server]['status'] == "false"){
+            //     html = html + '<td class="align-middle"> <span class="badge badge-pill bg-danger align-text-bottom text-white">OFF</span>              ' +
+            //     '<td class="align-middle">                                                                                                             ' +
+            //     '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
+            //     '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
+            //     '       <i class="fas fa-play-circle low-blue" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>                         ' +
+            //     '  </span>                                                                                                                             ' +
+            //     '</td>' ;
+            // }else if(servers[server]['status']){
+            //     html = html + 
+            //     '<td class="align-middle"> '+
+            //     '<span class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                                         ' +
+            //     '<td class="align-middle">                                                                                                              ' +
+            //     '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
+            //     '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
+            //     '       <i class="fas fa-play-circle low-blue" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>                          ' +
+            //     '  </span>                                                                                                                              ' +
+            //     '</td>' ;
+            //}
+        html = html + '</tr>' ;
     }
     html = html + '</tbody></table>';
     return  html;
@@ -184,3 +209,82 @@ function generateAllServerHTMLOutput(response) {
     });
   }
   loadJSONdata();
+
+
+
+function RunStapServer(server){
+    var urlWeb = new URL(window.location.href);
+    var uuid = urlWeb.searchParams.get("uuid");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/RunStapServer/'+uuid+'/'+server;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+        console.log(response+"--------Stap server running");
+        })
+        .catch(function error(){
+        console.log(error);
+        });
+
+        GetAllServers();
+}
+
+//Stop stap system
+function StopStapServer(server){
+    var urlWeb = new URL(window.location.href);
+    var uuid = urlWeb.searchParams.get("uuid");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/StopStapServer/'+uuid+'/'+server;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+    })
+        .then(function (response) {
+        console.log(response+"--------Stap server stopped");
+        })
+        .catch(function error(){
+        console.log(error);
+        });
+
+        GetAllServers();
+}
+
+function PingStapServer(server) {
+    var urlWeb = new URL(window.location.href);
+    var uuid = urlWeb.searchParams.get("uuid");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/PingStapServer/'+uuid+'/'+server;
+    axios({
+      method: 'get',
+      url: nodeurl,
+      timeout: 30000
+    })
+      .then(function (response) {
+        if (!response.data.stapStatus) {
+            document.getElementById(server+'-server-stap').className = "badge bg-danger align-text-bottom text-white";
+            document.getElementById(server+'-server-stap').innerHTML = "OFF";
+            document.getElementById(server+'-server-icon-stap').className = "fas fa-play-circle";
+            document.getElementById(server+'-server-icon-stap').onclick = function(){ RunStapServer(server);};
+            document.getElementById(server+'-server-icon-stap').title = "Run stap";
+        }else{
+            document.getElementById(server+'-server-stap').className = "badge bg-success align-text-bottom text-white";
+            document.getElementById(server+'-server-stap').innerHTML = "ON";
+            document.getElementById(server+'-server-icon-stap').className = "fas fa-stop-circle";
+            document.getElementById(server+'-server-icon-stap').onclick = function(){ StopStapServer(server);};
+            document.getElementById(server+'-server-icon-stap').title = "Stop stap";
+        } 
+      })
+    //   .catch(function (error) {
+    //     document.getElementById(server+'-serverstap').className = "badge bg-dark align-text-bottom text-white";
+    //     document.getElementById(server+'-serverstap').innerHTML = "N/A";
+    //     return false;
+    //   });   
+    return true;
+  }

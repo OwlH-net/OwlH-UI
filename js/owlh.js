@@ -35,8 +35,8 @@ function showConfig(oip, oname, oport, onid){
 }
 
 function alog(txt) {
-    var logAll = document.getElementById('logAll');
-    logAll.innerHTML = logAll.innerHTML + "<br/>" + txt;
+    // var logAll = document.getElementById('logAll');
+    // logAll.innerHTML = logAll.innerHTML + "<br/>" + txt;
 }
 
 
@@ -247,7 +247,7 @@ function generateAllNodesHTMLOutput(response) {
       '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
       '  </span></p> '+
       '  <p><i class="fas fa-plug fa-lg"></i>'+
-      '  <span id="'+nid+'-softtap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
+      '  <span id="'+nid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
       '  <span style="font-size: 15px; color: grey;">                                   ' +
       '    <i class="fas fa-stop-circle" id="'+nid+'-stap-icon"></i>                         ' +
       '    <a href="stap.html?uuid='+nid+'&node='+nodes[node]['name']+'"><i class="fas fa-cog" title="Configuration" style="color: grey;"></i><a>                             ' +
@@ -582,9 +582,7 @@ function PingWazuh(nid) {
   return false;
   //comment
 }
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
+
 //Run stap system
 function RunStap(nid){
   var ipmaster = document.getElementById('ip-master').value;
@@ -617,7 +615,6 @@ function StopStap(nid){
   })
     .then(function (response) {
       console.log("Kill Stap service");
-      // GetAllNodes();
     })
     .catch(function error(){
       console.log(error);
@@ -630,7 +627,7 @@ function PingStap(nid) {
   var ipmaster = document.getElementById('ip-master').value;
   var portmaster = document.getElementById('port-master').value;
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/Stap/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/stap/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -639,44 +636,30 @@ function PingStap(nid) {
   })
     .then(function (response) {
       console.log("sTAP rESPONSE: "+response);
-      // if (!response.data.path && !response.data.bin) {
-      //   console.log("!path && !bin");
-      //   alog("stap status N/A==>"+nid);
-      //   document.getElementById(nid+'-stap').className = "badge bg-dark align-text-bottom text-white";
-      //   document.getElementById(nid+'-stap').innerHTML = "N/A";
-      //   document.getElementById(nid+'-stap-icon').className = "fas fa-play-circle";
-      //   document.getElementById(nid+'-stap-icon').onclick = function(){ Runstap(nid);};
-      //   document.getElementById(nid+'-stap-icon').title = "Run stap";
-      // } else if (response.data.path || response.data.bin){
-      //   console.log("path && bin");
-      //   if(response.data.running){
-      //     console.log("running");
-      //     document.getElementById(nid+'-stap').className = "badge bg-success align-text-bottom text-white";
-      //     document.getElementById(nid+'-stap').innerHTML = "ON";
-      //     document.getElementById(nid+'-stap-icon').className = "fas fa-stop-circle";
-      //     document.getElementById(nid+'-stap-icon').onclick = function(){ Stopstap(nid);};
-      //     document.getElementById(nid+'-stap-icon').title = "Stop stap";
-      //   }else{
-      //     console.log("!running");
-      //     document.getElementById(nid+'-stap').className = "badge bg-danger align-text-bottom text-white";
-      //     document.getElementById(nid+'-stap').innerHTML = "OFF";
-      //     document.getElementById(nid+'-stap-icon').className = "fas fa-play-circle";
-      //     document.getElementById(nid+'-stap-icon').onclick = function(){ Runstap(nid);};
-      //     document.getElementById(nid+'-stap-icon').title = "Run stap";
-      //   }
-      // }
-      // return true;
+      if (!response.data.stapStatus) {
+          console.log("!StapRunning");
+          document.getElementById(nid+'-stap').className = "badge bg-danger align-text-bottom text-white";
+          document.getElementById(nid+'-stap').innerHTML = "OFF";
+          document.getElementById(nid+'-stap-icon').className = "fas fa-play-circle";
+          document.getElementById(nid+'-stap-icon').onclick = function(){ RunStap(nid);};
+          document.getElementById(nid+'-stap-icon').title = "Run stap";
+      }else{
+          console.log("StapRunning");
+          document.getElementById(nid+'-stap').className = "badge bg-success align-text-bottom text-white";
+          document.getElementById(nid+'-stap').innerHTML = "ON";
+          document.getElementById(nid+'-stap-icon').className = "fas fa-stop-circle";
+          document.getElementById(nid+'-stap-icon').onclick = function(){ StopStap(nid);};
+          document.getElementById(nid+'-stap-icon').title = "Stop stap";
+      } 
     })
     .catch(function (error) {
       alog("stap info N/A==>"+nid);
-      //logAll.innerHTML = logAll.innerHTML + '<br/> error >> ' + nid + ' >> ' + error;
       document.getElementById(nid+'-stap').className = "badge bg-dark align-text-bottom text-white";
       document.getElementById(nid+'-stap').innerHTML = "N/A";
 
       return false;
     });   
   return false;
-  //comment
 }
 
 

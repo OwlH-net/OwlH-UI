@@ -17,7 +17,7 @@ function GetAllRulesets() {
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset/rules/'+uuid)
       .then(function (response) {
-        resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid);
+        resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster);
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
       })
@@ -26,7 +26,7 @@ function GetAllRulesets() {
       });   
   }
 
-function generateAllRulesHTMLOutput(response, uuid) {
+function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster) {
   var rules = response.data;
   var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
               '<thead>                                                      ' +
@@ -60,7 +60,7 @@ function generateAllRulesHTMLOutput(response, uuid) {
       '</td><td>                                                           '+
       rules[rule]["ip"]                                                     +
       '</td><td>                                                           '+
-      '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'&uuid='+uuid+'"><i class="fas fa-eye low-blue"></i></a> '+
+      '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'&uuid='+uuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster+'"><i class="fas fa-eye low-blue"></i></a> '+
       //'<button type="submit" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" class="btn btn-secondary" id="'+rules[rule]["sid"]+'-change-status">'+ruleStatus+'</button> '+
       '<a href="#" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" id="'+rules[rule]["sid"]+'-change-status"><i class="fas fa-exchange-alt low-blue"></i></a>                                                                            '+
       '<a href="#" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')"><i class="fas fa-file-signature low-blue"></i></a>                                                                                '+
@@ -193,6 +193,7 @@ function loadJSONdata(){
     ipLoad.value = data.master.ip;
     var portLoad = document.getElementById('port-master');
     portLoad.value = data.master.port;
+    loadTitleJSONdata();
     GetAllRulesets();   
   });
 }

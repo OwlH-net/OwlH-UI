@@ -58,6 +58,7 @@ function loadJSONdata(){
     ipLoad.value = data.master.ip;
     var portLoad = document.getElementById('port-master');
     portLoad.value = data.master.port;
+    loadTitleJSONdata();
     getAllFiles();   
   });
 }

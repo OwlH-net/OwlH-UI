@@ -51,15 +51,13 @@ function addServerToNode(){
         resultElement.innerHTML = generateAllServerHTMLOutput(error);
         return false;
     }); 
+    GetAllServers();
 }
 
 function GetAllServers() {
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
-    var node = urlWeb.searchParams.get("node");
-
-    PingStap()
-    
+    var node = urlWeb.searchParams.get("node");    
 
     var tableServer = document.getElementById('servers-table');
     var subtitleBanner = document.getElementById('subtitle-servers-list');
@@ -205,6 +203,7 @@ function generateAllServerHTMLOutput(response) {
       ipLoad.value = data.master.ip;
       var portLoad = document.getElementById('port-master');
       portLoad.value = data.master.port;
+      loadTitleJSONdata();
       GetAllServers();   
     });
   }
@@ -272,19 +271,19 @@ function PingStapServer(server) {
             document.getElementById(server+'-server-stap').innerHTML = "OFF";
             document.getElementById(server+'-server-icon-stap').className = "fas fa-play-circle";
             document.getElementById(server+'-server-icon-stap').onclick = function(){ RunStapServer(server);};
-            document.getElementById(server+'-server-icon-stap').title = "Run stap";
+            document.getElementById(server+'-server-icon-stap').title = "Run stap server";
         }else{
             document.getElementById(server+'-server-stap').className = "badge bg-success align-text-bottom text-white";
             document.getElementById(server+'-server-stap').innerHTML = "ON";
             document.getElementById(server+'-server-icon-stap').className = "fas fa-stop-circle";
             document.getElementById(server+'-server-icon-stap').onclick = function(){ StopStapServer(server);};
-            document.getElementById(server+'-server-icon-stap').title = "Stop stap";
+            document.getElementById(server+'-server-icon-stap').title = "Stop stap server";
         } 
       })
-    //   .catch(function (error) {
-    //     document.getElementById(server+'-serverstap').className = "badge bg-dark align-text-bottom text-white";
-    //     document.getElementById(server+'-serverstap').innerHTML = "N/A";
-    //     return false;
-    //   });   
+      .catch(function (error) {
+        document.getElementById(server+'-serverstap').className = "badge bg-dark align-text-bottom text-white";
+        document.getElementById(server+'-serverstap').innerHTML = "N/A";
+        return false;
+      });   
     return true;
   }

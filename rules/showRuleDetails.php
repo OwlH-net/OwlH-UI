@@ -22,7 +22,8 @@
     <body class="bg-light">
         <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
         <img class="mr-3" src="../img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
-                href="../nodes.html"><small>Master </small><i class="text-warning">OwlHMDemo01</i> | </a>    
+                href="../nodes.html"><small>Master </small><i class="text-warning" id="menu-title"
+                ></i> | </a>    
         <!-- <img class="mr-3" src="../img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
                 href="home.html"><small>Master </small><i class="text-warning">OwlHMDemo01</i> | </a> -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
@@ -40,7 +41,7 @@
                         <a class="nav-link" href="../nodes.html">Nodes</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="../openrules.html">Open Rules</span></a>
+                        <a class="nav-link" href="../rulesets.html">Open Rules</span></a>
                     </li>
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="../pci.html">Enrichment</a>
@@ -65,8 +66,9 @@
                     //put raw inside $line
                     $sid = htmlspecialchars($_GET['sid']);
                     $uuid = htmlspecialchars($_GET['uuid']);
-                    $url = 'https://192.168.14.13:50001/v1/ruleset/rule/'.$sid.'/'.$uuid;
-
+                    $ipmaster = htmlspecialchars($_GET['ipmaster']);
+                    $portmaster = htmlspecialchars($_GET['portmaster']);
+                    $url = 'https://'.$ipmaster.':'.$portmaster.'/v1/ruleset/rule/'.$sid.'/'.$uuid;
                     function CallAPI($method, $url, $data = false){
                         $curl = curl_init();
                         switch ($method){
@@ -143,18 +145,25 @@
                     echo "<br>";
                 ?>
             </div>
+            <!-- Load master ip/port -->
+            <div id="load-json-data" style="display: none;">
+                <input id="ip-master" type="text" class="form-control">
+                <input id="port-master" type="text" class="form-control">
+            </div>
         </main>
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="../node_modules/axios/dist/axios.js"></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script>window.jQuery || document.write('<script src="../css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="../css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script> -->
+        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
         <script src="../css/site/docs/4.1/assets/js/vendor/popper.min.js"></script>
         <script src="../css/dist/js/bootstrap.min.js"></script>
         <script src="../css/site/docs/4.1/assets/js/vendor/holder.min.js"></script>
         <script src="../js/offcanvas.js"></script>
-        <!--<script src="../js/ruleset.js"></script>-->
+        <script src="../js/ruleset.js"></script>
+        <script src="../js/loadTitle.js"></script>
     </body>
 </html>

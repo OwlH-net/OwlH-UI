@@ -5,11 +5,11 @@ function GetAllRules() {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var urlAllRules = 'https://'+ipmaster+':'+portmaster+'/v1/ruleset';
-    const agent = new https.Agent({rejectUnauthorized:false})
+    //const agent = new https.Agent({rejectUnauthorized:false})
     axios({
       method:'get',
       url: urlAllRules,
-      httpsAgent: agent,
+      //httpsAgent: agent,
       timeout: 30000
     })
       .then(function (response) {
@@ -117,6 +117,7 @@ function loadJSONdata(){
     ipLoad.value = data.master.ip;
     var portLoad = document.getElementById('port-master');
     portLoad.value = data.master.port;
+    loadTitleJSONdata();
     GetAllRules();   
   });
 }

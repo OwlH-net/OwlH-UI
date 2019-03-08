@@ -243,13 +243,14 @@ function saveRuleSelected(rule, nid){
 }
 
 function loadJSONdata(){
-  console.log("Loading JSON");
+  console.log("NODE Loading JSON");
   $.getJSON('../conf/ui.conf', function(data) {
     console.log("getJSON");
     var ipLoad = document.getElementById('ip-master'); 
     ipLoad.value = data.master.ip;
     var portLoad = document.getElementById('port-master');
     portLoad.value = data.master.port;
+    loadTitleJSONdata();
     loadRuleset();   
   });
 }

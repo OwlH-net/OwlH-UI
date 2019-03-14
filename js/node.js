@@ -1,7 +1,10 @@
 function axiosAddNode(node) {
   var logAll = document.getElementById('logAll');
   logAll.innerHTML = logAll.innerHTML + "<br/> node es - "+node;
-  var nodeurl = 'https://192.168.14.13:50001/v1/node/';
+
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
   axios({
     method: 'post',
     url: nodeurl,
@@ -23,7 +26,9 @@ function axiosAddNode(node) {
 function axiosModifyNode(node) {
   var logAll = document.getElementById('logAll');
   logAll.innerHTML = logAll.innerHTML + "<br/> Modify node es - "+node;
-  var nodeurl = 'https://192.168.14.13:50001/v1/node/';
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
   axios({
     method: 'put',
     url: nodeurl,
@@ -62,13 +67,15 @@ function addNode() {
 }
 
 function modifyNode() {
-  var logAll = document.getElementById('logAll');
+  // var logAll = document.getElementById('logAll');
   alog (node);
   var name = document.getElementById('cfgnodename').value;
   var ip = document.getElementById('cfgnodeip').value;
   var port = document.getElementById('cfgnodeport').value;
   var nid = document.getElementById('cfgnodeid').value;
-  var nodeurl = 'https://192.168.14.13:50001/v1/node';
+  // var ipmaster = document.getElementById('ip-master').value;
+  // var portmaster = document.getElementById('port-master').value;
+  //var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
   alog (ip)
   
   var nodejson = {}
@@ -76,6 +83,7 @@ function modifyNode() {
     nodejson["port"] = port;
     nodejson["ip"] = ip;
     nodejson["id"] = nid;
+    console.log(nodejson);
     var nodeJSON = JSON.stringify(nodejson);
     err = axiosModifyNode(nodeJSON);
 }
@@ -97,9 +105,9 @@ function loadBPF(nid){
   footerBPF.innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
                         '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveBPF(\''+nid+'\')" id="btn-save-changes">Save changes</button>';
 
-  ip = "192.168.14.13";
-  port = "50001";
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/suricata/'+nid+'/bpf';
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+nid+'/bpf';
   //var response = '';
   axios({
     method: 'get',
@@ -123,9 +131,9 @@ function loadBPF(nid){
 
 function saveBPF(nid){
   var inputBPF = document.getElementById('recipient-name');
-  ip = "192.168.14.13";
-  port = "50001";
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/suricata/'+nid+'/bpf';
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+nid+'/bpf';
 
   var jsonbpfdata = {}
   jsonbpfdata["nid"] = nid;
@@ -172,10 +180,10 @@ function loadRuleset(nid){
   '</div>';
 
   var resultElement = document.getElementById('ruleset-manager-footer-table');
-  var ip = "https://192.168.14.13";
-  var port = ":50001";
-  var route = "/ruleset";
-  axios.get(ip+port+'/v1'+route)
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+
+  axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
     .then(function (response) {
       resultElement.innerHTML = generateAllRulesModal(response, nid);
     })
@@ -211,9 +219,9 @@ function generateAllRulesModal(response, nid) {
 
 
 function saveRuleSelected(rule, nid){
-  ip = "192.168.14.13";
-  port = "50001";
-  var urlSetRuleset = 'https://'+ ip + ':' + port + '/v1/ruleset/set';
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
 
   var jsonRuleUID = {}
   jsonRuleUID["nid"] = nid;
@@ -232,5 +240,18 @@ function saveRuleSelected(rule, nid){
     .catch(function (error) {
       return false;
     }); 
-
 }
+
+function loadJSONdata(){
+  console.log("NODE Loading JSON");
+  $.getJSON('../conf/ui.conf', function(data) {
+    console.log("getJSON");
+    var ipLoad = document.getElementById('ip-master'); 
+    ipLoad.value = data.master.ip;
+    var portLoad = document.getElementById('port-master');
+    portLoad.value = data.master.port;
+    loadTitleJSONdata();
+    loadRuleset();   
+  });
+}
+loadJSONdata();

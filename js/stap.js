@@ -26,7 +26,10 @@ function addServerToNode(){
     serverform.style.display = "none";
     addserver.innerHTML = "Add Server";
 
-    var urlServer = 'https://192.168.14.13:50001/v1/stap/';
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+  
+    var urlServer = 'https://'+ipmaster+':'+portmaster+'/v1/stap/';
 
     var nodejson = {};
     nodejson["nodeName"] = nodeName.value;
@@ -48,18 +51,21 @@ function addServerToNode(){
         resultElement.innerHTML = generateAllServerHTMLOutput(error);
         return false;
     }); 
+    GetAllServers();
 }
 
 function GetAllServers() {
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
-    var node = urlWeb.searchParams.get("node");
+    var node = urlWeb.searchParams.get("node");    
 
     var tableServer = document.getElementById('servers-table');
     var subtitleBanner = document.getElementById('subtitle-servers-list');
     subtitleBanner.innerHTML = 'Servers for node: '+node;
 
-    var urlServer = 'https://192.168.14.13:50001/v1/stap/'+uuid;
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var urlServer = 'https://'+ipmaster+':'+portmaster+'/v1/stap/'+uuid;
 
     axios({
         method: 'get',
@@ -67,7 +73,6 @@ function GetAllServers() {
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
         tableServer.innerHTML = generateAllServerHTMLOutput(response);
         return true;
     })
@@ -97,26 +102,48 @@ function generateAllServerHTMLOutput(response) {
                 '<tbody>                                                      ' ;
 
     for (server in servers) {
-  
+        PingStapServer(server);
         html = html + 
         '<tr>                                                                     '+
             '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
             '<td class="align-middle">' + servers[server]['ip'] + '</td>'+
             '<td class="align-middle">' + servers[server]['name'] + '</td>'+
-            '<td class="align-middle"> <span class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>'+  
-            '<td class="align-middle">                                                           ' +
-            '  <span style="font-size: 20px; color: Dodgerblue;" >                               ' +
-            '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                          ' +
-            '  </span>                                                                           ' +
-            '</td>                                                                               ' +
-        '</tr>                                                                                   ' ;
+        //     console.log("Server :"+server+"  ^^^^  "+servers[server]['status']+" -- "+servers[server]['ip']+"  --  "+servers[server]['name']);
+        //    if (servers[server]['status'] == "true"){
+                // html = html + '<td class="align-middle"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span>              '+
+                '<td class="align-middle"> <span id="'+server+'-server-stap" class="badge badge-pill bg-success align-text-bottom text-white">ON</span>              '+
+                '<td class="align-middle">                                                                                                             ' +
+                '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
+                '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
+                '       <i class="fas fa-stop-circle low-blue" title="Stop server" id="'+server+'-server-icon-stap" onclick="StopStapServer(\''+server+'\')"></i>                       ' +
+                '  </span>                                                                                                                             ' +
+                '</td>' ;
+            // }else if (servers[server]['status'] == "false"){
+            //     html = html + '<td class="align-middle"> <span class="badge badge-pill bg-danger align-text-bottom text-white">OFF</span>              ' +
+            //     '<td class="align-middle">                                                                                                             ' +
+            //     '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
+            //     '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
+            //     '       <i class="fas fa-play-circle low-blue" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>                         ' +
+            //     '  </span>                                                                                                                             ' +
+            //     '</td>' ;
+            // }else if(servers[server]['status']){
+            //     html = html + 
+            //     '<td class="align-middle"> '+
+            //     '<span class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                                         ' +
+            //     '<td class="align-middle">                                                                                                              ' +
+            //     '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
+            //     '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
+            //     '       <i class="fas fa-play-circle low-blue" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>                          ' +
+            //     '  </span>                                                                                                                              ' +
+            //     '</td>' ;
+            //}
+        html = html + '</tr>' ;
     }
     html = html + '</tbody></table>';
     return  html;
   }
   
   function loadServerDetails(server){
-    console.log("----"+server);  
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
     var addserver = document.getElementById('servers-detail');
@@ -127,8 +154,9 @@ function generateAllServerHTMLOutput(response) {
         addserver.style.display = "none";
     }
 
-    var urlServer = 'https://192.168.14.13:50001/v1/stap/server/'+uuid+"/"+server;
-    console.log(urlServer);
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var urlServer = 'https://'+ipmaster+':'+portmaster+'/v1/stap/server/'+uuid+"/"+server;
     axios({
         method: 'get',
         url: urlServer,
@@ -136,9 +164,7 @@ function generateAllServerHTMLOutput(response) {
     })
     .then(function (response) {
         serverData = response.data[server]; 
-        console.log("datos ip");
-        console.log(response.data[server]['ip']);
-        addserver.innerHTML = 
+        var htmDetails =
         '<h3 class="mb-0 low-blue lh-100">'+response.data[server]['name']+' server details</h3>                                                              '+
         '<table class="table table-hover">                                      ' +    
             '<thead>                                                            '+
@@ -148,105 +174,116 @@ function generateAllServerHTMLOutput(response) {
                     '<th scope="col" colspan="15%">Actions</th>                                 ' +
                 '</tr>                                                        ' +
             '</thead>                                                                           '+
-            '</tbody>                                                                           '+
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">IP</i></td>                                 ' +
-                    '<td id class="align-middle" >'+serverData['ip']+'</i></td>                                         ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">Name</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['name']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">filter_path</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['filter_path']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">bro_on</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['bro_on']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">pidfile</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['pidfile']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">inventory</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['inventory']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                                                
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">max_mem</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['max_mem']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">max_cpu</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['max_cpu']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">default_interface</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['default_interface']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">owlh_interface</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['owlh_interface']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">logfile</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['logfile']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">max_storage</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['max_storage']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">local_pcap_path</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['local_pcap_path']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">pcap_path</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['pcap_path']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                                                                                                                
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">suricata_on</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['suricata_on']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                                                                                                                
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">owlh_user</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['owlh_user']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                                                                                                                
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">owlh_user_key</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['owlh_user_key']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +
-                '<tr>                                                                                                   ' +
-                    '<td id class="align-middle">capture_time</i></td>                               ' +
-                    '<td id class="align-middle" >'+serverData['capture_time']+'</i></td>                                       ' +
-                    '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
-                '</tr>                                                                                                  ' +                
+            '</tbody>                                                                   ';
+                for (nameDetail in response.data[server]){                                                                        
+                    htmDetails = htmDetails +
+                    '<tr>                                                                                                   ' +
+                        '<td id class="align-middle">'+nameDetail+'</td>                                                    ' +
+                        '<td id class="align-middle" >'+response.data[server][nameDetail]+'</td>                            ' +
+                        '<td><i class="fas fa-sticky-note low-blue" title="Edit"></i></td>                                  ' +
+                    '</tr>                                                                                                  ' ;
+                }
+            htmDetails = htmDetails +
             '</tbody>                                                                                                   ' +
         '</table>                                                                                                       ' ;    
-
+        addserver.innerHTML = htmDetails
         return true;   
     })
     .catch(function (error) {
         console.log(error);
         return false;
     }); 
+  }
 
+  function loadJSONdata(){
+    console.log("Loading JSON");
+    $.getJSON('../conf/ui.conf', function(data) {
+      console.log("getJSON");
+      var ipLoad = document.getElementById('ip-master'); 
+      ipLoad.value = data.master.ip;
+      var portLoad = document.getElementById('port-master');
+      portLoad.value = data.master.port;
+      loadTitleJSONdata();
+      GetAllServers();   
+    });
+  }
+  loadJSONdata();
+
+
+
+function RunStapServer(server){
+    var urlWeb = new URL(window.location.href);
+    var uuid = urlWeb.searchParams.get("uuid");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/RunStapServer/'+uuid+'/'+server;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+        console.log(response+"--------Stap server running");
+        })
+        .catch(function error(){
+        console.log(error);
+        });
+
+        GetAllServers();
+}
+
+//Stop stap system
+function StopStapServer(server){
+    var urlWeb = new URL(window.location.href);
+    var uuid = urlWeb.searchParams.get("uuid");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/StopStapServer/'+uuid+'/'+server;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+    })
+        .then(function (response) {
+        console.log(response+"--------Stap server stopped");
+        })
+        .catch(function error(){
+        console.log(error);
+        });
+
+        GetAllServers();
+}
+
+function PingStapServer(server) {
+    var urlWeb = new URL(window.location.href);
+    var uuid = urlWeb.searchParams.get("uuid");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/PingStapServer/'+uuid+'/'+server;
+    axios({
+      method: 'get',
+      url: nodeurl,
+      timeout: 30000
+    })
+      .then(function (response) {
+        if (!response.data.stapStatus) {
+            document.getElementById(server+'-server-stap').className = "badge bg-danger align-text-bottom text-white";
+            document.getElementById(server+'-server-stap').innerHTML = "OFF";
+            document.getElementById(server+'-server-icon-stap').className = "fas fa-play-circle";
+            document.getElementById(server+'-server-icon-stap').onclick = function(){ RunStapServer(server);};
+            document.getElementById(server+'-server-icon-stap').title = "Run stap server";
+        }else{
+            document.getElementById(server+'-server-stap').className = "badge bg-success align-text-bottom text-white";
+            document.getElementById(server+'-server-stap').innerHTML = "ON";
+            document.getElementById(server+'-server-icon-stap').className = "fas fa-stop-circle";
+            document.getElementById(server+'-server-icon-stap').onclick = function(){ StopStapServer(server);};
+            document.getElementById(server+'-server-icon-stap').title = "Stop stap server";
+        } 
+      })
+      .catch(function (error) {
+        document.getElementById(server+'-serverstap').className = "badge bg-dark align-text-bottom text-white";
+        document.getElementById(server+'-serverstap').innerHTML = "N/A";
+        return false;
+      });   
+    return true;
   }

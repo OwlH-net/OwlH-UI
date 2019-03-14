@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', GetAllRules(), false);
+//document.addEventListener('DOMContentLoaded', GetAllRulesets(), false);
 
-function GetAllRules() {
+function GetAllRulesets() {
 
     var url = new URL(window.location.href);
     var uuid = url.searchParams.get("uuid");
@@ -13,13 +13,11 @@ function GetAllRules() {
     
     bannerTitle.innerHTML = "Ruleset: "+rule;
     
-    var ip = "https://192.168.14.13";
-    var port = ":50001";
-    var route = "/ruleset/rules/"+uuid;
-
-    axios.get(ip+port+'/v1'+route)
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset/rules/'+uuid)
       .then(function (response) {
-        resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid);
+        resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster);
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
       })
@@ -28,7 +26,7 @@ function GetAllRules() {
       });   
   }
 
-function generateAllRulesHTMLOutput(response, uuid) {
+function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster) {
   var rules = response.data;
   var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
               '<thead>                                                      ' +
@@ -62,7 +60,7 @@ function generateAllRulesHTMLOutput(response, uuid) {
       '</td><td>                                                           '+
       rules[rule]["ip"]                                                     +
       '</td><td>                                                           '+
-      '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'&uuid='+uuid+'"><i class="fas fa-eye low-blue"></i></a> '+
+      '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'&uuid='+uuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster+'"><i class="fas fa-eye low-blue"></i></a> '+
       //'<button type="submit" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" class="btn btn-secondary" id="'+rules[rule]["sid"]+'-change-status">'+ruleStatus+'</button> '+
       '<a href="#" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" id="'+rules[rule]["sid"]+'-change-status"><i class="fas fa-exchange-alt low-blue"></i></a>                                                                            '+
       '<a href="#" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')"><i class="fas fa-file-signature low-blue"></i></a>                                                                                '+
@@ -77,10 +75,9 @@ function generateAllRulesHTMLOutput(response, uuid) {
 }
 
 function changeRulesetStatus(sid, uuid, action){
-  var ip = "https://192.168.14.13";
-  var port = "50001";
-  var route = "/action";
-  var nodeurl = ip + ':' + port + '/v1/ruleset' + route;
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/ruleset/action';
 
   var jsonbpfdata = {}
   jsonbpfdata["sid"] = sid;
@@ -136,10 +133,9 @@ function modalNotes(sid, uuid){
 }
 
 function getRuleNote(elementID, uuid, sid){
-  console.log (elementID+" "+uuid+" "+sid)
-  ip = "192.168.14.13";
-  port = "50001";
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/getnote/'+uuid+'/'+sid;
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/getnote/'+uuid+'/'+sid;
 
   var loadNote = document.getElementById(elementID);
   axios({
@@ -165,12 +161,9 @@ function getRuleNote(elementID, uuid, sid){
 
 function rulesetNotes(sid, uuid){
   var textAreaNote = document.getElementById('ruleset-notes').value;
-  console.log("nueva nota"+textAreaNote);
-  console.log("url datos --> "+sid+" "+uuid);
-  var ip = "https://192.168.14.13";
-  var port = "50001";
-  var route = "/note";
-  var nodeurl = ip + ':' + port + '/v1/ruleset' + route;
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/note';
 
   var jsonbpfdata = {}
   jsonbpfdata["sid"] = sid;
@@ -190,6 +183,18 @@ function rulesetNotes(sid, uuid){
     .catch(function (error) {
       return false;
     }); 
-
-
 }
+
+function loadJSONdata(){
+  console.log("Loading JSON");
+  $.getJSON('../conf/ui.conf', function(data) {
+    console.log("getJSON");
+    var ipLoad = document.getElementById('ip-master'); 
+    ipLoad.value = data.master.ip;
+    var portLoad = document.getElementById('port-master');
+    portLoad.value = data.master.port;
+    loadTitleJSONdata();
+    GetAllRulesets();   
+  });
+}
+loadJSONdata();

@@ -1,6 +1,3 @@
-
-document.addEventListener('DOMContentLoaded', GetAllNodes(), false);
-
 function showConfig(oip, oname, oport, onid){
   var cfgform = document.getElementById('divconfigform');
 
@@ -22,38 +19,40 @@ function showConfig(oip, oname, oport, onid){
 }
 
 function alog(txt) {
-    var logAll = document.getElementById('logAll');
-    logAll.innerHTML = logAll.innerHTML + "<br/>" + txt;
+    // var logAll = document.getElementById('logAll');
+    // logAll.innerHTML = logAll.innerHTML + "<br/>" + txt;
 }
 
 
 function performGetRequest1() {
   var resultElement = document.getElementById('getResult1');
   var logAll = document.getElementById('logAll');
-
-
   logAll.innerHTML = ' >> hola';
   resultElement.innerHTML = ' -- entrando en get';
 
-  axios.get('https://192.168.14.13:50001/v1/master')
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+
+  axios.get('https://'+ipmaster+':'+portmaster+'/v1/master')
     .then(function (response) {
-      logAll.innerHTML = logAll.innerHTML + ' <br />  >> dentro del get - success' + response;
+      logAll.innerHTML = logAll.innerHTML + ' <br />  >> inside get - success' + response;
       resultElement.innerHTML = generateSuccessHTMLOutput(response);
     })
     .catch(function (error) {
-      logAll.innerHTML = logAll.innerHTML + ' <br /> >> dentro del get - error -> ' + error;
+      logAll.innerHTML = logAll.innerHTML + ' <br /> >> inside get - error -> ' + error;
       //resultElement.innerHTML = generateErrorHTMLOutput(error);
     });   
 
-  logAll.innerHTML = logAll.innerHTML + '-- saliendo en get';
+  logAll.innerHTML = logAll.innerHTML + '-- get exit';
 }
 
 function PingNode(nid) {
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   //alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/ping/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ping/' + nid;
   //alog(" url -> " + nodeurl);
+  
   axios({
     method: 'get',
     url: nodeurl,
@@ -69,6 +68,7 @@ function PingNode(nid) {
         PingSuricata(nid);
         PingZeek(nid);
         PingWazuh(nid);
+        PingStap(nid);
         return "true";
       } else {
         document.getElementById(nid+'-online').className = "badge bg-danger align-text-bottom text-white";
@@ -88,12 +88,29 @@ function PingNode(nid) {
   return "false";
 }
 
-
-
 function GetAllNodes() {
+  // console.log("Entrando en GetAllNodes");
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   var resultElement = document.getElementById('nodes-table');
-  axios.get('https://192.168.14.13:50001/v1/node')
-    .then(function (response) {
+  var i=0;
+  while(document.getElementById('ip-master').value==''){
+    // console.log('ip master is empty');
+    // console.log('-->'+document.getElementById('ip-master').value);
+    setTimeout(function(){
+      console.log("Waiting master");
+    }, 1000);
+
+    console.log(i);
+    i++;
+
+    if(i === 10){
+      console.log("Exit");
+      break;
+    }
+  }
+  axios.get('https://'+ipmaster+':'+portmaster+'/v1/node')
+  .then(function (response) {
       resultElement.innerHTML = generateAllNodesHTMLOutput(response);
     })
     .catch(function (error) {
@@ -108,9 +125,10 @@ function clearLogField() {
 
 function DeleteNode(node) {
   var logAll = document.getElementById('logAll');
-  //alog (node);
-  var nodeurl = 'https://192.168.14.13:50001/v1/node/'+node;
-  //alog (nodeurl)
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/'+node;
+
   axios({
     method: 'delete',
     url: nodeurl,
@@ -161,7 +179,8 @@ function generateAllNodesHTMLOutput(response) {
               '<th scope="col"></th>                                        ' +
               '<th scope="col">Name</th>                                    ' +
               '<th scope="col">Status</th>                                  ' +
-              '<th scope="col">Tags <span style="font-size: 10px;" ><a href="tags.html"><i class="fas fa-cog" title="Manage Tags"></i></a></span></th>            ' +
+              // '<th scope="col">Tags <span style="font-size: 10px;" ><a href="tags.html"><i class="fas fa-cog" title="Manage Tags"></i></a></span></th>            ' +
+              '<th scope="col">Tags <span style="font-size: 10px;"></span></th>            ' +
               '<th scope="col">Services</th>                                ' +
               '<th scope="col">Actions</th>                                 ' +
               '</tr>                                                        ' +
@@ -192,35 +211,36 @@ function generateAllNodesHTMLOutput(response) {
       html = html +'<p><img src="img/suricata.png" alt="" width="30"> '      +
       '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
       '  <span style="font-size: 15px; color: grey;" >                                   ' +
-      '    <i class="fas fa-stop-circle" title="Stop Suricata"></i>                     ' +
-      '    <i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')"></i> ' +
+      '    <i class="fas fa-stop-circle" id="'+nid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+nid+'\')"></i>                     ' +
+      '    <a title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')">BPF</a>'+//<i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')"></i> ' +
       '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+nid+'\')"></i>                        ' +
       '  </span>                                                                        ' +
       '  </p>                                                                           ' +
-      '  <p><img  src="img/bro.png" alt="" width="30"> <span id="'+nid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
+      '  <p><img  src="img/bro.png" alt="" width="30">'+
+      '  <span id="'+nid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
       '  <span style="font-size: 15px; color: grey;" >                                   ' +
-      '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
-      '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-      '    <i class="fas fa-crosshairs" title="Policy Management"></i>                  ' +
+      '    <i class="fas fa-stop-circle" id="'+nid+'-zeek-icon"></i>                         ' +
+      //'    <i class="fas fa-cog" title="Configuration"></i>                             ' +
+      //'    <i class="fas fa-crosshairs" title="Policy Management"></i>                  ' +
       '  </span>                                                                        ' +
       '  </p>                                                                           ' +
-      '  <p><img src="img/wazuh.png" alt="" width="30"> <span id="'+nid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                         ' +
-      '   |                                                                             ' +
+      '  <p><img src="img/wazuh.png" alt="" width="30"> '+
+      '  <span id="'+nid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
       '  <span style="font-size: 15px; color: grey;" >                                  ' +
-      '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
-      '    <i class="fas fa-cog" title="Configuration"></i>                             ' +
+      '    <i class="fas fa-stop-circle" id="'+nid+'-wazuh-icon"></i>                         ' +
+      //'    <i class="fas fa-cog" title="Configuration"></i>                             ' +
       '  </span></p> '+
-      '  <p><i class="fas fa-plug fa-lg"></i>   <span id="'+nid+'-softtap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                         ' +
-      '   |                                                                             ' +
+      '  <p><i class="fas fa-plug fa-lg"></i>'+
+      '  <span id="'+nid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
       '  <span style="font-size: 15px; color: grey;">                                   ' +
-      '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
+      '    <i class="fas fa-stop-circle" id="'+nid+'-stap-icon"></i>                         ' +
       '    <a href="stap.html?uuid='+nid+'&node='+nodes[node]['name']+'"><i class="fas fa-cog" title="Configuration" style="color: grey;"></i><a>                             ' +
       '  </span></p> ';                      
       html = html +   '</td>                                                              ' +
       '<td class="align-middle">                                                        ' +
       '  <span style="font-size: 20px; color: Dodgerblue;" >                            ' +
       '    <a href="files.html?uuid='+node+'&node='+nodes[node]['name']+'"><i class="fas fa-arrow-alt-circle-down" title="Node Status"></i></a>             ' +
-      '    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
+      //'    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
       '    <i class="fas fa-cogs" title="Configuration" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +
       '    <i class="fas fa-sync-alt" title="Sync" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>                                 ' +
       '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
@@ -237,10 +257,10 @@ function generateAllNodesHTMLOutput(response) {
 }
 
 function sendRulesetToNode(nid){
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/ruleset/set/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/set/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -255,12 +275,55 @@ function sendRulesetToNode(nid){
   });
 }
 
+//Run suricata system
+function RunSuricata(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/RunSuricata/' + nid;
+  //const agent = new https.Agent({rejectUnauthorized:false})
+  axios({
+    method: 'put',
+    url: nodeurl,
+    //httpsAgent: agent,
+    timeout: 30000
+  })
+    .then(function (response) {
+      // console.log("Launch suricata");
+      // GetAllNodes();
+    })
+    .catch(function error(){
+      console.log(error);
+    });
+
+  GetAllNodes();
+}
+
+//Stop suricata system
+function StopSuricata(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/StopSuricata/' + nid;
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000,
+  })
+    .then(function (response) {
+      console.log("Kill Suricata service");
+      // GetAllNodes();
+    })
+    .catch(function error(){
+      console.log(error);
+    });
+  
+  GetAllNodes();
+}
 
 function PingSuricata(nid) {
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/suricata/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -268,21 +331,40 @@ function PingSuricata(nid) {
     timeout: 30000
   })
     .then(function (response) {
-      //logAll.innerHTML = logAll.innerHTML + '<br/> success';
-      if (response.data.status=='false') {
-        alog("suricata status FALSE==>"+nid);
-        document.getElementById(nid+'-suricata').className = "badge bg-danger align-text-bottom text-white";
-        document.getElementById(nid+'-suricata').innerHTML = "OFF";
-      } else {
-        alog("suricata info TRUE==>"+nid);
-        document.getElementById(nid+'-suricata').className = "badge bg-success align-text-bottom text-white";
-        document.getElementById(nid+'-suricata').innerHTML = "ON";
+      // console.log("PingSuricata bin--"+response.data.bin);
+      // console.log("PingSuricata path--"+response.data.path);
+      // console.log("PingSuricata running--"+response.data.running);
+
+      if (!response.data.path && !response.data.bin) {
+        // console.log("!path && !bin");
+        alog("suricata status N/A==>"+nid);
+        document.getElementById(nid+'-suricata').className = "badge bg-dark align-text-bottom text-white";
+        document.getElementById(nid+'-suricata').innerHTML = "N/A";
+        document.getElementById(nid+'-suricata-icon').className = "fas fa-play-circle";
+        document.getElementById(nid+'-suricata-icon').onclick = function(){ RunSuricata(nid);};
+        document.getElementById(nid+'-suricata-icon').title = "Run Suricata";
+      } else if (response.data.path || response.data.bin){
+        // console.log("path && bin");
+        if(response.data.running){
+          // console.log("running");
+          document.getElementById(nid+'-suricata').className = "badge bg-success align-text-bottom text-white";
+          document.getElementById(nid+'-suricata').innerHTML = "ON";
+          document.getElementById(nid+'-suricata-icon').className = "fas fa-stop-circle";
+          document.getElementById(nid+'-suricata-icon').onclick = function(){ StopSuricata(nid);};
+          document.getElementById(nid+'-suricata-icon').title = "Stop Suricata";
+        }else{
+          // console.log("!running");
+          document.getElementById(nid+'-suricata').className = "badge bg-danger align-text-bottom text-white";
+          document.getElementById(nid+'-suricata').innerHTML = "OFF";
+          document.getElementById(nid+'-suricata-icon').className = "fas fa-play-circle";
+          document.getElementById(nid+'-suricata-icon').onclick = function(){ RunSuricata(nid);};
+          document.getElementById(nid+'-suricata-icon').title = "Run Suricata";
+        }
       }
       return true;
     })
     .catch(function (error) {
       alog("suricata info N/A==>"+nid);
-      //logAll.innerHTML = logAll.innerHTML + '<br/> error >> ' + nid + ' >> ' + error;
       document.getElementById(nid+'-suricata').className = "badge bg-dark align-text-bottom text-white";
       document.getElementById(nid+'-suricata').innerHTML = "N/A";
 
@@ -291,11 +373,53 @@ function PingSuricata(nid) {
   return false;
 }
 
+
+//Run Zeek system
+function RunZeek(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/RunZeek/' + nid;
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000
+  })
+    .then(function (response) {
+      // console.log("Launch Zeek");
+    })
+    .catch(function error(){
+      console.log(error);
+    });
+
+  GetAllNodes();
+}
+
+//Stop Zeek system
+function StopZeek(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/StopZeek/' + nid;
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000,
+  })
+    .then(function (response) {
+      // console.log("Kill Zeek service");
+      // GetAllNodes();
+    })    
+    .catch(function error(){
+      console.log(error);
+    });
+  
+  GetAllNodes();
+}
+
 function PingZeek(nid) {
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/zeek/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/zeek/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -303,15 +427,35 @@ function PingZeek(nid) {
     timeout: 30000
   })
     .then(function (response) {
-      //logAll.innerHTML = logAll.innerHTML + '<br/> success';
-      if (response.data.status=='false') {
-        alog("zeek status FALSE==>"+nid);
-        document.getElementById(nid+'-zeek').className = "badge bg-danger align-text-bottom text-white";
-        document.getElementById(nid+'-zeek').innerHTML = "OFF";
-      } else {
-        alog("zeek info TRUE==>"+nid);
-        document.getElementById(nid+'-zeek').className = "badge bg-success align-text-bottom text-white";
-        document.getElementById(nid+'-zeek').innerHTML = "ON";
+      // console.log("PingZeek bin--"+response.data.bin);
+      // console.log("PingZeek path--"+response.data.path);
+      // console.log("PingZeek running--"+response.data.running);
+
+      if (!response.data.path && !response.data.bin) {
+        console.log("!path && !bin");
+        alog("zeek status N/A==>"+nid);
+        document.getElementById(nid+'-zeek').className = "badge bg-dark align-text-bottom text-white";
+        document.getElementById(nid+'-zeek').innerHTML = "N/A";
+        document.getElementById(nid+'-zeek-icon').className = "fas fa-play-circle";
+        document.getElementById(nid+'-zeek-icon').onclick = function(){ RunZeek(nid);};
+        document.getElementById(nid+'-zeek-icon').title = "Run zeek";
+      } else if (response.data.path || response.data.bin){
+        // console.log("path && bin");
+        if(response.data.running){
+          // console.log("running");
+          document.getElementById(nid+'-zeek').className = "badge bg-success align-text-bottom text-white";
+          document.getElementById(nid+'-zeek').innerHTML = "ON";
+          document.getElementById(nid+'-zeek-icon').className = "fas fa-stop-circle";
+          document.getElementById(nid+'-zeek-icon').onclick = function(){ StopZeek(nid);};
+          document.getElementById(nid+'-zeek-icon').title = "Stop Zeek";
+        }else{
+          // console.log("!running");
+          document.getElementById(nid+'-zeek').className = "badge bg-danger align-text-bottom text-white";
+          document.getElementById(nid+'-zeek').innerHTML = "OFF";
+          document.getElementById(nid+'-zeek-icon').className = "fas fa-play-circle";
+          document.getElementById(nid+'-zeek-icon').onclick = function(){ RunZeek(nid);};
+          document.getElementById(nid+'-zeek-icon').title = "Run Zeek";
+        }
       }
       return true;
     })
@@ -326,11 +470,52 @@ function PingZeek(nid) {
   return false;
 }
 
+//Run Zeek system
+function RunWazuh(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/RunWazuh/' + nid;
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000
+  })
+    .then(function (response) {
+      // console.log("Launch Wazuh");
+    })
+    .catch(function error(){
+      console.log(error);
+    });
+
+  GetAllNodes();
+}
+
+//Stop Zeek system
+function StopWazuh(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/StopWazuh/' + nid;
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000,
+  })
+    .then(function (response) {
+      // console.log("Kill Wazuh service");
+      // GetAllNodes();
+    })
+    .catch(function error(){
+      console.log(error);
+    });
+  
+  GetAllNodes();
+}
+
 function PingWazuh(nid) {
-  ip = "192.168.14.13"
-  port = "50001"
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
   alog("ping node - " + nid);
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/node/wazuh/' + nid;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/wazuh/' + nid;
   alog(" url -> " + nodeurl);
   axios({
     method: 'get',
@@ -338,15 +523,35 @@ function PingWazuh(nid) {
     timeout: 30000
   })
     .then(function (response) {
-      //logAll.innerHTML = logAll.innerHTML + '<br/> success';
-      if (response.data.status=='false') {
-        alog("wazuh status FALSE==>"+nid);
-        document.getElementById(nid+'-wazuh').className = "badge bg-danger align-text-bottom text-white";
-        document.getElementById(nid+'-wazuh').innerHTML = "OFF";
-      } else {
-        alog("wazuh info TRUE==>"+nid);
-        document.getElementById(nid+'-wazuh').className = "badge bg-success align-text-bottom text-white";
-        document.getElementById(nid+'-wazuh').innerHTML = "ON";
+      // console.log("PingWazuh bin--"+response.data.bin);
+      // console.log("PingWazuh path--"+response.data.path);
+      // console.log("PingWazuh running--"+response.data.running);
+
+      if (!response.data.path && !response.data.bin) {
+        // console.log("!path && !bin");
+        alog("Wazuh status N/A==>"+nid);
+        document.getElementById(nid+'-wazuh').className = "badge bg-dark align-text-bottom text-white";
+        document.getElementById(nid+'-wazuh').innerHTML = "N/A";
+        document.getElementById(nid+'-wazuh-icon').className = "fas fa-play-circle";
+        document.getElementById(nid+'-wazuh-icon').onclick = function(){ RunWazuh(nid);};
+        document.getElementById(nid+'-wazuh-icon').title = "Run Wazuh";
+      } else if (response.data.path || response.data.bin){
+        // console.log("path && bin");
+        if(response.data.running){
+          // console.log("running");
+          document.getElementById(nid+'-wazuh').className = "badge bg-success align-text-bottom text-white";
+          document.getElementById(nid+'-wazuh').innerHTML = "ON";
+          document.getElementById(nid+'-wazuh-icon').className = "fas fa-stop-circle";
+          document.getElementById(nid+'-wazuh-icon').onclick = function(){ StopWazuh(nid);};
+          document.getElementById(nid+'-wazuh-icon').title = "Stop Wazuh";
+        }else{
+          // console.log("!running");
+          document.getElementById(nid+'-wazuh').className = "badge bg-danger align-text-bottom text-white";
+          document.getElementById(nid+'-wazuh').innerHTML = "OFF";
+          document.getElementById(nid+'-wazuh-icon').className = "fas fa-play-circle";
+          document.getElementById(nid+'-wazuh-icon').onclick = function(){ RunWazuh(nid);};
+          document.getElementById(nid+'-wazuh-icon').title = "Run Wazuh";
+        }
       }
       return true;
     })
@@ -362,10 +567,92 @@ function PingWazuh(nid) {
   //comment
 }
 
+//Run stap system
+function RunStap(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/RunStap/' + nid;
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000
+  })
+    .then(function (response) {
+      // console.log("Launch stap");
+    })
+    .catch(function error(){
+      console.log(error);
+    });
+
+  GetAllNodes();
+}
+
+//Stop stap system
+function StopStap(nid){
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/StopStap/' + nid;
+  axios({
+    method: 'put',
+    url: nodeurl,
+    timeout: 30000,
+  })
+    .then(function (response) {
+      // console.log("Kill Stap service");
+    })
+    .catch(function error(){
+      console.log(error);
+    });
+  
+  GetAllNodes();
+}
+
+function PingStap(nid) {
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  alog("ping node - " + nid);
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/stap/' + nid;
+  alog(" url -> " + nodeurl);
+  axios({
+    method: 'get',
+    url: nodeurl,
+    timeout: 30000
+  })
+    .then(function (response) {
+      // console.log("sTAP rESPONSE: "+response);
+      if (!response.data.stapStatus) {
+          // console.log("!StapRunning");
+          document.getElementById(nid+'-stap').className = "badge bg-danger align-text-bottom text-white";
+          document.getElementById(nid+'-stap').innerHTML = "OFF";
+          document.getElementById(nid+'-stap-icon').className = "fas fa-play-circle";
+          document.getElementById(nid+'-stap-icon').onclick = function(){ RunStap(nid);};
+          document.getElementById(nid+'-stap-icon').title = "Run stap";
+      }else{
+          // console.log("StapRunning");
+          document.getElementById(nid+'-stap').className = "badge bg-success align-text-bottom text-white";
+          document.getElementById(nid+'-stap').innerHTML = "ON";
+          document.getElementById(nid+'-stap-icon').className = "fas fa-stop-circle";
+          document.getElementById(nid+'-stap-icon').onclick = function(){ StopStap(nid);};
+          document.getElementById(nid+'-stap-icon').title = "Stop stap";
+      } 
+    })
+    .catch(function (error) {
+      alog("stap info N/A==>"+nid);
+      document.getElementById(nid+'-stap').className = "badge bg-dark align-text-bottom text-white";
+      document.getElementById(nid+'-stap').innerHTML = "N/A";
+
+      return false;
+    });   
+  return false;
+}
+
+
+
+
 function getRuleUID(nid){
-  ip = "192.168.14.13"
-  port = "50001"
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/' + nid;
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/get/' + nid;
   axios({
     method: 'get',
     url: nodeurl,
@@ -381,9 +668,9 @@ function getRuleUID(nid){
 }
 
 function getRuleName(uuid, nid){
-  ip = "192.168.14.13"
-  port = "50001"
-  var nodeurl = 'https://'+ ip + ':' + port + '/v1/ruleset/get/name/' + uuid;
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + uuid;
   axios({
     method: 'get',
     url: nodeurl,
@@ -397,3 +684,19 @@ function getRuleName(uuid, nid){
       return false;
     }); 
 }
+
+//load json data from local file
+function loadJSONdata(){
+  // console.log("Loading JSON");
+  
+  $.getJSON('../conf/ui.conf', function(data) {
+    // console.log("getJSON");
+    var ipLoad = document.getElementById('ip-master'); 
+    ipLoad.value = data.master.ip;
+    var portLoad = document.getElementById('port-master');
+    portLoad.value = data.master.port;
+    loadTitleJSONdata();
+    GetAllNodes();   
+  });
+}
+loadJSONdata();

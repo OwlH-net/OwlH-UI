@@ -25,7 +25,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
         <img class="mr-3" src="img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
-        href="nodes.html"><small>Master </small><i class="text-warning">OwlHMDemo01</i> | </a>
+        href="nodes.html"><small>Master </small><i id="menu-title" class="text-warning"></i> | </a>
       <!-- <img class="mr-3" src="img/owlhblack.png" alt=""  height="30"><a class="navbar-brand mr-auto mr-lg-0" href="home.html"><small>Master </small><i class="text-warning">OwlHMDemo01</i> | </a> -->
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -76,8 +76,8 @@
           <small id="subtitle-servers-list"></small>
         </div>
       </div>
-      <div class="container" id="nodes-table">
-      </div>
+      <!-- <div class="container" id="nodes-table">
+      </div> -->
 
       <div class="container" id="servers-table">
       </div>
@@ -116,6 +116,7 @@
     
     
       <!--Mostrar formulario para modificar información e los nodos (IP, nid y puerto del nodo)-->
+      <!--Show the form for modify node inroamtion(IP, nid and port)-->
       <div class="container" style="display: none;" id="divconfigform">
         <form id="configform">
           <div class="form-row">
@@ -148,19 +149,27 @@
             </div>
           </div>
       </div>
+      <!-- Load master ip/port -->
+      <div id="load-json-data" style="display: none;">
+          <input id="ip-master" type="text" class="form-control">
+          <input id="port-master" type="text" class="form-control">
+      </div>        
     </main>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="node_modules/axios/dist/axios.js"></script> 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script> -->
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script src="css/site/docs/4.1/assets/js/vendor/popper.min.js"></script>
     <script src="css/dist/js/bootstrap.min.js"></script>
     <script src="css/site/docs/4.1/assets/js/vendor/holder.min.js"></script>
     <script src="js/offcanvas.js"></script>
+    <script src="js/owlh.js"></script>
     <script src="js/stap.js"></script>
+    <script src="js/loadTitle.js"></script>
   </body>
 </html>
 

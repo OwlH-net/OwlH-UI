@@ -57,6 +57,8 @@ function addNode() {
     var ntype = document.getElementById('nodetype').value;
     var logAll = document.getElementById('logAll');
 
+    addNids();//close add nids form
+
     var nodejson = {}
     nodejson["name"] = nname;
     nodejson["port"] = nport;
@@ -242,10 +244,32 @@ function saveRuleSelected(rule, nid){
     }); 
 }
 
+function deleteNodeModal(node, name){
+  var modalWindow = document.getElementById('modal-delete-nodes');
+  modalWindow.innerHTML = 
+  '<div class="modal-dialog">'+
+    '<div class="modal-content">'+
+
+      '<div class="modal-header">'+
+        '<h4 class="modal-title" id="delete-node-header">Node</h4>'+
+        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+      '</div>'+
+
+      '<div class="modal-body" id="delete-node-footer-table">'+ 
+        '<p>Do you want to delete <b>'+name+'</b> node?</p>'+
+      '</div>'+
+
+      '<div class="modal-footer" id="delete-node-footer-btn">'+
+        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+        '<button type="submit" class="btn btn-danger" data-dismiss="modal" id="btn-delete-node" onclick="deleteNode(\''+node+'\')">Delete</button>'+
+      '</div>'+
+
+    '</div>'+
+  '</div>';
+}
+
 function loadJSONdata(){
-  console.log("NODE Loading JSON");
   $.getJSON('../conf/ui.conf', function(data) {
-    console.log("getJSON");
     var ipLoad = document.getElementById('ip-master'); 
     ipLoad.value = data.master.ip;
     var portLoad = document.getElementById('port-master');

@@ -89,26 +89,26 @@ function PingNode(nid) {
 }
 
 function GetAllNodes() {
-  // console.log("Entrando en GetAllNodes");
+  console.log("Entrando en GetAllNodes");
   var ipmaster = document.getElementById('ip-master').value;
   var portmaster = document.getElementById('port-master').value;
   var resultElement = document.getElementById('nodes-table');
-  var i=0;
-  while(document.getElementById('ip-master').value==''){
-    // console.log('ip master is empty');
-    // console.log('-->'+document.getElementById('ip-master').value);
-    setTimeout(function(){
-      console.log("Waiting master");
-    }, 1000);
+  // var i=0;
+  // while(document.getElementById('ip-master').value==''){
+  //   // console.log('ip master is empty');
+  //   // console.log('-->'+document.getElementById('ip-master').value);
+  //   setTimeout(function(){
+  //     console.log("Waiting master");
+  //   }, 1000);
 
-    console.log(i);
-    i++;
+  //   console.log(i);
+  //   i++;
 
-    if(i === 10){
-      console.log("Exit");
-      break;
-    }
-  }
+  //   if(i === 10){
+  //     console.log("Exit");
+  //     break;
+  //   }
+  // }
   axios.get('https://'+ipmaster+':'+portmaster+'/v1/node')
   .then(function (response) {
       resultElement.innerHTML = generateAllNodesHTMLOutput(response);
@@ -123,7 +123,8 @@ function clearLogField() {
     //alog ("")
 }
 
-function DeleteNode(node) {
+function deleteNode(node) {
+  console.log("Delete node!! --> "+node);
   var logAll = document.getElementById('logAll');
   var ipmaster = document.getElementById('ip-master').value;
   var portmaster = document.getElementById('port-master').value;
@@ -136,14 +137,15 @@ function DeleteNode(node) {
   })
     .then(function (response) {
       logAll.innerHTML = logAll.innerHTML + '<br/> success';
-      return true;
+      GetAllNodes();
+      //return true;
     })
     .catch(function (error) {
       logAll.innerHTML = logAll.innerHTML + '<br/> error - ' + ip;
-      return false;
+      //return false;
     });   
-  GetAllNodes();
-  return false;
+  
+  //return true;
 }
 
 function addNids(){
@@ -220,8 +222,8 @@ function generateAllNodesHTMLOutput(response) {
       '  <span id="'+nid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
       '  <span style="font-size: 15px; color: grey;" >                                   ' +
       '    <i class="fas fa-stop-circle" id="'+nid+'-zeek-icon"></i>                         ' +
-      //'    <i class="fas fa-cog" title="Configuration"></i>                             ' +
-      //'    <i class="fas fa-crosshairs" title="Policy Management"></i>                  ' +
+      '    <i class="fab fa-wpforms" title="Zeek policy management"></i>                  ' +
+           //'    <i class="fas fa-cog" title="Configuration"></i>                             ' +
       '  </span>                                                                        ' +
       '  </p>                                                                           ' +
       '  <p><img src="img/wazuh.png" alt="" width="30"> '+
@@ -244,8 +246,8 @@ function generateAllNodesHTMLOutput(response) {
       '    <i class="fas fa-cogs" title="Configuration" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +
       '    <i class="fas fa-sync-alt" title="Sync" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>                                 ' +
       '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
-      '    <a style="font-size: 20px; color: Dodgerblue;" onclick="DeleteNode('+"'"+node+"'"+');"> ' +
-      '      <i class="fas fa-trash-alt" title="Delete Node" ></i>                         ' +
+      '    <a style="font-size: 20px; color: Dodgerblue;" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"> ' +
+      '      <i class="fas fa-trash-alt" title="Delete Node" data-toggle="modal" data-target="#modal-delete-nodes"></i>                         ' +
       '    </a>                                                                            ' +
       '  </span>                                                                           ' +
       '</td>                                                                               ' +
@@ -677,7 +679,13 @@ function getRuleName(uuid, nid){
     timeout: 30000
   })    
     .then(function (response) {
-      document.getElementById(nid+'-ruleset').innerHTML = response.data;
+      if (typeof response.data.error != "undefined"){
+        document.getElementById(nid+'-ruleset').innerHTML = "No ruleset selected...";
+        document.getElementById(nid+'-ruleset').className = "text-danger";
+      }else{
+        document.getElementById(nid+'-ruleset').innerHTML = response.data;
+        document.getElementById(nid+'-ruleset').className = "text-muted-small";
+      }
       return response.data;
     })
     .catch(function (error) {
@@ -687,10 +695,7 @@ function getRuleName(uuid, nid){
 
 //load json data from local file
 function loadJSONdata(){
-  // console.log("Loading JSON");
-  
   $.getJSON('../conf/ui.conf', function(data) {
-    // console.log("getJSON");
     var ipLoad = document.getElementById('ip-master'); 
     ipLoad.value = data.master.ip;
     var portLoad = document.getElementById('port-master');

@@ -250,7 +250,6 @@ function StopStapServer(server){
         .catch(function error(){
         console.log(error);
         });
-
         GetAllServers();
 }
 

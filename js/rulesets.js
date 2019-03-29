@@ -13,8 +13,12 @@ function GetAllRules() {
       timeout: 30000
     })
       .then(function (response) {
-        'https://'+ipmaster+':'+portmaster+'/v1/ruleset'
-        resultElement.innerHTML = generateAllRulesHTMLOutput(response);
+        //'https://'+ipmaster+':'+portmaster+'/v1/ruleset'
+        // if (response.data != undefined) {
+            resultElement.innerHTML = generateAllRulesHTMLOutput(response);
+        // }else{
+        //     port = nodes[node]['port'];
+        // }
       })
       .catch(function (error) {
         resultElement.innerHTML = generateAllRulesHTMLOutput(error);

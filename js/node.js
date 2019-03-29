@@ -8,7 +8,7 @@ function axiosAddNode(node) {
   axios({
     method: 'post',
     url: nodeurl,
-    timeout: 30,
+    timeout: 30000,
     data: node
   })
     .then(function (response) {
@@ -23,38 +23,11 @@ function axiosAddNode(node) {
   return false;
 }
 
-function axiosModifyNode(node) {
-  var logAll = document.getElementById('logAll');
-  logAll.innerHTML = logAll.innerHTML + "<br/> Modify node es - "+node;
-  var ipmaster = document.getElementById('ip-master').value;
-  var portmaster = document.getElementById('port-master').value;
-  var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
-  axios({
-    method: 'put',
-    url: nodeurl,
-    timeout: 30,
-    data: node
-  })
-    .then(function (response) {
-      logAll.innerHTML = logAll.innerHTML + '<br/> Modify success';
-      return true;
-    })
-    .catch(function (error) {
-      logAll.innerHTML = logAll.innerHTML + '<br/> Modify error - ';
-      return false;
-    });   
-
-    document.getElementById('divconfigform').style.display = "none";
-
-  //GetAllNodes();
-  return false;
-}
-
 function addNode() {
     var nname = document.getElementById('nodename').value;
     var nip = document.getElementById('nodeip').value;
     var nport = document.getElementById('nodeport').value;
-    var ntype = document.getElementById('nodetype').value;
+    //var ntype = document.getElementById('nodetype').value;
     var logAll = document.getElementById('logAll');
 
     addNids();//close add nids form
@@ -63,46 +36,94 @@ function addNode() {
     nodejson["name"] = nname;
     nodejson["port"] = nport;
     nodejson["ip"] = nip;
-    nodejson["type"] = ntype;
+    //nodejson["type"] = ntype;
     var nodeJSON = JSON.stringify(nodejson);
     err = axiosAddNode(nodeJSON);
 }
 
 function modifyNode() {
-  // var logAll = document.getElementById('logAll');
-  alog (node);
-  var name = document.getElementById('cfgnodename').value;
-  var ip = document.getElementById('cfgnodeip').value;
-  var port = document.getElementById('cfgnodeport').value;
-  var nid = document.getElementById('cfgnodeid').value;
-  // var ipmaster = document.getElementById('ip-master').value;
-  // var portmaster = document.getElementById('port-master').value;
-  //var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
-  alog (ip)
-  
-  var nodejson = {}
+    // var logAll = document.getElementById('logAll');
+    alog (node);
+    var name = document.getElementById('cfgnodename').value;
+    var ip = document.getElementById('cfgnodeip').value;
+    var port = document.getElementById('cfgnodeport').value;
+    var nid = document.getElementById('cfgnodeid').value;
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
+    //   alog (ip)
+    var nodejson = {}
     nodejson["name"] = name;
     nodejson["port"] = port;
     nodejson["ip"] = ip;
     nodejson["id"] = nid;
     console.log(nodejson);
     var nodeJSON = JSON.stringify(nodejson);
-    err = axiosModifyNode(nodeJSON);
+    // err = axiosModifyNode(nodeJSON);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: nodeJSON
+        })
+        .then(function (response) {
+            console.log("Node modified succesfully!!!!!"+response);
+            // logAll.innerHTML = logAll.innerHTML + '<br/> Modify success';
+            GetAllNodes();
+            return true;
+        })
+        .catch(function (error) {
+            console.log("Node NOT modified: "+error);
+            // logAll.innerHTML = logAll.innerHTML + '<br/> Modify error - ';
+            return false;
+        });   
+        document.getElementById('divconfigform').style.display = "none";
+        return false;
 }
+
+// function axiosModifyNode(node) {
+//     //   var logAll = document.getElementById('logAll');
+//     //   logAll.innerHTML = logAll.innerHTML + "<br/> Modify node es - "+node;
+//       var ipmaster = document.getElementById('ip-master').value;
+//       var portmaster = document.getElementById('port-master').value;
+//       var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
+//       axios({
+//         method: 'put',
+//         url: nodeurl,
+//         timeout: 30000,
+//         data: node
+//       })
+//         .then(function (response) {
+//             console.log("Node modified succesfully!!!!!");
+//             // logAll.innerHTML = logAll.innerHTML + '<br/> Modify success';
+//             return true;
+//         })
+//         .catch(function (error) {
+//             console.log("Node NOT modified");
+//             // logAll.innerHTML = logAll.innerHTML + '<br/> Modify error - ';
+//             return false;
+//         });   
+    
+//         document.getElementById('divconfigform').style.display = "none";
+        
+//         return false;
+//     }
+
+
 
 function cancelNode(){
   var cancel = document.getElementById('divconfigform');
   document.getElementById('divconfigform').style.display = "none";
 }
 
-function loadBPF(nid){
+function loadBPF(nid, name){
 
   var inputBPF = document.getElementById('recipient-name');
   var headerBPF = document.getElementById('bpf-header');
   var footerBPF = document.getElementById("modal-footer-btn");
   //var saveBTN = document.getElementById("btn-save-changes");
   
-  headerBPF.innerHTML = "BPF - "+nid;
+  headerBPF.innerHTML = "BPF - "+name;
   
   footerBPF.innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
                         '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveBPF(\''+nid+'\')" id="btn-save-changes">Save changes</button>';
@@ -114,14 +135,14 @@ function loadBPF(nid){
   axios({
     method: 'get',
     url: nodeurl,
-    timeout: 30000
+    timeout: 3000
   })
     .then(function (response) {
       if('bpf' in response.data){
         inputBPF.value=response.data.bpf;     
       }else{
         inputBPF.value='';
-        headerBPF.innerHTML = headerBPF.innerHTML + '<br> Not defined';
+        headerBPF.innerHTML = headerBPF.innerHTML + '<br>Not defined';
       }
     })
     .catch(function (error) {
@@ -187,14 +208,19 @@ function loadRuleset(nid){
 
   axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
     .then(function (response) {
-      resultElement.innerHTML = generateAllRulesModal(response, nid);
+        console.log(response);
+        if (typeof response.data.error != "undefined"){
+            resultElement.innerHTML = "No rules available...";
+        }else{
+            resultElement.innerHTML = generateAllRulesModal(response, nid);
+        }
     })
     .catch(function (error) {
       resultElement.innerHTML = generateAllRulesModal(error);
     }); 
   
-  }
-  
+}
+
 function generateAllRulesModal(response, nid) {
   var rules = response.data;
   var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +

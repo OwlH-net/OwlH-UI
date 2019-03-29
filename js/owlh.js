@@ -133,7 +133,7 @@ function deleteNode(node) {
   axios({
     method: 'delete',
     url: nodeurl,
-    timeout: 30
+    timeout: 30000
   })
     .then(function (response) {
       logAll.innerHTML = logAll.innerHTML + '<br/> success';
@@ -214,7 +214,8 @@ function generateAllNodesHTMLOutput(response) {
       '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
       '  <span style="font-size: 15px; color: grey;" >                                   ' +
       '    <i class="fas fa-stop-circle" id="'+nid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+nid+'\')"></i>                     ' +
-      '    <a title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')">BPF</a>'+//<i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')"></i> ' +
+      '    <i class="fas fa-sync-alt" title="Sync" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>                                 ' +
+      '    <a title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\',\''+nodes[node]['name']+'\')">BPF</a>'+//<i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')"></i> ' +
       '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+nid+'\')"></i>                        ' +
       '  </span>                                                                        ' +
       '  </p>                                                                           ' +
@@ -244,7 +245,6 @@ function generateAllNodesHTMLOutput(response) {
       '    <a href="files.html?uuid='+node+'&node='+nodes[node]['name']+'"><i class="fas fa-arrow-alt-circle-down" title="Node Status"></i></a>             ' +
       //'    <i class="fas fa-stop-circle" title="Stop Node"></i>                         ' +
       '    <i class="fas fa-cogs" title="Configuration" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +
-      '    <i class="fas fa-sync-alt" title="Sync" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>                                 ' +
       '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
       '    <a style="font-size: 20px; color: Dodgerblue;" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"> ' +
       '      <i class="fas fa-trash-alt" title="Delete Node" data-toggle="modal" data-target="#modal-delete-nodes"></i>                         ' +
@@ -679,6 +679,7 @@ function getRuleName(uuid, nid){
     timeout: 30000
   })    
     .then(function (response) {
+        console.log("Rule name retrieved from list: "+response);
       if (typeof response.data.error != "undefined"){
         document.getElementById(nid+'-ruleset').innerHTML = "No ruleset selected...";
         document.getElementById(nid+'-ruleset').className = "text-danger";

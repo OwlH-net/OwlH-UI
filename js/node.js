@@ -29,7 +29,6 @@ function addNode() {
     var nport = document.getElementById('nodeport').value;
     //var ntype = document.getElementById('nodetype').value;
     var logAll = document.getElementById('logAll');
-
     addNids();//close add nids form
 
     var nodejson = {}

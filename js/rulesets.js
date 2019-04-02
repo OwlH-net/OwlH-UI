@@ -25,33 +25,40 @@ function GetAllRules() {
       });   
   }
 
-  function generateAllRulesHTMLOutput(response) {
-    var rules = response.data;
-    var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                '<thead>                                                      ' +
-                '<tr>                                                         ' +
-                '<th>Name</th>                                                ' +
-                '<th>Path</th>                                                ' +
-                '<th>Description</th>                                         ' +
-                '<th>Actions</th>                                             ' +
-                '</tr>                                                        ' +
-                '</thead>                                                     ' +
-                '<tbody >                                                     ' 
-    for (rule in rules) {
-    html = html + '<tr><td>'+
-        rules[rule]["name"]                                                    +
-        '</td><td>                                                            '+
-        rules[rule]["path"]                                                    +
-        '</td><td>                                                            '+
-        rules[rule]["desc"]                                                    +
-        '</td><td>                                                            '+
-        '<a class="btn btn-primary" href="ruleset.html?uuid='+rule+'&rule='+rules[rule]["name"]+'">Details</a> '+
-        '<button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-clone" onclick="cloneRuleset(\''+rules[rule]["name"]+'\', \''+rules[rule]["path"]+'\')">Clone</button>       '+
-        '</td></tr>                                                           '
-    }
-    html = html + '  </tbody></table>';
-    return  html;
-  }
+function generateAllRulesHTMLOutput(response) {
+        var isEmptyRulesets = true;
+        var rules = response.data;
+        var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                    '<thead>                                                      ' +
+                    '<tr>                                                         ' +
+                    '<th>Name</th>                                                ' +
+                    '<th>Path</th>                                                ' +
+                    '<th>Description</th>                                         ' +
+                    '<th>Actions</th>                                             ' +
+                    '</tr>                                                        ' +
+                    '</thead>                                                     ' +
+                    '<tbody >                                                     ' 
+        for (rule in rules) {
+            isEmptyRulesets = false;
+            html = html + '<tr><td>'+
+            rules[rule]["name"]                                                    +
+            '</td><td>                                                            '+
+            rules[rule]["path"]                                                    +
+            '</td><td>                                                            '+
+            rules[rule]["desc"]                                                    +
+            '</td><td>                                                            '+
+            '<a class="btn btn-primary" href="ruleset.html?uuid='+rule+'&rule='+rules[rule]["name"]+'">Details</a> '+
+            '<button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-clone" onclick="cloneRuleset(\''+rules[rule]["name"]+'\', \''+rules[rule]["path"]+'\')">Clone</button>       '+
+            '</td></tr>                                                           '
+        }
+        html = html + '  </tbody></table>';
+
+        if (isEmptyRulesets){
+            return '<div style="text-align:center"><h3>No Rules available...</h3></div>'; 
+        }else{
+            return html;
+        }
+}
 
 
   function cloneRuleset(name, path){

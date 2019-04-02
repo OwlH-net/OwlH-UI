@@ -111,6 +111,7 @@ function GetAllNodes() {
   // }
   axios.get('https://'+ipmaster+':'+portmaster+'/v1/node')
   .then(function (response) {
+      console.log("///////////////////////////////"+response);
       resultElement.innerHTML = generateAllNodesHTMLOutput(response);
     })
     .catch(function (error) {
@@ -172,34 +173,36 @@ function generateSuccessHTMLOutput(response) {
 }
 
 function generateAllNodesHTMLOutput(response) {
-  var nodes = response.data;
-  var isOnline;// = false;
-  var suricataStatus = false;
-  var html =  '<table class="table table-hover">                            ' +
-              '<thead>                                                      ' +
-              '<tr>                                                         ' +
-              '<th scope="col"></th>                                        ' +
-              '<th scope="col">Name</th>                                    ' +
-              '<th scope="col">Status</th>                                  ' +
-              // '<th scope="col">Tags <span style="font-size: 10px;" ><a href="tags.html"><i class="fas fa-cog" title="Manage Tags"></i></a></span></th>            ' +
-              '<th scope="col">Tags <span style="font-size: 10px;"></span></th>            ' +
-              '<th scope="col">Services</th>                                ' +
-              '<th scope="col">Actions</th>                                 ' +
-              '</tr>                                                        ' +
-              '</thead>                                                     ' +
-              '<tbody >'
-  for (node in nodes) {
-    if (nodes[node]['port'] != undefined) {
-      port = nodes[node]['port'];
-    } else {
-      port = "10443";
-    }
-    var nid = node;
+    var isEmpty = true;
+    var nodes = response.data;
+    var isOnline;// = false;
+    var suricataStatus = false;
+    var html =  '<table class="table table-hover">                            ' +
+                '<thead>                                                      ' +
+                '<tr>                                                         ' +
+                '<th scope="col"></th>                                        ' +
+                '<th scope="col">Name</th>                                    ' +
+                '<th scope="col">Status</th>                                  ' +
+                // '<th scope="col">Tags <span style="font-size: 10px;" ><a href="tags.html"><i class="fas fa-cog" title="Manage Tags"></i></a></span></th>            ' +
+                '<th scope="col">Tags <span style="font-size: 10px;"></span></th>            ' +
+                '<th scope="col">Services</th>                                ' +
+                '<th scope="col">Actions</th>                                 ' +
+                '</tr>                                                        ' +
+                '</thead>                                                     ' +
+                '<tbody >'
+    for (node in nodes) {
+        isEmpty = false;
+        if (nodes[node]['port'] != undefined) {
+        port = nodes[node]['port'];
+        } else {
+        port = "10443";
+        }
+        var nid = node;
 
-    PingNode(nid);
-    alog("isONLINE-->"+PingNode(nid));
+        PingNode(nid);
+        alog("isONLINE-->"+PingNode(nid));
 
-    getRuleUID(nid);
+        getRuleUID(nid);
 
   html = html + '<tr>                                                                     '+
       '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
@@ -255,7 +258,11 @@ function generateAllNodesHTMLOutput(response) {
 
   }
   html = html + '</tbody></table>';
-  return  html;
+  if (isEmpty){
+    return '<div style="text-align:center"><h3>No nodes created. You can create a node now!</h3></div>';
+  }else{
+    return  html;
+  }
 }
 
 function sendRulesetToNode(nid){

@@ -83,6 +83,7 @@ function GetAllServers() {
 }
 
 function generateAllServerHTMLOutput(response) {
+    var isEmptyStaps = true;
     var servers = response.data;
     var isOnline;// = false;
     var suricataStatus = false;
@@ -102,6 +103,7 @@ function generateAllServerHTMLOutput(response) {
                 '<tbody>                                                      ' ;
 
     for (server in servers) {
+        isEmptyStaps = false;
         PingStapServer(server);
         html = html + 
         '<tr>                                                                     '+
@@ -140,7 +142,12 @@ function generateAllServerHTMLOutput(response) {
         html = html + '</tr>' ;
     }
     html = html + '</tbody></table>';
-    return  html;
+
+    if (isEmptyStaps){
+        return '<div style="text-align:center"><h3>No stap servers available...</h3></div>'; 
+    }else{
+        return html;
+    }
   }
   
   function loadServerDetails(server){

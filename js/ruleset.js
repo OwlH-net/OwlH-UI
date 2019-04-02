@@ -17,7 +17,7 @@ function GetAllRulesets() {
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset/rules/'+uuid)
       .then(function (response) {
-        resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster);
+        resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule);
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
       })
@@ -26,52 +26,56 @@ function GetAllRulesets() {
       });   
   }
 
-function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster) {
-  var rules = response.data;
-  var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-              '<thead>                                                      ' +
-              '<tr>                                                         ' +
-              '<th style="width: 10%">Status</th>                           ' +
-              '<th style="width: 10%">Sid</th>                              ' +
-              '<th>Description</th>                                         ' +
-              '<th>Notes</th>                                               ' +
-              '<th>IP info</th>                                             ' +
-              '<th>Actions</th>                                             ' +
-              '</tr>                                                        ' +
-              '</thead>                                                     ' +
-              '<tbody >                                                     ' 
-  for (rule in rules) {
-    var ruleStatus;
-    if (rules[rule]["enabled"] == "Enabled") {
-      ruleStatus = "Disable";
-      icon = '<i class="fas fa-check-circle" style="color:green;"></i>'
-    }else{
-      ruleStatus = "Enable";
-      icon = '<i class="fas fa-times-circle" style="color:red;"></i>'
+function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) {
+    var isEmptyRuleset = true;
+    var rules = response.data;
+    var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                '<thead>                                                      ' +
+                '<tr>                                                         ' +
+                '<th style="width: 10%">Status</th>                           ' +
+                '<th style="width: 10%">Sid</th>                              ' +
+                '<th>Description</th>                                         ' +
+                '<th>Notes</th>                                               ' +
+                '<th>IP info</th>                                             ' +
+                '<th>Actions</th>                                             ' +
+                '</tr>                                                        ' +
+                '</thead>                                                     ' +
+                '<tbody >                                                     ' 
+    for (rule in rules) {
+        isEmptyRuleset = false;
+        var ruleStatus;
+        if (rules[rule]["enabled"] == "Enabled") {
+        ruleStatus = "Disable";
+        icon = '<i class="fas fa-check-circle" style="color:green;"></i>'
+        }else{
+        ruleStatus = "Enable";
+        icon = '<i class="fas fa-times-circle" style="color:red;"></i>'
+        }
+        html = html + '<tr><td id="'+rules[rule]["sid"]+'-rule-status">'+
+        icon                                                                  +
+        '</td><td>                                                           '+
+        rules[rule]["sid"]                                                    +
+        '</td><td>                                                           '+
+        rules[rule]["msg"]                                                    +
+        '</td><td>'                                                           +
+        rules[rule]["note"]                                                   +      
+        '</td><td>                                                           '+
+        rules[rule]["ip"]                                                     +
+        '</td><td>                                                           '+
+        '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'&uuid='+uuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster+'"><i class="fas fa-eye low-blue"></i></a> '+
+        //'<button type="submit" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" class="btn btn-secondary" id="'+rules[rule]["sid"]+'-change-status">'+ruleStatus+'</button> '+
+        '<a href="#" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" id="'+rules[rule]["sid"]+'-change-status"><i class="fas fa-exchange-alt low-blue"></i></a>                                                                            '+
+        '<a href="#" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')"><i class="fas fa-file-signature low-blue"></i></a>                                                                                '+
+        //'<button type="submit" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')" class="btn btn-secondary">Notes</button>'+
+        '</td></tr>'
     }
-    html = html + '<tr><td id="'+rules[rule]["sid"]+'-rule-status">'+
-      icon                                                                  +
-      '</td><td>                                                           '+
-      rules[rule]["sid"]                                                    +
-      '</td><td>                                                           '+
-      rules[rule]["msg"]                                                    +
-      '</td><td>'                                                           +
-      rules[rule]["note"]                                                   +      
-      '</td><td>                                                           '+
-      rules[rule]["ip"]                                                     +
-      '</td><td>                                                           '+
-      '<a href="rules/showRuleDetails.php?sid='+rules[rule]["sid"]+'&uuid='+uuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster+'"><i class="fas fa-eye low-blue"></i></a> '+
-      //'<button type="submit" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" class="btn btn-secondary" id="'+rules[rule]["sid"]+'-change-status">'+ruleStatus+'</button> '+
-      '<a href="#" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\',\''+uuid+'\',\''+ruleStatus+'\')" id="'+rules[rule]["sid"]+'-change-status"><i class="fas fa-exchange-alt low-blue"></i></a>                                                                            '+
-      '<a href="#" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')"><i class="fas fa-file-signature low-blue"></i></a>                                                                                '+
-      //'<button type="submit" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')" class="btn btn-secondary">Notes</button>'+
-      '</td></tr>'
-  }
-  html = html + '</tbody></table>';
-  
-  console.log("End function")
+    html = html + '</tbody></table>';
 
-  return  html;
+    if (isEmptyRuleset){
+        return '<div style="text-align:center"><h3>No rules for ruleset '+rule+' available...</h3></div>'; 
+    }else{
+        return html;
+    }
 }
 
 function changeRulesetStatus(sid, uuid, action){

@@ -1,6 +1,6 @@
-//document.addEventListener('DOMContentLoaded', GetAllRulesets(), false);
+//document.addEventListener('DOMContentLoaded', GetAllRuleset(), false);
 
-function GetAllRulesets() {
+function GetAllRuleset() {
 
     var url = new URL(window.location.href);
     var uuid = url.searchParams.get("uuid");
@@ -45,11 +45,11 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
         isEmptyRuleset = false;
         var ruleStatus;
         if (rules[rule]["enabled"] == "Enabled") {
-        ruleStatus = "Disable";
-        icon = '<i class="fas fa-check-circle" style="color:green;"></i>'
+            ruleStatus = "Disable";
+            icon = '<i class="fas fa-check-circle" style="color:green;"></i>'
         }else{
-        ruleStatus = "Enable";
-        icon = '<i class="fas fa-times-circle" style="color:red;"></i>'
+            ruleStatus = "Enable";
+            icon = '<i class="fas fa-times-circle" style="color:red;"></i>'
         }
         html = html + '<tr><td id="'+rules[rule]["sid"]+'-rule-status">'+
         icon                                                                  +
@@ -57,7 +57,7 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
         rules[rule]["sid"]                                                    +
         '</td><td>                                                           '+
         rules[rule]["msg"]                                                    +
-        '</td><td>'                                                           +
+        '</td><td id="'+rules[rule]["sid"]+'-note">'                          +
         rules[rule]["note"]                                                   +      
         '</td><td>                                                           '+
         rules[rule]["ip"]                                                     +
@@ -136,30 +136,28 @@ function modalNotes(sid, uuid){
   getRuleNote("ruleset-notes", uuid, sid);
 }
 
-function getRuleNote(elementID, uuid, sid){
-  var ipmaster = document.getElementById('ip-master').value;
-  var portmaster = document.getElementById('port-master').value;
-  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/getnote/'+uuid+'/'+sid;
-
-  var loadNote = document.getElementById(elementID);
-  axios({
-    method: 'get',
-    url: nodeurl,
-    timeout: 30000
-  })
-    .then(function (response) {
-      console.log("RESPONSE");
-      if (typeof(response.data) === 'object'){
-        loadNote.value = '';
-      }else {
-        loadNote.value = response.data;
-      }
-      
-      return true;
+function getRuleNote(elementID, uuid, sid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/getnote/' + uuid + '/' + sid;
+    var loadNote = document.getElementById(elementID);
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
     })
-    .catch(function (error) {
-      return false;
-    });
+        .then(function (response) {
+            console.log("RESPONSE");
+            if (typeof (response.data) === 'object') {
+                loadNote.value = '';
+            } else {
+                loadNote.value = response.data;
+            }
+            return true;
+        })
+        .catch(function (error) {
+            return false;
+        });
 }
 
 
@@ -182,10 +180,12 @@ function rulesetNotes(sid, uuid){
     data: bpfjson
   })
     .then(function (response) {
-      return true
+        console.log("Changing note TD")
+        document.getElementById(sid+'-note').innerHTML = '<p>'+textAreaNote+'</p>';
+        return true
     })
     .catch(function (error) {
-      return false;
+        return false;
     }); 
 }
 
@@ -198,7 +198,7 @@ function loadJSONdata(){
     var portLoad = document.getElementById('port-master');
     portLoad.value = data.master.port;
     loadTitleJSONdata();
-    GetAllRulesets();   
+    GetAllRuleset();   
   });
 }
 loadJSONdata();

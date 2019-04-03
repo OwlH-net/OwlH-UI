@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', GetAllRules(), false);
+// document.addEventListener('DOMContentLoaded', GetAllRules(), false);
 
 function GetAllRules() {
     var resultElement = document.getElementById('rulesets-table');
@@ -13,9 +13,8 @@ function GetAllRules() {
       timeout: 30000
     })
       .then(function (response) {
-        //'https://'+ipmaster+':'+portmaster+'/v1/ruleset'
         // if (response.data != undefined) {
-            resultElement.innerHTML = generateAllRulesHTMLOutput(response);
+        resultElement.innerHTML = generateAllRulesHTMLOutput(response);
         // }else{
         //     port = nodes[node]['port'];
         // }
@@ -49,7 +48,8 @@ function generateAllRulesHTMLOutput(response) {
             '</td><td>                                                            '+
             '<a class="btn btn-primary" href="ruleset.html?uuid='+rule+'&rule='+rules[rule]["name"]+'">Details</a> '+
             '<button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-clone" onclick="cloneRuleset(\''+rules[rule]["name"]+'\', \''+rules[rule]["path"]+'\')">Clone</button>       '+
-            '</td></tr>                                                           '
+            '<button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#modal-ruleset-delete" onclick="deleteRulesetModal(\''+rules[rule]["name"]+'\', \''+rules[rule]["path"]+'\',\''+rule+'\')">Delete</button>        '+
+            '</td></tr>                                                                                         '
         }
         html = html + '  </tbody></table>';
 
@@ -61,7 +61,31 @@ function generateAllRulesHTMLOutput(response) {
 }
 
 
-  function cloneRuleset(name, path){
+function deleteRulesetModal(name, path, uuid){
+    var modalWindow = document.getElementById('modal-ruleset-delete');
+    modalWindow.innerHTML = 
+    '<div class="modal-dialog">'+
+      '<div class="modal-content">'+
+  
+        '<div class="modal-header">'+
+          '<h4 class="modal-title" id="delete-ruleset-header">Ruleset</h4>'+
+          '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+        '</div>'+
+  
+        '<div class="modal-body" id="delete-ruleset-footer-table">'+ 
+          '<p>Do you want to delete <b>'+name+'</b> ruleset?</p>'+
+        '</div>'+
+  
+        '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+          '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+          '<button type="submit" class="btn btn-danger" data-dismiss="modal" id="btn-delete-ruleset" onclick="deleteRuleset(\''+name+'\',\''+path+'\',\''+uuid+'\')">Delete</button>'+
+        '</div>'+
+  
+      '</div>'+
+    '</div>';
+}
+
+function cloneRuleset(name, path){
 
     var modalWindow = document.getElementById('modal-ruleset-clone');
   
@@ -86,38 +110,60 @@ function generateAllRulesHTMLOutput(response) {
 
       '</div>'+
     '</div>';
- 
-  }
+}
+
+function deleteRuleset(name, path, uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/deleteRuleset';
+
+    var jsonbpfdata = {}
+    jsonbpfdata["name"] = name;
+    jsonbpfdata["path"] = path;
+    jsonbpfdata["uuid"] = uuid;
+    var bpfjson = JSON.stringify(jsonbpfdata);
+
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: bpfjson
+    })
+        .then(function (response) {
+            GetAllRules();
+        })
+        .catch(function (error) {
+        });  
+}
 
 function saveClonedRuleset(name, path){
-  var newName = document.getElementById('input-clone-ruleset').value;
-  var ipmaster = document.getElementById('ip-master').value;
-  var portmaster = document.getElementById('port-master').value;
-  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/clone';
+    var newName = document.getElementById('input-clone-ruleset').value;
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/clone';
 
-  var jsonbpfdata = {}
-  jsonbpfdata["cloned"] = name;
-  jsonbpfdata["new"] = newName;
-  jsonbpfdata["path"] = path;
-  var bpfjson = JSON.stringify(jsonbpfdata);
+    var jsonbpfdata = {}
+    jsonbpfdata["cloned"] = name;
+    jsonbpfdata["new"] = newName;
+    jsonbpfdata["path"] = path;
+    var bpfjson = JSON.stringify(jsonbpfdata);
 
-  if(newName != ""){
-    axios({
-      method: 'put',
-      url: nodeurl,
-      timeout: 30000,
-      data: bpfjson
-    })
-      .then(function (response) {
-        return true;
-      })
-      .catch(function (error) {
-        return false;
-      });  
-  }else{
-    //alert window
-    alert("You must enter a new ruleset name");
-  }
+    if (newName != "") {
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: bpfjson
+        })
+            .then(function (response) {
+                GetAllRules();
+            })
+            .catch(function (error) {
+            });
+    } else {
+        alert("You must enter a new ruleset name");
+    }
+    
 }
 
 function loadJSONdata(){
@@ -130,6 +176,7 @@ function loadJSONdata(){
     portLoad.value = data.master.port;
     loadTitleJSONdata();
     GetAllRules();   
+    console.log("postload");
   });
 }
 loadJSONdata();

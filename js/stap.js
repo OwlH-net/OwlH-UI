@@ -265,26 +265,35 @@ function PingStapServer(server) {
     var uuid = urlWeb.searchParams.get("uuid");
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/PingStapServer/'+uuid+'/'+server;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/PingServerStap/'+uuid+'/'+server; //PingStapServer
     axios({
       method: 'get',
       url: nodeurl,
       timeout: 30000
     })
       .then(function (response) {
-        if (!response.data.stapStatus) {
+        for (server in response.data){
+            console.log("sTAP  sERVER rESPONSE: "+server.stapStatus);
+        }
+        if (response.data.stapStatus=="false") {
             document.getElementById(server+'-server-stap').className = "badge bg-danger align-text-bottom text-white";
             document.getElementById(server+'-server-stap').innerHTML = "OFF";
             document.getElementById(server+'-server-icon-stap').className = "fas fa-play-circle";
             document.getElementById(server+'-server-icon-stap').onclick = function(){ RunStapServer(server);};
             document.getElementById(server+'-server-icon-stap').title = "Run stap server";
-        }else{
+        }else if (response.data.stapStatus=="true"){
             document.getElementById(server+'-server-stap').className = "badge bg-success align-text-bottom text-white";
             document.getElementById(server+'-server-stap').innerHTML = "ON";
             document.getElementById(server+'-server-icon-stap').className = "fas fa-stop-circle";
             document.getElementById(server+'-server-icon-stap').onclick = function(){ StopStapServer(server);};
             document.getElementById(server+'-server-icon-stap').title = "Stop stap server";
-        } 
+        }else{
+            document.getElementById(server+'-server-stap').className = "badge bg-warning align-text-bottom text-white";
+            document.getElementById(server+'-server-stap').innerHTML = "ERROR";
+            document.getElementById(server+'-server-icon-stap').className = "fas fa-play-circle";
+            document.getElementById(server+'-server-icon-stap').onclick = function(){ RunStapServer(server);};
+            document.getElementById(server+'-server-icon-stap').title = "Run stap server"; 
+        }
       })
       .catch(function (error) {
         document.getElementById(server+'-serverstap').className = "badge bg-dark align-text-bottom text-white";

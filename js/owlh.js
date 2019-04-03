@@ -80,8 +80,8 @@ function PingNode(nid) {
     })
     .catch(function (error) {
       //logAll.innerHTML = logAll.innerHTML + '<br/> error >> ' + nid + ' >> ' + error;
-      document.getElementById(nid+'-online').className = "badge bg-danger align-text-bottom text-white";
-      document.getElementById(nid+'-online').innerHTML = "OFF LINE";
+    //   document.getElementById(nid+'-online').className = "badge bg-danger align-text-bottom text-white";
+    //   document.getElementById(nid+'-online').innerHTML = "OFF LINE";
 
       return "false";
     });   
@@ -115,7 +115,8 @@ function GetAllNodes() {
       resultElement.innerHTML = generateAllNodesHTMLOutput(response);
     })
     .catch(function (error) {
-      resultElement.innerHTML = generateAllNodesHTMLOutput(error);
+      //resultElement.innerHTML = generateAllNodesHTMLOutput(error);
+      
     });   
 }
 
@@ -628,7 +629,7 @@ function PingStap(nid) {
     timeout: 30000
   })
     .then(function (response) {
-      // console.log("sTAP rESPONSE: "+response);
+    //   console.log("sTAP rESPONSE: "+response);
       if (!response.data.stapStatus) {
           // console.log("!StapRunning");
           document.getElementById(nid+'-stap').className = "badge bg-danger align-text-bottom text-white";

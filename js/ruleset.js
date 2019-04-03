@@ -40,7 +40,7 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
                 '<th>Actions</th>                                             ' +
                 '</tr>                                                        ' +
                 '</thead>                                                     ' +
-                '<tbody >                                                     ' 
+                '<tbody>                                                     ' 
     for (rule in rules) {
         isEmptyRuleset = false;
         var ruleStatus;
@@ -68,8 +68,10 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
         '<a href="#" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')"><i class="fas fa-file-signature low-blue"></i></a>                                                                                '+
         //'<button type="submit" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\',\''+uuid+'\')" class="btn btn-secondary">Notes</button>'+
         '</td></tr>'
+
     }
     html = html + '</tbody></table>';
+
 
     if (isEmptyRuleset){
         return '<div style="text-align:center"><h3>No rules for ruleset '+rule+' available...</h3></div>'; 

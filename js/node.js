@@ -246,27 +246,27 @@ function generateAllRulesModal(response, nid) {
 
 
 function saveRuleSelected(rule, nid){
-  var ipmaster = document.getElementById('ip-master').value;
-  var portmaster = document.getElementById('port-master').value;
-  var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
 
-  var jsonRuleUID = {}
-  jsonRuleUID["nid"] = nid;
-  jsonRuleUID["rule_uid"] = rule;
-  var uidJSON = JSON.stringify(jsonRuleUID);
-  axios({
-    method: 'put',
-    url: urlSetRuleset,
-    timeout: 30000,
-    data: uidJSON
-  })
-    .then(function (response) {
-      getRuleUID(nid);
-      return true;
+    var jsonRuleUID = {}
+    jsonRuleUID["nid"] = nid;
+    jsonRuleUID["rule_uid"] = rule;
+    var uidJSON = JSON.stringify(jsonRuleUID);
+    axios({
+        method: 'put',
+        url: urlSetRuleset,
+        timeout: 30000,
+        data: uidJSON
     })
-    .catch(function (error) {
-      return false;
-    }); 
+        .then(function (response) {
+            getRulesetUID(nid);
+            return true;
+        })
+            .catch(function (error) {
+            return false;
+        }); 
 }
 
 function deleteNodeModal(node, name){

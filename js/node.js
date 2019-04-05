@@ -41,8 +41,6 @@ function addNode() {
 }
 
 function modifyNode() {
-    // var logAll = document.getElementById('logAll');
-    alog (node);
     var name = document.getElementById('cfgnodename').value;
     var ip = document.getElementById('cfgnodeip').value;
     var port = document.getElementById('cfgnodeport').value;
@@ -50,15 +48,12 @@ function modifyNode() {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
-    //   alog (ip)
     var nodejson = {}
     nodejson["name"] = name;
     nodejson["port"] = port;
     nodejson["ip"] = ip;
     nodejson["id"] = nid;
-    console.log(nodejson);
     var nodeJSON = JSON.stringify(nodejson);
-    // err = axiosModifyNode(nodeJSON);
     axios({
         method: 'put',
         url: nodeurl,
@@ -66,49 +61,16 @@ function modifyNode() {
         data: nodeJSON
         })
         .then(function (response) {
-            console.log("Node modified succesfully!!!!!"+response);
-            // logAll.innerHTML = logAll.innerHTML + '<br/> Modify success';
             GetAllNodes();
             return true;
         })
         .catch(function (error) {
             console.log("Node NOT modified: "+error);
-            // logAll.innerHTML = logAll.innerHTML + '<br/> Modify error - ';
             return false;
         });   
         document.getElementById('divconfigform').style.display = "none";
         return false;
 }
-
-// function axiosModifyNode(node) {
-//     //   var logAll = document.getElementById('logAll');
-//     //   logAll.innerHTML = logAll.innerHTML + "<br/> Modify node es - "+node;
-//       var ipmaster = document.getElementById('ip-master').value;
-//       var portmaster = document.getElementById('port-master').value;
-//       var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
-//       axios({
-//         method: 'put',
-//         url: nodeurl,
-//         timeout: 30000,
-//         data: node
-//       })
-//         .then(function (response) {
-//             console.log("Node modified succesfully!!!!!");
-//             // logAll.innerHTML = logAll.innerHTML + '<br/> Modify success';
-//             return true;
-//         })
-//         .catch(function (error) {
-//             console.log("Node NOT modified");
-//             // logAll.innerHTML = logAll.innerHTML + '<br/> Modify error - ';
-//             return false;
-//         });   
-    
-//         document.getElementById('divconfigform').style.display = "none";
-        
-//         return false;
-//     }
-
-
 
 function cancelNode(){
   var cancel = document.getElementById('divconfigform');
@@ -116,11 +78,9 @@ function cancelNode(){
 }
 
 function loadBPF(nid, name){
-
   var inputBPF = document.getElementById('recipient-name');
   var headerBPF = document.getElementById('bpf-header');
   var footerBPF = document.getElementById("modal-footer-btn");
-  //var saveBTN = document.getElementById("btn-save-changes");
   
   headerBPF.innerHTML = "BPF - "+name;
   

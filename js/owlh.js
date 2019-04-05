@@ -469,7 +469,7 @@ function RunWazuh(nid){
   GetAllNodes();
 }
 
-//Stop Zeek system
+//Stop Wazuh system
 function StopWazuh(nid){
   var ipmaster = document.getElementById('ip-master').value;
   var portmaster = document.getElementById('port-master').value;

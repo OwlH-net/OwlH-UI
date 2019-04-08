@@ -1,70 +1,57 @@
-//Load All servers for first time
-//GetAllServers();
-
-function showAddServerForm(){
+function showAddServerForm() {
     var addserver = document.getElementById('show-add-server');
     var serverform = document.getElementById('serverform');
-
     if (serverform.style.display == "none") {
-      serverform.style.display = "block";
-      addserver.innerHTML = "Close Add Server";
+        serverform.style.display = "block";
+        addserver.innerHTML = "Close Add Server";
     } else {
-      serverform.style.display = "none";
-      addserver.innerHTML = "Add Server";
+        serverform.style.display = "none";
+        addserver.innerHTML = "Add Server";
     }
 }
 
-function addServerToNode(){
+function addServerToNode() {
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
-
     var addserver = document.getElementById('show-add-server');
     var serverform = document.getElementById('serverform');
     var nodeName = document.getElementById('nodenameform');
     var nodeIP = document.getElementById('nodeipform');
-
     serverform.style.display = "none";
     addserver.innerHTML = "Add Server";
-
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-  
-    var urlServer = 'https://'+ipmaster+':'+portmaster+'/v1/stap/';
-
+    var urlServer = 'https://' + ipmaster + ':' + portmaster + '/v1/stap/';
     var nodejson = {};
     nodejson["nodeName"] = nodeName.value;
     nodejson["nodeIP"] = nodeIP.value;
     nodejson["uuid"] = uuid;
     var nodeJSON = JSON.stringify(nodejson);
-
     axios({
         method: 'post',
         url: urlServer,
         timeout: 3000,
         data: nodeJSON
     })
-    .then(function (response) {
-        GetAllServers();
-        return true;
-    })
-    .catch(function (error) {
-        return false;
-    });     
+        .then(function (response) {
+            GetAllServers();
+            return true;
+        })
+        .catch(function (error) {
+            return false;
+        });
 }
 
 function GetAllServers() {
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
     var node = urlWeb.searchParams.get("node");    
-
     var tableServer = document.getElementById('servers-table');
     var subtitleBanner = document.getElementById('subtitle-servers-list');
     subtitleBanner.innerHTML = 'Servers for node: '+node;
-
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var urlServer = 'https://'+ipmaster+':'+portmaster+'/v1/stap/'+uuid;
-
     axios({
         method: 'get',
         url: urlServer,
@@ -81,7 +68,6 @@ function GetAllServers() {
 }
 
 function generateAllServerHTMLOutput(response) {
-    console.log("Output-<-<-<-<-<-<-");
     var isEmptyStaps = true;
     var servers = response.data;
     var html =  
@@ -98,7 +84,6 @@ function generateAllServerHTMLOutput(response) {
                     '</tr>                                                        ' +
                 '</thead>                                                     ' +
                 '<tbody>                                                      ' ;
-
     for (server in servers) {
         isEmptyStaps = false;
         html = html + 
@@ -120,7 +105,7 @@ function generateAllServerHTMLOutput(response) {
                 '<td class="align-middle">                                                                                                             ' +
                 '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
                 '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
-                '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>                         ' +
+                '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>         ' +
                 '       <i class="fas fa-trash-alt low-blue" title="Delete server" onclick="DeleteStapServer(\''+server+'\')"></i>                     ' +
                 '  </span>                                                                                                                             ' +
                 '</td>' ;
@@ -131,7 +116,7 @@ function generateAllServerHTMLOutput(response) {
                 '<td class="align-middle">                                                                                                              ' +
                 '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
                 '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
-                '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>                          ' +
+                '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>          ' +
                 '       <i class="fas fa-trash-alt low-blue" title="Delete server" onclick="DeleteStapServer(\''+server+'\')"></i>                     ' +
                 '  </span>                                                                                                                              ' +
                 '</td>' ;
@@ -142,7 +127,7 @@ function generateAllServerHTMLOutput(response) {
                 '<td class="align-middle">                                                                                                              ' +
                 '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
                 '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
-                '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>                          ' +
+                '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>      ' +
                 '       <i class="fas fa-trash-alt low-blue" title="Delete server" onclick="DeleteStapServer(\''+server+'\')"></i>                     ' +
                 '  </span>                                                                                                                              ' +
                 '</td>' ;
@@ -150,13 +135,12 @@ function generateAllServerHTMLOutput(response) {
         html = html + '</tr>' ;
     }
     html = html + '</tbody></table>';
-
     if (isEmptyStaps){
         return '<div style="text-align:center"><h3>No stap servers available...</h3></div>'; 
     }else{
         return html;
     }
-  }
+}
   
   function loadServerDetails(server){
     var urlWeb = new URL(window.location.href);
@@ -180,7 +164,7 @@ function generateAllServerHTMLOutput(response) {
     .then(function (response) {
         serverData = response.data[server]; 
         var htmDetails =
-        '<h3 class="mb-0 low-blue lh-100">'+response.data[server]['name']+' server details</h3>                                                              '+
+        '<h3 class="mb-0 low-blue lh-100">'+response.data[server]['name']+' server details</h3>                '+
         '<table class="table table-hover">                                      ' +    
             '<thead>                                                            '+
                 '<tr>                                                         ' +
@@ -205,82 +189,75 @@ function generateAllServerHTMLOutput(response) {
         return true;   
     })
     .catch(function (error) {
-        console.log(error);
         return false;
     }); 
   }
 
-  function loadJSONdata(){
-    console.log("Loading JSON");
-    $.getJSON('../conf/ui.conf', function(data) {
-      console.log("getJSON");
-      var ipLoad = document.getElementById('ip-master'); 
-      ipLoad.value = data.master.ip;
-      var portLoad = document.getElementById('port-master');
-      portLoad.value = data.master.port;
-      loadTitleJSONdata();
-      GetAllServers();   
-    });
-  }
-
-function RunStapServer(server){
+function RunStapServer(server) {
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/RunStapServer/'+uuid+'/'+server;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/stap/RunStapServer/' + uuid + '/' + server;
     axios({
         method: 'put',
         url: nodeurl,
         timeout: 30000
     })
         .then(function (response) {
-        console.log(response+"--------Stap server running");
+            GetAllServers();
+        })
+        .catch(function error() {
+        });
+}
+
+//Stop stap system
+function StopStapServer(server) {
+    var urlWeb = new URL(window.location.href);
+    var uuid = urlWeb.searchParams.get("uuid");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/stap/StopStapServer/' + uuid + '/' + server;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+    })
+        .then(function (response) {
+            GetAllServers();
+        })
+        .catch(function error() {
+        });
+}
+
+//Stop stap system
+function DeleteStapServer(server) {
+    var urlWeb = new URL(window.location.href);
+    var uuid = urlWeb.searchParams.get("uuid");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/stap/DeleteStapServer/' + uuid + '/' + server;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+    })
+        .then(function (response) {
+            GetAllServers();
+        })
+        .catch(function error() {
+        });
+}
+
+function loadJSONdata() {
+    $.getJSON('../conf/ui.conf', function (data) {
+        var ipLoad = document.getElementById('ip-master');
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        loadTitleJSONdata();
         GetAllServers();
-        })
-        .catch(function error(){
-        console.log(error);
-        });
-}
-
-//Stop stap system
-function StopStapServer(server){
-    var urlWeb = new URL(window.location.href);
-    var uuid = urlWeb.searchParams.get("uuid");
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/StopStapServer/'+uuid+'/'+server;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-    })
-        .then(function (response) {
-            GetAllServers();
-        })
-        .catch(function error(){
-            console.log(error);
-        });
-}
-
-//Stop stap system
-function DeleteStapServer(server){
-    var urlWeb = new URL(window.location.href);
-    var uuid = urlWeb.searchParams.get("uuid");
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/stap/DeleteStapServer/'+uuid+'/'+server;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-    })
-        .then(function (response) {
-            GetAllServers();
-        })
-        .catch(function error(){
-            console.log(error);
-        });
+    });
 }
 
 loadJSONdata();

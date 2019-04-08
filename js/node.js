@@ -1,41 +1,32 @@
 function axiosAddNode(node) {
-  var logAll = document.getElementById('logAll');
-  logAll.innerHTML = logAll.innerHTML + "<br/> node es - "+node;
-
-  var ipmaster = document.getElementById('ip-master').value;
-  var portmaster = document.getElementById('port-master').value;
-  var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
-  axios({
-    method: 'post',
-    url: nodeurl,
-    timeout: 30000,
-    data: node
-  })
-    .then(function (response) {
-      logAll.innerHTML = logAll.innerHTML + '<br/> success';
-      return true;
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
+    axios({
+        method: 'post',
+        url: nodeurl,
+        timeout: 30000,
+        data: node
     })
-    .catch(function (error) {
-      logAll.innerHTML = logAll.innerHTML + '<br/> error - ' + ip;
-      return false;
-    });   
-  GetAllNodes();
-  return false;
+        .then(function (response) {
+            GetAllNodes();
+            return true;
+        })
+        .catch(function (error) {
+            return false;
+        });   
+    return false;
 }
 
 function addNode() {
     var nname = document.getElementById('nodename').value;
     var nip = document.getElementById('nodeip').value;
     var nport = document.getElementById('nodeport').value;
-    //var ntype = document.getElementById('nodetype').value;
-    var logAll = document.getElementById('logAll');
     addNids();//close add nids form
-
     var nodejson = {}
     nodejson["name"] = nname;
     nodejson["port"] = nport;
     nodejson["ip"] = nip;
-    //nodejson["type"] = ntype;
     var nodeJSON = JSON.stringify(nodejson);
     err = axiosAddNode(nodeJSON);
 }
@@ -73,7 +64,6 @@ function modifyNode() {
 }
 
 function cancelNode(){
-  var cancel = document.getElementById('divconfigform');
   document.getElementById('divconfigform').style.display = "none";
 }
 
@@ -81,28 +71,24 @@ function loadBPF(nid, name){
   var inputBPF = document.getElementById('recipient-name');
   var headerBPF = document.getElementById('bpf-header');
   var footerBPF = document.getElementById("modal-footer-btn");
-  
   headerBPF.innerHTML = "BPF - "+name;
-  
   footerBPF.innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
                         '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveBPF(\''+nid+'\')" id="btn-save-changes">Save changes</button>';
-
   var ipmaster = document.getElementById('ip-master').value;
   var portmaster = document.getElementById('port-master').value;
   var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+nid+'/bpf';
-  //var response = '';
   axios({
     method: 'get',
     url: nodeurl,
     timeout: 3000
   })
     .then(function (response) {
-      if('bpf' in response.data){
-        inputBPF.value=response.data.bpf;     
-      }else{
-        inputBPF.value='';
-        headerBPF.innerHTML = headerBPF.innerHTML + '<br>Not defined';
-      }
+        if('bpf' in response.data){
+            inputBPF.value=response.data.bpf;     
+        }else{
+            inputBPF.value='';
+            headerBPF.innerHTML = headerBPF.innerHTML + '<br>Not defined';
+        }
     })
     .catch(function (error) {
       windowModalLog.innerHTML = error+"++<br>";
@@ -116,7 +102,6 @@ function saveBPF(nid){
   var ipmaster = document.getElementById('ip-master').value;
   var portmaster = document.getElementById('port-master').value;
   var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+nid+'/bpf';
-
   var jsonbpfdata = {}
   jsonbpfdata["nid"] = nid;
   jsonbpfdata["bpf"] = inputBPF.value;
@@ -138,9 +123,7 @@ function saveBPF(nid){
 
 
 function loadRuleset(nid){
-
   var modalWindow = document.getElementById('modal-ruleset-management');
-  
   modalWindow.innerHTML = 
   '<div class="modal-dialog modal-lg">'+
     '<div class="modal-content">'+
@@ -155,16 +138,13 @@ function loadRuleset(nid){
 
       '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
         '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-        //'<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-save-changes">Save changes</button>'+
       '</div>'+
 
     '</div>'+
   '</div>';
-
   var resultElement = document.getElementById('ruleset-manager-footer-table');
   var ipmaster = document.getElementById('ip-master').value;
   var portmaster = document.getElementById('port-master').value;
-
   axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
     .then(function (response) {
         console.log(response);
@@ -192,7 +172,7 @@ function generateAllRulesModal(response, nid) {
               '</thead>                                                     ' +
               '<tbody >                                                     ' 
   for (rule in rules) {
-  html = html + '<tr><td width="30%">'+
+  html = html + '<tr><td width="30%">                                       ' +
       rules[rule]["name"]                                                     +
       '</td><td>                                                            ' +
       rules[rule]["desc"]                                                     +
@@ -200,7 +180,7 @@ function generateAllRulesModal(response, nid) {
       '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
       '</td></tr>                                                           '
   }
-  html = html + '  </tbody></table>';
+  html = html + '</tbody></table>';
   return html;
 }
 
@@ -234,7 +214,7 @@ function deleteNodeModal(node, name){
   modalWindow.innerHTML = 
   '<div class="modal-dialog">'+
     '<div class="modal-content">'+
-
+    
       '<div class="modal-header">'+
         '<h4 class="modal-title" id="delete-node-header">Node</h4>'+
         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+

@@ -41,7 +41,7 @@ function generateAllRulesHTMLOutput(response) {
             '<a class="btn btn-primary" href="ruleset.html?uuid=' + rule + '&rule=' + rules[rule]["name"] + '">Details</a> ' +
             '<button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-clone" onclick="cloneRuleset(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\')">Clone</button>       ' +
             '<button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#modal-ruleset-delete" onclick="deleteRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Delete</button>        ' +
-            '</td></tr>                                                                                         '
+            '</td></tr>'
     }
     html = html + '  </tbody></table>';
 
@@ -78,9 +78,7 @@ function deleteRulesetModal(name, path, uuid){
 }
 
 function cloneRuleset(name, path){
-
     var modalWindow = document.getElementById('modal-ruleset-clone');
-  
     modalWindow.innerHTML = 
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+

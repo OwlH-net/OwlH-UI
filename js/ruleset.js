@@ -57,8 +57,8 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
             rules[rule]["ip"] +
             '</td><td>                                                           ' +
             '<a href="rules/showRuleDetails.php?sid=' + rules[rule]["sid"] + '&uuid=' + uuid + '&ipmaster=' + ipmaster + '&portmaster=' + portmaster + '"><i class="fas fa-eye low-blue"></i></a> ' +
-            '<a href="#" onclick="changeRulesetStatus(\'' + rules[rule]["sid"] + '\',\'' + uuid + '\',\'' + ruleStatus + '\')" id="' + rules[rule]["sid"] + '-change-status"><i class="fas fa-exchange-alt low-blue"></i></a>                                                                            ' +
-            '<a href="#" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\'' + rules[rule]["sid"] + '\',\'' + uuid + '\')"><i class="fas fa-file-signature low-blue"></i></a>                                                                                ' +
+            '<a href="#" onclick="changeRulesetStatus(\'' + rules[rule]["sid"] + '\',\'' + uuid + '\',\'' + ruleStatus + '\')" id="' + rules[rule]["sid"] + '-change-status"><i class="fas fa-exchange-alt low-blue"></i></a>              ' +
+            '<a href="#" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["sid"]+'\' , \''+uuid+'\' , '+rules[rule]["msg"]+')"><i class="fas fa-file-signature low-blue"></i></a>               ' +
             '</td></tr>'
     }
     html = html + '</tbody></table>';
@@ -101,7 +101,8 @@ function changeRulesetStatus(sid, uuid, action) {
         });
 }
 
-function modalNotes(sid, uuid){
+function modalNotes(sid, uuid, rule){
+    console.log(rule);
     var modalWindow = document.getElementById('modal-ruleset-note');
     modalWindow.innerHTML = 
     '<div class="modal-dialog" role="document">'+
@@ -111,6 +112,10 @@ function modalNotes(sid, uuid){
             '<h4 class="modal-title" id="ruleset-note-header-title">Rule '+sid+'</h4>'+
             '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
         '</div>'+
+
+        // '<div class="modal-header">'+
+        //     '<h7 class="modal-title" id="ruleset-note-header-title">\''+rule+'\'</h7>'+
+        // '</div>'+
 
         '<div class="modal-body" id="ruleset-note-footer">'+ 
             '<h7 class="modal-title">Notes</h7>'+

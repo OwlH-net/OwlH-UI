@@ -161,7 +161,7 @@ function generateAllServerHTMLOutput(response) {
     })
     .then(function (response) {
         var htmDetails =
-        '<h3 class="mb-0 low-blue lh-100">'+response.data[server]['name']+' server details</h3>                '+
+        '<h3 class="mb-0 low-blue lh-100">Values for server: '+response.data[server]['name']+'</h3>                '+
         '<table class="table table-hover">                                      ' +    
             '<thead>                                                            '+
                 '<tr>                                                         ' +
@@ -176,7 +176,7 @@ function generateAllServerHTMLOutput(response) {
                     '<tr>                                                                                                   ' +
                         '<td id class="align-middle">'+nameDetail+'</td>                                                    ' +
                         '<td id class="align-middle" >'+response.data[server][nameDetail]+'</td>                            ' +
-                        '<td><i class="fas fa-sticky-note low-blue" title="Edit" data-toggle="modal" data-target="#modal-edit-stap-server" onclick="ModalEditStapServer(\''+server+'\',\''+nameDetail+'\',\''+response.data[server][nameDetail]+'\')"></i></td>                                  ' +
+                        '<td><i class="fas fa-sticky-note low-blue" title="Edit" data-toggle="modal" data-target="#modal-edit-stap-server" onclick="ModalEditStapServer(\''+server+'\',\''+nameDetail+'\',\''+response.data[server][nameDetail]+'\',\''+response.data[server]['name']+'\')"></i></td>                                  ' +
                     '</tr>                                                                                                  ' ;
                 }
             htmDetails = htmDetails +
@@ -190,25 +190,25 @@ function generateAllServerHTMLOutput(response) {
     }); 
   }
 
-function ModalEditStapServer(server, param, value){
+function ModalEditStapServer(server, param, value, serverName){
     var modalWindowEdit = document.getElementById('modal-edit-stap-server');
     modalWindowEdit.innerHTML = 
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+
     
             '<div class="modal-header">'+
-                '<h4 class="modal-title" id="edit-ruleset-header">STAP server</h4>'+
+                '<h4 class="modal-title" id="edit-ruleset-header">Server: '+serverName+'</h4>'+
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
     
             '<div class="modal-body" id="edit-ruleset-footer-table">'+ 
                 '<p>Enter the new value for <b>'+param+'</b></p>'+
-                '<input class="form-control" id="input-edit-stap-server" type="text" placeholder="...">'+
+                '<input class="form-control" id="input-edit-stap-server" type="text" value="'+value+'">'+
             '</div>'+
     
             '<div class="modal-footer" id="edit-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="EditStapServer(\''+server+'\',\''+param+'\',\''+value+'\')">Edit</button>'+
+                '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="EditStapServer(\''+server+'\',\''+param+'\',\''+value+'\')">Save</button>'+
             '</div>'+
     
         '</div>'+

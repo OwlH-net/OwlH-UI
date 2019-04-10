@@ -71,8 +71,9 @@ function generateAllServerHTMLOutput(response) {
     var isEmptyStaps = true;
     var servers = response.data;
     var html =  
-        '<div class="container" id="servers-detail" style="display:none;">           ' +                                                                         
-        '</div>                                                    ' +                                                                          
+        '<div class="container" id="servers-details-div" style="display:none;">           ' +                                                                         
+        '</div>                         '+  
+        '<div id="servers-list">                                                  ' +                                                                          
             '<table class="table table-hover">                            ' +
                 '<thead>                                                      ' +
                     '<tr>                                                         ' +
@@ -84,57 +85,57 @@ function generateAllServerHTMLOutput(response) {
                     '</tr>                                                        ' +
                 '</thead>                                                     ' +
                 '<tbody>                                                      ' ;
-    for (server in servers) {
-        isEmptyStaps = false;
-        html = html + 
-        '<tr>                                                                     '+
-            '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
-            '<td class="align-middle">' + servers[server]['ip'] +'</td>'+
-            '<td class="align-middle">' + servers[server]['name'] + '</td>';
-           if (servers[server]['status'] == "true"){
-                html = html + '<td class="align-middle"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span>              '+
-                '<td class="align-middle">                                                                                                             ' +
-                '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
-                '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
-                '       <i class="fas fa-stop-circle low-blue" title="Stop server" id="'+server+'-server-icon-stap" onclick="StopStapServer(\''+server+'\')"></i>  ' +
-                '       <i class="fas fa-trash-alt low-blue" title="Delete server" data-toggle="modal" data-target="#modal-delete-stap-server" onclick="ModalDeleteStapServer(\''+server+'\',\''+servers[server]['name']+'\')"></i>                     ' +
-                '  </span>                                                                                                                             ' +
-                '</td>' ;
-            } else if (servers[server]['status'] == "false"){
-                html = html + '<td class="align-middle"> <span class="badge badge-pill bg-danger align-text-bottom text-white">OFF</span>              ' +
-                '<td class="align-middle">                                                                                                             ' +
-                '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
-                '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
-                '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>         ' +
-                '       <i class="fas fa-trash-alt low-blue" title="Delete server" data-toggle="modal" data-target="#modal-delete-stap-server" onclick="ModalDeleteStapServer(\''+server+'\',\''+servers[server]['name']+'\')"></i>                     ' +
-                '  </span>                                                                                                                             ' +
-                '</td>' ;
-            }else if(servers[server]['status'] == "error"){
-                html = html + 
-                '<td class="align-middle"> '+
-                '<span class="badge badge-pill bg-warning align-text-bottom text-white">ERROR</span>                                                         ' +
-                '<td class="align-middle">                                                                                                              ' +
-                '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
-                '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
-                '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>          ' +
-                '       <i class="fas fa-trash-alt low-blue" title="Delete server" data-toggle="modal" data-target="#modal-delete-stap-server" onclick="ModalDeleteStapServer(\''+server+'\',\''+servers[server]['name']+'\')"></i>                     ' +
-                '  </span>                                                                                                                              ' +
-                '</td>' ;
-            } else {
-                html = html + 
-                '<td class="align-middle"> '+
-                '<span class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                                         ' +
-                '<td class="align-middle">                                                                                                              ' +
-                '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
-                '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
-                '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>      ' +
-                '       <i class="fas fa-trash-alt low-blue" title="Delete server" data-toggle="modal" data-target="#modal-delete-stap-server" onclick="ModalDeleteStapServer(\''+server+'\',\''+servers[server]['name']+'\')"></i>                     ' +
-                '  </span>                                                                                                                              ' +
-                '</td>' ;
-            }
-        html = html + '</tr>' ;
-    }
-    html = html + '</tbody></table>';
+                for (server in servers) {
+                    isEmptyStaps = false;
+                    html = html + 
+                    '<tr>                                                                     '+
+                        '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
+                        '<td class="align-middle">' + servers[server]['ip'] +'</td>'+
+                        '<td class="align-middle">' + servers[server]['name'] + '</td>';
+                    if (servers[server]['status'] == "true"){
+                            html = html + '<td class="align-middle"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span>              '+
+                            '<td class="align-middle">                                                                                                             ' +
+                            '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
+                            '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
+                            '       <i class="fas fa-stop-circle low-blue" title="Stop server" id="'+server+'-server-icon-stap" onclick="StopStapServer(\''+server+'\')"></i>  ' +
+                            '       <i class="fas fa-trash-alt low-blue" title="Delete server" data-toggle="modal" data-target="#modal-delete-stap-server" onclick="ModalDeleteStapServer(\''+server+'\',\''+servers[server]['name']+'\')"></i>                     ' +
+                            '  </span>                                                                                                                             ' +
+                            '</td>' ;
+                        } else if (servers[server]['status'] == "false"){
+                            html = html + '<td class="align-middle"> <span class="badge badge-pill bg-danger align-text-bottom text-white">OFF</span>              ' +
+                            '<td class="align-middle">                                                                                                             ' +
+                            '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
+                            '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
+                            '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>         ' +
+                            '       <i class="fas fa-trash-alt low-blue" title="Delete server" data-toggle="modal" data-target="#modal-delete-stap-server" onclick="ModalDeleteStapServer(\''+server+'\',\''+servers[server]['name']+'\')"></i>                     ' +
+                            '  </span>                                                                                                                             ' +
+                            '</td>' ;
+                        }else if(servers[server]['status'] == "error"){
+                            html = html + 
+                            '<td class="align-middle"> '+
+                            '<span class="badge badge-pill bg-warning align-text-bottom text-white">ERROR</span>                                                         ' +
+                            '<td class="align-middle">                                                                                                              ' +
+                            '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
+                            '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
+                            '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>          ' +
+                            '       <i class="fas fa-trash-alt low-blue" title="Delete server" data-toggle="modal" data-target="#modal-delete-stap-server" onclick="ModalDeleteStapServer(\''+server+'\',\''+servers[server]['name']+'\')"></i>                     ' +
+                            '  </span>                                                                                                                              ' +
+                            '</td>' ;
+                        } else {
+                            html = html + 
+                            '<td class="align-middle"> '+
+                            '<span class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                                         ' +
+                            '<td class="align-middle">                                                                                                              ' +
+                            '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
+                            '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
+                            '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>      ' +
+                            '       <i class="fas fa-trash-alt low-blue" title="Delete server" data-toggle="modal" data-target="#modal-delete-stap-server" onclick="ModalDeleteStapServer(\''+server+'\',\''+servers[server]['name']+'\')"></i>                     ' +
+                            '  </span>                                                                                                                              ' +
+                            '</td>' ;
+                        }
+                    html = html + '</tr>' ;
+                }
+        html = html + '</tbody></table></div>';
     if (isEmptyStaps){
         return '<div style="text-align:center"><h3>No stap servers available...</h3></div>'; 
     }else{
@@ -145,15 +146,20 @@ function generateAllServerHTMLOutput(response) {
   function loadServerDetails(server){
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
-    var addserver = document.getElementById('servers-detail');
-    if (addserver.style.display == "none") {
-        addserver.style.display = "block";
-    } else {
-        addserver.style.display = "none";
-    }
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var urlServer = 'https://'+ipmaster+':'+portmaster+'/v1/stap/server/'+uuid+"/"+server;
+    var serversList = document.getElementById('servers-list');
+    var serverForm = document.getElementById('serverform');
+    var serverDetails = document.getElementById('servers-details-div');
+    var addServerText = document.getElementById('show-add-server');
+
+    addServerText.style.display = "none";
+    serversList.style.display = "none";
+    serversList.style.display = "none";
+    serverForm.style.display = "none";
+    serverDetails.style.display = "block";
+
     axios({
         method: 'get',
         url: urlServer,
@@ -161,8 +167,11 @@ function generateAllServerHTMLOutput(response) {
     })
     .then(function (response) {
         var htmDetails =
-        '<h3 class="mb-0 low-blue lh-100">Values for server: '+response.data[server]['name']+'</h3>                '+
-        '<table class="table table-hover">                                      ' +    
+        '<div>'+
+            '<h3 class="mb-0 low-blue lh-100">Values for server: '+response.data[server]['name']+'</h3>                '+
+            '<button type="button" style="float:right; margin-bottom:50px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
+        '</div>'+
+        '<table class="table table-hover" id="server-details">                                      ' +    
             '<thead>                                                            '+
                 '<tr>                                                         ' +
                     '<th scope="col">Param</th>                                    ' +
@@ -181,14 +190,27 @@ function generateAllServerHTMLOutput(response) {
                 }
             htmDetails = htmDetails +
             '</tbody>                                                                                                   ' +
-        '</table>                                                                                                       ' ;    
-        addserver.innerHTML = htmDetails
+        '</table>                                                                                                       ' +
+        '<div>                                                                                                          '+
+            '<button type="button" style="float:right; margin-bottom:50px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
+        '</div>                                                                                                         ';
+        serverDetails.innerHTML = htmDetails;
         return true;   
     })
     .catch(function (error) {
         return false;
     }); 
-  }
+}
+
+function CloseServerDetails(){
+    var serversList = document.getElementById('servers-list');
+    var serverDetails = document.getElementById('servers-details-div');
+    var addServerText = document.getElementById('show-add-server');
+
+    addServerText.style.display = "block";
+    serversList.style.display = "block";
+    serverDetails.style.display = "none";
+}
 
 function ModalEditStapServer(server, param, value, serverName){
     var modalWindowEdit = document.getElementById('modal-edit-stap-server');
@@ -208,7 +230,7 @@ function ModalEditStapServer(server, param, value, serverName){
     
             '<div class="modal-footer" id="edit-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="EditStapServer(\''+server+'\',\''+param+'\',\''+value+'\')">Save</button>'+
+                '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="EditStapServer(\''+server+'\',\''+param+'\')">Save</button>'+
             '</div>'+
     
         '</div>'+
@@ -239,8 +261,7 @@ function ModalDeleteStapServer(server,name){
     '</div>';
 }
 
-
-function EditStapServer(server, param, value){
+function EditStapServer(server, param){
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
     var newValue = document.getElementById('input-edit-stap-server').value;
@@ -260,7 +281,8 @@ function EditStapServer(server, param, value){
         data: nodeJSON
     })
         .then(function (response) {
-            GetAllServers();
+            //GetAllServers();
+            loadServerDetails(server);
         })
         .catch(function error() {
         });

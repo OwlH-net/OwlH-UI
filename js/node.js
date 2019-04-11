@@ -15,6 +15,7 @@ function axiosAddNode(node) {
         .catch(function (error) {
             return false;
         });   
+    GetAllNodes();    
     return false;
 }
 

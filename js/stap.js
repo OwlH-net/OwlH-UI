@@ -168,8 +168,8 @@ function generateAllServerHTMLOutput(response) {
     .then(function (response) {
         var htmDetails =
         '<div>'+
-            '<h3 class="mb-0 low-blue lh-100">Values for server: '+response.data[server]['name']+'</h3>                '+
-            '<button type="button" style="float:right; margin-bottom:50px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
+            '<h3 class="mb-0 low-blue lh-100" style="display: inline-block;">Values for server: '+response.data[server]['name']+'</h3>                '+
+            '<button type="button" style="float:right; margin-bottom:30px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
         '</div>'+
         '<table class="table table-hover" id="server-details">                                      ' +    
             '<thead>                                                            '+
@@ -189,6 +189,7 @@ function generateAllServerHTMLOutput(response) {
                     '</tr>                                                                                                  ' ;
                 }
             htmDetails = htmDetails +
+            '<tr><td></td><td></td><td></td></tr>'+
             '</tbody>                                                                                                   ' +
         '</table>                                                                                                       ' +
         '<div>                                                                                                          '+

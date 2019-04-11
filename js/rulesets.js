@@ -83,12 +83,12 @@ function cloneRuleset(name, path){
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+
             '<div class="modal-header">'+
-                '<h4 class="modal-title" id="ruleset-manager-header">Rules</h4>'+
+                '<h4 class="modal-title" id="ruleset-manager-header">Clone ruleset: '+name+'</h4>'+
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
 
             '<div class="modal-body" id="ruleset-manager-footer-table">'+ 
-                '<h7 class="modal-title">Introduzca el nombre del nuevo ruleset</h7>'+
+                '<h7 class="modal-title">New ruleset name</h7>'+
                 '<input class="form-control" id="input-clone-ruleset" type="text" placeholder="...">'+
             '</div>'+
 

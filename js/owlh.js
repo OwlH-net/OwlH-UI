@@ -79,7 +79,6 @@ function GetAllNodes() {
 // }
 
 function deleteNode(node) {
-    var logAll = document.getElementById('logAll');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/'+node;
@@ -89,12 +88,12 @@ function deleteNode(node) {
         timeout: 30000
     })
         .then(function (response) {
-            logAll.innerHTML = logAll.innerHTML + '<br/> success';
+            GetAllNodes();
+            return true;
         })
         .catch(function (error) {
-            logAll.innerHTML = logAll.innerHTML + '<br/> error - ' + ip;
+            return false;
         });   
-    GetAllNodes();
 }
 
 function addNids(){
@@ -109,16 +108,6 @@ function addNids(){
         addnids.innerHTML = "Add NIDS";
     }
 }
-
-// function generateSuccessHTMLOutput(response) {
-//   return  '<h4>Result</h4>' + 
-//           '<h5>Status:</h5> ' + 
-//           '<pre>' + response.status + ' ' + response.statusText + '</pre>' +
-//           '<h5>Headers:</h5>' + 
-//           '<pre>' + JSON.stringify(response.headers, null, '\t') + '</pre>' + 
-//           '<h5>Data:</h5>' + 
-//           '<pre>' + JSON.stringify(response.data, null, '\t') + '</pre>'; 
-// }
 
 function generateAllNodesHTMLOutput(response) {
     var isEmpty = true;
@@ -154,13 +143,13 @@ function generateAllNodesHTMLOutput(response) {
             '</td>'                                                                             +
             '<td class="align-middle">                                                        ';
         html = html + '<span id="'+nid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span></td>';
-            html = html + ' <td class="align-middle">'+nodes[node]['milana']+'</td><td class="align-middle">';
+            html = html + ' <td class="align-middle" id="'+nid+'-tag"></td><td class="align-middle">';
             html = html +'<p><img src="img/suricata.png" alt="" width="30"> '      +
             '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
             '  <span style="font-size: 15px; color: grey;" >                                   ' +
             '    <i class="fas fa-stop-circle" id="'+nid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+nid+'\')"></i>                     ' +
             '    <i class="fas fa-sync-alt" title="Sync" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>                                 ' +
-            '    <a title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\',\''+nodes[node]['name']+'\')">BPF</a>'+//<i class="fas fa-cog" title="Configuration" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\')"></i> ' +
+            '    <a title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\',\''+nodes[node]['name']+'\')">BPF</a>'+
             '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+nid+'\')"></i>                        ' +
             '  </span>                                                                        ' +
             '  </p>                                                                           ' +
@@ -226,7 +215,6 @@ function RunSuricata(nid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/RunSuricata/' + nid;
-    //const agent = new https.Agent({rejectUnauthorized:false})
     axios({
         method: 'put',
         url: nodeurl,
@@ -234,6 +222,8 @@ function RunSuricata(nid) {
         timeout: 30000
     })
         .then(function (response) {
+
+            console.log("DATA RETRIEVED FROM RUNsURICATA"+response);
             // GetAllNodes();
         })
         .catch(function error() {

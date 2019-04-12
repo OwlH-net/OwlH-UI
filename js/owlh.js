@@ -79,7 +79,7 @@ function deleteNode(node) {
         });   
 }
 
-function addNids(){
+function formAddNids(){
     var addnids = document.getElementById('addnids');
     var nform = document.getElementById('nidsform');
 

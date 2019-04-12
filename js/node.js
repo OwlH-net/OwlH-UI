@@ -2,15 +2,15 @@ function addNode() {
     var nname = document.getElementById('nodename').value;
     var nip = document.getElementById('nodeip').value;
     var nport = document.getElementById('nodeport').value;
-    addNids();//close add nids form
+    console.log("JAL -- "+nname);
+    console.log(nip);
+    console.log(nport);
+    formAddNids();//close add nids form
     var nodejson = {}
     nodejson["name"] = nname;
     nodejson["port"] = nport;
     nodejson["ip"] = nip;
     var nodeJSON = JSON.stringify(nodejson);
-    console.log(nname);
-    console.log(nip);
-    console.log(nport);
     axiosAddNode(nodeJSON);
 }
 

@@ -11,27 +11,6 @@ function showConfig(oip, oname, oport, onid){
     nid.value = onid;
 }
 
-// function performGetRequest1() {
-//   var resultElement = document.getElementById('getResult1');
-//   var logAll = document.getElementById('logAll');
-//   logAll.innerHTML = ' >> hola';
-//   resultElement.innerHTML = ' -- entrando en get';
-
-//   var ipmaster = document.getElementById('ip-master').value;
-//   var portmaster = document.getElementById('port-master').value;
-
-//   axios.get('https://'+ipmaster+':'+portmaster+'/v1/master')
-//     .then(function (response) {
-//       logAll.innerHTML = logAll.innerHTML + ' <br />  >> inside get - success' + response;
-//       resultElement.innerHTML = generateSuccessHTMLOutput(response);
-//     })
-//     .catch(function (error) {
-//       logAll.innerHTML = logAll.innerHTML + ' <br /> >> inside get - error -> ' + error;
-//     });   
-
-//   logAll.innerHTML = logAll.innerHTML + '-- get exit';
-// }
-
 function PingNode(nid) {
   var ipmaster = document.getElementById('ip-master').value;
   var portmaster = document.getElementById('port-master').value;
@@ -63,15 +42,19 @@ function PingNode(nid) {
 }
 
 function GetAllNodes() {
-  var ipmaster = document.getElementById('ip-master').value;
-  var portmaster = document.getElementById('port-master').value;
-  var resultElement = document.getElementById('nodes-table');
-  axios.get('https://'+ipmaster+':'+portmaster+'/v1/node')
-  .then(function (response) {
-      resultElement.innerHTML = generateAllNodesHTMLOutput(response);
-    })
-    .catch(function (error) {
-    });   
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var resultElement = document.getElementById('nodes-table');
+    document.getElementById('addnids').style.display = "none";
+    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/node')
+        .then(function (response) {
+            document.getElementById('addnids').style.display = "block";
+            resultElement.innerHTML = generateAllNodesHTMLOutput(response);
+        })
+        .catch(function (error) {
+            // document.getElementById('spinner').style.display="none";
+            resultElement.innerHTML = '<h3 align="center">No connection</h3>';
+        });
 }
 
 // function clearLogField() {
@@ -148,7 +131,7 @@ function generateAllNodesHTMLOutput(response) {
             '  <span id="'+nid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
             '  <span style="font-size: 15px; color: grey;" >                                   ' +
             '    <i class="fas fa-stop-circle" id="'+nid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+nid+'\')"></i>                     ' +
-            '    <i class="fas fa-sync-alt" title="Sync" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>                                 ' +
+            '    <i class="fas fa-sync-alt" title="Deploy ruleset" onclick="sendRulesetToNode('+"'"+nid+"'"+')"></i>                                 ' +
             '    <a title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+nid+'\',\''+nodes[node]['name']+'\')">BPF</a>'+
             '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+nid+'\')"></i>                        ' +
             '  </span>                                                                        ' +
@@ -174,9 +157,9 @@ function generateAllNodesHTMLOutput(response) {
             html = html +   '</td>                                                              ' +
             '<td class="align-middle">                                                        ' +
             '  <span style="font-size: 20px; color: Dodgerblue;" >                            ' +
-            '    <a href="files.html?uuid='+node+'&node='+nodes[node]['name']+'"><i class="fas fa-arrow-alt-circle-down" title="Node Status"></i></a>             ' +
-            '    <i class="fas fa-cogs" title="Configuration" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +
-            '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit file"></i></a>           ' +
+            '    <a href="files.html?uuid='+node+'&node='+nodes[node]['name']+'"><i class="fas fa-arrow-alt-circle-down" title="See node files"></i></a>             ' +
+            '    <i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+nid+"'"+');"></i>                            ' +
+            '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit node configuration"></i></a>           ' +
             '    <a style="font-size: 20px; color: Dodgerblue;" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"> ' +
             '      <i class="fas fa-trash-alt" title="Delete Node" data-toggle="modal" data-target="#modal-delete-nodes"></i>                         ' +
             '    </a>                                                                            ' +

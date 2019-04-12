@@ -1,24 +1,3 @@
-function axiosAddNode(node) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
-    axios({
-        method: 'post',
-        url: nodeurl,
-        timeout: 30000,
-        data: node
-    })
-        .then(function (response) {
-            GetAllNodes();
-            return true;
-        })
-        .catch(function (error) {
-            return false;
-        });   
-    GetAllNodes();    
-    return false;
-}
-
 function addNode() {
     var nname = document.getElementById('nodename').value;
     var nip = document.getElementById('nodeip').value;
@@ -29,7 +8,35 @@ function addNode() {
     nodejson["port"] = nport;
     nodejson["ip"] = nip;
     var nodeJSON = JSON.stringify(nodejson);
-    err = axiosAddNode(nodeJSON);
+    console.log(nname);
+    console.log(nip);
+    console.log(nport);
+    axiosAddNode(nodeJSON);
+}
+
+function axiosAddNode(node) {
+    console.log("IEIEEEEEEE");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
+    axios({
+        method: 'post',
+        url: nodeurl,
+        timeout: 30000,
+        data: node
+    })
+        .then(function (response) {
+            console.log("DENTRO");
+            GetAllNodes();
+            return true;
+        })
+        .catch(function (error) {
+            console.log("eeeeeeeerror");
+            return false;
+        });   
+    console.log("FUERA");  
+    GetAllNodes();    
+    return false;
 }
 
 function modifyNode() {

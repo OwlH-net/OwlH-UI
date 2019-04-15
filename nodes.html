@@ -14,8 +14,7 @@
     <link href="css/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- fontawesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="css/fontawesome/css/all.css">
 
     <!-- Custom styles for this template -->
     <link href="css/offcanvas.css" rel="stylesheet">
@@ -69,175 +68,164 @@
 
 
     <main role="main" class="container">
-      <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
-        <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
-        <div class="lh-100">
-          <h3 class="mb-0 text-white lh-100">NIDS nodes</h3>
-          <small>Summary</small>
+        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
+            <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
+            <div class="lh-100">
+                <h3 class="mb-0 text-white lh-100">NIDS nodes</h3>
+                <small>Summary</small>
+            </div>
         </div>
-      </div>
-      <div class="container" id="nodes-table">
-      </div>
-    
-    
-      <div style="display: none" class="container" id="logAll"> LOG-
-      </div>
-    
-    
-      <small class="d-block text-right mt-3">
-        <a class="btn" id="addnids" href="#" onclick="addNids()">Add NIDS</a>
-      </small>
-    
-    <div class="container" style="display: none" id="nidsform">
-        <form id="nodedetails">
-            <div class="form-row" style="" id="">
-                <div class="form-group col-md-6">
-                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text wt-125">Node Name</span>
-                        </div>
-                        <input type="text" class="form-control" id="nodename" placeholder="node-name" required>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row" style="" id="">
-                <div class="form-group col-md-6">
-                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text wt-125">Node IP</span>
-                        </div>
-                        <input type="text" class="form-control" id="nodeip" placeholder="x.x.x.x" required>
-                    </div>
-                </div>
-                <div class="form-group col-md-6">
-                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text wt-125">Node Port</span>
-                        </div>
-                        <input type="text" class="form-control" id="nodeport" placeholder="10443" required>
-                    </div>
-                </div>
-            </div>
-            <!-- <div class="form-row" style="" id="">
-                <div class="form-group col-md-6">
-                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text wt-125">Node Type</span>
-                        </div>
-                        <select id="nodetype" class="form-control">
-                            <option selected>Choose...</option>
-                            <option>NIDS</option>
-                            <option>STAP</option>
-                            <option>eBPF</option>
-                        </select>
-                    </div>
-                </div>
-            </div> -->
-            <div class="text-right">
-                <button type="submit" class="btn btn-primary" style="float: right;" onclick="addNode()">Add</button>
-            </div>
-        </form>
-    </div>
-  
-      <!--Show the form for modify node information(IP, nid and port)-->
-      <div class="container" style="display: none" id="divconfigform">
-        <form id="configform">
-          <div class="form-row" style="" id="">
-            <div class="form-group col-md-6">
-              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                <div class="input-group-prepend">
-                  <span class="input-group-text wt-125">Node Name</span>
-                </div>
-                <input type="text" class="form-control" id="cfgnodename" placeholder="node-name" required>
-              </div>
-            </div>
-          </div>
-          <div class="form-row" style="" id="">
-            <div class="form-group col-md-6">
-              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                <div class="input-group-prepend">
-                  <span class="input-group-text wt-125">Node IP</span>
-                </div>
-                <input type="text" class="form-control" id="cfgnodeip" placeholder="x.x.x.x" required>
-              </div>
-            </div>
-            <div class="form-group col-md-6">
-              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                <div class="input-group-prepend">
-                  <span class="input-group-text wt-125">Node Port</span>
-                </div>
-                <input type="text" class="form-control" id="cfgnodeport" placeholder="10443" required>
-                <input type="hidden" class="form-control" id="cfgnodeid" placeholder="10443" required>
-              </div>
-            </div>
-          </div>
-    
-          <div class="form-group col-md-6">
-            <tr>
-              <th><a href="#" onclick="modifyNode()">Modify</a></th>
-              <th><a href="#" onclick="cancelNode()">Cancel</a></th>
-            </tr>
-          </div>
-    
-    
-      </div>
-    
-      <!-- The Modal -->
-      <div class="modal fade" id="modal-change-bpf">
-        <div class="modal-dialog">
-          <div class="modal-content">
-    
-            <div class="modal-header">
-              <h4 class="modal-title" id="bpf-header">BPF</h4>
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-    
-            <div class="modal-body" id="modal-footer-inputtext">
-              <input type="text" class="form-control" id="recipient-name">
-            </div>
-    
-            <div class="modal-footer" id="modal-footer-btn">
-              <!-- Buttons -->
-            </div>
-    
-          </div>
+        <div class="container" id="nodes-table">
         </div>
-      </div>
+     
+        <small class="text-decoration-none text-primary" style="width:20%; float:right;">
+            <a class="btn" id="addnids" onclick="formAddNids()">Add NIDS</a>
+        </small>
     
-      <!-- Modal ruleset management -->
-      <div class="modal fade bd-example-modal-lg" id="modal-ruleset-management">
-      </div>
-      
-      <!-- Modal delete nodes -->
-      <div class="modal fade bd-example-modal-sm" id="modal-delete-nodes">
-      </div>
-
-      <!-- Load master ip/port -->
-      <div id="load-json-data" style="display: none;">
-        <input id="ip-master" type="text" class="form-control">
-        <input id="port-master" type="text" class="form-control">
-      </div>
-
+        <div class="container" style="display: none" id="nidsform">
+            <form id="nodedetails">
+                <div class="form-row" id="">
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text wt-125">Node Name</span>
+                            </div>
+                            <input type="text" class="form-control" id="nodename" placeholder="node-name" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row" style="" id="">
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text wt-125">Node IP</span>
+                            </div>
+                            <input type="text" class="form-control" id="nodeip" placeholder="x.x.x.x" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text wt-125">Node Port</span>
+                            </div>
+                            <input type="text" class="form-control" id="nodeport" placeholder="10443" required>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="form-row" style="" id="">
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text wt-125">Node Type</span>
+                                </div>
+                                <select id="nodetype" class="form-control">
+                                    <option selected>Choose...</option>
+                                    <option>NIDS</option>
+                                    <option>STAP</option>
+                                    <option>eBPF</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div> -->
+                <div class="text-right">
+                    <button type="button" class="btn btn-primary" style="float: right;" onclick="addNode()">Add</button>
+                </div>
+            </form>
+        </div>
+    
+        <!--Show the form for modify node information(IP, nid and port)-->
+        <div class="container" style="display: none" id="divconfigform">
+            <form id="configform">
+                <div class="form-row" style="" id="">
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text wt-125">Node Name</span>
+                            </div>
+                            <input type="text" class="form-control" id="cfgnodename" placeholder="node-name" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row" style="" id="">
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text wt-125">Node IP</span>
+                            </div>
+                            <input type="text" class="form-control" id="cfgnodeip" placeholder="x.x.x.x" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text wt-125">Node Port</span>
+                            </div>
+                            <input type="text" class="form-control" id="cfgnodeport" placeholder="10443" required>
+                            <input type="hidden" class="form-control" id="cfgnodeid" placeholder="10443" required>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-group col-md-6">
+                    <tr>
+                        <th><a href="#" onclick="modifyNode()">Modify</a></th>
+                        <th><a href="#" onclick="cancelNode()">Cancel</a></th>
+                    </tr>
+                </div>
+    
+    
+        </div>
+    
+        <!-- The Modal -->
+        <div class="modal fade" id="modal-change-bpf">
+            <div class="modal-dialog">
+                <div class="modal-content">
+    
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="bpf-header">BPF</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+    
+                    <div class="modal-body" id="modal-footer-inputtext">
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+    
+                    <div class="modal-footer" id="modal-footer-btn">
+                        <!-- Buttons -->
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+    
+        <!-- Modal ruleset management -->
+        <div class="modal fade bd-example-modal-lg" id="modal-ruleset-management">
+        </div>
+    
+        <!-- Modal delete nodes -->
+        <div class="modal fade bd-example-modal-sm" id="modal-delete-nodes">
+        </div>
+    
+        <!-- Load master ip/port -->
+        <div id="load-json-data" style="display: none;">
+            <input id="ip-master" type="text" class="form-control">
+            <input id="port-master" type="text" class="form-control">
+        </div>
+    
     </main>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="node_modules/axios/dist/axios.js"></script> 
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-    <!-- <script>window.jQuery || document.write('<script src="css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script> -->
-    <script src="css/site/docs/4.1/assets/js/vendor/popper.min.js"></script>
+    <script src="js/axios/dist/axios.js"></script> 
+    <script src="js/jquery-3.3.1.js"></script>
+    <!-- <script src="css/site/docs/4.1/assets/js/vendor/popper.min.js"></script> -->
     <script src="css/dist/js/bootstrap.min.js"></script>
-    <script src="css/site/docs/4.1/assets/js/vendor/holder.min.js"></script>
+    <!-- <script src="css/site/docs/4.1/assets/js/vendor/holder.min.js"></script> -->
     <script src="js/offcanvas.js"></script>
     <script src="js/owlh.js"></script>
     <script src="js/node.js"></script>
-    <!-- <script src="js/modal.js"></script> -->
     <script src="js/loadTitle.js"></script>
-    <!-- <script type="text/javascript" src="../conf/ui.conf"></script> -->
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script> -->
-    <!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script> -->
   </body>
 </html>
 

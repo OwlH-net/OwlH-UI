@@ -14,7 +14,7 @@
     <link href="css/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- fontawesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/fontawesome/css/all.css">
 
 
     <!-- Custom styles for this template -->
@@ -83,7 +83,7 @@
       </div>
 
       <small class="d-block text-right mt-3">
-        <a class="btn" style="color: #337ab7; font-weight: bold;" id="show-add-server" onclick="showAddServerForm()">Add Server</a>
+        <a class="btn" style="color:#337ab7; font-weight:bold; float:right;" id="show-add-server" onclick="showAddServerForm()">Add Server</a>
       </small>
     
       <div class="container" style="display: none;" id="serverform">
@@ -149,6 +149,15 @@
             </div>
           </div>
       </div>
+
+        <!-- Modal edit server -->
+        <div class="modal fade" id="modal-edit-stap-server">
+        </div>
+        
+        <!-- Modal delete server -->
+        <div class="modal fade" id="modal-delete-stap-server">
+        </div>
+
       <!-- Load master ip/port -->
       <div id="load-json-data" style="display: none;">
           <input id="ip-master" type="text" class="form-control">
@@ -159,15 +168,12 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="node_modules/axios/dist/axios.js"></script> 
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script> -->
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-    <script src="css/site/docs/4.1/assets/js/vendor/popper.min.js"></script>
+    <script src="js/axios/dist/axios.js"></script> 
+    <script src="js/jquery-3.3.1.js"></script>
     <script src="css/dist/js/bootstrap.min.js"></script>
-    <script src="css/site/docs/4.1/assets/js/vendor/holder.min.js"></script>
+    <!-- <script src="css/site/docs/4.1/assets/js/vendor/holder.min.js"></script> -->
     <script src="js/offcanvas.js"></script>
-    <script src="js/owlh.js"></script>
+    <!-- <script src="js/owlh.js"></script> -->
     <script src="js/stap.js"></script>
     <script src="js/loadTitle.js"></script>
   </body>

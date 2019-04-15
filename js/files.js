@@ -27,7 +27,7 @@ function getAllFiles(){
 
 function generateAllFilesOutput(response, node) {
     var isEmptyFiles = true;
-    var rules = response.data;
+    var files = response.data;
     var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
                 '<thead>                                                      ' +
                 '<tr>                                                         ' +
@@ -37,16 +37,16 @@ function generateAllFilesOutput(response, node) {
                 '</tr>                                                        ' +
                 '</thead>                                                     ' +
                 '<tbody >                                                     ' 
-    for (rule in rules) {
+    for (file in files) {
         isEmptyFiles=false;
-        if (rule != "nodeUUID"){
+        if (file != "nodeUUID"){
             html = html + '<tr><td>'+
-                rule                                                    +
-                '</td><td>                                                            '+
+                file                                                    +
+                '</td><td>                         '+
+                files[file]+
                 '</td><td>                                                            '+                                                     
-                '<a href="edit.html?uuid='+response.data.nodeUUID+'&file='+rule+'&node='+node+'"><button type="submit" class="btn btn-primary">Edit</button></a> '+
+                '<a href="edit.html?uuid='+files.nodeUUID+'&file='+file+'&node='+node+'"><button type="submit" class="btn btn-primary">Edit</button></a> '+
                 '</td></tr>                                                           '
-            
         }
     }
     html = html + '</tbody></table>';
@@ -58,9 +58,7 @@ function generateAllFilesOutput(response, node) {
     }
 }
 function loadJSONdata(){
-  console.log("Loading JSON");
   $.getJSON('../conf/ui.conf', function(data) {
-    console.log("getJSON");
     var ipLoad = document.getElementById('ip-master'); 
     ipLoad.value = data.master.ip;
     var portLoad = document.getElementById('port-master');

@@ -2,9 +2,6 @@ function addNode() {
     var nname = document.getElementById('nodename').value;
     var nip = document.getElementById('nodeip').value;
     var nport = document.getElementById('nodeport').value;
-    console.log("JAL -- "+nname);
-    console.log(nip);
-    console.log(nport);
     formAddNids();//close add nids form
     var nodejson = {}
     nodejson["name"] = nname;
@@ -15,7 +12,6 @@ function addNode() {
 }
 
 function axiosAddNode(node) {
-    console.log("IEIEEEEEEE");
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
@@ -26,15 +22,12 @@ function axiosAddNode(node) {
         data: node
     })
         .then(function (response) {
-            console.log("DENTRO");
             GetAllNodes();
             return true;
         })
         .catch(function (error) {
-            console.log("eeeeeeeerror");
             return false;
         });   
-    console.log("FUERA");  
     GetAllNodes();    
     return false;
 }

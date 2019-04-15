@@ -52,14 +52,9 @@ function GetAllNodes() {
             resultElement.innerHTML = generateAllNodesHTMLOutput(response);
         })
         .catch(function (error) {
-            // document.getElementById('spinner').style.display="none";
             resultElement.innerHTML = '<h3 align="center">No connection</h3>';
         });
 }
-
-// function clearLogField() {
-//     var logAll = document.getElementById('logAll');
-// }
 
 function deleteNode(node) {
     var ipmaster = document.getElementById('ip-master').value;

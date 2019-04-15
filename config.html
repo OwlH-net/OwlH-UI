@@ -16,7 +16,6 @@
     <!-- fontawesome -->
     <link rel="stylesheet" href="css/fontawesome/css/all.css">
 
-
     <!-- Custom styles for this template -->
     <link href="css/offcanvas.css" rel="stylesheet">
   </head>
@@ -31,9 +30,10 @@
             <span class="navbar-toggler-icon"></span>
         </button>
     
+    
         <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="nodes.html">Nodes</a>
                 </li>
                 <li class="nav-item">
@@ -45,7 +45,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="kibana.html">Kibana</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="config.html">Config</a>
                 </li>
             </ul>
@@ -57,19 +57,54 @@
         <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
             <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
             <div class="lh-100">
-                <h3 class="mb-0 text-white lh-100" id="title-banner"></h3>
-                <small>Files</small>
+                <h3 class="mb-0 text-white lh-100">Groups</h3>
+                <small>Summary</small>
             </div>
         </div>
-      
-        <!--Rule rows-->
-        <div class="container" id="files-table">
+    
+        <div class="my-3 p-3 bg-white rounded shadow-sm" id="groups-div">
+            <h6 class="border-bottom border-gray pb-2 mb-0">Node groups</h6>
+            <div class="media text-muted pt-3" id="group-list">
+            </div>
+            <small class="text-primary text-right mt-3" style="width: 20%; float: right;">
+                <a onclick="formAddGroup()" id="group-text" style="display: block;">Add new group</a>
+            </small>
         </div>
+    
+        <!-- Form for add new groups -->
+        <div class="container" style="display: none" id="add-group">
+            <form id="group-details">
+                <div class="form-row" id="">
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-4 mr-sm-4 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Group Name</span>
+                            </div>
+                            <input type="text" class="form-control" id="groupname" placeholder="Name" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row" id="">
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text wt-125">Group description</span>
+                            </div>
+                            <input type="text" class="form-control" id="groupdesc" placeholder="Description" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button type="button" class="btn btn-primary" style="float: right;" onclick="addGroup()">Add</button>
+                </div>
+            </form>
+        </div>
+    
         <!-- Load master ip/port -->
         <div id="load-json-data" style="display: none;">
-          <input id="ip-master" type="text" class="form-control">
-          <input id="port-master" type="text" class="form-control">
-        </div>        
+            <input id="ip-master" type="text" class="form-control">
+            <input id="port-master" type="text" class="form-control">
+        </div>
     </main>
 
 
@@ -80,7 +115,7 @@
     <script src="js/jquery-3.3.1.js"></script>
     <script src="css/dist/js/bootstrap.min.js"></script>
     <script src="js/offcanvas.js"></script>
-    <script src="js/files.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/loadTitle.js"></script>
   </body>
 </html>

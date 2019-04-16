@@ -61,15 +61,13 @@
                 <small>Summary</small>
             </div>
         </div>
-    
-        <div class="my-3 p-3 bg-white rounded shadow-sm" id="groups-div">
-            <h6 class="border-bottom border-gray pb-2 mb-0">Node groups</h6>
-            <div class="media text-muted pt-3" id="group-list">
-            </div>
-            <small class="text-primary text-right mt-3" style="width: 20%; float: right;">
-                <a onclick="formAddGroup()" id="group-text" style="display: block;">Add new group</a>
-            </small>
+
+        <div id="list-groups">
         </div>
+
+        <small class="text-primary text-right mt-3" style="width: 20%; float: right;">
+            <a onclick="formAddGroup()" id="group-text" style="display: block; cursor: default; float:right;">Add new group</a> 
+        </small>
     
         <!-- Form for add new groups -->
         <div class="container" style="display: none" id="add-group">
@@ -99,7 +97,42 @@
                 </div>
             </form>
         </div>
+
+        <!-- Form edit group -->
+        <div class="container" style="display: none" id="edit-group">
+                <form id="group-edit-details">
+                    <div class="form-row" >
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-4 mr-sm-4 mb-sm-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Group Name</span>
+                                </div>
+                                <input type="text" class="form-control" id="groupnameedit" placeholder="New group name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" >
+                        <div class="form-group col-md-6">
+                            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text wt-125">Group description</span>
+                                </div>
+                                <input type="text" class="form-control" id="groupdescedit" placeholder="New description" required>
+                                <input type="hidden" class="form-control" id="groupuuid">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-primary form-group col-md-6">
+                        <a href="#" onclick="editGroupData()">Modify</a>
+                        <a href="#" onclick="closeEditGroup()">Close</a>
+                    </div>
+                </form>
+            </div>
     
+        <!-- Modal delete group -->
+        <div class="modal fade" id="modal-delete-group">
+        </div>
+
         <!-- Load master ip/port -->
         <div id="load-json-data" style="display: none;">
             <input id="ip-master" type="text" class="form-control">

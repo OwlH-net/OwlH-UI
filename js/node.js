@@ -57,7 +57,6 @@ function modifyNode() {
             return true;
         })
         .catch(function (error) {
-            console.log("Node NOT modified: "+error);
             return false;
         });   
         document.getElementById('divconfigform').style.display = "none";

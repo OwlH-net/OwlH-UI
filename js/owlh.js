@@ -200,8 +200,6 @@ function RunSuricata(uuid) {
         timeout: 30000
     })
         .then(function (response) {
-
-            console.log("DATA RETRIEVED FROM RUNsURICATA"+response);
             // GetAllNodes();
         })
         .catch(function error() {
@@ -318,7 +316,6 @@ function PingZeek(uuid) {
     })
         .then(function (response) {
             if (!response.data.path && !response.data.bin) {
-                console.log("!path && !bin");
                 document.getElementById(uuid + '-zeek').className = "badge bg-dark align-text-bottom text-white";
                 document.getElementById(uuid + '-zeek').innerHTML = "N/A";
                 document.getElementById(uuid + '-zeek-icon').className = "fas fa-play-circle";
@@ -363,7 +360,6 @@ function RunWazuh(uuid) {
         .then(function (response) {
         })
         .catch(function error() {
-            console.log(error);
         });
 
     GetAllNodes();
@@ -382,7 +378,6 @@ function StopWazuh(uuid) {
         .then(function (response) {
         })
         .catch(function error() {
-            console.log(error);
         });
 
     GetAllNodes();

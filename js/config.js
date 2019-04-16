@@ -12,136 +12,158 @@ function formAddGroup(){
 }
 
 function addGroup() {
-    // var groupname = document.getElementById('groupname').value;
-    // var groupdesc = document.getElementById('groupdesc').value;
-    // var ipmaster = document.getElementById('ip-master').value;
-    // var portmaster = document.getElementById('port-master').value;
-    // var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/';
-    // console.log(groupname);
-    // console.log(groupdesc);
-    // console.log(nodeurl);
-    
-    // formAddGroup();//close add group form
-    // var nodejson = {}
-    // nodejson["name"] = groupname;
-    // nodejson["desc"] = groupdesc;
-    // var nodeJSON = JSON.stringify(nodejson);
-
-    // axios({
-    //     method: 'post',
-    //     url: nodeurl,
-    //     timeout: 30000,
-    //     data: nodeJSON
-    // })
-    // .then(function (response) {
-    //     //GetAllGroups();
-    //     console.log(response);
-    //     return true;
-    // })
-    // .catch(function (error) {
-    //     return false;
-    // });   
-        //GetAllGroups(); 
-}
-
-function getAllGroups(){
+    var groupname = document.getElementById('groupname').value;
+    var groupdesc = document.getElementById('groupdesc').value;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var resultElement = document.getElementById('groups-list');
-    formAddGroup();
-    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/getAllGroups')
+    var groupurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/';
+    
+    formAddGroup();//close add group form
+    var nodejson = {}
+    nodejson["name"] = groupname;
+    nodejson["desc"] = groupdesc;
+    var nodeJSON = JSON.stringify(nodejson);
+
+    axios({
+        method: 'post',
+        url: groupurl,
+        timeout: 30000,
+        data: nodeJSON
+    })
+    .then(function (response) {
+        GetAllGroups();
+        return true;
+    })
+    .catch(function (error) {
+        return false;
+    });   
+    GetAllGroups(); 
+}
+
+function GetAllGroups(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var result = document.getElementById('list-groups');
+    var groupurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/';
+    document.getElementById('group-text').style.display ="none";
+
+    // formAddGroup();
+    axios({
+        method: 'get',
+        url: groupurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        document.getElementById('group-text').style.display ="block";
+        result.innerHTML = generateAllGroupsHTMLOutput(response);
+    })
+    .catch(function (error) {
+        result.innerHTML = '<h3 align="center">No connection</h3>';
+    });
+}
+
+function generateAllGroupsHTMLOutput(response) {
+    var isEmpty = true;
+    var groups = response.data;
+    var html;
+    for (group in groups) {
+        isEmpty = false;
+        html = html + 
+            '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+                '<div class="media text-muted pt-3">'+
+                    '<p class="media-body pb-3 mb-0  lh-125 border-bottom border-gray">'+
+                        '<strong class="d-block text-dark">'+groups[group]['name']+'</strong>'+
+                        '<i>'+groups[group]['desc']+'</i>'+
+                        '<i class="fas fa-sticky-note low-blue" style="float:right; font-size:20px; color: Dodgerblue;" title="Edit group" onclick="showEditGroup(\''+groups[group]['name']+'\',\''+groups[group]['desc']+'\',\''+group+'\')"></i>'+
+                        '&nbsp;'+
+                        '<i class="fas fa-trash-alt low-blue" style="float:right; font-size: 20px; color: Dodgerblue;" title="Delete group" data-toggle="modal" data-target="#modal-delete-group" onclick="modalDeleteGroup(\''+groups[group]['name']+'\',\''+group+'\')"></i>'+
+                    '</p>'+
+                '</div>'+
+            '</div>';
+    }
+    if (isEmpty){
+        return '<h3 style="text-align:center">No groups created</h3>';
+    }else{
+        return html;
+    }
+}
+
+function modalDeleteGroup(name, groupID){
+    var modalWindowDelete = document.getElementById('modal-delete-group');
+    modalWindowDelete.innerHTML = 
+    '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+    
+            '<div class="modal-header">'+
+                '<h4 class="modal-title">Groups</h4>'+
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+    
+            '<div class="modal-body">'+ 
+                '<p>Do you want to delete group <b>'+name+'</b>?</p>'+
+            '</div>'+
+    
+            '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                '<button type="submit" class="btn btn-danger" data-dismiss="modal" onclick="deleteGroup(\''+groupID+'\')">Delete</button>'+
+            '</div>'+
+    
+        '</div>'+
+    '</div>';
+}
+
+function showEditGroup(name, desc, groupID){
+    document.getElementById('edit-group').style.display = "block";
+    document.getElementById('groupnameedit').value = name;
+    document.getElementById('groupdescedit').value = desc;
+    document.getElementById('groupuuid').value = groupID;
+}
+
+function modifyGroupClose(){
+    document.getElementById('edit-group').style.display = "none";
+}
+
+function editGroupData(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var name = document.getElementById('groupnameedit').value;
+    var desc = document.getElementById('groupdescedit').value;
+    var groupID = document.getElementById('groupuuid').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/EditGroup';
+    var nodejson = {}
+    nodejson["name"] = name;
+    nodejson["groupid"] = groupID;
+    nodejson["desc"] = desc;
+    var nodeJSON = JSON.stringify(nodejson);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: nodeJSON
+        })
         .then(function (response) {
-            resultElement.innerHTML = generateAllNodesHTMLOutput(response);
+            GetAllGroups();
         })
         .catch(function (error) {
-            resultElement.innerHTML = '<h3 align="center">No connection</h3>';
+        });   
+        document.getElementById('edit-group').style.display = "none";
+}
+
+function deleteGroup(groupID){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/DeleteGroup/' + groupID;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+    })
+        .then(function (response) {
+            GetAllGroups();
+        })
+        .catch(function error() {
         });
 }
-
-function generateAllNodesHTMLOutput(response) {
-    var isEmpty = true;
-    var nodes = response.data;
-    var html =  '<table class="table table-hover">                            ' +
-                '<thead>                                                      ' +
-                '<tr>                                                         ' +
-                '<th scope="col"></th>                                        ' +
-                '<th scope="col">Name</th>                                    ' +
-                '<th scope="col">Status</th>                                  ' +
-                '<th scope="col">Tags <span style="font-size: 10px;"></span></th>            ' +
-                '<th scope="col">Services</th>                                ' +
-                '<th scope="col">Actions</th>                                 ' +
-                '</tr>                                                        ' +
-                '</thead>                                                     ' +
-                '<tbody >'
-    for (node in nodes) {
-        isEmpty = false;
-        if (nodes[node]['port'] != undefined) {
-            port = nodes[node]['port'];
-        } else {
-            port = "10443";
-        }
-        var uuid = node;
-        PingNode(uuid);
-        getRulesetUID(uuid);
-
-        html = html + '<tr>                                                                     '+
-            '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
-            ' <td class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
-            ' <p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
-            ' <i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'                        +
-            '</td>'                                                                             +
-            '<td class="align-middle">                                                        ';
-        html = html + '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span></td>';
-            html = html + ' <td class="align-middle" id="'+uuid+'-tag"></td><td class="align-middle">';
-            html = html +'<p><img src="img/suricata.png" alt="" width="30"> '      +
-            '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
-            '  <span style="font-size: 15px; color: grey;" >                                   ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
-            '    <i class="fas fa-sync-alt" title="Deploy ruleset" onclick="sendRulesetToNode('+"'"+uuid+"'"+')"></i>                                 ' +
-            '    <a title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+uuid+'\',\''+nodes[node]['name']+'\')">BPF</a>'+
-            '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+uuid+'\')"></i>                        ' +
-            '  </span>                                                                        ' +
-            '  </p>                                                                           ' +
-            '  <p><img  src="img/bro.png" alt="" width="30">'+
-            '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
-            '  <span style="font-size: 15px; color: grey;" >                                   ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
-            '    <i class="fab fa-wpforms" title="Zeek policy management"></i>                  ' +
-            '  </span>                                                                        ' +
-            '  </p>                                                                           ' +
-            '  <p><img src="img/wazuh.png" alt="" width="30"> '+
-            '  <span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
-            '  <span style="font-size: 15px; color: grey;" >                                  ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-wazuh-icon"></i>                         ' +
-            '  </span></p> '+
-            '  <p><i class="fas fa-plug fa-lg"></i>'+
-            '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
-            '    <a href="stap.html?uuid='+uuid+'&node='+nodes[node]['name']+'"><i class="fas fa-cog" title="Configuration" style="color: grey;"></i><a>                             ' +
-            '  </span></p> ';                      
-            html = html +   '</td>                                                              ' +
-            '<td class="align-middle">                                                        ' +
-            '  <span style="font-size: 20px; color: Dodgerblue;" >                            ' +
-            '    <a href="files.html?uuid='+node+'&node='+nodes[node]['name']+'"><i class="fas fa-arrow-alt-circle-down" title="See node files"></i></a>             ' +
-            '    <i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i>                            ' +
-            '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit node configuration"></i></a>           ' +
-            '    <a style="font-size: 20px; color: Dodgerblue;" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"> ' +
-            '      <i class="fas fa-trash-alt" title="Delete Node" data-toggle="modal" data-target="#modal-delete-nodes"></i>                         ' +
-            '    </a>                                                                            ' +
-            '  </span>                                                                           ' +
-            '</td>                                                                               ' +
-            '</tr>';
-
-    }
-    html = html + '</tbody></table>';
-    if (isEmpty){
-        return '<div style="text-align:center"><h3>No nodes created. You can create a node now!</h3></div>';
-    }else{
-        return  html;
-    }
-}
-
 
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
@@ -150,6 +172,7 @@ function loadJSONdata(){
       var portLoad = document.getElementById('port-master');
       portLoad.value = data.master.port;
       loadTitleJSONdata();
+      GetAllGroups();
     });
   }
   loadJSONdata();

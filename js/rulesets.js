@@ -43,7 +43,7 @@ function generateAllRulesHTMLOutput(response) {
             '<button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#modal-ruleset-delete" onclick="deleteRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Delete</button>        ' +
             '</td></tr>'
     }
-    html = html + '  </tbody></table>';
+    html = html + '</tbody></table>';
 
     if (isEmptyRulesets) {
         return '<div style="text-align:center"><h3>No Rules available...</h3></div>';

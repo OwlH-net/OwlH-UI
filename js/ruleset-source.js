@@ -27,7 +27,7 @@ function addRulesetSource() {
     nodejson["desc"] = sourceDesc;
     nodejson["path"] = sourcePath;
     nodejson["url"] = sourceUrl;
-    nodejson["type"] = "Groups";
+    nodejson["type"] = "Rulesets";
     var nodeJSON = JSON.stringify(nodejson);
 
     axios({

@@ -73,11 +73,11 @@ function generateAllRulesetSourceHTMLOutput(response) {
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
-        '<th>Name</th>                           ' +
-        '<th>Description</th>                              ' +
-        '<th>Path</th>                                         ' +
+        '<th>Name</th>                                                  ' +
+        '<th>Description</th>                                          ' +
+        '<th>Path</th>                                                    ' +
         '<th>Url</th>                                               ' +
-        '<th style="width: 10%">Actions</th>                                             ' +
+        '<th style="width: 15%">Actions</th>                                ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody>                                                      ' 
@@ -93,9 +93,10 @@ function generateAllRulesetSourceHTMLOutput(response) {
             sources[source]['url']+
             '</td><td class="align-middle">'+
                 '<span style="font-size: 20px; color: Dodgerblue;" >                            ' +
-                    '<i class="fas fa-download" font-size: 20px; color: Dodgerblue;" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i>'+
-                    '<i class="fas fa-sticky-note low-blue"  font-size:20px; color: Dodgerblue;" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i>'+
-                    '<i class="fas fa-trash-alt low-blue"  font-size: 20px; color: Dodgerblue;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i>'+
+                    '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i>'+
+                    '<i class="fas fa-sticky-note low-blue" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i>'+
+                    '<i class="fas fa-trash-alt low-blue" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i>'+
+                    '<i class="fas fa-cog low-blue" title="Compare files" onclick="compareFiles()"></i>                              ' +
                 '</span>'+     
             '</td></tr>'
     }
@@ -105,6 +106,26 @@ function generateAllRulesetSourceHTMLOutput(response) {
     }else{
         return html;
     }
+}
+
+function compareFiles(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/compareFiles';
+    var nodejson = {}
+    nodejson["new"] = '/root/workspace/src/owlhmaster/rules/drop.rules';
+    nodejson["olg"] = '/root/workspace/src/owlhmaster/rules2/drop.rules';
+    var nodeJSON = JSON.stringify(nodejson);
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000,
+        data: nodeJSON
+        })
+        .then(function (response) {
+        })
+        .catch(function (error) {
+        });   
 }
 
 function modalDeleteRulesetSource(name, sourceUUID){

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="img/favicon.ico">
+
+        <title>OwlH Master</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="css/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- fontawesome -->
+        <link rel="stylesheet" href="css/fontawesome/css/all.css">
+
+        <!-- Custom styles for this template -->
+        <link href="css/offcanvas.css" rel="stylesheet">
+    </head>
+    <body class="bg-light">
+        <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+                <img class="mr-3" src="img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
+                href="nodes.html"><small>Master </small><i id="menu-title" class="text-warning"></i> | </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+                aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        
+        
+            <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="nodes.html">Nodes</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="rulesets.html">Open Rules</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="response.html">Adapt & Response</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="kibana.html">Kibana</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="config.html">Config</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main role="main" class="container">
+            <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
+                <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
+                <div class="lh-100">
+                    <h3 class="mb-0 text-white lh-100">Rulesets</h3>
+                    <small>Rules</small>
+                </div>
+            </div>
+                
+            <!--Every line row-->
+            <div class="container" id="compare-lines-table">
+            </div>
+
+            <!-- Load master ip/port -->
+            <div id="load-json-data" style="display: none;">
+                <input id="ip-master" type="text" class="form-control">
+                <input id="port-master" type="text" class="form-control">
+            </div>
+        </main>
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="js/axios/dist/axios.js"></script>
+        <script src="js/jquery-3.3.1.js"></script>
+        <script src="css/dist/js/bootstrap.min.js"></script>
+        <script src="js/offcanvas.js"></script>
+        <script src="js/compare-files.js"></script>
+        <script src="js/loadTitle.js"></script>
+    </body>
+</html>

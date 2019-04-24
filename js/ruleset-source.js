@@ -96,7 +96,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                     '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i>'+
                     '<i class="fas fa-sticky-note low-blue" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i>'+
                     '<i class="fas fa-trash-alt low-blue" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i>'+
-                    '<i class="fas fa-cog low-blue" title="Compare files" onclick="compareFiles()"></i>                              ' +
+                    '<a href="compare-files.html"><i class="fas fa-cog low-blue" title="Compare files" onclick="compareFiles()"></i></a>                              ' +
                 '</span>'+     
             '</td></tr>'
     }
@@ -109,20 +109,23 @@ function generateAllRulesetSourceHTMLOutput(response) {
 }
 
 function compareFiles(){
+    var newFile = '/root/workspace/src/owlhmaster/rules/drop.rules';
+    var oldFile = '/root/workspace/src/owlhmaster/rules2/drop.rules';
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/compareFiles';
     var nodejson = {}
-    nodejson["new"] = '/root/workspace/src/owlhmaster/rules/drop.rules';
-    nodejson["olg"] = '/root/workspace/src/owlhmaster/rules2/drop.rules';
+    nodejson["new"] = newFile;
+    nodejson["old"] = oldFile;
     var nodeJSON = JSON.stringify(nodejson);
     axios({
-        method: 'get',
+        method: 'put',
         url: nodeurl,
         timeout: 30000,
         data: nodeJSON
         })
         .then(function (response) {
+            console.log(response.data);
         })
         .catch(function (error) {
         });   

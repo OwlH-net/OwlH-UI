@@ -19,11 +19,11 @@ function compareFiles(){
             resultElement.innerHTML = generateAllLinesHTMLOutput (response);
         })
         .catch(function (error) {
+            console.log(error);
         });   
 }
 
 function generateAllLinesHTMLOutput (response){
-    var arrayRadiobuttons;
     var lines = response.data
     var isEmptyRulesets = true;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -37,8 +37,9 @@ function generateAllLinesHTMLOutput (response){
         '<th style="width: 10%">Actions</th>                                             ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
-        '<tbody >                                                     '
+        '<tbody>                                                     '
     for (line in lines) {
+
         if (lines[line]["enabled-new"] == "Enabled") {
             iconNew = '<i class="fas fa-check-circle" style="color:green;"></i>';
         } else {
@@ -64,35 +65,27 @@ function generateAllLinesHTMLOutput (response){
             '</td><td>                                                            ' +
             iconNew +
             '</td><td>                                                            ' +
-            lines[line]["new"] +
+            '<p id="'+line+'-new">'+lines[line]["new"]+'</p>                                        ' +
             '</td><td>                                                            ' +
             iconOld +
             '</td><td>                                                            ' +
-            lines[line]["old"] +
+            '<p id="'+line+'-old">'+lines[line]["old"]+'</p>' +
             '</td><td>                                                            ' +
             '<a class="btn btn-primary">Details</a>                               ' +
             '<div class="form-check">                         '+
-                '<input class="form-check-input" type="radio" name="'+line+'-new" id="'+line+'-new" value="new-line">                         '+
-                '<label class="form-check-label" for="inlineRadio1">New line</label>                         '+
+                '<input class="form-check-input" type="radio" name="'+line+'" value="new">                         '+
+                '<label class="form-check-label">New line</label>                         '+
             '</div>                         '+
             '<div class="form-check">                         '+
-                '<input class="form-check-input" type="radio" name="'+line+'-new" id="'+line+'-old" value="old-line" checked>                         '+
-                '<label class="form-check-label" for="inlineRadio2">Old line</label>                         '+
+                '<input class="form-check-input" type="radio" name="'+line+'" value="old" checked="checked">                         '+
+                '<label class="form-check-label">Old line</label>                         '+
             '</div>                         '+
             '</td></tr>'
-    }
-    
-    if (document.getElementById(line+"-new").checked = true){
-        arrayRadiobuttons.push(document.getElementById(line+'-new').value);
-        console.log("new");
-    }else if (document.getElementById(line+"-old").checked = true){
-        arrayRadiobuttons.push(document.getElementById(line+'-old').value);                
-        console.log("OLD");
     }
 
     html = html + 
         '</tbody></table>'+
-        '<a class="btn btn-primary" onclick="createNewFile('+arrayRadiobuttons+')">Create New File</a>                               ';
+        '<button type="button" class="btn btn-primary" onclick="createNewFile()">Create New File</button>';
 
     if (isEmptyRulesets) {
         return '<div style="text-align:center"><h3>Both files are equals</h3></div>';
@@ -101,8 +94,34 @@ function generateAllLinesHTMLOutput (response){
     }
 }
 
-function createNewFile(arrayRadiobuttons){
-    console.log(arrayRadiobuttons);
+function createNewFile(){
+    var arrayLinesSelected = new Object();
+    $('input:radio:checked').each(function() {
+        var sid = $(this).prop("name");
+        var value = $(this).prop("value");
+        if (value == "new") {
+            arrayLinesSelected[sid] = document.getElementById(sid+'-new').innerHTML;
+            console.log(document.getElementById(sid+'-new').innerHTML);
+        }else{
+            arrayLinesSelected[sid] = document.getElementById(sid+'-old').innerHTML;
+            console.log(document.getElementById(sid+'-old').innerHTML);
+        }
+    });
+
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/createNewFile';
+    var nodeJSON = JSON.stringify(arrayLinesSelected);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: nodeJSON
+        })
+        .then(function (response) {
+        })
+        .catch(function (error) {
+        }); 
 }
 
 function loadJSONdata(){

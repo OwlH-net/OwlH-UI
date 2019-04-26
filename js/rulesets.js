@@ -40,7 +40,7 @@ function generateAllRulesHTMLOutput(response) {
             '</td><td>                                                            ' +
             '<a class="btn btn-primary" href="ruleset.html?uuid=' + rule + '&rule=' + rules[rule]["name"] + '">Details</a> ' +
             '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-clone" onclick="cloneRuleset(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\')">Clone</button>       ' +
-            '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-sync" onclick="syncRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Sync</button>        ' +
+            '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-sync" onclick="syncAllRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Sync</button>        ' +
             '<button class="btn btn-danger" data-toggle="modal" data-target="#modal-ruleset-delete" onclick="deleteRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Delete</button>        ' +
             '</td></tr>'
     }
@@ -54,7 +54,7 @@ function generateAllRulesHTMLOutput(response) {
 }
 
 
-function syncRulesetModal(name, path, uuid){
+function syncAllRulesetModal(name, path, uuid){
     var modalWindow = document.getElementById('modal-ruleset-sync');
     modalWindow.innerHTML = 
     '<div class="modal-dialog">'+
@@ -66,12 +66,12 @@ function syncRulesetModal(name, path, uuid){
             '</div>'+
     
             '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
-                '<p>Do you want to sync <b>'+name+'</b> ruleset?</p>'+
+                '<p>Do you want to synchronize <b>'+name+'</b> ruleset to all the nodes that use it?</p>'+
             '</div>'+
     
             '<div class="modal-footer" id="modal-ruleset-sync-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
-                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset">Sync</button>'+
+                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="syncAllRuleset(\''+name+'\',\''+path+'\',\''+uuid+'\')">Sync</button>'+
             '</div>'+
   
         '</div>'+
@@ -187,6 +187,22 @@ function saveClonedRuleset(name, path){
         alert("You must complete all the fields for clone a ruleset");
     }
     
+}
+
+function syncAllRuleset(name, path, uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/synchronize/'+uuid;
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+        })
+        .catch(function (error) {
+        });
 }
 
 function loadJSONdata(){

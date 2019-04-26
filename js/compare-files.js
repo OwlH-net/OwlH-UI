@@ -99,13 +99,9 @@ function createNewFile(){
     $('input:radio:checked').each(function() {
         var sid = $(this).prop("name");
         var value = $(this).prop("value");
-        if (value == "new") {
-            arrayLinesSelected[sid] = document.getElementById(sid+'-new').innerHTML;
-            console.log(document.getElementById(sid+'-new').innerHTML);
-        }else{
+        if (value == "old") {
             arrayLinesSelected[sid] = document.getElementById(sid+'-old').innerHTML;
-            console.log(document.getElementById(sid+'-old').innerHTML);
-        }
+        }        
     });
 
     var ipmaster = document.getElementById('ip-master').value;

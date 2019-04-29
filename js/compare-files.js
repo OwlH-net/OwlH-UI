@@ -103,7 +103,7 @@ function createNewFile(){
             arrayLinesSelected[sid] = document.getElementById(sid+'-old').innerHTML;
         }        
     });
-
+    console.log(arrayLinesSelected);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/createNewFile';

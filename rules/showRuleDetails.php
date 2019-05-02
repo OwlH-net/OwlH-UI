@@ -52,7 +52,6 @@
         </nav>
 
         <main role="main" class="container">
-
             <div>
                 <?php
                     //call API with sid

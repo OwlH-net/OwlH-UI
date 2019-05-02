@@ -1,10 +1,46 @@
-function loadJSONdata(){
-    $.getJSON('../conf/ui.conf', function(data) {
-      var ipLoad = document.getElementById('ip-master'); 
-      ipLoad.value = data.master.ip;
-      var portLoad = document.getElementById('port-master');
-      portLoad.value = data.master.port;
-      loadTitleJSONdata();
+function loadFileIntoTextarea(){
+    var fileContent = document.getElementById('inputTextUI');  
+    $.getJSON('../conf/ui.conf', function (data) {
+        fileContent.value = JSON.stringify(data, null, "\t");
     });
-  }
-  loadJSONdata();
+}
+
+function saveFileChanged() {
+    var fileContent = document.getElementById('inputTextUI').value;
+    var nodeurl = 'https://192.168.0.100/ui.php';
+    // console.log(fileContent);
+    // var blob = new Blob([JSON.stringify(fileContent)], {type: "text/plain;charset=utf-8"});
+    // // localStorage.setItem('../conf/ui.conf', JSON.stringify(fileContent));
+    // saveAs(blob, '../conf/ui.conf');
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: fileContent
+    })
+    .then(function (response) {
+        console.log("resp: "+response);
+        return true;
+    })
+    .catch(function (error) {
+        console.log("error: "+error);
+        return false;
+    });
+
+}
+
+function closeFileChanged(){
+    window.history.back();
+}
+
+function loadJSONdata() {
+    $.getJSON('../conf/ui.conf', function (data) {
+        var ipLoad = document.getElementById('ip-master');
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        loadTitleJSONdata();
+        loadFileIntoTextarea();
+    });
+}
+loadJSONdata();

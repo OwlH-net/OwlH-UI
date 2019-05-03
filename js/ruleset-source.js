@@ -15,8 +15,8 @@ function formAddRulesetSource(){
 function addRulesetSource() {
     var sourceName = document.getElementById('ruleset-source-name').value;
     var sourceDesc = document.getElementById('ruleset-source-desc').value;
-    var sourcePath = document.getElementById('ruleset-source-path').value;
     var sourceUrl = document.getElementById('ruleset-source-url').value;
+    var fileName = sourceUrl.split(/[\s/]+/);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
@@ -25,7 +25,7 @@ function addRulesetSource() {
     var nodejson = {}
     nodejson["name"] = sourceName;
     nodejson["desc"] = sourceDesc;
-    nodejson["path"] = sourcePath;
+    nodejson["fileName"] = fileName[fileName.length-1];
     nodejson["url"] = sourceUrl;
     nodejson["type"] = "Rulesets";
     var nodeJSON = JSON.stringify(nodejson);

@@ -1,7 +1,7 @@
 function compareFiles(){
     var resultElement = document.getElementById('compare-lines-table');
-    var newFile = '/root/workspace/src/owlhmaster/conf/downloads/rules/drop.rules';
-    var oldFile = '/root/workspace/src/owlhmaster/rules/drop.rules';
+    var newFile = 'conf/downloads/Default/rules/drop.rules';
+    var oldFile = 'rules/drop.rules';
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/compareFiles';
@@ -99,6 +99,8 @@ function createNewFile(){
     $('input:radio:checked').each(function() {
         var sid = $(this).prop("name");
         var value = $(this).prop("value");
+        // arrayLinesSelected["current"] = document.getElementById("currentFile").innerHTML;
+        // arrayLinesSelected["new"] = document.getElementById("newFile").innerHTML;
         if (value == "old") {
             arrayLinesSelected[sid] = document.getElementById(sid+'-old').innerHTML;
         }        

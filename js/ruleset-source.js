@@ -109,14 +109,14 @@ function generateAllRulesetSourceHTMLOutput(response) {
 }
 
 function compareFiles(){
-    var newFile = '/root/workspace/src/owlhmaster/rules/drop.rules';
-    var oldFile = '/root/workspace/src/owlhmaster/rules2/drop.rules';
+    var oldFile = 'rules/drop.rules';
+    var newFile = 'conf/downloads/Default/rules/drop.rules';
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/compareFiles';
     var nodejson = {}
-    nodejson["new"] = newFile;
-    nodejson["old"] = oldFile;
+    nodejson["new"] = 'conf/downloads/Default/rules/drop.rules';
+    nodejson["old"] = 'rules/drop.rules';
     var nodeJSON = JSON.stringify(nodejson);
     axios({
         method: 'put',

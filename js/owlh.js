@@ -148,7 +148,7 @@ function generateAllNodesHTMLOutput(response) {
             '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
             '  <span style="font-size: 15px; color: grey;" >                                   ' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
-            '    <i class="fab fa-wpforms" title="Zeek policy management"></i>                  ' +
+            '    <i class="fab fa-wpforms" title="Zeek policy management" onclick="deployZeek(\''+uuid+'\')"></i>                  ' +
             '  </span>                                                                        ' +
             '  </p>                                                                           ' +
             '  <p><img src="img/wazuh.png" alt="" width="30"> '+
@@ -195,6 +195,22 @@ function generateAllNodesHTMLOutput(response) {
     }
 }
 
+function deployZeek(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/deploy/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        return true;
+    })
+    .catch(function (error) {
+        return false;
+    });
+}
 function playCollector(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;

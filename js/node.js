@@ -68,6 +68,25 @@ function cancelNode(){
 }
 
 function loadBPF(nid, name){
+    var modalWindow = document.getElementById('modal-window');
+    modalWindow.innerHTML = '<div class="modal-dialog">'+
+                '<div class="modal-content">'+
+    
+                 '<div class="modal-header">'+
+                        '<h4 class="modal-title" id="bpf-header">BPF</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>'+
+    
+                    '<div class="modal-body" id="modal-footer-inputtext">'+
+                        '<input type="text" class="form-control" id="recipient-name">'+
+                    '</div>'+
+    
+                    '<div class="modal-footer" id="modal-footer-btn">'+
+                        '<!-- Buttons -->'+
+                    '</div>'+
+    
+                '</div>'+
+            '</div>';
   var inputBPF = document.getElementById('recipient-name');
   var headerBPF = document.getElementById('bpf-header');
   var footerBPF = document.getElementById("modal-footer-btn");
@@ -124,7 +143,7 @@ function saveBPF(nid){
 
 
 function loadRuleset(nid){
-  var modalWindow = document.getElementById('modal-ruleset-management');
+  var modalWindow = document.getElementById('modal-window');
   modalWindow.innerHTML = 
   '<div class="modal-dialog modal-lg">'+
     '<div class="modal-content">'+
@@ -148,7 +167,6 @@ function loadRuleset(nid){
   var portmaster = document.getElementById('port-master').value;
   axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
     .then(function (response) {
-        console.log(response);
         if (typeof response.data.error != "undefined"){
             resultElement.innerHTML = "No rules available...";
         }else{
@@ -211,7 +229,7 @@ function saveRuleSelected(rule, nid){
 }
 
 function deleteNodeModal(node, name){
-  var modalWindow = document.getElementById('modal-delete-nodes');
+  var modalWindow = document.getElementById('modal-window');
   modalWindow.innerHTML = 
   '<div class="modal-dialog">'+
     '<div class="modal-content">'+
@@ -235,7 +253,7 @@ function deleteNodeModal(node, name){
 
 }
 function syncRulesetModal(node, name){
-  var modalWindow = document.getElementById('modal-sync-nodes-ruleset');
+  var modalWindow = document.getElementById('modal-window');
   modalWindow.innerHTML = 
   '<div class="modal-dialog">'+
     '<div class="modal-content">'+

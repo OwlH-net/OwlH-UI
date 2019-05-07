@@ -85,7 +85,7 @@ function generateAllGroupsHTMLOutput(response) {
         '</td><td class="align-middle">'+
             '<span style="font-size: 20px; color: Dodgerblue;" >                            ' +
                 '<i class="fas fa-sticky-note low-blue" style="float:right; font-size:20px; color: Dodgerblue;" title="Edit group" onclick="showEditGroup(\''+groups[group]['name']+'\',\''+groups[group]['desc']+'\',\''+group+'\')"></i>'+
-                '<i class="fas fa-trash-alt low-blue" style="float:right; font-size: 20px; color: Dodgerblue;" title="Delete group" data-toggle="modal" data-target="#modal-delete-group" onclick="modalDeleteGroup(\''+groups[group]['name']+'\',\''+group+'\')"></i>'+
+                '<i class="fas fa-trash-alt low-blue" style="float:right; font-size: 20px; color: Dodgerblue;" title="Delete group" data-toggle="modal" data-target="#modal-groups" onclick="modalDeleteGroup(\''+groups[group]['name']+'\',\''+group+'\')"></i>'+
             '</span>'+ 
         '</td></tr>'
     }
@@ -98,7 +98,7 @@ function generateAllGroupsHTMLOutput(response) {
 }
 
 function modalDeleteGroup(name, groupID){
-    var modalWindowDelete = document.getElementById('modal-delete-group');
+    var modalWindowDelete = document.getElementById('modal-groups');
     modalWindowDelete.innerHTML = 
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+
@@ -125,13 +125,19 @@ function showEditGroup(name, desc, groupID){
     document.getElementById('add-group').style.display = "none";
     document.getElementById('group-text').innerHTML = "Add new group";
     document.getElementById('edit-group').style.display = "block";
-    document.getElementById('groupnameedit').value = name;
-    document.getElementById('groupdescedit').value = desc;
-    document.getElementById('groupuuid').value = groupID;
+    document.getElementById('groupnameedit').style.display = "block";
+    document.getElementById('groupdescedit').style.display = "block";
+    document.getElementById('groupEditButtons').style.display = "block";
+}
+function modifyGroupClose(){
+    document.getElementById('groupnameedit').style.display = "none";
+    document.getElementById('groupdescedit').style.display = "none";
+    document.getElementById('groupEditButtons').style.display = "none";
 }
 
 function editGroupData(){
-    formAddGroup();
+    modifyGroupClose()
+    // formAddGroup();
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var name = document.getElementById('groupnameedit').value;

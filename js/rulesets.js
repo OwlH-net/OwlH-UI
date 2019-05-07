@@ -39,9 +39,12 @@ function generateAllRulesHTMLOutput(response) {
             rules[rule]["desc"] +
             '</td><td>                                                            ' +
             '<a class="btn btn-primary" href="ruleset.html?uuid=' + rule + '&rule=' + rules[rule]["name"] + '">Details</a> ' +
-            '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-clone" onclick="cloneRuleset(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\')">Clone</button>       ' +
-            '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-sync" onclick="syncAllRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Sync</button>        ' +
-            '<button class="btn btn-danger" data-toggle="modal" data-target="#modal-ruleset-delete" onclick="deleteRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Delete</button>        ' +
+            // '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-clone" onclick="cloneRuleset(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\')">Clone</button>       ' +
+            // '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset-sync" onclick="syncAllRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Sync</button>        ' +
+            // '<button class="btn btn-danger" data-toggle="modal" data-target="#modal-ruleset-delete" onclick="deleteRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Delete</button>        ' +
+            '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset" onclick="cloneRuleset(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\')">Clone</button>       ' +
+            '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset" onclick="syncAllRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Sync</button>        ' +
+            '<button class="btn btn-danger" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Delete</button>        ' +
             '</td></tr>'
     }
     html = html + '</tbody></table>';
@@ -55,7 +58,7 @@ function generateAllRulesHTMLOutput(response) {
 
 
 function syncAllRulesetModal(name, path, uuid){
-    var modalWindow = document.getElementById('modal-ruleset-sync');
+    var modalWindow = document.getElementById('modal-ruleset');
     modalWindow.innerHTML = 
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+
@@ -79,7 +82,7 @@ function syncAllRulesetModal(name, path, uuid){
 }
 
 function deleteRulesetModal(name, path, uuid){
-    var modalWindow = document.getElementById('modal-ruleset-delete');
+    var modalWindow = document.getElementById('modal-ruleset');
     modalWindow.innerHTML = 
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+
@@ -103,7 +106,7 @@ function deleteRulesetModal(name, path, uuid){
 }
 
 function cloneRuleset(name, path){
-    var modalWindow = document.getElementById('modal-ruleset-clone');
+    var modalWindow = document.getElementById('modal-ruleset');
     modalWindow.innerHTML = 
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+

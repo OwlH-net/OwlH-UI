@@ -109,8 +109,6 @@ function generateAllRulesetSourceHTMLOutput(response) {
 }
 
 function compareFiles(){
-    var oldFile = 'rules/drop.rules';
-    var newFile = 'conf/downloads/Default/rules/drop.rules';
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/compareFiles';
@@ -232,9 +230,29 @@ function downloadFile(path, url, sourceUUID){
         data: nodeJSON
     })
         .then(function (response) {
-            //GetAllRulesetSource();
+            if (response.data.ack == "true") {
+                document.getElementById('floating-alert').innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Download complete.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+            }else{
+                document.getElementById('floating-alert').innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong>'+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+            }
         })
         .catch(function error() {
+            document.getElementById('floating-alert').innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong>'+response.data.error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
         });
 }
 

@@ -46,7 +46,20 @@ function GetAllNodes() {
     var portmaster = document.getElementById('port-master').value;
     var resultElement = document.getElementById('nodes-table');
     document.getElementById('addnids').style.display = "none";
-    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/node')
+
+
+    //    var instance = axios.create({
+    //     baseURL: 'https://' + ipmaster + ':' + portmaster + '/v1/node',
+    //     httpsAgent: new https.Agent({
+    //         rejectUnauthorized: false   
+    //     })
+    // });
+
+    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/node', {
+            params: { 
+                // rejectUnauthorized: false 
+            }
+        })
         .then(function (response) {
             document.getElementById('addnids').style.display = "block";
             resultElement.innerHTML = generateAllNodesHTMLOutput(response);
@@ -126,9 +139,9 @@ function generateAllNodesHTMLOutput(response) {
             '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
             '  <span style="font-size: 15px; color: grey;" >                                   ' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
-            '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-sync-nodes-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+nodes[node]['name']+'\')"></i>                                 ' +
-            '    <a title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-change-bpf" onclick="loadBPF(\''+uuid+'\',\''+nodes[node]['name']+'\')">BPF</a>'+
-            '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-ruleset-management" onclick="loadRuleset(\''+uuid+'\')"></i>                        ' +
+            '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+nodes[node]['name']+'\')"></i>                                 ' +
+            '    <a title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+nodes[node]['name']+'\')">BPF</a>'+
+            '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>                        ' +
             '  </span>                                                                        ' +
             '  </p>                                                                           ' +
             '  <p><img  src="img/bro.png" alt="" width="30">'+
@@ -153,7 +166,12 @@ function generateAllNodesHTMLOutput(response) {
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
-            '    <i class="fas fa-info" title="Collector information" data-toggle="modal" data-target="#modal-collector-show" onclick="showCollector(\''+uuid+'\')"></i>  ' +
+            '    <i class="fas fa-info" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
+            '  </span></p> '+                      
+            '  <p style="color: Dodgerblue;"><img src="img/favicon.ico" height="25"> | '+
+            '  <span style="font-size: 15px; color: grey;">                                   ' +
+            '    <i class="fas fa-play-circle" title="Play OwlH functions" onclick=""></i>                         ' +
+            '    <i class="fas fa-stop-circle" title="Stop OwlH functions" onclick=""></i>                         ' +
             '  </span></p> ';                      
             html = html +   '</td>                                                              ' +
             '<td class="align-middle">                                                        ' +
@@ -162,7 +180,7 @@ function generateAllNodesHTMLOutput(response) {
             '    <i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i>                            ' +
             '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit node configuration"></i></a>           ' +
             '    <a style="font-size: 20px; color: Dodgerblue;" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"> ' +
-            '      <i class="fas fa-trash-alt" title="Delete Node" data-toggle="modal" data-target="#modal-delete-nodes"></i>                         ' +
+            '      <i class="fas fa-trash-alt" title="Delete Node" data-toggle="modal" data-target="#modal-window"></i>                         ' +
             '    </a>                                                                            ' +
             '  </span>                                                                           ' +
             '</td>                                                                               ' +
@@ -225,85 +243,8 @@ function showCollector(uuid){
         return false;
     });
 }
-// function loadRuleset(nid){
-//     var modalWindow = document.getElementById('modal-ruleset-management');
-//     modalWindow.innerHTML = 
-//     '<div class="modal-dialog modal-lg">'+
-//       '<div class="modal-content">'+
-  
-//         '<div class="modal-header">'+
-//           '<h4 class="modal-title" id="ruleset-manager-header">Rules</h4>'+
-//           '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-//         '</div>'+
-  
-//         '<div class="modal-body" id="ruleset-manager-footer-table">'+ 
-//         '</div>'+
-  
-//         '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
-//           '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-//         '</div>'+
-  
-//       '</div>'+
-//     '</div>';    
-//   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function showModalCollector(response){
-//     var html =  ' <div class="modal-dialog" role="document">'+
-// '    <div class="modal-content">'+
-//       '<div class="modal-header">'+
-//         '<h5 class="modal-title">Modal title</h5>'+
-//         '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-//           '<span aria-hidden="true">&times;</span>'+
-//         '</button>'+
-//       '</div>'+
-//       '<div class="modal-body">'+
-//         '<p>Modal body text goes here.</p>'+
-//       '</div>'+
-//       '<div class="modal-footer">'+
-//         '<button type="button" class="btn btn-primary">Save changes</button>'+
-//         '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-//       '</div>'+
-//     '</div>'+
-//   '</div>';
-//   document.getElementById('modal-collector-show').innerHTML = html;
     var res = response.data.split("\n");
     var html = '<div class="modal-dialog modal-lg">'+
                     '<div class="modal-content">'+
@@ -324,7 +265,7 @@ function showModalCollector(response){
                 
                     '</div>'+
                 '</div>';
-    document.getElementById('modal-collector-show').innerHTML = html;
+    document.getElementById('modal-window').innerHTML = html;
 }
 
 function sendRulesetToNode(uuid){

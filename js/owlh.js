@@ -29,6 +29,7 @@ function PingNode(uuid) {
                 PingZeek(uuid);
                 PingWazuh(uuid);
                 PingStap(uuid);
+                PingPorts(uuid);
                 return "true";
             } else {
                 document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
@@ -168,10 +169,12 @@ function generateAllNodesHTMLOutput(response) {
             '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-info" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
             '  </span></p> '+                      
-            '  <p style="color: Dodgerblue;"><img src="img/favicon.ico" height="25"> | '+
+            '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
+            '  <img src="img/favicon.ico" height="25"> Plugin | '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <i class="fas fa-play-circle" title="Play OwlH functions" onclick=""></i>                         ' +
-            '    <i class="fas fa-stop-circle" title="Stop OwlH functions" onclick=""></i>                         ' +
+            '    [KnownPorts] <i class="fas fa-play-circle" title="Play OwlH functions" onclick="ChangeStatus(\''+uuid+'\') "></i> |                         ' +
+            '    [Learning]<a style="cursor: default;" onclick="ChangeMode(\''+uuid+'\')"> <i class="fas fa-sync-alt" title="Play OwlH functions" onclick="ChangeStatus(\''+uuid+'\') "></i></a>                          ' +
+            '    | <a style="cursor: default;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</a>                              '+
             '  </span></p> ';                      
             html = html +   '</td>                                                              ' +
             '<td class="align-middle">                                                        ' +
@@ -195,6 +198,40 @@ function generateAllNodesHTMLOutput(response) {
     }
 }
 
+function ChangeMode(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/mode/' + uuid;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        return true;
+    })
+    .catch(function (error) {
+        return false;
+    });
+}
+
+function ChangeStatus(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status/' + uuid;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        return true;
+    })
+    .catch(function (error) {
+        return false;
+    });
+}
+
 function deployZeek(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -211,6 +248,7 @@ function deployZeek(uuid){
         return false;
     });
 }
+
 function playCollector(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -227,6 +265,7 @@ function playCollector(uuid){
         return false;
     });
 }
+
 function stopCollector(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -243,6 +282,7 @@ function stopCollector(uuid){
         return false;
     });
 }
+
 function showCollector(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -282,6 +322,45 @@ function showModalCollector(response){
                     '</div>'+
                 '</div>';
     document.getElementById('modal-window').innerHTML = html;
+}
+function showPorts(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ports/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        showModalPorts(response);                
+    })
+    .catch(function (error) {
+        return false;
+    });
+}
+
+function showModalPorts(response){
+
+    var html = '<div class="modal-dialog modal-sm">'+
+            '<div class="modal-content">'+
+        
+                '<div class="modal-header">'+
+                    '<h4 class="modal-title">PORTS</h4>'+
+                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>'+
+        
+                '<div class="modal-body">  ';
+                    for(line in response.data){
+                        html = html + response.data[line]+'<br>';   
+                    }
+                '</div>'+
+        
+            '</div>'+
+        '</div>';
+        document.getElementById('modal-window').innerHTML = html;
 }
 
 function sendRulesetToNode(uuid){
@@ -603,7 +682,29 @@ function PingStap(uuid) {
     return false;
 }
 
-
+function PingPorts(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPorts/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+            for(line in response.data){
+                console.log(response.data[line]["mode"]);
+                console.log(response.data[line]["status"]);
+                console.log(response.data[line]["name"]);
+            }
+            return true;
+        })
+        .catch(function (error) {
+            
+            return false;            
+        });
+    return false;
+}
 
 
 function getRulesetUID(uuid) {

@@ -7,11 +7,7 @@ function loadFileIntoTextarea(){
 
 function saveFileChanged() {
     var fileContent = document.getElementById('inputTextUI').value;
-    var nodeurl = 'https://192.168.0.100/ui.php';
-    // console.log(fileContent);
-    // var blob = new Blob([JSON.stringify(fileContent)], {type: "text/plain;charset=utf-8"});
-    // // localStorage.setItem('../conf/ui.conf', JSON.stringify(fileContent));
-    // saveAs(blob, '../conf/ui.conf');
+    var nodeurl = '../ui.php';
     axios({
         method: 'put',
         url: nodeurl,

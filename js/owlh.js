@@ -168,15 +168,15 @@ function generateAllNodesHTMLOutput(response) {
             '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-info" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
-            '  </span></p> '+                      
+            '  </span></p> '+   
             '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
             '  <img src="img/favicon.ico" height="25"> Plugin | '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    [KnownPorts] <i class="fas fa-play-circle" title="Play OwlH functions" onclick="ChangeStatus(\''+uuid+'\') "></i> |                         ' +
-            '    [Learning]<a style="cursor: default;" onclick="ChangeMode(\''+uuid+'\')"> <i class="fas fa-sync-alt" title="Play OwlH functions" onclick="ChangeStatus(\''+uuid+'\') "></i></a>                          ' +
-            '    | <a style="cursor: default;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</a>                              '+
-            '  </span></p> ';                      
-            html = html +   '</td>                                                              ' +
+            '    <span class="fas fa-play-circle" id="ports-status" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
+            '    <a style="color: grey;" id="ports-mode">[N/A]</a> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
+            '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
+            '  </span></p> ';  
+            html = html +   '</td>                                                            ' +
             '<td class="align-middle">                                                        ' +
             '  <span style="font-size: 20px; color: Dodgerblue;" >                            ' +
             '    <a href="files.html?uuid='+node+'&node='+nodes[node]['name']+'"><i class="fas fa-arrow-alt-circle-down" title="See node files"></i></a>             ' +
@@ -198,37 +198,68 @@ function generateAllNodesHTMLOutput(response) {
     }
 }
 
-function ChangeMode(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/mode/' + uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000
-    })
-    .then(function (response) {
-        return true;
-    })
-    .catch(function (error) {
-        return false;
-    });
-}
-
 function ChangeStatus(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status/' + uuid;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status';
+    
+    if(document.getElementById('ports-status').innerHTML == "Enabled"){
+        var status ="Disabled";
+    }else{
+        var status ="Enabled";
+    }
+
+    var jsonRuleUID = {}
+    jsonRuleUID["uuid"] = uuid;
+    jsonRuleUID["status"] = status;
+    var dataJSON = JSON.stringify(jsonRuleUID);
+
+    console.log(status);
+    console.log(status);
+
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        data: dataJSON
     })
     .then(function (response) {
-        return true;
+        GetAllNodes()
     })
     .catch(function (error) {
-        return false;
+    });
+}
+
+function ChangeMode(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/mode';
+    
+    if(document.getElementById('ports-mode').innerHTML == "Learning"){
+        var mode ="Production";
+    }else{
+        var mode ="Learning";
+    }
+
+    var jsonRuleUID = {}
+    jsonRuleUID["uuid"] = uuid;
+    jsonRuleUID["mode"] = mode;
+    var dataJSON = JSON.stringify(jsonRuleUID);
+
+
+    console.log(mode);
+    console.log(mode);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        GetAllNodes()
+    })
+    .catch(function (error) {
     });
 }
 
@@ -695,7 +726,16 @@ function PingPorts(uuid) {
             for(line in response.data){
                 console.log(response.data[line]["mode"]);
                 console.log(response.data[line]["status"]);
-                console.log(response.data[line]["name"]);
+                document.getElementById('ports-mode').innerHTML = response.data[line]["mode"];
+                document.getElementById('ports-status').innerHTML = response.data[line]["status"];
+                
+                if (response.data[line]["status"] == "Enabled"){
+                    document.getElementById('ports-status-btn').className = "fas fa-stop-circle";
+                    document.getElementById('ports-status').className = "badge bg-success align-text-bottom text-white";
+                }else{
+                    document.getElementById('ports-status-btn').className = "fas fa-play-circle";
+                    document.getElementById('ports-status').className = "badge bg-danger align-text-bottom text-white";
+                }                
             }
             return true;
         })

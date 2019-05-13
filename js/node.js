@@ -250,8 +250,8 @@ function deleteNodeModal(node, name){
 
     '</div>'+
   '</div>';
-
 }
+
 function syncRulesetModal(node, name){
   var modalWindow = document.getElementById('modal-window');
   modalWindow.innerHTML = 

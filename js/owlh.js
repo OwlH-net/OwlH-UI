@@ -149,7 +149,8 @@ function generateAllNodesHTMLOutput(response) {
             '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
             '  <span style="font-size: 15px; color: grey;" >                                   ' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
-            '    <i class="fab fa-wpforms" title="Zeek policy management" onclick="deployZeek(\''+uuid+'\')"></i>                  ' +
+            '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
+            '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i>                  ' +
             '  </span>                                                                        ' +
             '  </p>                                                                           ' +
             '  <p><img src="img/wazuh.png" alt="" width="30"> '+
@@ -170,7 +171,7 @@ function generateAllNodesHTMLOutput(response) {
             '    <i class="fas fa-info" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
             '  </span></p> '+   
             '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
-            '  <img src="img/favicon.ico" height="25"> Plugin | '+
+            '  <img src="img/favicon.ico" height="25"> Knownports | '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <span class="fas fa-play-circle" id="ports-status" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
             '    <a style="color: grey;" id="ports-mode">[N/A]</a> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
@@ -261,6 +262,32 @@ function ChangeMode(uuid){
     })
     .catch(function (error) {
     });
+}
+
+
+
+function deployZeekModal(uuid){
+    var modalWindow = document.getElementById('modal-window');
+    modalWindow.innerHTML = 
+    '<div class="modal-dialog">'+
+      '<div class="modal-content">'+
+      
+        '<div class="modal-header">'+
+          '<h4 class="modal-title" id="delete-node-header">Node</h4>'+
+          '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+        '</div>'+
+  
+        '<div class="modal-body" id="delete-node-footer-table">'+ 
+          '<p>Do you want to Deploy Zeek policy?</p>'+
+        '</div>'+
+  
+        '<div class="modal-footer" id="delete-node-footer-btn">'+
+          '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+          '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="deployZeek(\''+uuid+'\')">Deploy</button>'+
+        '</div>'+
+  
+      '</div>'+
+    '</div>';
 }
 
 function deployZeek(uuid){

@@ -391,34 +391,108 @@ function showPorts(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        showModalPorts(response);                
+        showModalPorts(response, uuid);                
     })
     .catch(function (error) {
         return false;
     });
 }
 
-function showModalPorts(response){
-
-    var html = '<div class="modal-dialog modal-sm">'+
-            '<div class="modal-content">'+
-        
-                '<div class="modal-header">'+
-                    '<h4 class="modal-title">PORTS</h4>'+
-                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>'+
-        
-                '<div class="modal-body">  ';
-                    for(line in response.data){
-                        html = html + response.data[line]+'<br>';   
-                    }
-                '</div>'+
-        
+function showModalPorts(response, uuid){
+    var html = '<div class="modal-dialog modal-lg">'+
+        '<div class="modal-content">'+
+    
+            '<div class="modal-header">'+
+                '<h4 class="modal-title">PORTS</h4>'+
+                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
             '</div>'+
-        '</div>';
-        document.getElementById('modal-window').innerHTML = html;
+
+            '<div class="modal-body">  '+
+                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                    '<thead>                                                      ' +
+                        '<tr>                                                         ' +
+                            '<th width="30%">Portproto</th>                                    ' +
+                            '<th>First</th>                                         ' +
+                            '<th>Last</th>                                 ' +
+                            '<th width="10%">Select</th>                                 ' +
+                        '</tr>                                                        ' +
+                    '</thead>                                                     ' +
+                    '<tbody>                                                     ' 
+                        for(line in response.data){
+                            var first = new Date(response.data[line]["first"]*1000);
+                            var last = new Date(response.data[line]["last"]*1000);
+                            
+                            // console.log(first.getDate()+" - "+first.getMonth()+1+" - "+first.getFullYear());
+                            // console.log(first.toGMTString());
+                            console.log(first.toString());
+
+                            html = html + '<tr><td id="">                            ' +
+                            response.data[line]["portprot"]+'<br>'                    +
+                            '</td><td>'+
+                            // Date(response.data[line]["first"]+1000).format('h:i:s')+'<br>'                    +
+                            first+
+                            '</td><td>'+
+                            last+
+                            // Date(response.data[line]["last"]+1000).format('h:i:s')+'<br>'                    +
+                            '</td><td align="center">'+
+                            '<input class="form-check-input" type="checkbox" id="'+line+'"></input>'+
+                            '</td></tr>'
+                        }
+                html = html +'</tbody>'+
+                '</table>'+
+            '</div>'+
+
+            '<div class="modal-footer" id="ruleset-note-footer-btn">'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                '<button type="button" class="btn btn-dark" data-dismiss="modal" onclick="deleteAllPorts(\''+uuid+'\')">Delete all</button>' +
+                '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePorts(\''+uuid+'\')">Delete</button>' +
+            '</div>'+
+
+        '</div>'+
+    '</div>';
+    document.getElementById('modal-window').innerHTML = html;
+}
+
+function deletePorts(uuid){
+    var arrayLinesSelected = new Object();
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/ports/delete/'+uuid;
+    $('input:checkbox:checked').each(function() {
+        var CHuuid = $(this).prop("id");
+        arrayLinesSelected[CHuuid] = CHuuid;
+    });
+    console.log(arrayLinesSelected);
+    var nodeJSON = JSON.stringify(arrayLinesSelected);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: nodeJSON
+        }).then(function (response) {
+        
+        }).catch(function (error) {
+
+        }); 
+
+}
+
+function deleteAllPorts(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/ports/deleteAll/'+uuid;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    }).then(function (response) {
+
+    }).catch(function (error) {
+
+    }); 
+
 }
 
 function sendRulesetToNode(uuid){

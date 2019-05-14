@@ -180,27 +180,27 @@ function loadRuleset(nid){
 }
 
 function generateAllRulesModal(response, nid) {
-  var rules = response.data;
-  var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-              '<thead>                                                      ' +
-              '<tr>                                                         ' +
-              '<th width="30%">Name</th>                                    ' +
-              '<th>Description</th>                                         ' +
-              '<th width="15%">Options</th>                                 ' +
-              '</tr>                                                        ' +
-              '</thead>                                                     ' +
-              '<tbody >                                                     ' 
-  for (rule in rules) {
-  html = html + '<tr><td width="30%">                                       ' +
-      rules[rule]["name"]                                                     +
-      '</td><td>                                                            ' +
-      rules[rule]["desc"]                                                     +
-      '</td><td width="15%">                                                ' +
-      '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
-      '</td></tr>                                                           '
-  }
-  html = html + '</tbody></table>';
-  return html;
+    var rules = response.data;
+    var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                '<thead>                                                      ' +
+                '<tr>                                                         ' +
+                '<th width="30%">Name</th>                                    ' +
+                '<th>Description</th>                                         ' +
+                '<th width="15%">Options</th>                                 ' +
+                '</tr>                                                        ' +
+                '</thead>                                                     ' +
+                '<tbody >                                                     ' 
+    for (rule in rules) {
+    html = html + '<tr><td width="30%">                                       ' +
+        rules[rule]["name"]                                                     +
+        '</td><td>                                                            ' +
+        rules[rule]["desc"]                                                     +
+        '</td><td width="15%">                                                ' +
+        '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
+        '</td></tr>                                                           '
+    }
+    html = html + '</tbody></table>';
+    return html;
 }
 
 

@@ -92,12 +92,14 @@ function generateAllRulesetSourceHTMLOutput(response) {
             '</td><td>'+
             sources[source]['url']+
             '</td><td class="align-middle">'+
-                '<span style="font-size: 20px; color: Dodgerblue;" >                            ' +
-                    '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i>'+
-                    '<i class="fas fa-sticky-note low-blue" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i>'+
-                    '<i class="fas fa-trash-alt low-blue" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i>'+
+                // '<p>                            ' +
+                '<span style="font-size: 20px; color: Dodgerblue;">'+
+                    '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
+                    '<i class="fas fa-sticky-note low-blue" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
+                    '<i class="fas fa-trash-alt low-blue" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                     '<a href="compare-files.html"><i class="fas fa-cog low-blue" title="Compare files" onclick="compareFiles()"></i></a>                              ' +
-                '</span>'+     
+                '</span>'+
+                // '</p>'+     
             '</td></tr>'
     }
     html = html + '</tbody></table>';

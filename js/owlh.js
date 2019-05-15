@@ -30,6 +30,7 @@ function PingNode(uuid) {
                 PingWazuh(uuid);
                 PingStap(uuid);
                 PingPorts(uuid);
+                PingCollector(uuid);
                 return "true";
             } else {
                 document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
@@ -164,11 +165,11 @@ function generateAllNodesHTMLOutput(response) {
             '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
             '    <a href="stap.html?uuid='+uuid+'&node='+nodes[node]['name']+'"><i class="fas fa-cog" title="Configuration" style="color: grey;"></i><a>                             ' +
             '  </span></p> '+
-            '  <p style="color: Dodgerblue;"><i class="fas fa-plug fa-lg"></i> &nbsp; <i class="fas fa-compress-arrows-alt"></i> | '+
+            '  <p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="collector-status"></i> | '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
-            '    <i class="fas fa-info" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
+            '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
             '  </span></p> '+   
             '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
             '  <img src="img/favicon.ico" height="25"> Knownports | '+
@@ -215,9 +216,6 @@ function ChangeStatus(uuid){
     jsonRuleUID["status"] = status;
     var dataJSON = JSON.stringify(jsonRuleUID);
 
-    console.log(status);
-    console.log(status);
-
     axios({
         method: 'put',
         url: nodeurl,
@@ -246,10 +244,6 @@ function ChangeMode(uuid){
     jsonRuleUID["uuid"] = uuid;
     jsonRuleUID["mode"] = mode;
     var dataJSON = JSON.stringify(jsonRuleUID);
-
-
-    console.log(mode);
-    console.log(mode);
 
     axios({
         method: 'put',
@@ -341,6 +335,28 @@ function stopCollector(uuid){
     });
 }
 
+function PingCollector(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var collectorStatus = document.getElementById('collector-status');
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        if (response.data != ""){
+            collectorStatus.style.color="green";
+        }else{
+            collectorStatus.style.color="red";
+        }
+    })
+    .catch(function (error) {
+        return false;
+    });
+}
+
 function showCollector(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -351,7 +367,7 @@ function showCollector(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        showModalCollector(response);                
+        showModalCollector(response);
     })
     .catch(function (error) {
         return false;
@@ -370,17 +386,71 @@ function showModalCollector(response){
                             '</button>'+
                         '</div>'+
                 
-                        '<div class="modal-body">'; 
-                            for(line in res) {
-                                html = html + res[line].replace(" ","&#09;")+"<br>";
-                            }
-                            html = html +
+                        '<div class="modal-body">'
+                                if (response.data == ""){
+                                    html = html + '<p>There are no ports</p>';
+                                }else{
+                                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                    '<thead>                                                      ' +
+                                        '<tr>                                                         ' +
+                                            '<th>Proto</th>                                             ' +
+                                            '<th>RECV</th>                                             ' +
+                                            '<th>SEND</th>                                             ' +
+                                            '<th style="width: 25%">LOCAL IP</th>                                             ' +
+                                            '<th style="width: 25%">REMOTE IP</th>                                             ' +
+                                            '<th style="width: 15%">STATUS</th>                                             ' +
+                                            '<th></th>                                             ' +
+                                        '</tr>                                                        ' +
+                                    '</thead>                                                     ' +
+                                    '<tbody>                                                     ' 
+                                    for(line in res) {
+                                        if (res[line] != ""){
+                                            // var x = res[line].split(" ");
+                                            var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
+                                            var lineSplited = vregex.exec(res[line]);
+                                            // continue;
+                                            // for( var i = 0; i < x.length; i++){ 
+                                            //     if ( x[i] === "") {
+                                            //       x.splice(i, 1); 
+                                            //       i--;
+                                            //     }
+                                            //  }
+                                            // console.log(x);
+                                            // [ "tcp", "0", "0", "192.168.0.101:22", "192.168.0.164:55427", "ESTABLISHED", "4084/sshd:", "root@pts" ]
+
+    
+                                            // var lineSplited = res[line].split(" ");
+                                            html = html + '<tr><td>' +
+                                            // lineSplited[0]+
+                                            // '</td><td>     ' +
+                                            lineSplited[1]+
+                                            '</td><td>     ' +
+                                            lineSplited[2]+
+                                            '</td><td>     ' +
+                                            lineSplited[3]+
+                                            '</td><td>     ' +
+                                            lineSplited[4]+
+                                            '</td><td>     ' +
+                                            lineSplited[5]+
+                                            '</td><td>     ' +
+                                            lineSplited[6]+
+                                            '</td><td>     ' +
+                                            lineSplited[7]+
+                                            '</td></tr>'
+                                            // html = html + res[line].replace(" ","&#09;")+"<br>";
+                                        }
+                                    }
+                                }
+                        html = html +
                         '</div>'+
                 
                     '</div>'+
                 '</div>';
+                console.log(html);
     document.getElementById('modal-window').innerHTML = html;
 }
+
+
 function showPorts(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -424,18 +494,12 @@ function showModalPorts(response, uuid){
                             var first = new Date(response.data[line]["first"]*1000);
                             var last = new Date(response.data[line]["last"]*1000);
                             
-                            // console.log(first.getDate()+" - "+first.getMonth()+1+" - "+first.getFullYear());
-                            // console.log(first.toGMTString());
-                            console.log(first.toString());
-
                             html = html + '<tr><td id="">                            ' +
                             response.data[line]["portprot"]+'<br>'                    +
                             '</td><td>'+
-                            // Date(response.data[line]["first"]+1000).format('h:i:s')+'<br>'                    +
                             first+
                             '</td><td>'+
                             last+
-                            // Date(response.data[line]["last"]+1000).format('h:i:s')+'<br>'                    +
                             '</td><td align="center">'+
                             '<input class="form-check-input" type="checkbox" id="'+line+'"></input>'+
                             '</td></tr>'
@@ -825,8 +889,6 @@ function PingPorts(uuid) {
     })
         .then(function (response) {
             for(line in response.data){
-                console.log(response.data[line]["mode"]);
-                console.log(response.data[line]["status"]);
                 document.getElementById('ports-mode').innerHTML = response.data[line]["mode"];
                 document.getElementById('ports-status').innerHTML = response.data[line]["status"];
                 

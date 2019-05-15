@@ -37,7 +37,7 @@ function generateAllLinesHTMLOutput (response){
         '<th style="width: 10%">Actions</th>                                             ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
-        '<tbody>                                                     '
+        '<tbody>                                                     ' 
     for (line in lines) {
 
         if (lines[line]["enabled-new"] == "Enabled") {
@@ -99,8 +99,6 @@ function createNewFile(){
     $('input:radio:checked').each(function() {
         var sid = $(this).prop("name");
         var value = $(this).prop("value");
-        // arrayLinesSelected["current"] = document.getElementById("currentFile").innerHTML;
-        // arrayLinesSelected["new"] = document.getElementById("newFile").innerHTML;
         if (value == "old") {
             arrayLinesSelected[sid] = document.getElementById(sid+'-old').innerHTML;
         }        

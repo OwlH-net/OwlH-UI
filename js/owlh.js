@@ -185,7 +185,7 @@ function generateAllNodesHTMLOutput(response) {
             '    <i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i>                            ' +
             '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit node configuration"></i></a>           ' +
             '    <a style="font-size: 20px; color: Dodgerblue;" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"> ' +
-            '      <i class="fas fa-trash-alt" title="Delete Node" data-toggle="modal" data-target="#modal-window"></i>                         ' +
+            '     | <i class="fas fa-trash-alt" style="color: red;" title="Delete Node" data-toggle="modal" data-target="#modal-window"></i>                         ' +
             '    </a>                                                                            ' +
             '  </span>                                                                           ' +
             '</td>                                                                               ' +
@@ -593,7 +593,9 @@ function RunSuricata(uuid) {
         .catch(function error() {
         });
 
-    GetAllNodes();
+    setTimeout(function (){
+        GetAllNodes();
+    }, 1000);
 }
 
 //Stop suricata system
@@ -612,7 +614,9 @@ function StopSuricata(uuid) {
         .catch(function error() {
         });
 
-    GetAllNodes();
+    setTimeout(function (){
+        GetAllNodes();
+    }, 1000);
 }
 
 function PingSuricata(uuid) {

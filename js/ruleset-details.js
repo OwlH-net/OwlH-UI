@@ -2,6 +2,7 @@ function GetAllRulesetDetails(){
     var urlWeb = new URL(window.location.href);
     var sourceName = urlWeb.searchParams.get("sourceName");
     var path = urlWeb.searchParams.get("path");
+    var uuid = urlWeb.searchParams.get("uuid");
     var ipmaster = document.getElementById('ip-master').value;
     document.getElementById('ruleset-source-details-title').innerHTML = sourceName;
     var portmaster = document.getElementById('port-master').value;
@@ -10,6 +11,7 @@ function GetAllRulesetDetails(){
 
     var nodejson = {}
     nodejson["path"] = path;
+    nodejson["uuid"] = uuid;
     var nodeJSON = JSON.stringify(nodejson);
     axios({
         method: 'put',
@@ -18,19 +20,19 @@ function GetAllRulesetDetails(){
         data: nodeJSON
     })
     .then(function (response) {
-        console.log(response);
         if (response.data.ack){
-            result.innerHTML = '<h3 align="center">Error retrieving files</h3>';;
+            result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
         }else{
             result.innerHTML = generateAllRulesetDetailsHTMLOutput(response, sourceName);
         }
     })
     .catch(function (error) {
-        result.innerHTML = '<h3 align="center">No connection</h3>';
+        result.innerHTML = '<h3 align="center">Error: No connection</h3>';
     });
 }
 
 function generateAllRulesetDetailsHTMLOutput(response, sourceName){
+    console.log(response.data);
     var isEmpty = true;
     var files = response.data.files;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -57,7 +59,8 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName){
             '</td><td class="align-middle">'+
                 // '<p>                            ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    '<i class="fas fa-file-alt" title="Show Rukes"></i> &nbsp;'+
+                    // '<i class="fas fa-file-alt" title="Show Rules"></i> &nbsp;'+
+                    '<a class="fas fa-file-alt" title="Show Rules" href="ruleset.html?uuid=' + file + '&rule=' + file + '"></a> ' +
                     // '<i class="fas fa-sticky-note low-blue" title="Edit file" onclick="showEditRulesetfile(\''+files[source]['name']+'\',\''+files[source]['desc']+'\',\''+files[source]['path']+'\',\''+files[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
                     // '<i class="fas fa-trash-alt low-blue" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+files[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                     // '<a href="compare-files.html"><i class="fas fa-cog low-blue" title="Compare files" onclick="compareFiles()"></i></a>                              ' +

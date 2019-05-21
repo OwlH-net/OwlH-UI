@@ -1,4 +1,4 @@
-function GetAllRules() {
+function GetAllRulesets() {
     var resultElement = document.getElementById('rulesets-table');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -9,14 +9,14 @@ function GetAllRules() {
         timeout: 30000
     })
         .then(function (response) {
-            resultElement.innerHTML = generateAllRulesHTMLOutput(response);
+            resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
         })
         .catch(function (error) {
-            resultElement.innerHTML = generateAllRulesHTMLOutput(error);
+            resultElement.innerHTML = generateAllRulesetsHTMLOutput(error);
         });
 }
 
-function generateAllRulesHTMLOutput(response) {
+function generateAllRulesetsHTMLOutput(response) {
     var isEmptyRulesets = true;
     var rules = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -30,6 +30,9 @@ function generateAllRulesHTMLOutput(response) {
         '</thead>                                                     ' +
         '<tbody >                                                     '
     for (rule in rules) {
+        if (rules[rule]["type"] == "source") {
+            continue;
+        }
         isEmptyRulesets = false;
         html = html + '<tr><td>' +
             rules[rule]["name"] +
@@ -152,7 +155,7 @@ function deleteRuleset(name, path, uuid) {
         data: bpfjson
     })
         .then(function (response) {
-            GetAllRules();
+            GetAllRulesets();
         })
         .catch(function (error) {
         });
@@ -182,7 +185,7 @@ function saveClonedRuleset(name, path){
             data: bpfjson
         })
             .then(function (response) {
-                GetAllRules();
+                GetAllRulesets();
             })
             .catch(function (error) {
             });
@@ -215,7 +218,7 @@ function loadJSONdata(){
     var portLoad = document.getElementById('port-master');
     portLoad.value = data.master.port;
     loadTitleJSONdata();
-    GetAllRules();   
+    GetAllRulesets();   
   });
 }
 loadJSONdata();

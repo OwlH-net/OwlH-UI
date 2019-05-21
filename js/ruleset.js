@@ -2,7 +2,6 @@ function GetAllRuleset() {
     var url = new URL(window.location.href);
     var uuid = url.searchParams.get("uuid");
     var rule = url.searchParams.get("rule");
-    console.log(rule);
     var resultElement = document.getElementById('ruleset-table');
     var bannerTitle = document.getElementById('banner-title-ruleset');
     var progressBar = document.getElementById('progressBar-ruleset');

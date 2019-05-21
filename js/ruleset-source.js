@@ -27,7 +27,7 @@ function addRulesetSource() {
     nodejson["desc"] = sourceDesc;
     nodejson["fileName"] = fileName[fileName.length-1];
     nodejson["url"] = sourceUrl;
-    nodejson["type"] = "Rulesets";
+    nodejson["type"] = "source";
     var nodeJSON = JSON.stringify(nodejson);
 
     axios({
@@ -68,6 +68,7 @@ function GetAllRulesetSource(){
 }
 
 function generateAllRulesetSourceHTMLOutput(response) {
+    console.log(response);
     var isEmpty = true;
     var sources = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -92,15 +93,12 @@ function generateAllRulesetSourceHTMLOutput(response) {
             '</td><td>'+
             sources[source]['url']+
             '</td><td class="align-middle">'+
-                // '<p>                            ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<i class="fas fa-sticky-note low-blue" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<i class="fas fa-trash-alt low-blue" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<a href="compare-files.html"><i class="fas fa-cog low-blue" title="Compare files" onclick="compareFiles()"></i></a>                              ' +
-                    '<a href="ruleset-details.html?sourceName='+sources[source]['name']+'&path='+sources[source]['path']+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
+                    '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
+                    '<a href="ruleset-details.html?sourceName='+sources[source]['name']+'&path='+sources[source]['path']+'&uuid='+source+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
+                    ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                 '</span>'+
-                // '</p>'+     
             '</td></tr>'
     }
     html = html + '</tbody></table>';
@@ -162,7 +160,6 @@ function showEditRulesetSource(name, desc, path, url, sourceUUID){
     document.getElementById('edit-ruleset-source').style.display = "block";
     document.getElementById('ruleset-source-name-edit').value = name;
     document.getElementById('ruleset-source-edit-desc').value = desc;
-    document.getElementById('ruleset-source-edit-path').value = path;
     document.getElementById('ruleset-source-edit-url').value = url;
     document.getElementById('ruleset-source-uuid').value = sourceUUID;
 }
@@ -175,7 +172,6 @@ function editRulesetSourceData(){
     var name = document.getElementById('ruleset-source-name-edit').value;
     var desc = document.getElementById('ruleset-source-edit-desc').value;
     var sourceUUID = document.getElementById('ruleset-source-uuid').value;
-    var path = document.getElementById('ruleset-source-edit-path').value;
     var url = document.getElementById('ruleset-source-edit-url').value;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -183,7 +179,6 @@ function editRulesetSourceData(){
     var nodejson = {}
     nodejson["name"] = name;
     nodejson["desc"] = desc;
-    nodejson["path"] = path;
     nodejson["url"] = url;
     nodejson["sourceuuid"] = sourceUUID;
     var nodeJSON = JSON.stringify(nodejson);

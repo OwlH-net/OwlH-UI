@@ -68,7 +68,6 @@ function GetAllRulesetSource(){
 }
 
 function generateAllRulesetSourceHTMLOutput(response) {
-    console.log(response);
     var isEmpty = true;
     var sources = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -96,7 +95,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
                     '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<a href="ruleset-details.html?sourceName='+sources[source]['name']+'&path='+sources[source]['path']+'&uuid='+source+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
+                    '<a href="ruleset-details.html?sourceName='+sources[source]['name']+'&uuid='+source+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
                     ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                 '</span>'+
             '</td></tr>'
@@ -124,7 +123,6 @@ function compareFiles(){
         data: nodeJSON
         })
         .then(function (response) {
-            console.log(response.data);
         })
         .catch(function (error) {
         });   
@@ -221,6 +219,7 @@ function downloadFile(path, url, sourceUUID){
     nodejson["path"] = path;
     nodejson["sourceuuid"] = sourceUUID;
     var nodeJSON = JSON.stringify(nodejson);
+
     axios({
         method: 'put',
         url: nodeurl,
@@ -229,14 +228,17 @@ function downloadFile(path, url, sourceUUID){
     })
         .then(function (response) {
             if (response.data.ack == "true") {
-                document.getElementById('floating-alert').innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                     '<strong>Success!</strong> Download complete.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                
             }else{
-                document.getElementById('floating-alert').innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                     '<strong>Error!</strong>'+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -245,7 +247,8 @@ function downloadFile(path, url, sourceUUID){
             }
         })
         .catch(function error() {
-            document.getElementById('floating-alert').innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Error!</strong>'+response.data.error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+

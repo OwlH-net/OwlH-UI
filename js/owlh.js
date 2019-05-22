@@ -528,7 +528,6 @@ function deletePorts(uuid){
         var CHuuid = $(this).prop("id");
         arrayLinesSelected[CHuuid] = CHuuid;
     });
-    console.log(arrayLinesSelected);
     var nodeJSON = JSON.stringify(arrayLinesSelected);
     axios({
         method: 'put',
@@ -569,10 +568,33 @@ function sendRulesetToNode(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        return true;
+        if (response.data.ack == "true") {
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Success!</strong> Deployment complete.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            
+        }else{
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Suricata deployment Error! </strong>'+response.data.error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+        }
     })
     .catch(function (error) {
-        return false;
+        var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong>'+response.data.error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
     });
 }
 

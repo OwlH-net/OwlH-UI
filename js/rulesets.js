@@ -12,39 +12,37 @@ function GetAllRulesets() {
             resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
         })
         .catch(function (error) {
-            resultElement.innerHTML = generateAllRulesetsHTMLOutput(error);
+            resultElement.innerHTML = '<div style="text-align:center"><h3>No connection</h3></div>';
         });
-}
-
+    }
+    
 function generateAllRulesetsHTMLOutput(response) {
     var isEmptyRulesets = true;
-    var rules = response.data;
+    var ruleset = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
-        '<th style="width: 10%">Name</th>                                                ' +
-        '<th>Path</th>                                                ' +
+        '<th>Name</th>                                                ' +
         '<th>Description</th>                                         ' +
         '<th>Actions</th>                                             ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody >                                                     '
-    for (rule in rules) {
-        if (rules[rule]["type"] == "source") {
+    for (uuid in ruleset) {
+        if (ruleset[uuid]["type"] == "source") {
             continue;
         }
         isEmptyRulesets = false;
         html = html + '<tr><td>' +
-            rules[rule]["name"] +
+            ruleset[uuid]["name"] +
             '</td><td>                                                            ' +
-            rules[rule]["path"] +
+            ruleset[uuid]["desc"] +
             '</td><td>                                                            ' +
-            rules[rule]["desc"] +
-            '</td><td>                                                            ' +
-            '<a class="btn btn-primary" href="ruleset.html?uuid=' + rule + '&rule=' + rules[rule]["name"] + '">Details</a> ' +
-            '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset" onclick="cloneRuleset(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\')">Clone</button>       ' +
-            '<button class="btn btn-secondary" data-toggle="modal" data-target="#modal-ruleset" onclick="syncAllRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Sync</button>        ' +
-            '<button class="btn btn-danger" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\'' + rules[rule]["name"] + '\', \'' + rules[rule]["path"] + '\',\'' + rule + '\')">Delete</button>        ' +
+                '<span style="font-size: 20px; color: Dodgerblue;">'+
+                    '<a href="ruleset-details.html?sourceName='+ruleset[uuid]['name']+'&uuid='+uuid+'"><i class="fas fa-info-circle" title="Details"></i></a> &nbsp'+
+                    '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>'+
+                    ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
+                '</span>'+
             '</td></tr>'
     }
     html = html + '</tbody></table>';
@@ -57,7 +55,7 @@ function generateAllRulesetsHTMLOutput(response) {
 }
 
 
-function syncAllRulesetModal(name, path, uuid){
+function syncRulesetModal(uuid, name){
     var modalWindow = document.getElementById('modal-ruleset');
     modalWindow.innerHTML = 
     '<div class="modal-dialog">'+
@@ -69,22 +67,21 @@ function syncAllRulesetModal(name, path, uuid){
             '</div>'+
     
             '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
-                '<p>Do you want to synchronize <b>'+name+'</b> ruleset to all the nodes that use it?</p>'+
+                '<p>Do you want to synchronize <b>'+name+'</b> ruleset?</p>'+
             '</div>'+
     
             '<div class="modal-footer" id="modal-ruleset-sync-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
-                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="syncAllRuleset(\''+name+'\',\''+path+'\',\''+uuid+'\')">Sync</button>'+
+                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="syncRuleset(\''+uuid+'\')">Sync</button>'+
             '</div>'+
   
         '</div>'+
     '</div>';
 }
 
-function deleteRulesetModal(name, path, uuid){
+function deleteRulesetModal(name, uuid){
     var modalWindow = document.getElementById('modal-ruleset');
-    modalWindow.innerHTML = 
-    '<div class="modal-dialog">'+
+    modalWindow.innerHTML = '<div class="modal-dialog">'+
         '<div class="modal-content">'+
     
             '<div class="modal-header">'+
@@ -98,11 +95,13 @@ function deleteRulesetModal(name, path, uuid){
     
             '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
-                '<button type="submit" class="btn btn-danger" data-dismiss="modal" id="btn-delete-ruleset" onclick="deleteRuleset(\''+name+'\',\''+path+'\',\''+uuid+'\')">Delete</button>'+
+                '<button type="submit" class="btn btn-danger" data-dismiss="modal" id="btn-delete-ruleset" onclick="deleteRuleset(\''+name+'\',\''+uuid+'\')">Delete</button>'+
             '</div>'+
   
         '</div>'+
     '</div>';
+    console.log(uuid);
+
 }
 
 function cloneRuleset(name, path){
@@ -136,13 +135,12 @@ function cloneRuleset(name, path){
     '</div>';
 }
 
-function deleteRuleset(name, path, uuid) {
+function deleteRuleset(name, uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/deleteRuleset';
     var jsonbpfdata = {}
     jsonbpfdata["name"] = name;
-    jsonbpfdata["path"] = path;
     jsonbpfdata["uuid"] = uuid;
     var bpfjson = JSON.stringify(jsonbpfdata);
     axios({
@@ -192,7 +190,7 @@ function saveClonedRuleset(name, path){
     
 }
 
-function syncAllRuleset(name, path, uuid){
+function syncRuleset(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/synchronize/'+uuid;

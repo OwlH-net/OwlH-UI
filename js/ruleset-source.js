@@ -77,7 +77,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
         '<th>Description</th>                                          ' +
         '<th>Path</th>                                                    ' +
         '<th>Url</th>                                               ' +
-        '<th style="width: 15%">Actions</th>                                ' +
+        '<th style="width: 20%">Actions</th>                                ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody>                                                      ' 
@@ -95,6 +95,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
                     '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
+                    '<i class="fas fa-sync-alt" title="Sync ruleset files"></i> &nbsp;'+
                     '<a href="ruleset-details.html?sourceName='+sources[source]['name']+'&uuid='+source+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
                     ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                 '</span>'+

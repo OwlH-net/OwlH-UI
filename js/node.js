@@ -168,19 +168,20 @@ function loadRuleset(nid){
   axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
     .then(function (response) {
         if (typeof response.data.error != "undefined"){
-            resultElement.innerHTML = "No rules available...";
+            resultElement.innerHTML = '<p>No rules available...</p>';
         }else{
             resultElement.innerHTML = generateAllRulesModal(response, nid);
         }
     })
     .catch(function (error) {
-      resultElement.innerHTML = generateAllRulesModal(error);
+      resultElement.innerHTML = '<p>Error retrieving rules</p>';
     }); 
   
 }
 
 function generateAllRulesModal(response, nid) {
     var rules = response.data;
+    var isEmpty = true;
     var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
                 '<thead>                                                      ' +
                 '<tr>                                                         ' +
@@ -191,7 +192,8 @@ function generateAllRulesModal(response, nid) {
                 '</thead>                                                     ' +
                 '<tbody >                                                     ' 
     for (rule in rules) {
-    html = html + '<tr><td width="30%">                                       ' +
+        isEmpty = false;
+        html = html + '<tr><td width="30%">                                       ' +
         rules[rule]["name"]                                                     +
         '</td><td>                                                            ' +
         rules[rule]["desc"]                                                     +
@@ -200,7 +202,12 @@ function generateAllRulesModal(response, nid) {
         '</td></tr>                                                           '
     }
     html = html + '</tbody></table>';
-    return html;
+    
+    if (isEmpty){
+        return '<p>No rules available...</p>';;
+    }else{
+        return html;
+    }
 }
 
 

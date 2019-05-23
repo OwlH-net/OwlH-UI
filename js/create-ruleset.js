@@ -73,13 +73,12 @@ function addNewRuleset(){
         data: nodeJSON
     })
     .then(function (response) {
-        result.innerHTML = generateAllRuleDataHTMLOutput(response);
+        // result.innerHTML = generateAllRuleDataHTMLOutput(response);
+        window.history.back();
     })
     .catch(function (error) {
-        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>';
     });
-
 }
 
 function loadJSONdata(){

@@ -561,17 +561,23 @@ function deleteAllPorts(uuid){
 function sendRulesetToNode(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/set/' + uuid;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/set';
+
+    var jsonRuleUID = {}
+    jsonRuleUID["uuid"] = uuid;
+    jsonRuleUID["type"] = "node";
+    var dataJSON = JSON.stringify(jsonRuleUID);
     axios({
-        method: 'get',
+        method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        data: dataJSON
     })
     .then(function (response) {
         if (response.data.ack == "true") {
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Success!</strong> Deployment complete.'+
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Success!</strong> Suricata ruleset deployment complete.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+

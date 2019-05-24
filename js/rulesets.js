@@ -193,12 +193,17 @@ function saveClonedRuleset(name, path){
 function syncRuleset(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/synchronize/'+uuid;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/synchronize';
 
+    var jsonRuleUID = {}
+    jsonRuleUID["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonRuleUID);
+    console.log(uuid);
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        data: dataJSON
     })
         .then(function (response) {
         })
@@ -212,8 +217,8 @@ function loadJSONdata(){
     ipLoad.value = data.master.ip;
     var portLoad = document.getElementById('port-master');
     portLoad.value = data.master.port;
-    loadTitleJSONdata();
     GetAllRulesets();   
+    loadTitleJSONdata();
   });
 }
 loadJSONdata();

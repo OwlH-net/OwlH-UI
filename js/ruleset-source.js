@@ -95,7 +95,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
                     '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<i class="fas fa-sync-alt" title="Sync ruleset files"></i> &nbsp;'+
+                    '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-delete-source" onclick="modalSyncRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                     '<a href="ruleset-details.html?sourceName='+sources[source]['name']+'&uuid='+source+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
                     ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                 '</span>'+
@@ -108,6 +108,54 @@ function generateAllRulesetSourceHTMLOutput(response) {
         return html;
     }
 }
+
+function modalSyncRulesetSource(name, uuid){
+    var modalWindow = document.getElementById('modal-ruleset');
+    modalWindow.innerHTML = 
+    '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+    
+            '<div class="modal-header">'+
+                '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Ruleset</h4>'+
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+    
+            '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
+                '<p>Do you want to synchronize <b>'+name+'</b> ruleset source?</p>'+
+            '</div>'+
+    
+            '<div class="modal-footer" id="modal-ruleset-sync-ruleset-footer-btn">'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
+                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="syncRulesetSource(\''+uuid+'\')">Sync</button>'+
+            '</div>'+
+  
+        '</div>'+
+    '</div>';
+}
+
+function syncRulesetSource(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/set';
+
+    var jsonRuleUID = {}
+    jsonRuleUID["uuid"] = uuid;
+    jsonRuleUID["type"] = "ruleset";
+    var dataJSON = JSON.stringify(jsonRuleUID);
+
+    console.log(uuid);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+        .then(function (response) {
+        })
+        .catch(function (error) {
+        });
+}
+
 
 function compareFiles(){
     var ipmaster = document.getElementById('ip-master').value;

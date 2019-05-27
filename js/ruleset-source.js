@@ -95,7 +95,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
                     '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-delete-source" onclick="modalSyncRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
+                    // '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-delete-source" onclick="modalSyncRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                     '<a href="ruleset-details.html?sourceName='+sources[source]['name']+'&uuid='+source+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
                     ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                 '</span>'+
@@ -248,7 +248,7 @@ function deleteRulesetSource(sourceUUID){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/DeleteRulesetSource/' + sourceUUID;
     axios({
-        method: 'put',
+        method: 'delete',
         url: nodeurl,
         timeout: 30000
     })

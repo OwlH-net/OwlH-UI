@@ -198,7 +198,6 @@ function syncRuleset(uuid){
     var jsonRuleUID = {}
     jsonRuleUID["uuid"] = uuid;
     var dataJSON = JSON.stringify(jsonRuleUID);
-    console.log(uuid);
     axios({
         method: 'put',
         url: nodeurl,

@@ -50,7 +50,7 @@ function generateAllRuleDataHTMLOutput(response) {
     }
 }
 
-function addNewRuleset(){
+function modalAddNewRuleset(){
     var newRuleset = new Map();
     $('input:checkbox:checked').each(function() {
         var checked = $(this).prop("id");
@@ -61,24 +61,61 @@ function addNewRuleset(){
         newRuleset[checked]["rulesetName"] = document.getElementById('new-ruleset-name-input').value;
         newRuleset[checked]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value;
     });
-    
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
-    var nodeJSON = JSON.stringify(newRuleset);
-    axios({
-        method: 'put',
-        url: sourceurl,
-        timeout: 30000,
-        data: nodeJSON
-    })
-    .then(function (response) {
-        // result.innerHTML = generateAllRuleDataHTMLOutput(response);
-        window.history.back();
-    })
-    .catch(function (error) {
-        result.innerHTML = '<h3 align="center">No connection</h3>';
-    });
+
+    var isDuplicated = false;
+    for (uuid in newRuleset){
+        for (uuidCheck in newRuleset){
+            if ((uuid != uuidCheck) && (newRuleset[uuid]["fileName"] == newRuleset[uuidCheck]["fileName"]) ){
+                isDuplicated = true;
+            }
+        }
+    }
+
+    if (isDuplicated){        
+        document.getElementById('modal-window').innerHTML = 
+        '<div class="modal-dialog">'+
+            '<div class="modal-content">'+
+        
+                '<div class="modal-header">'+
+                    '<h4 class="modal-title">Files duplicated</h4>'+
+                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                '</div>'+
+        
+                '<div class="modal-body">'+ 
+                    '<p>You have selected duplicate files.</p>'+
+                '</div>'+
+        
+                '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                    '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                '</div>'+
+        
+            '</div>'+
+        '</div>';
+
+        $('#modal-window').modal('show')     
+
+        $('#modalDuplicate').on('click' , function() { 
+            $('.modal').modal('hide')
+          });
+    } else {
+        $('#modal-window').modal('dispose')
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
+        var nodeJSON = JSON.stringify(newRuleset);
+        axios({
+            method: 'put',
+            url: sourceurl,
+            timeout: 30000,
+            data: nodeJSON
+        })
+        .then(function (response) {
+            window.history.back();
+        })
+        .catch(function (error) {
+            result.innerHTML = '<h3 align="center">No connection</h3>';
+        });
+    }
 }
 
 function loadJSONdata(){

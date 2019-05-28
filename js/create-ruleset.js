@@ -110,7 +110,8 @@ function modalAddNewRuleset(){
             data: nodeJSON
         })
         .then(function (response) {
-            window.history.back();
+            console.log(response.data);
+            // window.history.back();
         })
         .catch(function (error) {
             result.innerHTML = '<h3 align="center">No connection</h3>';

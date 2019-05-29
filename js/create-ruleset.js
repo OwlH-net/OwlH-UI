@@ -18,6 +18,11 @@ function loadRulesData(){
 }
 
 function generateAllRuleDataHTMLOutput(response) {
+    var sorted = response.data.sort(function(a, b) {
+        return (a.value > b.value) ? 1 : ((b.value > a.value) ? -1 : 0)
+      });
+    
+    console.log(sorted);
     var isEmpty = true;
     var sources = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -96,7 +101,7 @@ function modalAddNewRuleset(){
 
         $('#modalDuplicate').on('click' , function() { 
             $('.modal').modal('hide')
-          });
+        });
     } else {
         $('#modal-window').modal('dispose')
         var ipmaster = document.getElementById('ip-master').value;
@@ -110,8 +115,70 @@ function modalAddNewRuleset(){
             data: nodeJSON
         })
         .then(function (response) {
-            console.log(response.data);
-            // window.history.back();
+            if (response.data.ack == "true"){
+                document.location.href = 'https://' + ipmaster + '/rulesets.html';
+            }else{
+                lines = JSON.parse(response.data)
+                var html =
+                '<div class="modal-dialog modal-lg">'+
+                    '<div class="modal-content">'+
+                
+                        '<div class="modal-header">'+
+                            '<h4 class="modal-title">Lines duplicated</h4>'+
+                            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                        '</div>'+
+                
+                        '<div class="modal-body">'+
+                            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                '<thead>                                                      ' +
+                                    '<tr>                                                         ' +
+                                    '<th>SID</th>                                                ' +
+                                    '<th>Files</th>                                         ' +
+                                    '<th>Actions</th>                                             ' +
+                                    '</tr>                                                        ' +
+                                '</thead>                                                     ' +
+                                '<tbody>                                                     '
+                                    for (sid in lines){
+                                        console.log(lines[sid]["counter"]);
+                                        for(values in lines[sid]){
+                                            var cont = true;
+                                            for(data in lines[sid][values]){
+                                                html = html + '<tr>'
+                                                if (cont){
+                                                    html = html + 
+                                                    '<th rowspan="'+lines[sid]["counter"]+'">' +
+                                                        sid +
+                                                    '</th>'
+                                                    cont = false;
+                                                }
+                                                html = html + 
+                                                '<td>'+
+                                                    lines[sid][values][data]["fileName"] +
+                                                '</td><td>'+
+                                                    '<i class="fas fa-info-circle"></i>' +
+                                                '</td></tr>'
+                                            }
+                                        }
+                                    }
+                                html = html + '</tbody></table>'+
+                        '</div>'+
+                
+                        '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                            '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                        '</div>'+
+                
+                    '</div>'+
+                '</div>';
+        
+
+                document.getElementById('modal-window').innerHTML = html;
+
+                $('#modal-window').modal('show')     
+        
+                $('#modalDuplicate').on('click' , function() { 
+                    $('.modal').modal('hide')
+                });
+            }
         })
         .catch(function (error) {
             result.innerHTML = '<h3 align="center">No connection</h3>';

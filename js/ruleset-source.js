@@ -59,6 +59,7 @@ function GetAllRulesetSource(){
         timeout: 30000
     })
     .then(function (response) {
+        console.log(response.data);
         document.getElementById('ruleset-source-text').style.display ="block";
         result.innerHTML = generateAllRulesetSourceHTMLOutput(response);
     })
@@ -96,7 +97,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                     '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
                     '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
                     // '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-delete-source" onclick="modalSyncRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<a href="ruleset-details.html?sourceName='+sources[source]['name']+'&uuid='+source+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
+                    '<a href="ruleset-details.html?type=source&sourceName='+sources[source]['name']+'&uuid='+source+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
                     ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                 '</span>'+
             '</td></tr>'

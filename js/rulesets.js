@@ -39,7 +39,7 @@ function generateAllRulesetsHTMLOutput(response) {
             ruleset[uuid]["desc"] +
             '</td><td>                                                            ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    '<a href="ruleset-details.html?sourceName='+ruleset[uuid]['name']+'&uuid='+uuid+'"><i class="fas fa-info-circle" title="Details"></i></a> &nbsp'+
+                    '<a href="ruleset-details.html?type=ruleset&sourceName='+ruleset[uuid]['name']+'&uuid='+uuid+'"><i class="fas fa-info-circle" title="Details"></i></a> &nbsp'+
                     '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>'+
                     ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
                 '</span>'+

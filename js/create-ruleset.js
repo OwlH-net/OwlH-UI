@@ -18,11 +18,6 @@ function loadRulesData(){
 }
 
 function generateAllRuleDataHTMLOutput(response) {
-    var sorted = response.data.sort(function(a, b) {
-        return (a.value > b.value) ? 1 : ((b.value > a.value) ? -1 : 0)
-      });
-    
-    console.log(sorted);
     var isEmpty = true;
     var sources = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -99,9 +94,9 @@ function modalAddNewRuleset(){
 
         $('#modal-window').modal('show')     
 
-        $('#modalDuplicate').on('click' , function() { 
-            $('.modal').modal('hide')
-        });
+        // $('#modalDuplicate').on('click' , function() { 
+        //     $('.modal').modal('hide')
+        // });
     } else {
         $('#modal-window').modal('dispose')
         var ipmaster = document.getElementById('ip-master').value;
@@ -139,7 +134,6 @@ function modalAddNewRuleset(){
                                 '</thead>                                                     ' +
                                 '<tbody>                                                     '
                                     for (sid in lines){
-                                        console.log(lines[sid]["counter"]);
                                         for(values in lines[sid]){
                                             var cont = true;
                                             for(data in lines[sid][values]){
@@ -175,9 +169,9 @@ function modalAddNewRuleset(){
 
                 $('#modal-window').modal('show')     
         
-                $('#modalDuplicate').on('click' , function() { 
-                    $('.modal').modal('hide')
-                });
+                // $('#modalDuplicate').on('click' , function() { 
+                //     $('.modal').modal('hide')
+                // });
             }
         })
         .catch(function (error) {

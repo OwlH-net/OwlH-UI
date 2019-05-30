@@ -142,7 +142,7 @@ function generateAllNodesHTMLOutput(response) {
             '  <span style="font-size: 15px; color: grey;" >                                   ' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
             '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+nodes[node]['name']+'\')"></i>                                 ' +
-            '    <a title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+nodes[node]['name']+'\')">BPF</a>'+
+            '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+nodes[node]['name']+'\')">BPF</i>'+
             '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>                        ' +
             '  </span>                                                                        ' +
             '  </p>                                                                           ' +
@@ -163,7 +163,7 @@ function generateAllNodesHTMLOutput(response) {
             '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
-            '    <a href="stap.html?uuid='+uuid+'&node='+nodes[node]['name']+'"><i class="fas fa-cog" title="Configuration" style="color: grey;"></i><a>                             ' +
+            '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>                             ' +
             '  </span></p> '+
             '  <p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="collector-status"></i> | '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
@@ -175,18 +175,16 @@ function generateAllNodesHTMLOutput(response) {
             '  <img src="img/favicon.ico" height="25"> Knownports | '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <span class="fas fa-play-circle" id="ports-status" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
-            '    <a style="color: grey;" id="ports-mode">[N/A]</a> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
+            '    <i style="color: grey;" id="ports-mode">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
             '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
             '  </span></p> ';  
             html = html +   '</td>                                                            ' +
             '<td class="align-middle">                                                        ' +
             '  <span style="font-size: 20px; color: Dodgerblue;" >                            ' +
-            '    <a href="files.html?uuid='+node+'&node='+nodes[node]['name']+'"><i class="fas fa-arrow-alt-circle-down" title="See node files"></i></a>             ' +
+            '    <i class="fas fa-arrow-alt-circle-down" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>             ' +
             '    <i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i>                            ' +
-            '    <a href="edit.html?uuid='+node+'&file=main.conf&node='+nodes[node]['name']+'" style="font-size: 20px; color: Dodgerblue;"><i class="fas fa-cog" title="Edit node configuration"></i></a>           ' +
-            '    <a style="font-size: 20px; color: Dodgerblue;"> ' +
+            '    <i class="fas fa-cog" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i>           ' +
             '     | <i class="fas fa-trash-alt" style="color: red;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i>                         ' +
-            '    </a>                                                                            ' +
             '  </span>                                                                           ' +
             '</td>                                                                               ' +
             '</tr>';
@@ -199,6 +197,20 @@ function generateAllNodesHTMLOutput(response) {
         return  html;
     }
 }
+
+function loadStapURL(uuid, nodeName){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/stap.html?uuid='+uuid+'&node='+nodeName;
+}
+function loadFilesURL(uuid, nodeName){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/files.html?uuid='+uuid+'&node='+nodeName;
+}
+function loadEditURL(uuid, nodeName){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+nodeName+'&node='+nodeName;
+}
+
 
 function ChangeStatus(uuid){
     var ipmaster = document.getElementById('ip-master').value;
@@ -446,7 +458,6 @@ function showModalCollector(response){
                 
                     '</div>'+
                 '</div>';
-                console.log(html);
     document.getElementById('modal-window').innerHTML = html;
 }
 

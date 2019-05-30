@@ -54,7 +54,7 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
                 // '<p>                            ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     // '<i class="fas fa-file-alt" title="Show Rules"></i> &nbsp;'+
-                    '<a class="fas fa-file-alt" title="Show Rules" href="ruleset.html?uuid=' + file + '&rule=' + files[file]["file"] + '"></a> ';
+                    '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\')"></i> ';
                     if(type == "ruleset"){
                         html = html + ' | <i class="fas fa-trash-alt low-blue" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-detail" onclick="modalDeleteRulesetDetail(\''+files[file]['name']+'\',\''+file+'\')"></i> &nbsp;';
                     }
@@ -71,6 +71,11 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
     }else{
         return html;
     }
+}
+
+function loadDetails(uuid, ruleFile){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/ruleset.html?uuid='+uuid+'&rule='+ruleFile;
 }
 
 function modalDeleteRulesetDetail(name, uuid){

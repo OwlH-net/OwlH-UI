@@ -45,7 +45,7 @@ function generateAllFilesOutput(response, node) {
                 '</td><td>                         '+
                 files[file]+
                 '</td><td>                                                            '+                                                     
-                '<a href="edit.html?uuid='+files.nodeUUID+'&file='+file+'&node='+node+'"><button type="submit" class="btn btn-primary">Edit</button></a> '+
+                '<button type="submit" class="btn btn-primary" onclick="loadEditURL(\''+files.nodeUUID+'\', \''+file+'\', \''+node+'\')">Edit</button>'+
                 '</td></tr>                                                           '
         }
     }
@@ -56,6 +56,11 @@ function generateAllFilesOutput(response, node) {
     }else{
         return html;
     }
+}
+
+function loadEditURL(uuid, nodeName){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+nodeName+'&node='+nodeName;
 }
 
 function loadJSONdata() {

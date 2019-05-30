@@ -18,6 +18,7 @@ function GetAllRulesets() {
     
 function generateAllRulesetsHTMLOutput(response) {
     var isEmptyRulesets = true;
+    var type = "ruleset";
     var ruleset = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
@@ -39,7 +40,7 @@ function generateAllRulesetsHTMLOutput(response) {
             ruleset[uuid]["desc"] +
             '</td><td>                                                            ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    '<a href="ruleset-details.html?type=ruleset&sourceName='+ruleset[uuid]['name']+'&uuid='+uuid+'"><i class="fas fa-info-circle" title="Details"></i></a> &nbsp'+
+                    '<i class="fas fa-info-circle" title="Details" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
                     '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>'+
                     ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
                 '</span>'+
@@ -54,6 +55,10 @@ function generateAllRulesetsHTMLOutput(response) {
     }
 }
 
+function loadRulesetsDetails(type,name,uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
+}
 
 function syncRulesetModal(uuid, name){
     var modalWindow = document.getElementById('modal-ruleset');

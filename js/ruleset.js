@@ -56,9 +56,7 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
             '</td><td>                                                           ' +
             rules[rule]["ip"] +
             '</td><td>                                                           ' +
-            '<a href="rules/showRuleDetails.php?sid=' + rules[rule]["sid"] + '&uuid=' + uuid + '&ipmaster=' + ipmaster + '&portmaster=' + portmaster + '"><i class="fas fa-eye low-blue"></i></a> ' +
-            // '<a href="#" onclick="changeRulesetStatus(\'' + rules[rule]["sid"] + '\',\'' + uuid + '\',\'' + ruleStatus + '\')" id="' + rules[rule]["sid"] + '-change-status"><i class="fas fa-exchange-alt low-blue"></i></a>              ' +
-            // '<a href="#" data-toggle="modal" data-target="#modal-ruleset-note" onclick="modalNotes(\''+rules[rule]["msg"]+'\' ,\''+rules[rule]["sid"]+'\' , \''+uuid+'\')"><i class="fas fa-file-signature low-blue"></i></a>               ' +
+            '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>' +
             '</td></tr>'
     }
     html = html + '</tbody></table>';
@@ -67,6 +65,11 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
     } else {
         return html;
     }
+}
+
+function loadRulesetDetails(sid, uuid, ipmaster, portmaster){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/rules/showRuleDetails.php?sid='+sid+'&uuid='+uuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster;
 }
 
 function changeRulesetStatus(sid, uuid, action) {

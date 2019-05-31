@@ -288,13 +288,14 @@ function deleteRulesetSource(sourceUUID){
 function downloadFile(name, path, url, sourceUUID, isDownloaded){
     console.log(isDownloaded);
     if (isDownloaded == "true"){
-        modalOverwriteDownload(path, url, sourceUUID);
+        modalOverwriteDownload(name,path, url, sourceUUID);
     }else{
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/downloadFile';
         var nodejson = {}
         nodejson["url"] = url;
+        nodejson["name"] = name;
         nodejson["path"] = path;
         nodejson["sourceuuid"] = sourceUUID;
         var nodeJSON = JSON.stringify(nodejson);
@@ -320,7 +321,7 @@ function downloadFile(name, path, url, sourceUUID, isDownloaded){
                     
                 }else{
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong>'+response.data.error+''+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -330,8 +331,8 @@ function downloadFile(name, path, url, sourceUUID, isDownloaded){
             })
             .catch(function error() {
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Error!</strong>'+response.data.error+''+
+                alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Can not complete the download...'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -340,7 +341,7 @@ function downloadFile(name, path, url, sourceUUID, isDownloaded){
     }
 }
 
-function modalOverwriteDownload(path, url, sourceUUID){
+function modalOverwriteDownload(name,path, url, sourceUUID){
     var modalWindowDelete = document.getElementById('modal-delete-source');
     modalWindowDelete.innerHTML = 
     '<div class="modal-dialog">'+
@@ -357,24 +358,66 @@ function modalOverwriteDownload(path, url, sourceUUID){
     
             '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                
-                //Add here the new call
-                //Add here the new call
-                //Add here the new call
-                //Add here the new call
-                //Add here the new call
-
-                // '<button type="submit" class="btn btn-danger" data-dismiss="modal" onclick="downloadFile(\''+path+'\', \''+url+'\', \''+sourceUUID+'\', \'false\')">Overwrite</button>'+
+                '<button type="submit" class="btn btn-danger" data-dismiss="modal" onclick="overwriteDownload(\''+name+'\', \''+path+'\', \''+url+'\', \''+sourceUUID+'\')">Overwrite</button>'+
             '</div>'+
     
         '</div>'+
     '</div>';
 
     $('#modal-delete-source').modal('show')     
+}
 
-    // $('#modal-delete-source').on('click' , function() { 
-    //     $('.modal').modal('hide')
-    // });
+function overwriteDownload(name, path, url, uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/overwriteDownload';
+    var nodejson = {}
+    nodejson["name"] = name;
+    nodejson["url"] = url;
+    nodejson["path"] = path;
+    nodejson["uuid"] = uuid;
+    var nodeJSON = JSON.stringify(nodejson);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: nodeJSON
+    })
+    .then(function (response) {
+        console.log(response);
+        if (response.data.ack == "true") {
+            var icon = document.getElementById('SourceDetails-'+uuid);
+            icon.style.color="Dodgerblue";
+            icon.onclick = function () { loadRulesetSourceDetails("source" ,name ,uuid); }
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Success!</strong> Download complete.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            
+        }else{
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong>'+response.data.error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+        }
+    })
+    .catch(function error(error) {
+        console.log(error);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+            '<strong>Error!</strong> Can not complete the download...'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+    });
 }
 
 function loadJSONdata(){

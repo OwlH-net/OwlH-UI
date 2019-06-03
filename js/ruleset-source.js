@@ -65,24 +65,19 @@ function GetAllRulesetSource(){
         changeIconAttributes(response.data);
     })
     .catch(function (error) {
-        console.log("Error: "+error);
         result.innerHTML = '<h3 align="center">No connection</h3>';
     });
 }
 
 function changeIconAttributes(sources){
-    
     for (source in sources) {
         var icon = document.getElementById('SourceDetails-'+source);
         if (sources[source]['isDownloaded'] == "false"){
             icon.style.color = "grey";
+            document.getElementById('download-status-'+source).value = "false";
         }else{
-            console.log("ONCLICK: name: "+sources[source]["name"]+"  uuid: "+source);
             icon.style.color = "Dodgerblue";
-            icon.addEventListener("click", loadRulesetSourceDetails("source" ,sources[source]["name"] ,source)); 
-            // icon.onclick = function () { 
-            //     loadRulesetSourceDetails("source" ,sources[source]["name"] ,source); 
-            // }
+            document.getElementById('download-status-'+source).value = "true";
         }
     }
 }
@@ -113,14 +108,14 @@ function generateAllRulesetSourceHTMLOutput(response) {
             sources[source]['url']+
             '</td><td class="align-middle">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['name']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\',\''+sources[source]['isDownloaded']+'\')"></i> &nbsp;'+
+                    '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">'+
+                    '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['name']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
                     '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<i class="fas fa-info-circle" id="SourceDetails-'+source+'" title="Details" onclick=""></i>'+
+                    '<i class="fas fa-info-circle" id="SourceDetails-'+source+'" title="Details" onclick="loadRulesetSourceDetails(\'source\',\''+sources[source]['name']+'\',\''+source+'\')"></i>'+
                     ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                 '</span>'+
             '</td></tr>';
     }
-
     html = html + '</tbody></table>';
     if (isEmpty){
         return '<h3 style="text-align:center">No sources created</h3>';
@@ -129,10 +124,12 @@ function generateAllRulesetSourceHTMLOutput(response) {
     }
 }
 
-function loadRulesetSourceDetails(type,name,uuid){    
-    console.log("AAAAAA: "+type+" -- "+name+" -- "+uuid);
+function loadRulesetSourceDetails(type, name, uuid){    
     var ipmaster = document.getElementById('ip-master').value;
-    // document.location.href = 'https://' + ipmaster + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
+    var isDownloaded = document.getElementById('download-status-'+uuid).value;
+    if (isDownloaded == "true"){
+        document.location.href = 'https://' + ipmaster + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
+    }
 }
 
 
@@ -253,7 +250,7 @@ function editRulesetSourceData(){
     nodejson["name"] = name;
     nodejson["desc"] = desc;
     nodejson["url"] = url;
-    nodejson["sourceuuid"] = sourceUUID;
+    nodejson["uuid"] = sourceUUID;
     var nodeJSON = JSON.stringify(nodejson);
     axios({
         method: 'put',
@@ -285,9 +282,10 @@ function deleteRulesetSource(sourceUUID){
         });
 }
 
-function downloadFile(name, path, url, sourceUUID, isDownloaded){
-    console.log(isDownloaded);
-    if (isDownloaded == "true"){
+function downloadFile(name, path, url, sourceUUID){
+    var downloadStatus = document.getElementById('download-status-'+sourceUUID);
+    var icon = document.getElementById('SourceDetails-'+sourceUUID);
+    if (downloadStatus.value == "true"){
         modalOverwriteDownload(name,path, url, sourceUUID);
     }else{
         var ipmaster = document.getElementById('ip-master').value;
@@ -297,7 +295,7 @@ function downloadFile(name, path, url, sourceUUID, isDownloaded){
         nodejson["url"] = url;
         nodejson["name"] = name;
         nodejson["path"] = path;
-        nodejson["sourceuuid"] = sourceUUID;
+        nodejson["uuid"] = sourceUUID;
         var nodeJSON = JSON.stringify(nodejson);
     
         axios({
@@ -308,9 +306,6 @@ function downloadFile(name, path, url, sourceUUID, isDownloaded){
         })
             .then(function (response) {
                 if (response.data.ack == "true") {
-                    var icon = document.getElementById('SourceDetails-'+sourceUUID);
-                    icon.style.color="Dodgerblue";
-                    icon.onclick = function () { loadRulesetSourceDetails("source" ,name ,sourceUUID); }
                     var alert = document.getElementById('floating-alert');
                     alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                         '<strong>Success!</strong> Download complete.'+
@@ -318,7 +313,8 @@ function downloadFile(name, path, url, sourceUUID, isDownloaded){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    
+                    icon.style.color="Dodgerblue";
+                    downloadStatus.value = "true";
                 }else{
                     var alert = document.getElementById('floating-alert');
                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -327,8 +323,9 @@ function downloadFile(name, path, url, sourceUUID, isDownloaded){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
+                    downloadStatus.value = "false";
                 }
-            })
+        })
             .catch(function error() {
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
@@ -337,7 +334,8 @@ function downloadFile(name, path, url, sourceUUID, isDownloaded){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-            });
+                downloadStatus.value = "false";
+        });
     }
 }
 
@@ -370,6 +368,9 @@ function modalOverwriteDownload(name,path, url, sourceUUID){
 function overwriteDownload(name, path, url, uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
+    var downloadStatus = document.getElementById('download-status-'+source);
+    var icon = document.getElementById('SourceDetails-'+uuid);
+    var alert = document.getElementById('floating-alert');
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/overwriteDownload';
     var nodejson = {}
     nodejson["name"] = name;
@@ -385,38 +386,35 @@ function overwriteDownload(name, path, url, uuid){
         data: nodeJSON
     })
     .then(function (response) {
-        console.log(response);
         if (response.data.ack == "true") {
-            var icon = document.getElementById('SourceDetails-'+uuid);
-            icon.style.color="Dodgerblue";
-            icon.onclick = function () { loadRulesetSourceDetails("source" ,name ,uuid); }
-            var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Success!</strong> Download complete.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            
+            icon.style.color="Dodgerblue";
+            downloadStatus.value = "true";
         }else{
-            var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong>'+response.data.error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            icon.style.color="Grey";
+            downloadStatus.value = "false";
         }
     })
     .catch(function error(error) {
-        console.log(error);
-        var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
             '<strong>Error!</strong> Can not complete the download...'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
+        icon.style.color="Grey";
+        downloadStatus.value = "false";
     });
 }
 

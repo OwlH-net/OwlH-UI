@@ -15,13 +15,16 @@ function GetAllRulesetDetails(){
         timeout: 30000
     })
     .then(function (response) {
+        console.log(response);
         if (response.data.ack){
             result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
         }else{
             result.innerHTML = generateAllRulesetDetailsHTMLOutput(response, sourceName, type);
+            // changeIconAttributes(response.data);
         }
     })
     .catch(function (error) {
+        console.log(error);
         result.innerHTML = '<h3 align="center">Error: No connection</h3>';
     });
 }
@@ -51,18 +54,27 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
             '</td><td>'+
             files[file]["path"]+
             '</td><td class="align-middle">'+
-                // '<p>                            ' +
-                '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    // '<i class="fas fa-file-alt" title="Show Rules"></i> &nbsp;'+
-                    '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\')"></i> ';
-                    if(type == "ruleset"){
-                        html = html + ' | <i class="fas fa-trash-alt low-blue" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-detail" onclick="modalDeleteRulesetDetail(\''+files[file]['name']+'\',\''+file+'\')"></i> &nbsp;';
+                '<span style="font-size: 20px; color: Dodgerblue;">'
+                    if(type == "source"){
+                        if(files[file]["exists"] == "true"){
+                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\')"></i> '
+                        }else{
+                            html = html + '<i class="fas fa-file-alt" style="color: grey;" title="File do not exists"></i>'+
+                            ' | <i class="fas fa-times-circle" style="color: red;"></i>'
+                        }
+                    }else{
+                        if(files[file]["exists"] == "true"){
+                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\')"></i> '+
+                            ' | <i class="fas fa-trash-alt" style="color: red;" title="File do not exists"></i>'
+                        }else{
+                            html = html + '<i class="fas fa-file-alt" style="color: grey;" title="File do not exists"></i> '+
+                            ' | <i class="fas fa-times-circle" style="color: red;"></i>'
+                        }
                     }
                     // '<i class="fas fa-sticky-note low-blue" title="Edit file" onclick="showEditRulesetfile(\''+files[source]['name']+'\',\''+files[source]['desc']+'\',\''+files[source]['path']+'\',\''+files[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
                     // '<a href="compare-files.html"><i class="fas fa-cog low-blue" title="Compare files" onclick="compareFiles()"></i></a>                              ' +
                     // '<a href="ruleset-details.html?uuid='+source+'&path='+files[source]['path']+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
                     html = html + '</span>'+
-                // '</p>'+     
             '</td></tr>'
     }
     html = html + '</tbody></table>';

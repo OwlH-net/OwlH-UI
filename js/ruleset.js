@@ -29,9 +29,9 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
         '<th style="width: 10%">Status</th>                           ' +
         '<th style="width: 10%">Sid</th>                              ' +
         '<th>Description</th>                                         ' +
-        '<th>Notes</th>                                               ' +
+        '<th style="display:none;">Notes</th>                                               ' +
         '<th>IP info</th>                                             ' +
-        '<th>Actions</th>                                             ' +
+        '<th style="width: 15%">Actions</th>                                             ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody>                                                     '
@@ -51,7 +51,7 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
             rules[rule]["sid"] +
             '</td><td>                                                           ' +
             rules[rule]["msg"] +
-            '</td><td id="' + rules[rule]["sid"] + '-note">' +
+            '</td><td style="display:none;" id="' + rules[rule]["sid"] + '-note">' +
             rules[rule]["note"] +
             '</td><td>                                                           ' +
             rules[rule]["ip"] +

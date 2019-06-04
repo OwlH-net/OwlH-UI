@@ -57,6 +57,10 @@
 
 
     <main role="main" class="container">
+        <!--Alert-->
+        <div id="floating-alert" style="top: 5px;">
+        </div>
+
         <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
             <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
             <div class="lh-100">
@@ -65,8 +69,12 @@
             </div>
         </div>
 
+        <div class="text-decoration-none text-primary" style="width:20%; float:right;">
+                <a onclick="formAddRulesetSource()" id="ruleset-source-text" style="display: block; cursor: default; float:right;">Add new ruleset source</a> 
+        </div><br><br>
+
         <div id="list-ruleset-source">
-        </div>
+        </div><br>
 
         <div class="text-decoration-none text-primary" style="width:20%; float:right;">
                 <a onclick="formAddRulesetSource()" id="ruleset-source-text" style="display: block; cursor: default; float:right;">Add new ruleset source</a> 
@@ -90,13 +98,23 @@
                     </div>
                 </div>
 
-                <div class="form-row">
+
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select ruleset source type</button>
+                    <div class="dropdown-menu">
+                        <a id="custom-dropdown" class="dropdown-item" href="#">Custom</a>
+                        <a id="url-dropdown" class="dropdown-item" href="#">URL</a>
+                    </div>
+                </div> 
+
+                <!-- <div class="form-row">
                     <div class="form-group col-md-6">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                             <input type="text" class="form-control" id="ruleset-source-url" placeholder="Url" required>
                         </div>
                     </div>
-                </div>
+                </div> -->
+
                 <div class="text-right">
                     <button type="button" class="btn btn-primary" style="float: right;" onclick="addRulesetSource()">Add</button>
                 </div>
@@ -137,10 +155,6 @@
     
         <!-- Modal delete ruleset source -->
         <div class="modal fade" id="modal-delete-source">
-        </div>
-
-        <!--Alert-->
-        <div id="floating-alert" style="top: 5px;">
         </div>
 
         <!-- Load master ip/port and download status-->

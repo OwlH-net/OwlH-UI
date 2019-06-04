@@ -38,10 +38,21 @@ function addRulesetSource() {
         data: nodeJSON
     })
     .then(function (response) {
-        GetAllRulesetSource();
+        if (response.data.ack == "false") {
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error! </strong>'+response.data.error+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+        }else{
+            GetAllRulesetSource();
+        }
         return true;
     })
     .catch(function (error) {
+        console.log(error);
         return false;
     });   
     GetAllRulesetSource(); 

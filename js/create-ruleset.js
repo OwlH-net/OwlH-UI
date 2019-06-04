@@ -31,16 +31,18 @@ function generateAllRuleDataHTMLOutput(response) {
         '</thead>                                                     ' +
         '<tbody>                                                      ' 
     for (source in sources) {
-        isEmpty = false;
-        html = html + '<tr><td align="center">'+
-                '<input class="form-check-input" type="checkbox" id="'+source+'"></input>'+
-            '</td><td id="nameNewRuleset-'+source+'">'+
-                sources[source]["name"]+
-            '</td><td id="fileNewRuleset-'+source+'">'+
-                sources[source]["file"]+
-            '</td><td style="display:none;" id="pathNewRuleset-'+source+'">'+
-                sources[source]["path"]+
-            '</td></tr>'
+        if(sources[source]["exists"]=="true"){
+            isEmpty = false;
+            html = html + '<tr><td align="center">'+
+                    '<input class="form-check-input" type="checkbox" id="'+source+'"></input>'+
+                '</td><td id="nameNewRuleset-'+source+'">'+
+                    sources[source]["name"]+
+                '</td><td id="fileNewRuleset-'+source+'">'+
+                    sources[source]["file"]+
+                '</td><td style="display:none;" id="pathNewRuleset-'+source+'">'+
+                    sources[source]["path"]+
+                '</td></tr>'
+        }
     }
     html = html + '</tbody></table>';
     if (isEmpty){
@@ -111,8 +113,12 @@ function modalAddNewRuleset(){
         })
         .then(function (response) {
             if (response.data.ack == "true"){
+                console.log("ack");
+                console.log(response.data);
                 document.location.href = 'https://' + ipmaster + '/rulesets.html';
             }else{
+                console.log("ok");
+                console.log(response.data);
                 lines = JSON.parse(response.data)
                 var html =
                 '<div class="modal-dialog modal-lg">'+
@@ -164,18 +170,12 @@ function modalAddNewRuleset(){
                     '</div>'+
                 '</div>';
         
-
                 document.getElementById('modal-window').innerHTML = html;
-
                 $('#modal-window').modal('show')     
-        
-                // $('#modalDuplicate').on('click' , function() { 
-                //     $('.modal').modal('hide')
-                // });
             }
         })
         .catch(function (error) {
-            result.innerHTML = '<h3 align="center">No connection</h3>';
+            // result.innerHTML = '<h3 align="center">No connection</h3>';
         });
     }
 }

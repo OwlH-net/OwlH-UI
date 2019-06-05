@@ -15,11 +15,9 @@ function saveFileChanged() {
         data: fileContent
     })
     .then(function (response) {
-        console.log("resp: "+response);
         return true;
     })
     .catch(function (error) {
-        console.log("error: "+error);
         return false;
     });
 

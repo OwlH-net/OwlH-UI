@@ -73,7 +73,17 @@ function modalAddNewRuleset(){
         }
     }
 
-    if (isDuplicated){        
+    console.log(document.getElementById('new-ruleset-name-input').value);
+
+    if(document.getElementById('new-ruleset-name-input').value == "" || document.getElementById('new-ruleset-description-input').value == "") {
+        var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Name or description fields are null.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+    }else if (isDuplicated){        
         document.getElementById('modal-window').innerHTML = 
         '<div class="modal-dialog">'+
             '<div class="modal-content">'+
@@ -95,10 +105,6 @@ function modalAddNewRuleset(){
         '</div>';
 
         $('#modal-window').modal('show')     
-
-        // $('#modalDuplicate').on('click' , function() { 
-        //     $('.modal').modal('hide')
-        // });
     } else {
         $('#modal-window').modal('dispose')
         var ipmaster = document.getElementById('ip-master').value;

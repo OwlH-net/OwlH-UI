@@ -70,14 +70,14 @@
         </div>
 
         <div class="text-decoration-none text-primary" style="width:20%; float:right;">
-                <a onclick="formAddRulesetSource()" id="ruleset-source-text" style="display: block; cursor: default; float:right;">Add new ruleset source</a> 
+                <a onclick="formAddRulesetSource()" id="ruleset-source-text-top" style="display: block; cursor: default; float:right;">Add new ruleset source</a> 
         </div><br><br>
 
         <div id="list-ruleset-source">
         </div><br>
 
         <div class="text-decoration-none text-primary" style="width:20%; float:right;">
-                <a onclick="formAddRulesetSource()" id="ruleset-source-text" style="display: block; cursor: default; float:right;">Add new ruleset source</a> 
+                <a onclick="formAddRulesetSource()" id="ruleset-source-text-bot" style="display: block; cursor: default; float:right;">Add new ruleset source</a> 
         </div>
         <br><br><br>
         <!-- Form for add new groups -->
@@ -97,23 +97,27 @@
                         </div>
                     </div>
                 </div>
-
-
-                <div class="dropdown">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select ruleset source type</button>
-                    <div class="dropdown-menu">
-                        <a id="custom-dropdown" class="dropdown-item" href="#">Custom</a>
-                        <a id="url-dropdown" class="dropdown-item" href="#">URL</a>
-                    </div>
-                </div> 
-
-                <!-- <div class="form-row">
+                <div class="form-row">
                     <div class="form-group col-md-6">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                             <input type="text" class="form-control" id="ruleset-source-url" placeholder="Url" required>
                         </div>
                     </div>
-                </div> -->
+                </div>
+                <br>
+                <h5>Select Ruleset type:</h5>
+                <div class="radio">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline1" name="customRadioInline1" value="url" class="custom-control-input" checked>
+                        <label class="custom-control-label" for="customRadioInline1">URL</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline2" name="customRadioInline1" value="custom" class="custom-control-input">
+                        <label class="custom-control-label" for="customRadioInline2">Custom</label>
+                    </div>  
+                </div>
+
+
 
                 <div class="text-right">
                     <button type="button" class="btn btn-primary" style="float: right;" onclick="addRulesetSource()">Add</button>
@@ -162,6 +166,7 @@
             <input id="ip-master" type="text" class="form-control">
             <input id="port-master" type="text" class="form-control">
         </div>
+
     </main>
 
 
@@ -169,8 +174,8 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/axios/dist/axios.js"></script> 
-    <script src="js/jquery-3.3.1.js"></script>
     <script src="css/dist/js/bootstrap.min.js"></script>
+    <script src="js/jquery-3.3.1.js"></script>
     <script src="js/offcanvas.js"></script>
     <script src="js/ruleset-source.js"></script>
     <script src="js/loadTitle.js"></script>

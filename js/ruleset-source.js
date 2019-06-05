@@ -1,14 +1,17 @@
 function formAddRulesetSource(){
     document.getElementById('edit-ruleset-source').style.display = "none";
     var addGroupId = document.getElementById('add-ruleset-source');
-    var textGroup = document.getElementById('ruleset-source-text');
+    var textGroupTop = document.getElementById('ruleset-source-text-top');
+    var textGroupBot = document.getElementById('ruleset-source-text-bot');
 
     if (addGroupId.style.display == "none") {
         addGroupId.style.display = "block";
-        textGroup.innerHTML = "Close add new ruleset source";
+        textGroupTop.innerHTML = "Close add new ruleset source";
+        textGroupBot.innerHTML = "Close add new ruleset source";
     } else {
         addGroupId.style.display = "none";
-        textGroup.innerHTML = "Add new ruleset source";
+        textGroupTop.innerHTML = "Add new ruleset source";
+        textGroupBot.innerHTML = "Add new ruleset source";
     }
 }
 
@@ -21,6 +24,15 @@ function addRulesetSource() {
     var portmaster = document.getElementById('port-master').value;
     var sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
     
+    // $('input:radio:checked').on('click', function(e) {
+    //     console.log(e.currentTarget.name); //e.currenTarget.name points to the property name of the 'clicked' target.
+    //     console.log(e.currentTarget.value); //e.currenTarget.value points to the property value of the 'clicked' target.
+    // });
+
+    $('input:radio:checked').each(function() {
+        var sourceType = $(this).prop("value");
+    });
+
     formAddRulesetSource();//close add ruleset source form
     var nodejson = {}
     nodejson["name"] = sourceName;
@@ -28,6 +40,7 @@ function addRulesetSource() {
     nodejson["fileName"] = fileName[fileName.length-1];
     nodejson["url"] = sourceUrl;
     nodejson["type"] = "source";
+    nodejson["sourceType"] = sourceType;
     nodejson["isDownloaded"] = "false";
     var nodeJSON = JSON.stringify(nodejson);
 
@@ -52,7 +65,6 @@ function addRulesetSource() {
         return true;
     })
     .catch(function (error) {
-        console.log(error);
         return false;
     });   
     GetAllRulesetSource(); 
@@ -63,7 +75,8 @@ function GetAllRulesetSource(){
     var portmaster = document.getElementById('port-master').value;
     var result = document.getElementById('list-ruleset-source');
     var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/';
-    document.getElementById('ruleset-source-text').style.display ="none";
+    document.getElementById('ruleset-source-text-top').style.display ="none";
+    document.getElementById('ruleset-source-text-bot').style.display ="none";
 
     axios({
         method: 'get',
@@ -71,7 +84,8 @@ function GetAllRulesetSource(){
         timeout: 30000
     })
     .then(function (response) {
-        document.getElementById('ruleset-source-text').style.display ="block";
+        document.getElementById('ruleset-source-text-top').style.display ="block";
+        document.getElementById('ruleset-source-text-bot').style.display ="block";
         result.innerHTML = generateAllRulesetSourceHTMLOutput(response);
         changeIconAttributes(response.data);
     })
@@ -237,7 +251,8 @@ function modalDeleteRulesetSource(name, sourceUUID){
 
 function showEditRulesetSource(name, desc, path, url, sourceUUID){
     document.getElementById('add-ruleset-source').style.display = "none";
-    document.getElementById('ruleset-source-text').innerHTML = "Add new ruleset source";
+    document.getElementById('ruleset-source-text-top').innerHTML = "Add new ruleset source";
+    document.getElementById('ruleset-source-text-bot').innerHTML = "Add new ruleset source";
     document.getElementById('edit-ruleset-source').style.display = "block";
     document.getElementById('ruleset-source-name-edit').value = name;
     document.getElementById('ruleset-source-edit-desc').value = desc;

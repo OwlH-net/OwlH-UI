@@ -26,12 +26,13 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
-        '<th style="width: 10%">Status</th>                           ' +
+        '<th align="center" style="width: 5%">Status</th>                           ' +
         '<th style="width: 10%">Sid</th>                              ' +
         '<th>Description</th>                                         ' +
         '<th style="display:none;">Notes</th>                                               ' +
         '<th>IP info</th>                                             ' +
-        '<th style="width: 15%">Actions</th>                                             ' +
+        '<th style="width: 8%">Actions</th>                                             ' +
+        '<th style="width: 8%">Clone</th>                                             ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody>                                                     '
@@ -55,8 +56,12 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
             rules[rule]["note"] +
             '</td><td>                                                           ' +
             rules[rule]["ip"] +
-            '</td><td>                                                           ' +
-            '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>' +
+            '</td><td align="center">                                                           ' +
+                '<span style="font-size: 20px; color: Dodgerblue;">'+
+                    '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>' +                    
+                '</span>'+
+            '</td><td align="center">                                                           ' +
+                '<input class="form-check-input" type="checkbox" id="ruleSelected-'+rule+'"></input>'+
             '</td></tr>'
     }
     html = html + '</tbody></table>';
@@ -70,6 +75,68 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
 function loadRulesetDetails(sid, uuid, ipmaster, portmaster){
     var ipmaster = document.getElementById('ip-master').value;
     document.location.href = 'https://' + ipmaster + '/rules/showRuleDetails.php?sid='+sid+'&uuid='+uuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster;
+}
+
+function addToCustomRuleset(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var customRulesetsURL = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/custom';
+    // $('#modal-window-ruleset').modal('dispose'); //It destroys the jQuery instance of the Bootstrap's Modal component
+
+    axios({
+        method: 'get',
+        url: customRulesetsURL,
+        timeout: 30000
+    })
+    .then(function (response) {
+        var customRulesets = response.data;
+        var customRulesetModal = document.getElementById('modal-window-ruleset');
+        var html =
+         '<div class="modal-dialog modal-lg">'+ 
+            '<div class="modal-content">'+
+        
+                '<div class="modal-header">'+
+                    '<h4 class="modal-title">Select ruleset</h4>'+
+                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>'+
+
+                '<div class="modal-body">  '+
+                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>                                                      ' +
+                            '<tr>                                                         ' +
+                            '<th>Name</th>                                                  ' +
+                            '<th style="width: 20%">Actions</th>                                ' +
+                            '</tr>                                                        ' +
+                        '</thead>                                                     ' +
+                            '<tbody>                                                      ' ;
+                                for (source in customRulesets) {
+                                    html = html + '<tr><td>'+
+                                        customRulesets[source]['name']+
+                                    '</td><td>'+
+                                        '<button type="button" class="btn btn-primary" data-dismiss="modal">Add</button>' +
+                                    '</td></tr>';
+                                }
+                            html = html + '</tbody></table>'+
+                    '</table>'+
+                '</div>'+
+
+                '<div class="modal-footer" id="ruleset-note-footer-btn">'+
+                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+                    
+                '</div>'+
+
+            '</div>'+
+        '</div>';
+
+        customRulesetModal.innerHTML = html;
+        
+        $('.modal-window-ruleset').modal('show');
+        // $('.modal').modal('hide')
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
 }
 
 function changeRulesetStatus(sid, uuid, action) {
@@ -104,80 +171,80 @@ function changeRulesetStatus(sid, uuid, action) {
         });
 }
 
-function modalNotes(msg, sid, uuid){
-    var modalWindow = document.getElementById('modal-ruleset-note');
-    modalWindow.innerHTML = 
-    '<div class="modal-dialog" role="document">'+
-        '<div class="modal-content">'+
+// function modalNotes(msg, sid, uuid){
+//     var modalWindow = document.getElementById('modal-ruleset-note');
+//     modalWindow.innerHTML = 
+//     '<div class="modal-dialog" role="document">'+
+//         '<div class="modal-content">'+
 
-        '<div class="modal-header">'+
-            '<h4 class="modal-title" id="ruleset-note-header-title">Rule '+sid+'</h4>'+
-            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-        '</div>'+
+//         '<div class="modal-header">'+
+//             '<h4 class="modal-title" id="ruleset-note-header-title">Rule '+sid+'</h4>'+
+//             '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+//         '</div>'+
         
-        '<div class="modal-body" id="ruleset-note-footer">'+ 
-            '<h7 class="modal-title">Notes for: '+msg+'</h7>'+
-            '<textarea class="form-control" rows="3" id="ruleset-notes"></textarea>'+
-        '</div>'+
+//         '<div class="modal-body" id="ruleset-note-footer">'+ 
+//             '<h7 class="modal-title">Notes for: '+msg+'</h7>'+
+//             '<textarea class="form-control" rows="3" id="ruleset-notes"></textarea>'+
+//         '</div>'+
 
-        '<div class="modal-footer" id="ruleset-note-footer-btn">'+
-            '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-            '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="rulesetNotes(\''+sid+'\',\''+uuid+'\')">Save changes</button>'+
-        '</div>'+
+//         '<div class="modal-footer" id="ruleset-note-footer-btn">'+
+//             '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+//             '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="rulesetNotes(\''+sid+'\',\''+uuid+'\')">Save changes</button>'+
+//         '</div>'+
 
-        '</div>'+
-    '</div>';
-    getRuleNote("ruleset-notes", uuid, sid);
-}
+//         '</div>'+
+//     '</div>';
+//     getRuleNote("ruleset-notes", uuid, sid);
+// }
 
-function getRuleNote(elementID, uuid, sid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/getnote/' + uuid + '/' + sid;
-    var loadNote = document.getElementById(elementID);
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-            if (typeof (response.data) === 'object') {
-                loadNote.value = '';
-            } else {
-                loadNote.value = response.data;
-            }
-            return true;
-        })
-        .catch(function (error) {
-            return false;
-        });
-}
+// function getRuleNote(elementID, uuid, sid) {
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/getnote/' + uuid + '/' + sid;
+//     var loadNote = document.getElementById(elementID);
+//     axios({
+//         method: 'get',
+//         url: nodeurl,
+//         timeout: 30000
+//     })
+//         .then(function (response) {
+//             if (typeof (response.data) === 'object') {
+//                 loadNote.value = '';
+//             } else {
+//                 loadNote.value = response.data;
+//             }
+//             return true;
+//         })
+//         .catch(function (error) {
+//             return false;
+//         });
+// }
 
 
-function rulesetNotes(sid, uuid) {
-    var textAreaNote = document.getElementById('ruleset-notes').value;
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/note';
-    var jsonbpfdata = {}
-    jsonbpfdata["sid"] = sid;
-    jsonbpfdata["uuid"] = uuid;
-    jsonbpfdata["note"] = textAreaNote;
-    var bpfjson = JSON.stringify(jsonbpfdata);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: bpfjson
-    })
-        .then(function (response) {
-            document.getElementById(sid + '-note').innerHTML = '<p>' + textAreaNote + '</p>';
-            return true
-        })
-        .catch(function (error) {
-            return false;
-        });
-}
+// function rulesetNotes(sid, uuid) {
+//     var textAreaNote = document.getElementById('ruleset-notes').value;
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/note';
+//     var jsonbpfdata = {}
+//     jsonbpfdata["sid"] = sid;
+//     jsonbpfdata["uuid"] = uuid;
+//     jsonbpfdata["note"] = textAreaNote;
+//     var bpfjson = JSON.stringify(jsonbpfdata);
+//     axios({
+//         method: 'put',
+//         url: nodeurl,
+//         timeout: 30000,
+//         data: bpfjson
+//     })
+//         .then(function (response) {
+//             document.getElementById(sid + '-note').innerHTML = '<p>' + textAreaNote + '</p>';
+//             return true
+//         })
+//         .catch(function (error) {
+//             return false;
+//         });
+// }
 
 function loadJSONdata() {
     console.log("Loading JSON");

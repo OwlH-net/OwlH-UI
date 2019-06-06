@@ -69,13 +69,16 @@
                 <div id="progressBar-ruleset" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
             </div>
 
+            <button class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#modal-window-ruleset" onclick="addToCustomRuleset()">Add to custom</button><br><br>
+
             <!--Every rule row-->
             <div class="container" id="ruleset-table">
             </div>
 
             <!-- Modal note ruleset -->
-            <div class="modal fade" id="modal-ruleset-note"> 
+            <div class="modal fade" id="modal-window-ruleset"> 
             </div>
+
             <!-- Load master ip/port -->
             <div id="load-json-data" style="display: none;">
                 <input id="ip-master" type="text" class="form-control">

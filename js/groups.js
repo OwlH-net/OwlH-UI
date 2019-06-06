@@ -82,11 +82,11 @@ function generateAllGroupsHTMLOutput(response) {
         groups[group]['name']+
         '</td><td>'+
         groups[group]['desc']+
-        '</td><td class="align-middle">'+
-            '<span style="font-size: 20px; color: Dodgerblue;" >                            ' +
-                '<i class="fas fa-sticky-note low-blue" style="float:right; font-size:20px; color: Dodgerblue;" title="Edit group" onclick="showEditGroup(\''+groups[group]['name']+'\',\''+groups[group]['desc']+'\',\''+group+'\')"></i>'+
-                '<i class="fas fa-trash-alt low-blue" style="float:right; font-size: 20px; color: Dodgerblue;" title="Delete group" data-toggle="modal" data-target="#modal-groups" onclick="modalDeleteGroup(\''+groups[group]['name']+'\',\''+group+'\')"></i>'+
-            '</span>'+ 
+        '</td><td>'+
+            // '<span style="font-size: 20px; color: Dodgerblue;" >                            ' +
+            '<i class="fas fa-sticky-note low-blue" style="color: Dodgerblue; font-size: 20px" title="Edit group" onclick="showEditGroup(\''+groups[group]['name']+'\',\''+groups[group]['desc']+'\',\''+group+'\')"></i> &nbsp;'+
+            '<i class="fas fa-trash-alt low-blue" style="color: Dodgerblue; font-size: 20px" title="Delete group" data-toggle="modal" data-target="#modal-groups" onclick="modalDeleteGroup(\''+groups[group]['name']+'\',\''+group+'\')"></i>'+
+            // '</span>'+ 
         '</td></tr>'
     }
     html = html + '</tbody></table>';

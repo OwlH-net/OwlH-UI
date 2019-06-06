@@ -22,16 +22,28 @@ function addRulesetSource() {
     var fileName = sourceUrl.split(/[\s/]+/);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
+    // var sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
+    var sourceType;
+    var sourceURL;
+    var alert = document.getElementById('floating-alert');
     
-    // $('input:radio:checked').on('click', function(e) {
-    //     console.log(e.currentTarget.name); //e.currenTarget.name points to the property name of the 'clicked' target.
-    //     console.log(e.currentTarget.value); //e.currenTarget.value points to the property value of the 'clicked' target.
-    // });
-
     $('input:radio:checked').each(function() {
-        var sourceType = $(this).prop("value");
+        sourceType = $(this).prop("value");
     });
+
+    if (sourceType == "url"){
+        if(sourceUrl == ""){
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error! </strong> For URL source type, please inserta a valid URL.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+        }
+        sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
+    }else{
+        sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/custom';
+    }
 
     formAddRulesetSource();//close add ruleset source form
     var nodejson = {}
@@ -52,7 +64,6 @@ function addRulesetSource() {
     })
     .then(function (response) {
         if (response.data.ack == "false") {
-            var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error! </strong>'+response.data.error+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -97,10 +108,10 @@ function GetAllRulesetSource(){
 function changeIconAttributes(sources){
     for (source in sources) {
         var icon = document.getElementById('SourceDetails-'+source);
-        if (sources[source]['isDownloaded'] == "false"){
+        if (sources[source]['isDownloaded'] == "false" && sources[source]['sourceType'] == "url"){
             icon.style.color = "grey";
             document.getElementById('download-status-'+source).value = "false";
-        }else{
+        }else if (sources[source]['sourceType'] == "url"){
             icon.style.color = "Dodgerblue";
             document.getElementById('download-status-'+source).value = "true";
         }
@@ -131,13 +142,19 @@ function generateAllRulesetSourceHTMLOutput(response) {
             sources[source]['path']+
             '</td><td>'+
             sources[source]['url']+
-            '</td><td class="align-middle">'+
+            '</td><td align="right">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">'+
-                    '<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['name']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
-                    '<i class="fas fa-info-circle" id="SourceDetails-'+source+'" title="Details" onclick="loadRulesetSourceDetails(\'source\',\''+sources[source]['name']+'\',\''+source+'\')"></i>'+
-                    ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
+                    '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">';
+                    if(sources[source]['sourceType'] == "url"){
+                        html = html +'<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['name']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
+                    }
+                    html = html + '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
+                    if(sources[source]['sourceType'] == "custom"){
+                        html = html + '<i class="fas fa-info-circle" id="customRuleDetails-'+source+'" title="Custom rule details"></i>';
+                    }else{
+                        html = html + '<i class="fas fa-info-circle" id="SourceDetails-'+source+'" title="Details" onclick="loadRulesetSourceDetails(\'source\',\''+sources[source]['name']+'\',\''+source+'\')"></i>';
+                    }          
+                    html = html + ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
                 '</span>'+
             '</td></tr>';
     }

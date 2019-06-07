@@ -23,20 +23,32 @@ function GetAllRuleset() {
 function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) {
     var isEmptyRuleset = true;
     var rules = response.data;
-    var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-        '<thead>                                                      ' +
-        '<tr>                                                         ' +
-        '<th align="center" style="width: 5%">Status</th>                           ' +
-        '<th style="width: 10%">Sid</th>                              ' +
-        '<th>Description</th>                                         ' +
-        '<th style="display:none;">Notes</th>                                               ' +
-        '<th>IP info</th>                                             ' +
-        '<th style="width: 8%">Actions</th>                                             ' +
-        '<th style="width: 8%">Clone</th>                                             ' +
-        '</tr>                                                        ' +
-        '</thead>                                                     ' +
-        '<tbody>                                                     '
+    var rawLines = new Object();
+    
+    //add raw data
     for (rule in rules) {
+        rawLines[rule] = rules[rule]["raw"];
+    }
+
+    var html = 
+        // '<button class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#modal-window-ruleset" onclick="addToCustomRuleset(\''+nodeJSON+'\')">Add to custom</button><br><br>'+
+        // '<button class="btn btn-primary" style="float: right;" onclick="addToCustomRuleset(\''+rawLines.toString()+'\')">Add to custom</button><br><br>'+
+        '<button class="btn btn-primary" style="float: right;" onclick="addToCustomRuleset()">Add to custom</button><br><br>'+
+        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+            '<thead>                                                      ' +
+                '<tr>                                                         ' +
+                    '<th align="center" style="width: 5%">Status</th>                           ' +
+                    '<th style="width: 10%">Sid</th>                              ' +
+                    '<th>Description</th>                                         ' +
+                    '<th style="display:none;">Notes</th>                                               ' +
+                    '<th>IP info</th>                                             ' +
+                    '<th style="width: 8%">Actions</th>                                             ' +
+                    '<th style="width: 8%">Clone</th>                                             ' +
+                '</tr>                                                        ' +
+            '</thead>                                                     ' +
+            '<tbody>                                                     '
+    for (rule in rules) {
+        // rawLines[rule] = rules[rule]["raw"]
         isEmptyRuleset = false;
         var ruleStatus;
         if (rules[rule]["enabled"] == "Enabled") {
@@ -61,7 +73,7 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
                     '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>' +                    
                 '</span>'+
             '</td><td align="center">                                                           ' +
-                '<input class="form-check-input" type="checkbox" id="ruleSelected-'+rule+'"></input>'+
+                '<input class="form-check-input" type="checkbox" id="'+rule+'"></input>'+
             '</td></tr>'
     }
     html = html + '</tbody></table>';
@@ -81,7 +93,13 @@ function addToCustomRuleset(){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var customRulesetsURL = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/custom';
+    var allRulesSelected = [];
     // $('#modal-window-ruleset').modal('dispose'); //It destroys the jQuery instance of the Bootstrap's Modal component
+    
+    $('input:checkbox:checked').each(function() {
+        var ruleSelected = $(this).prop("id");
+        allRulesSelected.push(ruleSelected);
+    });
 
     axios({
         method: 'get',
@@ -115,7 +133,7 @@ function addToCustomRuleset(){
                                     html = html + '<tr><td>'+
                                         customRulesets[source]['name']+
                                     '</td><td>'+
-                                        '<button type="button" class="btn btn-primary" data-dismiss="modal">Add</button>' +
+                                        '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\')">Add</button>' +
                                     '</td></tr>';
                                 }
                             html = html + '</tbody></table>'+
@@ -131,12 +149,34 @@ function addToCustomRuleset(){
 
         customRulesetModal.innerHTML = html;
         
-        $('.modal-window-ruleset').modal('show');
-        // $('.modal').modal('hide')
+        $('#modal-window-ruleset').modal('show');
     })
     .catch(function (error) {
+        $('#modal-window-ruleset').modal('hide');
         console.log(error);
     });
+}
+
+function addrulesToCustomRuleset(rawUUID, source){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addRulesToCustom/'+source+"/"+rawUUID;
+
+    // var jsondata = {}
+    // jsondata["data"] = rawUUID;
+    // var bpfjson = JSON.stringify(jsondata);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        // data: bpfjson
+    })
+        .then(function (response) {
+            $('#modal-window-ruleset').modal('hide')            
+        })
+        .catch(function (error) {
+            $('#modal-window-ruleset').modal('hide')
+        });
 }
 
 function changeRulesetStatus(sid, uuid, action) {

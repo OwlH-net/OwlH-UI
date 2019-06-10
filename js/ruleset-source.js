@@ -140,9 +140,13 @@ function generateAllRulesetSourceHTMLOutput(response) {
             sources[source]['desc']+
             '</td><td>'+
             sources[source]['path']+
-            '</td><td>'+
-            sources[source]['url']+
-            '</td><td align="right">'+
+            '</td><td>';
+            if (sources[source]['sourceType'] == "custom"){
+                html = html + 'Custom';
+            }else {
+                html = html + sources[source]['url'];
+            }
+            html = html + '</td><td align="right">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">';
                     if(sources[source]['sourceType'] == "url"){

@@ -94,84 +94,98 @@ function addToCustomRuleset(){
     var portmaster = document.getElementById('port-master').value;
     var customRulesetsURL = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/custom';
     var allRulesSelected = [];
-    // $('#modal-window-ruleset').modal('dispose'); //It destroys the jQuery instance of the Bootstrap's Modal component
     
     $('input:checkbox:checked').each(function() {
         var ruleSelected = $(this).prop("id");
         allRulesSelected.push(ruleSelected);
     });
 
-    axios({
-        method: 'get',
-        url: customRulesetsURL,
-        timeout: 30000
-    })
-    .then(function (response) {
-        var customRulesets = response.data;
-        var customRulesetModal = document.getElementById('modal-window-ruleset');
-        var html =
-         '<div class="modal-dialog modal-lg">'+ 
-            '<div class="modal-content">'+
-        
-                '<div class="modal-header">'+
-                    '<h4 class="modal-title">Select ruleset</h4>'+
-                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>'+
-
-                '<div class="modal-body">  '+
-                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                        '<thead>                                                      ' +
-                            '<tr>                                                         ' +
-                            '<th>Name</th>                                                  ' +
-                            '<th style="width: 20%">Actions</th>                                ' +
-                            '</tr>                                                        ' +
-                        '</thead>                                                     ' +
-                            '<tbody>                                                      ' ;
-                                for (source in customRulesets) {
-                                    html = html + '<tr><td>'+
-                                        customRulesets[source]['name']+
-                                    '</td><td>'+
-                                        '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\')">Add</button>' +
-                                    '</td></tr>';
-                                }
-                            html = html + '</tbody></table>'+
-                    '</table>'+
-                '</div>'+
-
-                '<div class="modal-footer" id="ruleset-note-footer-btn">'+
-                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+                    
-                '</div>'+
-
-            '</div>'+
+    if (allRulesSelected == ""){
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+            '<strong>Error!</strong> There are no rules selected.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
         '</div>';
-
-        customRulesetModal.innerHTML = html;
-        
-        $('#modal-window-ruleset').modal('show');
-    })
-    .catch(function (error) {
-        $('#modal-window-ruleset').modal('hide');
-        console.log(error);
-    });
+    }else{
+        axios({
+            method: 'get',
+            url: customRulesetsURL,
+            timeout: 30000
+        })
+        .then(function (response) {
+            var customRulesets = response.data;
+            var customRulesetModal = document.getElementById('modal-window-ruleset');
+            var html =
+             '<div class="modal-dialog modal-lg">'+ 
+                '<div class="modal-content">'+
+            
+                    '<div class="modal-header">'+
+                        '<h4 class="modal-title">Select ruleset</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>'+
+    
+                    '<div class="modal-body">  '+
+                        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                            '<thead>                                                      ' +
+                                '<tr>                                                         ' +
+                                '<th>Name</th>                                                  ' +
+                                '<th style="width: 20%">Actions</th>                                ' +
+                                '</tr>                                                        ' +
+                            '</thead>                                                     ' +
+                                '<tbody>                                                      ' ;
+                                    for (source in customRulesets) {
+                                        html = html + '<tr><td>'+
+                                            customRulesets[source]['name']+
+                                        '</td><td>'+
+                                            '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\')">Add</button>' +
+                                        '</td></tr>';
+                                    }
+                                html = html + '</tbody></table>'+
+                        '</table>'+
+                    '</div>'+
+    
+                    '<div class="modal-footer" id="ruleset-note-footer-btn">'+
+                        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+                    
+                    '</div>'+
+    
+                '</div>'+
+            '</div>';
+    
+            customRulesetModal.innerHTML = html;
+            
+            $('#modal-window-ruleset').modal('show');
+        })
+        .catch(function (error) {
+            $('#modal-window-ruleset').modal('hide');
+            console.log(error);
+        });
+    }
 }
 
-function addrulesToCustomRuleset(rawUUID, source){
+function addrulesToCustomRuleset(rules, sourceUUID){
+    var url = new URL(window.location.href);
+    var uuid = url.searchParams.get("uuid");
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addRulesToCustom/'+source+"/"+rawUUID;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addRulesToCustom';
 
-    // var jsondata = {}
-    // jsondata["data"] = rawUUID;
-    // var bpfjson = JSON.stringify(jsondata);
+    var jsondata = {}
+    jsondata["orig"] = uuid;
+    jsondata["dest"] = sourceUUID;
+    jsondata["sids"] = rules
+    var bpfjson = JSON.stringify(jsondata);
     axios({
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        // data: bpfjson
+        data: bpfjson
     })
         .then(function (response) {
+            console.log(response.data);
             $('#modal-window-ruleset').modal('hide')            
         })
         .catch(function (error) {

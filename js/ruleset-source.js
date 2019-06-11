@@ -154,7 +154,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                     }
                     html = html + '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
                     if(sources[source]['sourceType'] == "custom"){
-                        html = html + '<i class="fas fa-info-circle" id="customRuleDetails-'+source+'" title="Custom rule details"></i>';
+                        html = html + '<i class="fas fa-info-circle" id="customRuleDetails-'+source+'" title="Custom rule details" onclick="loadCustomRulesetRules(\''+source+'\',\''+sources[source]['path']+'\',\'source\')"></i>';
                     }else{
                         html = html + '<i class="fas fa-info-circle" id="SourceDetails-'+source+'" title="Details" onclick="loadRulesetSourceDetails(\'source\',\''+sources[source]['name']+'\',\''+source+'\')"></i>';
                     }          
@@ -178,6 +178,32 @@ function loadRulesetSourceDetails(type, name, uuid){
     }
 }
 
+function loadCustomRulesetRules(uuid,path,type){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var pathArray = path.split("/")
+    var ruleFileName = pathArray[pathArray.length-1];
+    var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/GetFileUUIDfromRulesetUUID/'+uuid;
+    console.log(uuid);
+    axios({
+        method: 'get',
+        url: sourceurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        console.log("Response-->"+response.data);
+        document.location.href = 'https://' + ipmaster + '/ruleset.html?uuid='+response.data+'&rule='+ruleFileName+'&type='+type;
+    })
+    .catch(function (error) {
+        result.innerHTML = '<h3 align="center">No connection</h3>';
+    });
+
+
+
+
+
+
+}
 
 // function modalSyncRulesetSource(name, uuid){
 //     var modalWindow = document.getElementById('modal-ruleset');

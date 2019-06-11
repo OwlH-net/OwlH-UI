@@ -56,15 +56,16 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
             '</td><td class="align-middle">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">'
                     if(type == "source"){
+                        console.log(files[file]["file"]);
                         if(files[file]["exists"] == "true"){
-                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\')"></i> '
+                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\', \''+type+'\')"></i> '
                         }else{
                             html = html + '<i class="fas fa-file-alt" style="color: grey;" title="File do not exists"></i>'+
                             ' | <i class="fas fa-times-circle" style="color: red;"></i>'
                         }
-                    }else{
+                    }else{                        
                         if(files[file]["exists"] == "true"){
-                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\')"></i> '+
+                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\', \''+type+'\')"></i> '+
                             ' | <i class="fas fa-trash-alt" style="color: red;" title="File do not exists"></i>'
                         }else{
                             html = html + '<i class="fas fa-file-alt" style="color: grey;" title="File do not exists"></i> '+
@@ -85,9 +86,9 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
     }
 }
 
-function loadDetails(uuid, ruleFile){
+function loadDetails(uuid, ruleFile, type){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/ruleset.html?uuid='+uuid+'&rule='+ruleFile;
+    document.location.href = 'https://' + ipmaster + '/ruleset.html?uuid='+uuid+'&rule='+ruleFile+'&type='+type;
 }
 
 function modalDeleteRulesetDetail(name, uuid){

@@ -2,6 +2,7 @@ function GetAllRuleset() {
     var url = new URL(window.location.href);
     var uuid = url.searchParams.get("uuid");
     var rule = url.searchParams.get("rule");
+    var type = url.searchParams.get("type");
     var resultElement = document.getElementById('ruleset-table');
     var bannerTitle = document.getElementById('banner-title-ruleset');
     var progressBar = document.getElementById('progressBar-ruleset');
@@ -11,7 +12,7 @@ function GetAllRuleset() {
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + uuid)
         .then(function (response) {
-            resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule);
+            resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule, type);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
         })
@@ -20,7 +21,8 @@ function GetAllRuleset() {
         });
 }
 
-function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) {
+function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule, type) {
+    console.log(response.data);
     var isEmptyRuleset = true;
     var rules = response.data;
     var rawLines = new Object();
@@ -42,9 +44,11 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
                     '<th>Description</th>                                         ' +
                     '<th style="display:none;">Notes</th>                                               ' +
                     '<th>IP info</th>                                             ' +
-                    '<th style="width: 8%">Actions</th>                                             ' +
-                    '<th style="width: 8%">Clone</th>                                             ' +
-                '</tr>                                                        ' +
+                    '<th style="width: 8%">Actions</th>                                             ' ;
+                    if(type == "ruleset"){
+                        html = html + '<th style="width: 8%">Clone</th>                                             ';
+                    }                    
+                html = html + '</tr>                                                        ' +
             '</thead>                                                     ' +
             '<tbody>                                                     '
     for (rule in rules) {
@@ -72,9 +76,13 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule) 
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>' +                    
                 '</span>'+
-            '</td><td align="center">                                                           ' +
-                '<input class="form-check-input" type="checkbox" id="'+rule+'"></input>'+
-            '</td></tr>'
+            '</td>';
+            if(type == "ruleset"){
+                html = html + '<td align="center">                                                           ' +
+                    '<input class="form-check-input" type="checkbox" id="'+rule+'"></input>'+
+                '</td>';
+            }
+            html = html + '</tr>';
     }
     html = html + '</tbody></table>';
     if (isEmptyRuleset) {
@@ -185,11 +193,18 @@ function addrulesToCustomRuleset(rules, sourceUUID){
         data: bpfjson
     })
         .then(function (response) {
-            console.log(response.data);
-            $('#modal-window-ruleset').modal('hide')            
+            $('#modal-window-ruleset').modal('hide')   
+            GetAllRuleset();         
         })
         .catch(function (error) {
             $('#modal-window-ruleset').modal('hide')
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
         });
 }
 

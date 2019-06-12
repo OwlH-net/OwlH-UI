@@ -198,11 +198,6 @@ function loadCustomRulesetRules(uuid,path,type){
         result.innerHTML = '<h3 align="center">No connection</h3>';
     });
 
-
-
-
-
-
 }
 
 // function modalSyncRulesetSource(name, uuid){

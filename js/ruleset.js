@@ -21,38 +21,46 @@ function GetAllRuleset() {
         });
 }
 
-function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule, type) {
-    console.log(response.data);
+function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleName, type) {
+    console.log(response);
     var isEmptyRuleset = true;
     var rules = response.data;
     var rawLines = new Object();
-    
+    var html = "";
+    var isSourceType;
     //add raw data
     for (rule in rules) {
-        rawLines[rule] = rules[rule]["raw"];
+        // rawLines[rule] = rules[rule]["raw"];
+        if (rules[rule]["sourceType"] == "custom"){
+            isSourceType = true;
+            continue;
+        }
     }
-
-    var html = 
-        // '<button class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#modal-window-ruleset" onclick="addToCustomRuleset(\''+nodeJSON+'\')">Add to custom</button><br><br>'+
-        // '<button class="btn btn-primary" style="float: right;" onclick="addToCustomRuleset(\''+rawLines.toString()+'\')">Add to custom</button><br><br>'+
-        '<button class="btn btn-primary" style="float: right;" onclick="addToCustomRuleset()">Add to custom</button><br><br>'+
-        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-            '<thead>                                                      ' +
-                '<tr>                                                         ' +
-                    '<th align="center" style="width: 5%">Status</th>                           ' +
-                    '<th style="width: 10%">Sid</th>                              ' +
-                    '<th>Description</th>                                         ' +
-                    '<th style="display:none;">Notes</th>                                               ' +
-                    '<th>IP info</th>                                             ' +
-                    '<th style="width: 8%">Actions</th>                                             ' ;
-                    if(type == "ruleset"){
-                        html = html + '<th style="width: 8%">Clone</th>                                             ';
-                    }                    
-                html = html + '</tr>                                                        ' +
-            '</thead>                                                     ' +
-            '<tbody>                                                     '
-    for (rule in rules) {
-        // rawLines[rule] = rules[rule]["raw"]
+    
+    // '<button class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#modal-window-ruleset" onclick="addToCustomRuleset(\''+nodeJSON+'\')">Add to custom</button><br><br>'+
+    // '<button class="btn btn-primary" style="float: right;" onclick="addToCustomRuleset(\''+rawLines.toString()+'\')">Add to custom</button><br><br>'+
+    if(type == "ruleset"){
+        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="addToCustomRuleset()">Add to custom</button><br><br>';
+    // }else if(type == "source" && sourceType == "custom"){
+    }else if(type == "source" && isSourceType){
+        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+uuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
+    }       
+    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+        '<thead>                                                      ' +
+            '<tr>                                                         ' +
+                '<th align="center" style="width: 5%">Status</th>                           ' +
+                '<th style="width: 10%">Sid</th>                              ' +
+                '<th>Description</th>                                         ' +
+                '<th style="display:none;">Notes</th>                                               ' +
+                '<th>IP info</th>                                             ' +
+                '<th style="width: 8%">Actions</th>                                             ' ;
+                if(type == "ruleset"){
+                    html = html + '<th style="width: 8%">Clone</th>                                             ';
+                }                    
+            html = html + '</tr>                                                        ' +
+        '</thead>                                                     ' +
+        '<tbody>                                                     '
+    for (rule in rules) {        
         isEmptyRuleset = false;
         var ruleStatus;
         if (rules[rule]["enabled"] == "Enabled") {
@@ -86,10 +94,17 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule, 
     }
     html = html + '</tbody></table>';
     if (isEmptyRuleset) {
-        return '<div style="text-align:center"><h3>No rules for ruleset ' + rule + ' available...</h3></div>';
+        document.getElementById('progressBar-ruleset').style.display = "none";;
+        document.getElementById('progressBar-ruleset-div').style.display = "none";;
+        return '<div style="text-align:center"><h3>No rules for ruleset ' + ruleName + ' available...</h3></div>';
     } else {
         return html;
     }
+}
+
+function editRuleset(uuid, nodeName){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/edit-ruleset.html?uuid='+uuid+'&file='+nodeName;
 }
 
 function loadRulesetDetails(sid, uuid, ipmaster, portmaster){
@@ -316,9 +331,7 @@ function changeRulesetStatus(sid, uuid, action) {
 // }
 
 function loadJSONdata() {
-    console.log("Loading JSON");
     $.getJSON('../conf/ui.conf', function (data) {
-        console.log("getJSON");
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');

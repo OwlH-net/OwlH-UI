@@ -158,7 +158,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                     }else{
                         html = html + '<i class="fas fa-info-circle" id="SourceDetails-'+source+'" title="Details" onclick="loadRulesetSourceDetails(\'source\',\''+sources[source]['name']+'\',\''+source+'\')"></i>';
                     }          
-                    html = html + ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\')"></i> &nbsp;'+
+                    html = html + ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\', \''+sources[source]['sourceType']+'\')"></i> &nbsp;'+
                 '</span>'+
             '</td></tr>';
     }
@@ -267,7 +267,7 @@ function loadCustomRulesetRules(uuid,path,type){
 //         });   
 // }
 
-function modalDeleteRulesetSource(name, sourceUUID){
+function modalDeleteRulesetSource(name, sourceUUID, sourceType){
     var modalWindowDelete = document.getElementById('modal-delete-source');
     modalWindowDelete.innerHTML = 
     '<div class="modal-dialog">'+
@@ -284,7 +284,7 @@ function modalDeleteRulesetSource(name, sourceUUID){
     
             '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                '<button type="submit" class="btn btn-danger" data-dismiss="modal" onclick="deleteRulesetSource(\''+sourceUUID+'\')">Delete</button>'+
+                '<button type="submit" class="btn btn-danger" data-dismiss="modal" onclick="deleteRulesetSource(\''+sourceUUID+'\', \''+sourceType+'\')">Delete</button>'+
             '</div>'+
     
         '</div>'+
@@ -334,14 +334,22 @@ function editRulesetSourceData(){
         document.getElementById('edit-ruleset-source').style.display = "none";
 }
 
-function deleteRulesetSource(sourceUUID){
+function deleteRulesetSource(sourceUUID,sourceType){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/DeleteRulesetSource/' + sourceUUID;
+    // var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/DeleteRulesetSource/' + sourceUUID;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/DeleteRulesetSource';
+
+    var nodejson = {}
+    nodejson["sourceType"] = sourceType;
+    nodejson["uuid"] = sourceUUID;
+    var nodeJSON = JSON.stringify(nodejson);
+
     axios({
         method: 'delete',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        data: nodeJSON
     })
         .then(function (response) {
             GetAllRulesetSource();

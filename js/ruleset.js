@@ -22,7 +22,6 @@ function GetAllRuleset() {
 }
 
 function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleName, type) {
-    console.log(response);
     var isEmptyRuleset = true;
     var rules = response.data;
     var rawLines = new Object();

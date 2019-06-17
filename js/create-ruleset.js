@@ -73,8 +73,6 @@ function modalAddNewRuleset(){
         }
     }
 
-    console.log(document.getElementById('new-ruleset-name-input').value);
-
     if(document.getElementById('new-ruleset-name-input').value == "" || document.getElementById('new-ruleset-description-input').value == "") {
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

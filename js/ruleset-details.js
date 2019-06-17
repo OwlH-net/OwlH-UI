@@ -15,7 +15,6 @@ function GetAllRulesetDetails(){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response);
         if (response.data.ack){
             result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
         }else{
@@ -24,7 +23,6 @@ function GetAllRulesetDetails(){
         }
     })
     .catch(function (error) {
-        console.log(error);
         result.innerHTML = '<h3 align="center">Error: No connection</h3>';
     });
 }

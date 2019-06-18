@@ -1,25 +1,24 @@
 function compareFiles(){
+    var urlWeb = new URL(window.location.href);
+    var file = urlWeb.searchParams.get("file");
+    var uuid = urlWeb.searchParams.get("uuid");
+
     var resultElement = document.getElementById('compare-lines-table');
-    var newFile = 'conf/downloads/Default/rules/drop.rules';
-    var oldFile = 'rules/drop.rules';
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/compareFiles';
-    var nodejson = {}
-    nodejson["new"] = newFile;
-    nodejson["old"] = oldFile;
-    var nodeJSON = JSON.stringify(nodejson);
+    document.getElementById('ruleset-compare-files-title').innerHTML = file;
+
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/compareSourceFiles/'+uuid;
     axios({
-        method: 'put',
+        method: 'get',
         url: nodeurl,
-        timeout: 30000,
-        data: nodeJSON
+        timeout: 30000
         })
         .then(function (response) {
+            console.log(response.data);
             resultElement.innerHTML = generateAllLinesHTMLOutput (response);
         })
         .catch(function (error) {
-            console.log(error);
         });   
 }
 
@@ -30,10 +29,10 @@ function generateAllLinesHTMLOutput (response){
         '<thead>                                                      ' +
         '<tr>                                                         ' +
         '<th style="width: 8%">Sid</th>                                                 ' +
-        '<th style="width: 10%">New file line status</th>                                ' +
-        '<th style="width: 31%">New file line</th>                                       ' +
-        '<th style="width: 10%">Old file line status</th>                                ' +
-        '<th style="width: 31%">Old file line</th>                                       ' +
+        '<th style="width: 10%">Ruleset file status</th>                                ' +
+        '<th style="width: 31%">Ruleset file line</th>                                       ' +
+        '<th style="width: 10%">Source file line status</th>                                ' +
+        '<th style="width: 31%">Source file line</th>                                       ' +
         '<th style="width: 10%">Actions</th>                                             ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
@@ -84,8 +83,8 @@ function generateAllLinesHTMLOutput (response){
     }
 
     html = html + 
-        '</tbody></table>'+
-        '<button type="button" class="btn btn-primary" onclick="createNewFile()">Create New File</button>';
+        '</tbody></table>';
+        // '<button type="button" class="btn btn-primary" onclick="createNewFile()">Create New File</button>';
 
     if (isEmptyRulesets) {
         return '<div style="text-align:center"><h3>Both files are equals</h3></div>';
@@ -94,30 +93,30 @@ function generateAllLinesHTMLOutput (response){
     }
 }
 
-function createNewFile(){
-    var arrayLinesSelected = new Object();
-    $('input:radio:checked').each(function() {
-        var sid = $(this).prop("name");
-        var value = $(this).prop("value");
-        if (value == "old") {
-            arrayLinesSelected[sid] = document.getElementById(sid+'-old').innerHTML;
-        }        
-    });
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/createNewFile';
-    var nodeJSON = JSON.stringify(arrayLinesSelected);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: nodeJSON
-        })
-        .then(function (response) {
-        })
-        .catch(function (error) {
-        }); 
-}
+// function createNewFile(){
+//     var arrayLinesSelected = new Object();
+//     $('input:radio:checked').each(function() {
+//         var sid = $(this).prop("name");
+//         var value = $(this).prop("value");
+//         if (value == "old") {
+//             arrayLinesSelected[sid] = document.getElementById(sid+'-old').innerHTML;
+//         }        
+//     });
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/createNewFile';
+//     var nodeJSON = JSON.stringify(arrayLinesSelected);
+//     axios({
+//         method: 'put',
+//         url: nodeurl,
+//         timeout: 30000,
+//         data: nodeJSON
+//         })
+//         .then(function (response) {
+//         })
+//         .catch(function (error) {
+//         }); 
+// }
 
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
@@ -128,5 +127,5 @@ function loadJSONdata(){
       loadTitleJSONdata();
       compareFiles();
     });
-  }
-  loadJSONdata();
+}
+loadJSONdata();

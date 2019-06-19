@@ -41,8 +41,9 @@ function generateAllRulesetsHTMLOutput(response) {
             '</td><td>                                                            ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-info-circle" title="Details" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
-                    '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>'+
-                    ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
+                    '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp'+
+                    '<i class="fas fa-stopwatch" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp'+
+                    '| <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
                 '</span>'+
             '</td></tr>'
     }
@@ -53,6 +54,31 @@ function generateAllRulesetsHTMLOutput(response) {
     } else {
         return html;
     }
+}
+
+function modalTimeSchedule(uuid, name){
+    var modalWindow = document.getElementById('modal-ruleset');
+    modalWindow.innerHTML = 
+    '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+    
+            '<div class="modal-header">'+
+                '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Time schedule</h4>'+
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+    
+            '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
+                '<p>Insert time:</p>'+
+                '<input type="text" class="form-control" placeholder="Time" id="time-schedule-modal-rulesets">'+
+            '</div>'+
+    
+            '<div class="modal-footer" id="modal-ruleset-sync-ruleset-footer-btn">'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
+                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="timeSchedule(\''++'\')">Run</button>'+
+            '</div>'+
+  
+        '</div>'+
+    '</div>';
 }
 
 function loadRulesetsDetails(type,name,uuid){

@@ -15,6 +15,7 @@ function GetAllRulesetDetails(){
         timeout: 30000
     })
     .then(function (response) {
+        console.log(response);
         if (response.data.ack){
             result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
         }else{
@@ -36,7 +37,6 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
         '<th>File Name</th>                                                  ' +
         '<th>Ruleset</th>                                          ' +
         '<th>Description</th>                                                    ' +
-        '<th>Path</th>                                               ' +
         '<th style="width: 15%">Actions</th>                                ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
@@ -49,8 +49,6 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
             files[file]["name"]+
             '</td><td>'+
             'No description yet...'+
-            '</td><td>'+
-            files[file]["path"]+
             '</td><td class="align-middle">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">';
                     if(type == "source"){
@@ -64,9 +62,11 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
                         if(files[file]["exists"] == "true"){
                             html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\', \''+type+'\')"></i> '+
                             ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete file" data-toggle="modal" data-target="#modal-detail" onclick="modalDeleteRulesetDetail(\''+files[file]["file"]+'\', \''+file+'\')"></i>';
-                            if(files[file]["isUpdated"] == "true"){
+                            if(files[file]["existsSourceFile"] == "false"){
+                                html = html + ' | <i class="fas fa-times-circle" style="color: red;" title="Source file don\'t exist"></i>';
+                            }else if(files[file]["isUpdated"] == "true"){
                                 html = html + ' | <i class="fas fa-recycle" title="Overwrite file" style="color: green;" data-toggle="modal" data-target="#modal-detail" onclick="modalOverwriteRuleFile(\''+file+'\',\''+files[file]["file"]+'\')"></i> '+
-                                '  <i class="far fa-plus-square" title="Add only new SIDs" style="color: LimeGreen;"></i>'+
+                                '  <i class="far fa-plus-square" title="Add only new SIDs" style="color: LimeGreen;" data-toggle="modal" data-target="#modal-detail" onclick="modalAddNewLines(\''+file+'\', \''+files[file]["file"]+'\')"></i>'+
                                 '  <i class="fas fa-info-circle" title="View differences" onclick="viewDifferences(\''+file+'\', \''+files[file]["file"]+'\')"></i>';
                             }
                         }else{
@@ -74,9 +74,6 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
                             ' | <i class="fas fa-times-circle" style="color: red;"></i>';
                         }
                     }
-                    // '<i class="fas fa-sticky-note low-blue" title="Edit file" onclick="showEditRulesetfile(\''+files[source]['name']+'\',\''+files[source]['desc']+'\',\''+files[source]['path']+'\',\''+files[source]['url']+'\',\''+source+'\')"></i> &nbsp;'+
-                    // '<a href="compare-files.html"><i class="fas fa-cog low-blue" title="Compare files" onclick="compareFiles()"></i></a>                              ' +
-                    // '<a href="ruleset-details.html?uuid='+source+'&path='+files[source]['path']+'"><i class="fas fa-info-circle" title="Details"></i></a>'+
                     html = html + '</span>'+
             '</td></tr>';
     }
@@ -86,6 +83,46 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
     }else{
         return html;
     }
+}
+
+function modalAddNewLines(uuid, name){
+    var modalWindowDelete = document.getElementById('modal-detail');
+    var html = '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+    
+            '<div class="modal-header">'+
+                '<h4 class="modal-title">Add new rules</h4>'+
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+    
+            '<div class="modal-body">'+ 
+                '<p>Do you want to add the new rules to file <b>'+name+'</b>?</p>'+
+            '</div>'+
+    
+            '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="addNewLines(\''+uuid+'\')">Add</button>'+
+            '</div>'+
+    
+        '</div>'+
+    '</div>';
+    modalWindowDelete.innerHTML = html;
+}
+
+function addNewLines(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/AddNewLinesToRuleset/' + uuid;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+            GetAllRulesetDetails();
+        })
+        .catch(function error() {
+        });
 }
 
 function viewDifferences(uuid, ruleFile){
@@ -104,7 +141,7 @@ function modalDeleteRulesetDetail(name, uuid){
         '<div class="modal-content">'+
     
             '<div class="modal-header">'+
-                '<h4 class="modal-title">Groups</h4>'+
+                '<h4 class="modal-title">Ruleset</h4>'+
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
     
@@ -120,7 +157,6 @@ function modalDeleteRulesetDetail(name, uuid){
         '</div>'+
     '</div>';
     modalWindowDelete.innerHTML = html;
-    console.log(name);
 }
 
 function modalOverwriteRuleFile(uuid, name){

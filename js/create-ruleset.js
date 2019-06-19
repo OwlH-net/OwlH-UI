@@ -139,7 +139,6 @@ function modalAddNewRuleset(){
                                     '<tr>                                                         ' +
                                     '<th>SID</th>                                                ' +
                                     '<th>Files</th>                                         ' +
-                                    '<th>Actions</th>                                             ' +
                                     '</tr>                                                        ' +
                                 '</thead>                                                     ' +
                                 '<tbody>                                                     '
@@ -158,8 +157,6 @@ function modalAddNewRuleset(){
                                                 html = html + 
                                                 '<td>'+
                                                     lines[sid][values][data]["fileName"] +
-                                                '</td><td>'+
-                                                    '<i class="fas fa-info-circle"></i>' +
                                                 '</td></tr>'
                                             }
                                         }

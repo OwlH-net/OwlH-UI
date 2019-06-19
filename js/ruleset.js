@@ -95,7 +95,8 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
     if (isEmptyRuleset) {
         document.getElementById('progressBar-ruleset').style.display = "none";;
         document.getElementById('progressBar-ruleset-div').style.display = "none";;
-        return '<div style="text-align:center"><h3>No rules for ruleset ' + ruleName + ' available...</h3></div>';
+        return '<div style="text-align:center"><h3>No rules for ruleset ' + ruleName + ' available...</h3></div>'+
+        '<br><button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+uuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
     } else {
         return html;
     }

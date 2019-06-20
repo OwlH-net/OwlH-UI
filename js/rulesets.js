@@ -68,17 +68,110 @@ function modalTimeSchedule(uuid, name){
             '</div>'+
     
             '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
+                '<p>Insert date:</p>'+
+                '<input type="text" class="form-control" placeholder="dd/MM/yyyy" id="date-schedule-modal-rulesets"><br>'+
                 '<p>Insert time:</p>'+
-                '<input type="text" class="form-control" placeholder="Time" id="time-schedule-modal-rulesets">'+
+                '<input type="text" class="form-control" placeholder="hh:MM" id="time-schedule-modal-rulesets">'+
             '</div>'+
     
             '<div class="modal-footer" id="modal-ruleset-sync-ruleset-footer-btn">'+
+            '<button type="submit" class="btn btn-danger" data-dismiss="modal" onclick="stopTimeSchedule(\''+uuid+'\')">Stop Timer</button>'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
-                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="timeSchedule(\''++'\')">Run</button>'+
+                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="timeSchedule(\''+uuid+'\')">Run</button>'+
             '</div>'+
   
         '</div>'+
     '</div>';
+}
+
+function stopTimeSchedule(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/stopTimeSchedule';
+    var jsonbpfdata = {}
+    jsonbpfdata["time"] = document.getElementById('time-schedule-modal-rulesets').value;
+    jsonbpfdata["uuid"] = uuid;
+    var bpfjson = JSON.stringify(jsonbpfdata);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: bpfjson
+    })
+        .then(function (response) {
+            GetAllRulesets();
+        })
+        .catch(function (error) {
+        });
+}
+
+function timeSchedule(uuid){
+    var date = document.getElementById('date-schedule-modal-rulesets').value;
+    var time = document.getElementById('time-schedule-modal-rulesets').value;
+    console.log(date);
+
+    //regexp
+    var regeTime = /(([01][0-9]|[012][0-3]):([0-5][0-9]))/;
+    var regeDay = /(([0][1-9])|([12])([0-9])|([3][01]))(\/)(([0][1-9])|([1][012]))(\/)(\d{4})/;
+    var timeRegexp = regeTime.exec(time);
+    var dateRegexp = regeDay.exec(date);
+    if (dateRegexp == null && timeRegexp == null) {
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>ERROR!</strong> Date format and time format are not correct.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+    }else if (dateRegexp == null) {
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>ERROR!</strong> Date format is not correct.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+    }else if (timeRegexp == null) {
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>ERROR!</strong> Time format is not correct.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+    }
+
+    // console.log(timeRegexp+" -- "+dateRegexp);
+
+    var today = new Date();
+    // var userDate = Date.parse(date+time);
+    var userDate = new Date(dateRegexp[5], dateRegexp[3], dateRegexp[1], timeRegexp[2], timeRegexp[3]); // // 1 Jan 2011, 00:00:00
+    console.log(today+"  --  "+userDate);
+    if(today>userDate){
+        console.log("DATE IS OLDER");
+    }
+
+
+
+    // var ipmaster = document.getElementById('ip-master').value;
+    // var portmaster = document.getElementById('port-master').value;
+    // var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/timeSchedule';
+    
+    // var jsonbpfdata = {}
+    // jsonbpfdata["time"] = document.getElementById('time-schedule-modal-rulesets').value;
+    // jsonbpfdata["uuid"] = uuid;
+    // var bpfjson = JSON.stringify(jsonbpfdata);
+    // axios({
+    //     method: 'put',
+    //     url: nodeurl,
+    //     timeout: 30000,
+    //     data: bpfjson
+    // })
+    //     .then(function (response) {
+    //         GetAllRulesets();
+    //     })
+    //     .catch(function (error) {
+    //     });
 }
 
 function loadRulesetsDetails(type,name,uuid){
@@ -131,40 +224,38 @@ function deleteRulesetModal(name, uuid){
   
         '</div>'+
     '</div>';
-    console.log(uuid);
-
 }
 
-function cloneRuleset(name, path){
-    var modalWindow = document.getElementById('modal-ruleset');
-    modalWindow.innerHTML = 
-    '<div class="modal-dialog">'+
-        '<div class="modal-content">'+
-            '<div class="modal-header">'+
-                '<h4 class="modal-title" id="ruleset-manager-header">Clone ruleset: '+name+'</h4>'+
-                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-            '</div>'+
+// function cloneRuleset(name, path){
+//     var modalWindow = document.getElementById('modal-ruleset');
+//     modalWindow.innerHTML = 
+//     '<div class="modal-dialog">'+
+//         '<div class="modal-content">'+
+//             '<div class="modal-header">'+
+//                 '<h4 class="modal-title" id="ruleset-manager-header">Clone ruleset: '+name+'</h4>'+
+//                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+//             '</div>'+
 
-            '<div class="modal-body" id="ruleset-manager-footer-table1">'+ 
-                '<h7 class="modal-title">New ruleset name</h7>'+
-                '<input class="form-control" id="input-clone-ruleset-name" type="text" placeholder="...">'+
-            '</div>'+
-            '<div class="modal-body" id="ruleset-manager-footer-table2">'+ 
-                '<h7 class="modal-title">New ruleset file name</h7>'+
-                '<input class="form-control" id="input-clone-ruleset-file" type="text" placeholder="...">'+
-            '</div>'+
-            '<div class="modal-body" id="ruleset-manager-footer-table3">'+ 
-                '<h7 class="modal-title">New ruleset description</h7>'+
-                '<input class="form-control" id="input-clone-ruleset-desc" type="text" placeholder="...">'+
-            '</div>'+
+//             '<div class="modal-body" id="ruleset-manager-footer-table1">'+ 
+//                 '<h7 class="modal-title">New ruleset name</h7>'+
+//                 '<input class="form-control" id="input-clone-ruleset-name" type="text" placeholder="...">'+
+//             '</div>'+
+//             '<div class="modal-body" id="ruleset-manager-footer-table2">'+ 
+//                 '<h7 class="modal-title">New ruleset file name</h7>'+
+//                 '<input class="form-control" id="input-clone-ruleset-file" type="text" placeholder="...">'+
+//             '</div>'+
+//             '<div class="modal-body" id="ruleset-manager-footer-table3">'+ 
+//                 '<h7 class="modal-title">New ruleset description</h7>'+
+//                 '<input class="form-control" id="input-clone-ruleset-desc" type="text" placeholder="...">'+
+//             '</div>'+
 
-            '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
-                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
-                '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveClonedRuleset(\''+name+'\' , \''+path+'\')">Clone ruleset</button>'+
-            '</div>'+
-      '</div>'+
-    '</div>';
-}
+//             '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
+//                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
+//                 '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveClonedRuleset(\''+name+'\' , \''+path+'\')">Clone ruleset</button>'+
+//             '</div>'+
+//       '</div>'+
+//     '</div>';
+// }
 
 function deleteRuleset(name, uuid) {
     var ipmaster = document.getElementById('ip-master').value;

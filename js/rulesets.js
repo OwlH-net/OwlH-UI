@@ -108,7 +108,6 @@ function stopTimeSchedule(uuid){
 function timeSchedule(uuid){
     var date = document.getElementById('date-schedule-modal-rulesets').value;
     var time = document.getElementById('time-schedule-modal-rulesets').value;
-    console.log(date);
 
     //regexp
     var regeTime = /(([01][0-9]|[012][0-3]):([0-5][0-9]))/;

@@ -36,7 +36,6 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
         '<tr>                                                         ' +
         '<th>File Name</th>                                                  ' +
         '<th>Ruleset</th>                                          ' +
-        '<th>Description</th>                                                    ' +
         '<th style="width: 15%">Actions</th>                                ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
@@ -47,8 +46,6 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
             files[file]["file"]+
             '</td><td>'+
             files[file]["name"]+
-            '</td><td>'+
-            'No description yet...'+
             '</td><td class="align-middle">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">';
                     if(type == "source"){

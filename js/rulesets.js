@@ -57,13 +57,14 @@ function generateAllRulesetsHTMLOutput(response) {
 }
 
 function modalTimeSchedule(uuid, name){
+    var today = new Date();
     var modalWindow = document.getElementById('modal-ruleset');
     modalWindow.innerHTML = 
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+
     
             '<div class="modal-header">'+
-                '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Time schedule</h4>'+
+                '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">'+name+' time schedule</h4>'+
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
     
@@ -103,56 +104,155 @@ function modalTimeSchedule(uuid, name){
 
                 //Select date
                 '<p>Start date:</p>'+
-                '<div class="dropdown">'+
-                    '<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuMonth" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
-                        'Month'+
-                    '</button>'+
-                    '<div class="dropdown-menu" aria-labelledby="dropdownMenuMonth">'+
-                        '<a class="dropdown-item" href="#">Action</a>'+
-                        '<a class="dropdown-item" href="#">Another action</a>'+
-                        '<a class="dropdown-item" href="#">Something else here</a>'+
-                    '</div>'+
-                        '&nbsp'+
-                    '<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuDay" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
-                        'Day'+
-                    '</button>'+
-                    '<div class="dropdown-menu" aria-labelledby="dropdownMenuDay">'+
-                        '<a class="dropdown-item" href="#">Action</a>'+
-                        '<a class="dropdown-item" href="#">Another action</a>'+
-                        '<a class="dropdown-item" href="#">Something else here</a>'+
-                    '</div>'+
-                        '&nbsp'+
-                    '<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuYear" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
-                        'Year'+
-                    '</button>'+
-                    '<div class="dropdown-menu" aria-labelledby="dropdownMenuYear">'+
-                        '<a class="dropdown-item" href="#">Action</a>'+
-                        '<a class="dropdown-item" href="#">Another action</a>'+
-                        '<a class="dropdown-item" href="#">Something else here</a>'+
-                    '</div>'+
+                '<div class="form-group col-md-4">'+
+                    '<span>'+
+                        '<select class="form-control" name="Month" id="schedule-date-month">'+
+                            '<option value="1">January</a>'+
+                            '<option value="2">February</a>'+
+                            '<option value="3">March</a>'+
+                            '<option value="4">April</a>'+
+                            '<option value="5">May</a>'+
+                            '<option value="6">June</a>'+
+                            '<option value="7">July</a>'+
+                            '<option value="8">August</a>'+
+                            '<option value="9">September</a>'+
+                            '<option value="10">October</a>'+
+                            '<option value="11">November</a>'+
+                            '<option value="12">December</a>'+
+                        '</select>&nbsp'+
+                        '<select class="form-control" name="Day" id="schedule-date-day">'+
+                            '<option value="1">1</a>'+
+                            '<option value="2">2</a>'+
+                            '<option value="3">3</a>'+
+                            '<option value="4">4</a>'+
+                            '<option value="5">5</a>'+
+                            '<option value="6">6</a>'+
+                            '<option value="7">7</a>'+
+                            '<option value="8">8</a>'+
+                            '<option value="9">9</a>'+
+                            '<option value="10">10</a>'+
+                            '<option value="11">11</a>'+
+                            '<option value="12">12</a>'+
+                            '<option value="13">13</a>'+
+                            '<option value="14">14</a>'+
+                            '<option value="15">15</a>'+
+                            '<option value="16">16</a>'+
+                            '<option value="17">17</a>'+
+                            '<option value="18">18</a>'+
+                            '<option value="19">19</a>'+
+                            '<option value="20">20</a>'+
+                            '<option value="21">21</a>'+
+                            '<option value="22">22</a>'+
+                            '<option value="23">23</a>'+
+                            '<option value="24">24</a>'+
+                            '<option value="25">25</a>'+
+                            '<option value="26">26</a>'+
+                            '<option value="27">27</a>'+
+                            '<option value="28">28</a>'+
+                            '<option value="29">29</a>'+
+                            '<option value="30">30</a>'+
+                            '<option value="31">31</a>'+
+                        '</select>&nbsp'+
+                        '<select class="form-control" name="Year" id="schedule-date-year">'+
+                            '<option value="'+(today.getFullYear())+'">'+(today.getFullYear())+'</a>'+
+                            '<option value="'+(today.getFullYear()+1)+'">'+(today.getFullYear()+1)+'</a>'+
+                            '<option value="'+(today.getFullYear()+2)+'">'+(today.getFullYear()+2)+'</a>'+
+                        '</select>'+
+                    '</span>'+    
                 '</div>'+
                 '<br>'+
 
                 //Select time
                 '<p>Start time:</p>'+
-                '<div class="dropdown">'+
-                    '<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuHour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
-                        'Hour'+
-                    '</button>'+
-                    '<div class="dropdown-menu" aria-labelledby="dropdownMenuHour">'+
-                        '<a class="dropdown-item" href="#">Action</a>'+
-                        '<a class="dropdown-item" href="#">Another action</a>'+
-                        '<a class="dropdown-item" href="#">Something else here</a>'+
-                    '</div>'+
-                        '&nbsp'+
-                    '<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuMinute" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
-                        'Minute'+
-                    '</button>'+
-                    '<div class="dropdown-menu" aria-labelledby="dropdownMenuMinute">'+
-                        '<a class="dropdown-item" href="#">Action</a>'+
-                        '<a class="dropdown-item" href="#">Another action</a>'+
-                        '<a class="dropdown-item" href="#">Something else here</a>'+
-                    '</div>'+
+                '<div class="form-group col-md-4">'+
+                    '<select class="form-control" name="Hour" id="schedule-time-hour">'+
+                        '<option value="00">00</a>'+
+                        '<option value="01">01</a>'+
+                        '<option value="02">02</a>'+
+                        '<option value="03">03</a>'+
+                        '<option value="04">04</a>'+
+                        '<option value="05">05</a>'+
+                        '<option value="06">06</a>'+
+                        '<option value="07">07</a>'+
+                        '<option value="08">08</a>'+
+                        '<option value="09">09</a>'+
+                        '<option value="10">10</a>'+
+                        '<option value="11">11</a>'+
+                        '<option value="12">12</a>'+
+                        '<option value="13">13</a>'+
+                        '<option value="14">14</a>'+
+                        '<option value="15">15</a>'+
+                        '<option value="16">16</a>'+
+                        '<option value="17">17</a>'+
+                        '<option value="18">18</a>'+
+                        '<option value="19">19</a>'+
+                        '<option value="20">20</a>'+
+                        '<option value="21">21</a>'+
+                        '<option value="22">22</a>'+
+                        '<option value="23">23</a>'+
+                    '</select>&nbsp'+
+                    '<select class="form-control" name="Minute" id="schedule-time-minute">'+
+                        '<option value="00">00</a>'+
+                        '<option value="01">01</a>'+
+                        '<option value="02">02</a>'+
+                        '<option value="03">03</a>'+
+                        '<option value="04">04</a>'+
+                        '<option value="05">05</a>'+
+                        '<option value="06">06</a>'+
+                        '<option value="07">07</a>'+
+                        '<option value="08">08</a>'+
+                        '<option value="09">09</a>'+
+                        '<option value="10">10</a>'+
+                        '<option value="11">11</a>'+
+                        '<option value="12">12</a>'+
+                        '<option value="13">13</a>'+
+                        '<option value="14">14</a>'+
+                        '<option value="15">15</a>'+
+                        '<option value="16">16</a>'+
+                        '<option value="17">17</a>'+
+                        '<option value="18">18</a>'+
+                        '<option value="19">19</a>'+
+                        '<option value="20">20</a>'+
+                        '<option value="21">21</a>'+
+                        '<option value="22">22</a>'+
+                        '<option value="23">23</a>'+
+                        '<option value="24">24</a>'+
+                        '<option value="25">25</a>'+
+                        '<option value="26">26</a>'+
+                        '<option value="27">27</a>'+
+                        '<option value="28">28</a>'+
+                        '<option value="29">29</a>'+
+                        '<option value="30">30</a>'+
+                        '<option value="31">31</a>'+
+                        '<option value="32">32</a>'+
+                        '<option value="33">33</a>'+
+                        '<option value="34">34</a>'+
+                        '<option value="35">35</a>'+
+                        '<option value="36">36</a>'+
+                        '<option value="37">37</a>'+
+                        '<option value="38">38</a>'+
+                        '<option value="39">39</a>'+
+                        '<option value="40">40</a>'+
+                        '<option value="41">41</a>'+
+                        '<option value="42">42</a>'+
+                        '<option value="43">43</a>'+
+                        '<option value="44">44</a>'+
+                        '<option value="45">45</a>'+
+                        '<option value="46">46</a>'+
+                        '<option value="47">47</a>'+
+                        '<option value="48">48</a>'+
+                        '<option value="49">49</a>'+
+                        '<option value="50">50</a>'+
+                        '<option value="51">51</a>'+
+                        '<option value="52">52</a>'+
+                        '<option value="53">53</a>'+
+                        '<option value="54">54</a>'+
+                        '<option value="55">55</a>'+
+                        '<option value="56">56</a>'+
+                        '<option value="57">57</a>'+
+                        '<option value="58">58</a>'+
+                        '<option value="59">59</a>'+
+                    '</select>'+
                 '</div>'+
                 '<br>'+
                 //Select when
@@ -169,6 +269,10 @@ function modalTimeSchedule(uuid, name){
                     '<div class="custom-control custom-radio custom-control-inline">'+
                         '<input type="radio" id="schedule-monthly" name="update-schedule" value="monthly" class="custom-control-input">'+
                         '<label class="custom-control-label" for="schedule-monthly">Monthly</label>'+
+                    '</div>'+
+                    '<div class="custom-control custom-radio custom-control-inline">'+
+                        '<input type="radio" id="schedule-min" name="update-schedule" value="minute" class="custom-control-input">'+
+                        '<label class="custom-control-label" for="schedule-min">1 min</label>'+
                     '</div>'+
                 '</div>'+
                 '<br>'+
@@ -255,23 +359,37 @@ function timeSchedule(uuid){
     var valuesSelectedModal = {};
     $('input:radio:checked').each(function() {
         if ($(this).prop("value") == "enabled" || $(this).prop("value")=="disabled") {
-            valuesSelectedModal["status"] = $(this).prop("value")
+            valuesSelectedModal["status"] = $(this).prop("value");
         }
         if ($(this).prop("value") == "overwrite" || $(this).prop("value")=="add-lines") {
-            valuesSelectedModal["update"] = $(this).prop("value")
+            valuesSelectedModal["update"] = $(this).prop("value");
         }
-        if ($(this).prop("value") == "daily" || $(this).prop("value")=="weekly" || $(this).prop("value")=="monthly") {
-            valuesSelectedModal["schedule"] = $(this).prop("value")
+        switch($(this).prop("value")) {
+            case "daily":
+                valuesSelectedModal["schedule"] = "1440";
+                break;
+            case "weekly":
+                valuesSelectedModal["schedule"] = "10080";
+                break;
+            case "monthly":
+                valuesSelectedModal["schedule"] = "40320";
+                break;
+            default:
+                valuesSelectedModal["schedule"] = "1";
+                break;
         }
     });
-
+    valuesSelectedModal["day"] = document.getElementById('schedule-date-day').value;
+    valuesSelectedModal["month"] = document.getElementById('schedule-date-month').value;
+    valuesSelectedModal["year"] = document.getElementById('schedule-date-year').value;
+    valuesSelectedModal["hour"] = document.getElementById('schedule-time-hour').value;
+    valuesSelectedModal["minute"] = document.getElementById('schedule-time-minute').value;
     if (valuesSelectedModal["status"] == "enabled"){
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/timeSchedule';
     }else{
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/stopTimeSchedule';
     }
 
-    valuesSelectedModal["time"] = "1";
     valuesSelectedModal["uuid"] = uuid;
     var schedulejson = JSON.stringify(valuesSelectedModal);
     axios({

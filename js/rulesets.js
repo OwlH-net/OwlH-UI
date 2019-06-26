@@ -107,29 +107,29 @@ function modalTimeSchedule(uuid, name){
                 '<div class="form-group col-md-4">'+
                     '<span>'+
                         '<select class="form-control" name="Month" id="schedule-date-month">'+
-                            '<option value="1">January</a>'+
-                            '<option value="2">February</a>'+
-                            '<option value="3">March</a>'+
-                            '<option value="4">April</a>'+
-                            '<option value="5">May</a>'+
-                            '<option value="6">June</a>'+
-                            '<option value="7">July</a>'+
-                            '<option value="8">August</a>'+
-                            '<option value="9">September</a>'+
+                            '<option value="01">January</a>'+
+                            '<option value="02">February</a>'+
+                            '<option value="03">March</a>'+
+                            '<option value="04">April</a>'+
+                            '<option value="05">May</a>'+
+                            '<option value="06">June</a>'+
+                            '<option value="07">July</a>'+
+                            '<option value="08">August</a>'+
+                            '<option value="09">September</a>'+
                             '<option value="10">October</a>'+
                             '<option value="11">November</a>'+
                             '<option value="12">December</a>'+
                         '</select>&nbsp'+
                         '<select class="form-control" name="Day" id="schedule-date-day">'+
-                            '<option value="1">1</a>'+
-                            '<option value="2">2</a>'+
-                            '<option value="3">3</a>'+
-                            '<option value="4">4</a>'+
-                            '<option value="5">5</a>'+
-                            '<option value="6">6</a>'+
-                            '<option value="7">7</a>'+
-                            '<option value="8">8</a>'+
-                            '<option value="9">9</a>'+
+                            '<option value="01">1</a>'+
+                            '<option value="02">2</a>'+
+                            '<option value="03">3</a>'+
+                            '<option value="04">4</a>'+
+                            '<option value="05">5</a>'+
+                            '<option value="06">6</a>'+
+                            '<option value="07">7</a>'+
+                            '<option value="08">8</a>'+
+                            '<option value="09">9</a>'+
                             '<option value="10">10</a>'+
                             '<option value="11">11</a>'+
                             '<option value="12">12</a>'+
@@ -366,13 +366,13 @@ function timeSchedule(uuid){
         }
         switch($(this).prop("value")) {
             case "daily":
-                valuesSelectedModal["schedule"] = "1440";
+                valuesSelectedModal["schedule"] = "86400";
                 break;
             case "weekly":
-                valuesSelectedModal["schedule"] = "10080";
+                valuesSelectedModal["schedule"] = "604800";
                 break;
             case "monthly":
-                valuesSelectedModal["schedule"] = "40320";
+                valuesSelectedModal["schedule"] = "1567641600000‬";
                 break;
             default:
                 valuesSelectedModal["schedule"] = "1";
@@ -384,13 +384,14 @@ function timeSchedule(uuid){
     valuesSelectedModal["year"] = document.getElementById('schedule-date-year').value;
     valuesSelectedModal["hour"] = document.getElementById('schedule-time-hour').value;
     valuesSelectedModal["minute"] = document.getElementById('schedule-time-minute').value;
+    valuesSelectedModal["uuid"] = uuid;
+    valuesSelectedModal["type"] = "ruleset";
     if (valuesSelectedModal["status"] == "enabled"){
-        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/timeSchedule';
+        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/scheduler/add';
     }else{
-        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/stopTimeSchedule';
+        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/scheduler/stop';
     }
 
-    valuesSelectedModal["uuid"] = uuid;
     var schedulejson = JSON.stringify(valuesSelectedModal);
     axios({
         method: 'put',

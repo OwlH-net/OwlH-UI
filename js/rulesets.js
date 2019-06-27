@@ -192,66 +192,18 @@ function modalTimeSchedule(uuid, name){
                         '<option value="23">23</a>'+
                     '</select>&nbsp'+
                     '<select class="form-control" name="Minute" id="schedule-time-minute">'+
-                        '<option value="00">00</a>'+
-                        '<option value="01">01</a>'+
-                        '<option value="02">02</a>'+
-                        '<option value="03">03</a>'+
-                        '<option value="04">04</a>'+
+                        '<option value="00">00</a>'+                        
                         '<option value="05">05</a>'+
-                        '<option value="06">06</a>'+
-                        '<option value="07">07</a>'+
-                        '<option value="08">08</a>'+
-                        '<option value="09">09</a>'+
                         '<option value="10">10</a>'+
-                        '<option value="11">11</a>'+
-                        '<option value="12">12</a>'+
-                        '<option value="13">13</a>'+
-                        '<option value="14">14</a>'+
                         '<option value="15">15</a>'+
-                        '<option value="16">16</a>'+
-                        '<option value="17">17</a>'+
-                        '<option value="18">18</a>'+
-                        '<option value="19">19</a>'+
                         '<option value="20">20</a>'+
-                        '<option value="21">21</a>'+
-                        '<option value="22">22</a>'+
-                        '<option value="23">23</a>'+
-                        '<option value="24">24</a>'+
                         '<option value="25">25</a>'+
-                        '<option value="26">26</a>'+
-                        '<option value="27">27</a>'+
-                        '<option value="28">28</a>'+
-                        '<option value="29">29</a>'+
                         '<option value="30">30</a>'+
-                        '<option value="31">31</a>'+
-                        '<option value="32">32</a>'+
-                        '<option value="33">33</a>'+
-                        '<option value="34">34</a>'+
                         '<option value="35">35</a>'+
-                        '<option value="36">36</a>'+
-                        '<option value="37">37</a>'+
-                        '<option value="38">38</a>'+
-                        '<option value="39">39</a>'+
                         '<option value="40">40</a>'+
-                        '<option value="41">41</a>'+
-                        '<option value="42">42</a>'+
-                        '<option value="43">43</a>'+
-                        '<option value="44">44</a>'+
                         '<option value="45">45</a>'+
-                        '<option value="46">46</a>'+
-                        '<option value="47">47</a>'+
-                        '<option value="48">48</a>'+
-                        '<option value="49">49</a>'+
                         '<option value="50">50</a>'+
-                        '<option value="51">51</a>'+
-                        '<option value="52">52</a>'+
-                        '<option value="53">53</a>'+
-                        '<option value="54">54</a>'+
                         '<option value="55">55</a>'+
-                        '<option value="56">56</a>'+
-                        '<option value="57">57</a>'+
-                        '<option value="58">58</a>'+
-                        '<option value="59">59</a>'+
                     '</select>'+
                 '</div>'+
                 '<br>'+
@@ -366,16 +318,16 @@ function timeSchedule(uuid){
         }
         switch($(this).prop("value")) {
             case "daily":
-                valuesSelectedModal["schedule"] = "86400";
+                valuesSelectedModal["period"] = "86400";
                 break;
             case "weekly":
-                valuesSelectedModal["schedule"] = "604800";
+                valuesSelectedModal["period"] = "604800";
                 break;
             case "monthly":
-                valuesSelectedModal["schedule"] = "1567641600000‬";
+                valuesSelectedModal["period"] = "1567641600000‬";
                 break;
             default:
-                valuesSelectedModal["schedule"] = "1";
+                valuesSelectedModal["period"] = "60";
                 break;
         }
     });

@@ -65,6 +65,9 @@ function GetAllGroups(){
 }
 
 function generateAllGroupsHTMLOutput(response) {
+    if (response.data.ack == "false") {
+        return '<div style="text-align:center"><h3 style="color:red;">Error retrieving groups data</h3></div>';
+    }
     var isEmpty = true;
     var groups = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +

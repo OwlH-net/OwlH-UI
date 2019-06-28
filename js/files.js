@@ -26,6 +26,9 @@ function getAllFiles() {
 }
 
 function generateAllFilesOutput(response, node) {
+    if (response.data.ack == "false") {
+        return '<div style="text-align:center"><h3 style="color:red;">Error retrieving files for node ' + node + '</h3></div>';
+    }  
     var isEmptyFiles = true;
     var files = response.data;
     var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +

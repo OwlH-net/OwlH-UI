@@ -15,6 +15,7 @@ function GetAllRuleset() {
             resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule, type);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
+            
         })
         .catch(function (error) {
             resultElement.innerHTML = generateAllRulesHTMLOutput(error);
@@ -22,6 +23,9 @@ function GetAllRuleset() {
 }
 
 function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleName, type) {
+    if (response.data.ack == "false") {
+       return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
+    }
     var isEmptyRuleset = true;
     var rules = response.data;
     var rawLines = new Object();

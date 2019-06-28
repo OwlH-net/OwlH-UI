@@ -14,8 +14,12 @@ function loadRulesetContent(){
         timeout: 30000
     })
     .then(function (response) {
-        textArea.innerHTML = response.data.fileContent;
-        return true;
+        if (response.data.ack == "false") {
+            return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
+         }else{
+             textArea.innerHTML = response.data.fileContent;
+             return true;
+         }
     })
     .catch(function (error) {
         return false;

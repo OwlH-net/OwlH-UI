@@ -29,6 +29,9 @@ function GetAllRulesetDetails(){
 }
 
 function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
+    if (response.data.ack == "false") {
+        return '<div style="text-align:center"><h3 style="color:red;">Error retrieving all ruleset details for ruleset ' + sourceName + '</h3></div>';
+    }  
     var isEmpty = true;
     var files = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +

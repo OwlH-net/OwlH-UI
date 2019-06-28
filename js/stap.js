@@ -68,6 +68,9 @@ function GetAllServers() {
 }
 
 function generateAllServerHTMLOutput(response) {
+    if (response.data.ack == "false") {
+        return '<div style="text-align:center"><h3 style="color:red;">Error retrieving data for STAP</h3></div>';
+    }  
     var isEmptyStaps = true;
     var servers = response.data;
     var html =  

@@ -23,6 +23,9 @@ function compareFiles(){
 }
 
 function generateAllLinesHTMLOutput (response){
+    if (response.data.ack == "false") {
+        return '<div style="text-align:center"><h3 style="color:red;">Error retrieving file data</h3></div>';
+     }
     var lines = response.data
     var isEmptyRulesets = true;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +

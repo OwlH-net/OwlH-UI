@@ -10,7 +10,6 @@ function loadTitleJSONdata(){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(ipmaster+" --> "+portmaster+" : "+response.data);
         title.innerHTML = response.data;
         return true;
     })

@@ -24,9 +24,13 @@ function loadFileIntoTextarea(){
         timeout: 30000
     })
     .then(function (response) {
-        txtArea.innerHTML = response.data.fileContent;
-        uuidHidden.value = response.data.nodeUUID;
-        fileHidden.value = response.data.fileName;
+        if (response.data.ack == "false") {
+            return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
+        }else{
+            txtArea.innerHTML = response.data.fileContent;
+            uuidHidden.value = response.data.nodeUUID;
+            fileHidden.value = response.data.fileName;
+        }
         return true;
     })
     .catch(function (error) {

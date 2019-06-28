@@ -17,6 +17,9 @@ function GetAllRulesets() {
     }
     
 function generateAllRulesetsHTMLOutput(response) {
+    if (response.data.ack == "false") {
+        return '<div style="text-align:center"><h3 style="color:red;">Error retrieving data for rulesets</h3></div>';
+    }  
     var isEmptyRulesets = true;
     var type = "ruleset";
     var ruleset = response.data;

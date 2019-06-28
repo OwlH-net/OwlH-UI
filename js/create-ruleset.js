@@ -18,6 +18,9 @@ function loadRulesData(){
 }
 
 function generateAllRuleDataHTMLOutput(response) {
+    if (response.data.ack == "false") {
+        return '<div style="text-align:center"><h3 style="color:red;">Error creating ruleset</h3></div>';
+     }
     var isEmpty = true;
     var sources = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +

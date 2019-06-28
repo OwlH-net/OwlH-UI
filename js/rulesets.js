@@ -324,7 +324,7 @@ function timeSchedule(uuid){
                 valuesSelectedModal["period"] = "604800";
                 break;
             case "monthly":
-                valuesSelectedModal["period"] = "1567641600000‬";
+                valuesSelectedModal["period"] = "2592000";
                 break;
             default:
                 valuesSelectedModal["period"] = "60";

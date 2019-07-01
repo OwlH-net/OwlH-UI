@@ -267,7 +267,7 @@ function modalTimeSchedule(uuid, name, status){
     var month;
     var hour = today.getHours();
     var minutes = today.getMinutes();
-    var minuteSelected;
+    var minuteSelected = 00;
 
     if (today.getDate() < 10){
         day = '0'+today.getDate();
@@ -303,7 +303,7 @@ function modalTimeSchedule(uuid, name, status){
         minuteSelected = 50;
     }else if (minutes>50 && minutes<=55){
         minuteSelected = 55;
-    }else if (minutes>55){
+    }else{
         hour = today.getHours()+1;
         minuteSelected = 00;
     }

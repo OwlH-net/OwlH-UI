@@ -47,9 +47,11 @@ function generateAllRulesetsHTMLOutput(response) {
                     '<i class="fas fa-info-circle" title="Details" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
                     '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     if(ruleset[uuid]["status"]=="enabled"){
-                        html = html + '<i class="fas fa-stopwatch" style="color:green;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp';
+                        html = html + '<i class="fas fa-stopwatch" style="color:green;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
+                        '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else if(ruleset[uuid]["status"]=="disabled"){
-                        html = html + '<i class="fas fa-stopwatch" style="color:red;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp';
+                        html = html + '<i class="fas fa-stopwatch" style="color:red;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
+                        '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else{
                         html = html + '<i class="fas fa-stopwatch" style="color:grey;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp';                        
                     }
@@ -66,17 +68,65 @@ function generateAllRulesetsHTMLOutput(response) {
     }
 }
 
+function modalShowLog(uuid, name){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var modalWindow = document.getElementById('modal-ruleset');
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/scheduler/log/'+uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+            var ruleset = response.data;
+            html = 
+            '<div class="modal-dialog modal-lg">'+
+                '<div class="modal-content">'+
+            
+                    '<div class="modal-header">'+
+                        '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">LOG for ruleset '+name+'</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>'+
+            
+                    '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+
+                        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>                                                      ' +
+                            '<tr>                                                         ' +
+                            '<th>Time</th>                                                ' +
+                            '<th>Log</th>                                         ' +
+                            '</tr>                                                        ' +
+                        '</thead>                                                     ' +
+                        '<tbody>                                                     ';
+                        for (uuid in ruleset) {
+                            for (param in ruleset[uuid]) {
+                                html = html + '<tr><td>' +
+                                new Date(param * 1000) +
+                                '</td><td>  ' +
+                                ruleset[uuid][param] +
+                                '</td></tr>';
+                            }
+                        }
+                    '</div>'+        
+                '</div>'+
+            '</div>';
+            modalWindow.innerHTML = html;
+        })
+        .catch(function (error) {
+        });
+}
+
 function modalTimeSchedule(uuid, name, status){
     var today = new Date();
     var modalWindow = document.getElementById('modal-ruleset');    
     var html =
-    '<div class="modal-dialog">'+
-        '<div class="modal-content">'+
-    
-            '<div class="modal-header">'+
-                '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">'+name+' time schedule</h4>'+
-                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-            '</div>';
+            '<div class="modal-dialog">'+
+                '<div class="modal-content">'+
+            
+                    '<div class="modal-header">'+
+                        '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">'+name+' time schedule</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>';
     
             if(status=="enabled"){
                 html = html + '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
@@ -92,7 +142,7 @@ function modalTimeSchedule(uuid, name, status){
                     
                     //submit button
                     '<div>'+
-                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="timeSchedule(\''+uuid+'\',\''+status+'\')">Define task</button>'+
+                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="timeSchedule(\''+uuid+'\',\''+status+'\')">Stop task</button>'+
                     '</div>'+
                 '</div>';
             }else{                
@@ -281,31 +331,31 @@ function modalTimeSchedule(uuid, name, status){
         month = (today.getMonth()+1);
     }
 
-    if (minutes>0 && minutes<=5){
-        minuteSelected = 05;
+    if (minutes>=0 && minutes<=5){
+        minuteSelected = '05';
     }else if (minutes>5 && minutes<=10){
-        minuteSelected = 10;
+        minuteSelected = '10';
     }else if (minutes>10 && minutes<=15){
-        minuteSelected = 15;
+        minuteSelected = '15';
     }else if (minutes>15 && minutes<=20){
-        minuteSelected = 20;
+        minuteSelected = '20';
     }else if (minutes>20 && minutes<=25){
-        minuteSelected = 25;
+        minuteSelected = '25';
     }else if (minutes>25 && minutes<=30){
-        minuteSelected = 30;
+        minuteSelected = '30';
     }else if (minutes>30 && minutes<=35){
-        minuteSelected = 35;
+        minuteSelected = '35';
     }else if (minutes>35 && minutes<=40){
-        minuteSelected = 40;
+        minuteSelected = '40';
     }else if (minutes>40 && minutes<=45){
-        minuteSelected = 45;
+        minuteSelected = '45';
     }else if (minutes>45 && minutes<=50){
-        minuteSelected = 50;
+        minuteSelected = '50';
     }else if (minutes>50 && minutes<=55){
-        minuteSelected = 55;
-    }else{
+        minuteSelected = '55';
+    }else if (minutes>55){
         hour = today.getHours()+1;
-        minuteSelected = 00;
+        minuteSelected = '00';
     }
 
     document.getElementById('schedule-time-hour').value = hour;
@@ -324,9 +374,6 @@ function timeSchedule(uuid, status){
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/scheduler/stop';
     }else{        
         $('input:radio:checked').each(function() {
-            if ($(this).prop("value") == "enabled" || $(this).prop("value")=="disabled") {
-                valuesSelectedModal["status"] = $(this).prop("value");
-            }
             if ($(this).prop("value") == "overwrite" || $(this).prop("value")=="add-lines") {
                 valuesSelectedModal["update"] = $(this).prop("value");
             }
@@ -351,6 +398,7 @@ function timeSchedule(uuid, status){
         valuesSelectedModal["hour"] = document.getElementById('schedule-time-hour').value;
         valuesSelectedModal["minute"] = document.getElementById('schedule-time-minute').value;
         valuesSelectedModal["uuid"] = uuid;
+        valuesSelectedModal["status"] = "enabled";
         valuesSelectedModal["type"] = "ruleset";
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/scheduler/add';
     }

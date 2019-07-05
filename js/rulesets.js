@@ -17,7 +17,6 @@ function GetAllRulesets() {
     }
     
 function generateAllRulesetsHTMLOutput(response) {
-    console.log(response.data);
     if (response.data.ack == "false") {
         return '<div style="text-align:center"><h3 style="color:red;">Error retrieving data for rulesets</h3></div>';
     }  
@@ -39,7 +38,7 @@ function generateAllRulesetsHTMLOutput(response) {
         }
         isEmptyRulesets = false;
         html = html + '<tr><td>' +
-            ruleset[uuid]["name"] +
+            ruleset[uuid]["name"] + 
             '</td><td>                                                            ' +
             ruleset[uuid]["desc"] +
             '</td><td>                                                            ' +

@@ -47,9 +47,11 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
             '<tr>                                                         ' +
                 '<th align="center" style="width: 5%">Status</th>                           ' +
                 '<th style="width: 10%">Sid</th>                              ' +
-                '<th>Description</th>                                         ' +
-                '<th>Notes</th>                                               ' +
-                '<th>IP info</th>                                             ' +
+                '<th>Description</th>                                         ' ;
+                if(type != "source"){
+                    html = html +'<th>Notes</th>                                               ' ;
+                }
+                html = html + '<th>IP info</th>                                             ' +
                 '<th style="width: 8%">Actions</th>                                             ' ;
                 if(type == "ruleset"){
                     html = html + '<th style="width: 8%">Clone</th>                                             ';
@@ -72,10 +74,12 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
             '</td><td>                                                           ' +
             rules[rule]["sid"] +
             '</td><td>                                                           ' +
-            rules[rule]["msg"] +
-            '</td><td id="' + rules[rule]["sid"] + '-note">' +
-            rules[rule]["note"] +
-            '</td><td>                                                           ' +
+            rules[rule]["msg"] ;
+            if(type != "source"){
+                html = html + '</td><td id="' + rules[rule]["sid"] + '-note">' +
+                rules[rule]["note"]  ;
+            }
+            html = html +'</td><td>                                                           ' +
             rules[rule]["ip"] +
             '</td><td align="center">                                                           ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+

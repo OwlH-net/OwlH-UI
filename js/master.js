@@ -1,14 +1,25 @@
 function loadPlugins(){
     content = document.getElementById('master-table-plugins');
-    content.innerHTML ='<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-    '<h6 class="border-bottom border-gray pb-2 mb-0">Plugins</h6>'+
-    '<br>'+
-    '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i> | '+
-    '  <span style="font-size: 15px; color: grey;">                                   ' +
-    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
-    '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopMasterCollector()"></i>                         ' +
-    '    <i class="fas fa-info-circle" title="Collector information" onclick="showMasterCollector()"></i>  ' +
-    '  </span></p> '+
+    content.innerHTML =
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0">Plugins</h6>'+
+        '<br>'+
+        '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i> | '+
+        '  <span style="font-size: 15px; color: grey;">                                   ' +
+        '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+        '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopMasterCollector()"></i>                         ' +
+        '    <i class="fas fa-info-circle" title="Collector information" onclick="showMasterCollector()"></i>  ' +
+        '  </span></p> '+
+    '</div>'+
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0">Dispatcher</h6>'+
+        '<br>'+
+        '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Dispatcher &nbsp; | </span> <i class="fas fa-angle-double-down" id="master-dispatcher-status"></i> | '+
+        '  <span style="font-size: 15px; color: grey;">                                   ' +
+        '    <i class="fas fa-play-circle" title="Play dispatcher"></i>                         ' +
+        '    <i class="fas fa-stop-circle" title="Stop dispatcher"></i>                         ' +
+        '    <i class="fas fa-info-circle" title="Dispatcher information"></i>  ' +
+        '  </span></p> '+
     '</div>';
     PingCollector();
 }

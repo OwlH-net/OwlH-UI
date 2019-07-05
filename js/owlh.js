@@ -168,7 +168,7 @@ function generateAllNodesHTMLOutput(response) {
             '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
             '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>                             ' +
             '  </span></p> '+
-            '  <p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="collector-status"></i> | '+
+            '  <p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="collector-status-'+uuid+'"></i> | '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
@@ -177,8 +177,8 @@ function generateAllNodesHTMLOutput(response) {
             '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
             '  <img src="img/favicon.ico" height="25"> Knownports | '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <span class="fas fa-play-circle" id="ports-status" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
-            '    <i style="color: grey;" id="ports-mode">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
+            '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
+            '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
             '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
             '  </span></p> ';  
             html = html +   '</td>                                                            ' +
@@ -216,11 +216,12 @@ function loadEditURL(uuid, nodeName){
 
 
 function ChangeStatus(uuid){
+    console.log(uuid);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status';
     
-    if(document.getElementById('ports-status').innerHTML == "Enabled"){
+    if(document.getElementById('ports-status-'+uuid).innerHTML == "Enabled"){
         var status ="Disabled";
     }else{
         var status ="Enabled";
@@ -249,7 +250,7 @@ function ChangeMode(uuid){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/mode';
     
-    if(document.getElementById('ports-mode').innerHTML == "Learning"){
+    if(document.getElementById('ports-mode-'+uuid).innerHTML == "Learning"){
         var mode ="Production";
     }else{
         var mode ="Learning";
@@ -353,7 +354,7 @@ function stopCollector(uuid){
 function PingCollector(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var collectorStatus = document.getElementById('collector-status');
+    var collectorStatus = document.getElementById('collector-status-'+uuid);
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid;
     axios({
         method: 'get',
@@ -491,47 +492,113 @@ function showModalPorts(response, uuid){
                 '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
-            '</div>'+
+            '</div>';
 
-            '<div class="modal-body">  '+
-                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                    '<thead>                                                      ' +
-                        '<tr>                                                         ' +
-                            '<th width="30%">Portproto</th>                                    ' +
-                            '<th>First</th>                                         ' +
-                            '<th>Last</th>                                 ' +
-                            '<th width="10%">Select</th>                                 ' +
-                        '</tr>                                                        ' +
-                    '</thead>                                                     ' +
-                    '<tbody>                                                     ' 
-                        for(line in response.data){
-                            var first = new Date(response.data[line]["first"]*1000);
-                            var last = new Date(response.data[line]["last"]*1000);
-                            
-                            html = html + '<tr><td id="">                            ' +
-                            response.data[line]["portprot"]+'<br>'                    +
-                            '</td><td>'+
-                            first+
-                            '</td><td>'+
-                            last+
-                            '</td><td align="center">'+
-                            '<input class="form-check-input" type="checkbox" id="'+line+'"></input>'+
-                            '</td></tr>'
-                        }
-                html = html +'</tbody>'+
-                '</table>'+
-            '</div>'+
+            if (response.data.ack=="false"){
+                html = html + '<div class="modal-body">  '+
+                    '<h5 class="modal-title" style="color:red;">Error retrieving ports...</h5>'+
+                '</div>';
+            }else{
+                html = html + '<div class="modal-body">  '+
+                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>                                                      ' +
+                            '<tr>                                                         ' +
+                                '<th width="30%">Portproto</th>                                    ' +
+                                '<th>First</th>                                         ' +
+                                '<th>Last</th>                                 ' +
+                                '<th width="10%">Select</th>                                 ' +
+                            '</tr>                                                        ' +
+                        '</thead>                                                     ' +
+                        '<tbody>                                                     ' 
+                            for(line in response.data){
+                                var first = new Date(response.data[line]["first"]*1000);
+                                var last = new Date(response.data[line]["last"]*1000);
+                                
+                                html = html + '<tr><td id="">                            ' +
+                                response.data[line]["portprot"]+'<br>'                    +
+                                '</td><td>'+
+                                first+
+                                '</td><td>'+
+                                last+
+                                '</td><td align="center">'+
+                                '<input class="form-check-input" type="checkbox" id="'+line+'"></input>'+
+                                '</td></tr>'
+                            }
+                    html = html +'</tbody>'+
+                    '</table>'+
+                '</div>'+
 
-            '<div class="modal-footer" id="ruleset-note-footer-btn">'+
-                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                '<button type="button" class="btn btn-dark" data-dismiss="modal" onclick="deleteAllPorts(\''+uuid+'\')">Delete all</button>' +
-                '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePorts(\''+uuid+'\')">Delete</button>' +
-            '</div>'+
+                '<div class="modal-footer" id="ruleset-note-footer-btn">'+
+                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                    '<button type="button" class="btn btn-dark" data-dismiss="modal" onclick="deleteAllPorts(\''+uuid+'\')">Delete all</button>' +
+                    '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePorts(\''+uuid+'\')">Delete</button>' +
+                '</div>';
+            }
 
-        '</div>'+
+        html = html + '</div>'+
     '</div>';
     document.getElementById('modal-window').innerHTML = html;
 }
+
+// function showModalPorts(response, uuid){
+//     var html = '<div class="modal-dialog modal-lg">'+
+//         '<div class="modal-content">'+
+    
+//             '<div class="modal-header">'+
+//                 '<h4 class="modal-title">Ports</h4>'+
+//                 '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+//                     '<span aria-hidden="true">&times;</span>'+
+//                 '</button>'+
+//             '</div>'+
+
+//             '<div class="modal-body">';
+
+//                 if(response.data.ack=="false"){
+//                     console.log(response.data.ack);
+//                     htlm = html + '<h4 class="modal-title" style="color:red;">Error retrieving ports...</h4>';
+//                 }else{
+//                     console.log(response);
+//                     htlm = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+//                             '<thead>                                                      ' +
+//                                 '<tr>                                                         ' +
+//                                     '<th width="30%">Portproto</th>                                    ' +
+//                                     '<th>First</th>                                         ' +
+//                                     '<th>Last</th>                                 ' +
+//                                     '<th width="10%">Select</th>                                 ' +
+//                                 '</tr>                                                        ' +
+//                             '</thead>                                                     ' +
+//                             '<tbody>                                                     ' ;
+//                                 for(line in response.data){
+//                                     var first = new Date(response.data[line]["first"]*1000);
+//                                     var last = new Date(response.data[line]["last"]*1000);
+                                    
+//                                     html = html + '<tr><td>                            ' +
+//                                     response.data[line]["portprot"]+
+//                                     '</td><td>'+
+//                                     first+
+//                                     '</td><td>'+
+//                                     last+
+//                                     '</td><td align="center">'+
+//                                         '<input class="form-check-input" type="checkbox" id="'+line+'"></input>'+
+//                                     '</td></tr>';
+//                                 }
+//                             html = html +'</tbody>'+
+//                         '</table>';
+//                 }
+//             html = html +'</div>'+
+
+//             '<div class="modal-footer" id="ruleset-note-footer-btn">'+
+//                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+//                 '<button type="button" class="btn btn-dark" data-dismiss="modal" onclick="deleteAllPorts(\''+uuid+'\')">Delete all</button>' +
+//                 '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePorts(\''+uuid+'\')">Delete</button>' +
+//             '</div>'+
+
+
+//         '</div>'+
+//     '</div>';
+    
+//     document.getElementById('modal-window').innerHTML = html;
+// }
 
 function deletePorts(uuid){
     var arrayLinesSelected = new Object();
@@ -935,15 +1002,15 @@ function PingPorts(uuid) {
     })
         .then(function (response) {
             for(line in response.data){
-                document.getElementById('ports-mode').innerHTML = response.data[line]["mode"];
-                document.getElementById('ports-status').innerHTML = response.data[line]["status"];
+                document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+                document.getElementById('ports-status-'+uuid).innerHTML = response.data[line]["status"];
                 
                 if (response.data[line]["status"] == "Enabled"){
-                    document.getElementById('ports-status-btn').className = "fas fa-stop-circle";
-                    document.getElementById('ports-status').className = "badge bg-success align-text-bottom text-white";
+                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
+                    document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
                 }else{
-                    document.getElementById('ports-status-btn').className = "fas fa-play-circle";
-                    document.getElementById('ports-status').className = "badge bg-danger align-text-bottom text-white";
+                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
+                    document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
                 }                
             }
             return true;

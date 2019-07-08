@@ -69,19 +69,19 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
             ruleStatus = "Enable";
             icon = '<i class="fas fa-times-circle" style="color:red;"></i>'
         }
-        html = html + '<tr><td id="' + rules[rule]["sid"] + '-rule-status">' +
+        html = html + '<tr><td style="word-wrap: break-word;" id="' + rules[rule]["sid"] + '-rule-status">' +
             icon +
-            '</td><td>                                                           ' +
+            '</td><td style="word-wrap: break-word;">                                                           ' +
             rules[rule]["sid"] +
-            '</td><td>                                                           ' +
+            '</td><td style="word-wrap: break-word;">                                                           ' +
             rules[rule]["msg"] ;
             if(type != "source"){
-                html = html + '</td><td id="' + rules[rule]["sid"] + '-note">' +
+                html = html + '</td><td style="word-wrap: break-word;" id="' + rules[rule]["sid"] + '-note">' +
                 rules[rule]["note"]  ;
             }
-            html = html +'</td><td>                                                           ' +
+            html = html +'</td><td style="word-wrap: break-word;">                                                           ' +
             rules[rule]["ip"] +
-            '</td><td align="center">                                                           ' +
+            '</td><td style="word-wrap: break-word;" align="center">                                                           ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>&nbsp';
                     if(type != "source"){
@@ -91,7 +91,7 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
                     html = html +'</span>'+
             '</td>';
             if(type == "ruleset"){
-                html = html + '<td align="center">                                                           ' +
+                html = html + '<td style="word-wrap: break-word;" align="center">                                                           ' +
                     '<input class="form-check-input" type="checkbox" id="'+rule+'"></input>'+
                 '</td>';
             }
@@ -171,9 +171,9 @@ function addToCustomRuleset(){
                             '</thead>                                                     ' +
                                 '<tbody>                                                      ' ;
                                     for (source in customRulesets) {
-                                        html = html + '<tr><td>'+
+                                        html = html + '<tr><td style="word-wrap: break-word;">'+
                                             customRulesets[source]['name']+
-                                        '</td><td>'+
+                                        '</td><td style="word-wrap: break-word;">'+
                                             '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\')">Add</button>' +
                                         '</td></tr>';
                                     }

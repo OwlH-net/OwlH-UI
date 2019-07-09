@@ -114,9 +114,8 @@ function generateAllNodesHTMLOutput(response) {
                 '<th scope="col"></th>                                        ' +
                 '<th scope="col">Name</th>                                    ' +
                 '<th scope="col">Status</th>                                  ' +
-                '<th scope="col">Tags <span style="font-size: 10px;"></span></th>            ' +
-                '<th scope="col">Services</th>                                ' +
-                '<th scope="col">Actions</th>                                 ' +
+                '<th scope="col"></th>                                ' +
+                '<th scope="col"></th>                                 ' +
                 '</tr>                                                        ' +
                 '</thead>                                                     ' +
                 '<tbody >'
@@ -136,62 +135,95 @@ function generateAllNodesHTMLOutput(response) {
             ' <td class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
             ' <p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
             ' <i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'                        +
-            '</td>'                                                                             +
+            '</td>' +
             '<td class="align-middle">                                                        ';
-        html = html + '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span></td>';
-            html = html + ' <td class="align-middle" id="'+uuid+'-tag"></td><td class="align-middle">';
-            html = html +'<p><img src="img/suricata.png" alt="" width="30"> '      +
-            '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
-            '  <span style="font-size: 15px; color: grey;" >                                   ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
-            '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+nodes[node]['name']+'\')"></i>                                 ' +
-            '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+nodes[node]['name']+'\')">BPF</i>'+
-            '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>                        ' +
-            '  </span>                                                                        ' +
-            '  </p>                                                                           ' +
-            '  <p><img  src="img/bro.png" alt="" width="30">'+
-            '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
-            '  <span style="font-size: 15px; color: grey;" >                                   ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
-            '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
-            '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i>                  ' +
-            '  </span>                                                                        ' +
-            '  </p>                                                                           ' +
-            '  <p><img src="img/wazuh.png" alt="" width="30"> '+
-            '  <span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
-            '  <span style="font-size: 15px; color: grey;" >                                  ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-wazuh-icon"></i>                         ' +
-            '  </span></p> '+
-            '  <p><i class="fas fa-plug fa-lg"></i>'+
-            '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
-            '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>                             ' +
-            '  </span></p> '+
-            '  <p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="collector-status-'+uuid+'"></i> | '+
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
-            '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
-            '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
-            '  </span></p> '+   
-            '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
-            '  <img src="img/favicon.ico" height="25"> Knownports | '+
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
-            '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
-            '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
-            '  </span></p> ';  
-            html = html +   '</td>                                                            ' +
-            '<td class="align-middle">                                                        ' +
-            '  <span style="font-size: 20px; color: Dodgerblue;" >                            ' +
-            '    <i class="fas fa-arrow-alt-circle-down" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>             ' +
-            '    <i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i>                            ' +
-            '    <i class="fas fa-cog" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i>           ' +
-            '     | <i class="fas fa-trash-alt" style="color: red;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i>                         ' +
+        html = html + '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span></td>'+
+            '<td class="align-middle">'+
+            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
+            '<span id="network-ids-form-'+uuid+'" style="display:None">'+
+                '<p><img src="img/suricata.png" alt="" width="30"> '      +
+                '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
+                '  <span style="font-size: 15px; color: grey;" >                                   ' +
+                '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
+                '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+nodes[node]['name']+'\')"></i>                                 ' +
+                '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+nodes[node]['name']+'\')">BPF</i>'+
+                '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>                        ' +
+                '  </span>                                                                        ' +
+                '  </p>                                                                           ' +
+                '  <p><img  src="img/bro.png" alt="" width="30">'+
+                '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
+                '  <span style="font-size: 15px; color: grey;" >                                   ' +
+                '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
+                '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
+                '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i>                  ' +
+                '  </span>' +
+                '  </p>   '+
+            '</span>'+
+            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'transport\',\''+uuid+'\')"><b>Transport</b> <i class="fas fa-sort-down" id="transport-form-icon-'+uuid+'"></i></h6>'+                                                                        
+            '<span id="transport-form-'+uuid+'" style="display:None">'+
+                '  <p><img src="img/wazuh.png" alt="" width="30"> '+
+                '  <span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
+                '  <span style="font-size: 15px; color: grey;" >                                  ' +
+                '    <i class="fas fa-stop-circle" id="'+uuid+'-wazuh-icon"></i>                         ' +
+                '  </span></p> '+
+            '</span>'+
+            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Plugins</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
+            '<span id="plugins-form-'+uuid+'" style="display:None">'+
+                '  <p><i class="fas fa-plug fa-lg"></i>'+
+                '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
+                '  <span style="font-size: 15px; color: grey;">                                   ' +
+                '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
+                '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>                             ' +
+                '  </span></p> '+            
+                '  <p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="collector-status-'+uuid+'"></i> | '+
+                '  <span style="font-size: 15px; color: grey;">                                   ' +
+                '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
+                '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
+                '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
+                '  </span></p> '+   
+                '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
+                '  <img src="img/favicon.ico" height="25"> Knownports | '+
+                '  <span style="font-size: 15px; color: grey;">                                   ' +
+                '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
+                '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
+                '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
+                '  </span></p> '+ 
+            '</span">'+ 
+            '</td>                                                            ' +
+            '<td class="align-middle"> '+
+            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'actions\',\''+uuid+'\')"><b>Actions</b> <i class="fas fa-sort-down" id="actions-form-icon-'+uuid+'"></i></h6>'+
+            '<span id="actions-form-'+uuid+'" style="display:None">'+                                                       
+                '<span style="font-size: 15px; color: Dodgerblue;" >                            ' +
+                '<i class="fas fa-arrow-alt-circle-down" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
+                '<br><i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node                            ' +
+                '<br><i class="fas fa-cog" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
+                '<br><i class="fas fa-trash-alt" style="color: red;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
+                // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+                '</span>'+
+            '</span>'+
+            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'deploy\',\''+uuid+'\')"><b>Deploy</b> <i class="fas fa-sort-down" id="deploy-form-icon-'+uuid+'"></i></h6>'+
+            '<span id="deploy-form-'+uuid+'" style="display:None">'+
+                '<span style="font-size: 15px; color: Dodgerblue;">'+
+                    '<i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Suricata &nbsp; | '+
+                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                    '<br>'+
+                    '<i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Zeek &nbsp; | '+
+                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                    '<br>'+
+                    '<i style="color: Dodgerblue;" class="fas fa-search"></i> &nbsp; Moloch &nbsp; | '+
+                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                    '<br>'+
+                    '<i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; OwlH interface &nbsp; | '+
+                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                    '<br>'+
+                    '<i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> &nbsp; OwlH firewall &nbsp; | '+
+                    // '  <span style="font-size: 15px; color: grey;">                                   ' +
+                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                '</span>'+
+            // '</div>'+
             '  </span>                                                                           ' +
             '</td>                                                                               ' +
             '</tr>';
-
     }
     html = html + '</tbody></table>';
     if (isEmpty){
@@ -199,6 +231,23 @@ function generateAllNodesHTMLOutput(response) {
     }else{
         return  html;
     }
+}
+
+function showActions(action,uuid){
+    console.log(action);
+    var addnids = document.getElementById(action+'-form-'+uuid);
+    var icon = document.getElementById(action+'-form-icon-'+uuid);
+    if (addnids.style.display == "none") {
+        addnids.style.display = "block";
+        icon.classList.add("fa-sort-up");
+        icon.classList.remove("fa-sort-down");        
+        // icon.class = "fas fa-sort-up";
+    } else {
+        addnids.style.display = "none";
+        icon.classList.add("fa-sort-down");
+        icon.classList.remove("fa-sort-up");   
+        // icon.class = "fas fa-sort-down";
+    }    
 }
 
 function loadStapURL(uuid, nodeName){
@@ -216,7 +265,7 @@ function loadEditURL(uuid, nodeName){
 
 
 function ChangeStatus(uuid){
-    console.log(uuid);
+
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status';

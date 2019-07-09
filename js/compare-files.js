@@ -15,7 +15,6 @@ function compareFiles(){
         timeout: 30000
         })
         .then(function (response) {
-            console.log(response.data);
             resultElement.innerHTML = generateAllLinesHTMLOutput (response);
         })
         .catch(function (error) {
@@ -62,17 +61,17 @@ function generateAllLinesHTMLOutput (response){
         }
 
         isEmptyRulesets = false;
-        html = html + '<tr><td>' +
+        html = html + '<tr><td style="word-wrap: break-word;">' +
             lines[line]["sid"] +
-            '</td><td>                                                            ' +
+            '</td><td style="word-wrap: break-word;">                                                            ' +
             iconNew +
-            '</td><td>                                                            ' +
+            '</td><td style="word-wrap: break-word;">                                                            ' +
             '<p id="'+line+'-new">'+lines[line]["new"]+'</p>                                        ' +
-            '</td><td>                                                            ' +
+            '</td><td style="word-wrap: break-word;">                                                            ' +
             iconOld +
-            '</td><td>                                                            ' +
+            '</td><td style="word-wrap: break-word;">                                                            ' +
             '<p id="'+line+'-old">'+lines[line]["old"]+'</p>' +
-            '</td><td>                                                            ' +
+            '</td><td style="word-wrap: break-word;">                                                            ' +
             '<a class="btn btn-primary">Details</a>                               ' +
             '<div class="form-check">                         '+
                 '<input class="form-check-input" type="radio" name="'+line+'" value="new">                         '+

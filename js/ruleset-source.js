@@ -137,19 +137,19 @@ function generateAllRulesetSourceHTMLOutput(response) {
         '<tbody>                                                      ' 
     for (source in sources) {
         isEmpty = false;
-        html = html + '<tr><td>'+
+        html = html + '<tr><td style="word-wrap: break-word;">'+
             sources[source]['name']+
-            '</td><td>'+
+            '</td><td style="word-wrap: break-word;">'+
             sources[source]['desc']+
-            '</td><td>'+
+            '</td><td style="word-wrap: break-word;">'+
             sources[source]['path']+
-            '</td><td>';
+            '</td><td style="word-wrap: break-word;">';
             if (sources[source]['sourceType'] == "custom"){
                 html = html + 'Custom';
             }else {
                 html = html + sources[source]['url'];
             }
-            html = html + '</td><td align="right">'+
+            html = html + '</td><td align="right" style="word-wrap: break-word;">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">';
                     if(sources[source]['sourceType'] == "url"){

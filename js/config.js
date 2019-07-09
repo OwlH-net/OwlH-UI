@@ -20,7 +20,13 @@ function saveFileChanged() {
     .catch(function (error) {
         return false;
     });
+}
 
+function checkStatus() {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
+    document.getElementById('check-status-config').href = nodeurl;
 }
 
 function closeFileChanged(){
@@ -35,6 +41,7 @@ function loadJSONdata() {
         portLoad.value = data.master.port;
         loadTitleJSONdata();
         loadFileIntoTextarea();
+        checkStatus();
     });
 }
 loadJSONdata();

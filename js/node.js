@@ -193,11 +193,11 @@ function generateAllRulesModal(response, nid) {
                 '<tbody >                                                     ' 
     for (rule in rules) {
         isEmpty = false;
-        html = html + '<tr><td width="30%">                                       ' +
+        html = html + '<tr><td style="word-wrap: break-word;" width="30%">                                       ' +
         rules[rule]["name"]                                                     +
-        '</td><td>                                                            ' +
+        '</td><td style="word-wrap: break-word;">                                                            ' +
         rules[rule]["desc"]                                                     +
-        '</td><td width="15%">                                                ' +
+        '</td><td style="word-wrap: break-word;" width="15%">                                                ' +
         '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
         '</td></tr>                                                           '
     }

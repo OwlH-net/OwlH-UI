@@ -37,11 +37,11 @@ function generateAllRulesetsHTMLOutput(response) {
             continue;
         }
         isEmptyRulesets = false;
-        html = html + '<tr><td>' +
+        html = html + '<tr><td style="word-wrap: break-word;">' +
             ruleset[uuid]["name"] + 
-            '</td><td>                                                            ' +
+            '</td><td style="word-wrap: break-word;">                                                            ' +
             ruleset[uuid]["desc"] +
-            '</td><td>                                                            ' +
+            '</td><td style="word-wrap: break-word;">                                                            ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-info-circle" title="Details" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
                     '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
@@ -99,9 +99,9 @@ function modalShowLog(uuid, name){
                         '<tbody>                                                     ';
                         for (uuid in ruleset) {
                             for (param in ruleset[uuid]) {
-                                html = html + '<tr><td>' +
+                                html = html + '<tr><td style="word-wrap: break-word;">' +
                                 new Date(param * 1000) +
-                                '</td><td>  ' +
+                                '</td><td style="word-wrap: break-word;">  ' +
                                 ruleset[uuid][param] +
                                 '</td></tr>';
                             }

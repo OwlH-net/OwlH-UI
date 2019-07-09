@@ -36,13 +36,13 @@ function generateAllRuleDataHTMLOutput(response) {
     for (source in sources) {
         if(sources[source]["exists"]=="true"){
             isEmpty = false;
-            html = html + '<tr><td align="center">'+
+            html = html + '<tr><td style="word-wrap: break-word;" align="center">'+
                     '<input class="form-check-input" type="checkbox" id="'+source+'"></input>'+
-                '</td><td id="nameNewRuleset-'+source+'">'+
+                '</td><td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'">'+
                     sources[source]["name"]+
-                '</td><td id="fileNewRuleset-'+source+'">'+
+                '</td><td style="word-wrap: break-word;" id="fileNewRuleset-'+source+'">'+
                     sources[source]["file"]+
-                '</td><td style="display:none;" id="pathNewRuleset-'+source+'">'+
+                '</td><td style="word-wrap: break-word;" style="display:none;" id="pathNewRuleset-'+source+'">'+
                     sources[source]["path"]+
                 '</td></tr>'
         }
@@ -162,7 +162,7 @@ function modalAddNewRuleset(){
                                                     cont = false;
                                                 }
                                                 html = html + 
-                                                '<td>'+
+                                                '<td style="word-wrap: break-word;">'+
                                                     lines[sid][values][data]["fileName"] +
                                                 '</td></tr>'
                                             }

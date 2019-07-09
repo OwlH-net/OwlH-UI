@@ -45,11 +45,11 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
         '<tbody>                                                      ' 
     for (file in files) {
         isEmpty = false;
-        html = html + '<tr><td>'+
+        html = html + '<tr><td style="word-wrap: break-word;">'+
             files[file]["file"]+
-            '</td><td>'+
+            '</td><td style="word-wrap: break-word;">'+
             files[file]["name"]+
-            '</td><td class="align-middle">'+
+            '</td><td style="word-wrap: break-word;" class="align-middle">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">';
                     if(type == "source"){
                         if(files[file]["exists"] == "true"){

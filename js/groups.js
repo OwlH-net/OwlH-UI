@@ -81,11 +81,11 @@ function generateAllGroupsHTMLOutput(response) {
         '<tbody>                                                      ' 
     for (group in groups) {
         isEmpty = false;
-        html = html + '<tr><td style="width: 20%">'+
+        html = html + '<tr><td style="word-wrap: break-word;" style="width: 20%">'+
         groups[group]['name']+
-        '</td><td>'+
+        '</td><td style="word-wrap: break-word;">'+
         groups[group]['desc']+
-        '</td><td>'+
+        '</td><td style="word-wrap: break-word;">'+
             // '<span style="font-size: 20px; color: Dodgerblue;" >                            ' +
             '<i class="fas fa-sticky-note low-blue" style="color: Dodgerblue; font-size: 20px" title="Edit group" onclick="showEditGroup(\''+groups[group]['name']+'\',\''+groups[group]['desc']+'\',\''+group+'\')"></i> &nbsp;'+
             '<i class="fas fa-trash-alt low-blue" style="color: Dodgerblue; font-size: 20px" title="Delete group" data-toggle="modal" data-target="#modal-groups" onclick="modalDeleteGroup(\''+groups[group]['name']+'\',\''+group+'\')"></i>'+

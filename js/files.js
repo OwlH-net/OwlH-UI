@@ -43,11 +43,11 @@ function generateAllFilesOutput(response, node) {
     for (file in files) {
         isEmptyFiles=false;
         if (file != "nodeUUID"){
-            html = html + '<tr><td>'+
+            html = html + '<tr><td style="word-wrap: break-word;">'+
                 file                                                    +
-                '</td><td>                         '+
+                '</td><td style="word-wrap: break-word;">                         '+
                 files[file]+
-                '</td><td>                                                            '+                                                     
+                '</td><td style="word-wrap: break-word;">                                                            '+                                                     
                 '<button type="submit" class="btn btn-primary" onclick="loadEditURL(\''+files.nodeUUID+'\', \''+file+'\', \''+node+'\')">Edit</button>'+
                 '</td></tr>                                                           '
         }

@@ -18,12 +18,69 @@ function loadRulesData(){
 }
 
 function generateAllRuleDataHTMLOutput(response) {
-    if (response.data.ack == "false") {
-        return '<div style="text-align:center"><h3 style="color:red;">Error creating ruleset</h3></div>';
-     }
+    var html = "";
     var isEmpty = true;
     var sources = response.data;
-    var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+    var arrayRulesetsSelected = new Array();
+
+    if (response.data.ack == "false") {
+        return '<div style="text-align:center"><h3 style="color:red;">Error creating ruleset</h3></div>';
+    }
+    html = html + 
+    '<div>'+
+        '<div class="input-group col-md-6">'+
+        '<div class="input-group-prepend">'+
+            '<span class="input-group-text">New Name</span>'+
+        '</div>'+
+        '<input type="text" class="form-control" placeholder="Ruleset name" id="new-ruleset-name-input">'+
+    '</div>'+
+    '<br>'+
+    '<div class="input-group col-md-6">'+
+        '<div class="input-group-prepend">'+
+            '<span class="input-group-text">New Description</span>'+
+        '</div>'+
+        '<input type="text" class="form-control" placeholder="Ruleset description" id="new-ruleset-description-input">'+
+    '</div>'+
+    '<br>'+
+    '</div>'+
+    // '<br><br>'+
+    // '<div>'+
+    //     '<div class="input-group col-md-6">'+
+    //         '<div class="input-group-prepend">'+
+    //             '<span class="input-group-text">Search rule file</span>'+
+    //         '</div>'+
+    //         '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset()"'+
+    //             'placeholder="Search for rulesets..." title="Insert a ruleset name for search">'+
+    //     '</div>'+
+    // '</div>'+
+    '<br><br><br>'+
+
+    '<h5>Select rulesets</h5>'+
+    '<div class="form-check">'+
+        '<ul class="checkbox-grid">';
+        for (source in sources) {
+            if(!arrayRulesetsSelected.includes(sources[source]["name"])){
+                arrayRulesetsSelected.push(sources[source]["name"]);
+                html = html + ' <li style="display: block; float: left; width: 25%"><input type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" /><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>';    
+            }
+        }
+        html = html + '</ul>'+
+    '</div>'+
+        
+    '<br><br>'+
+    '<br><br><br>'+
+    '<div>'+
+        '<div class="input-group col-md-6">'+
+            '<div class="input-group-prepend">'+
+                '<span class="input-group-text">Search rule file</span>'+
+            '</div>'+
+            '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset()"'+
+                'placeholder="Search for rulesets..." title="Insert a ruleset name for search">'+
+        '</div>'+
+    '</div>'+
+
+    '<a class="btn btn-primary float-right" style="color: white;" onclick="modalAddNewRuleset()">Add</a>'+
+    '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
         '<th style="width: 10%">Select</th>                                                  ' +
@@ -32,7 +89,7 @@ function generateAllRuleDataHTMLOutput(response) {
         '<th style="display:none;">path</th>                                          ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
-        '<tbody>                                                      ' 
+        '<tbody>                                                      ' ;
     for (source in sources) {
         if(sources[source]["exists"]=="true"){
             isEmpty = false;
@@ -44,14 +101,34 @@ function generateAllRuleDataHTMLOutput(response) {
                     sources[source]["file"]+
                 '</td><td style="word-wrap: break-word;" style="display:none;" id="pathNewRuleset-'+source+'">'+
                     sources[source]["path"]+
-                '</td></tr>'
+                '</td></tr>';
         }
     }
-    html = html + '</tbody></table>';
+    html = html + '</tbody></table>'+
+    '<br><a class="btn btn-primary float-right" style="color: white;" onclick="modalAddNewRuleset()">Add</a><br><br>';
     if (isEmpty){
         return '<h3 style="text-align:center">No sources created</h3>';
     }else{
         return html;
+    }
+}
+
+function searchRuleset(){
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("ruleset-search-input");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("create-ruleset-table");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[2];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
     }
 }
 

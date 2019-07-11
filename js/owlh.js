@@ -30,6 +30,7 @@ function PingNode(uuid) {
                 PingWazuh(uuid);
                 PingStap(uuid);
                 PingPorts(uuid);
+                PingAnalyzer(uuid);
                 PingCollector(uuid);
                 return "true";
             } else {
@@ -175,18 +176,23 @@ function generateAllNodesHTMLOutput(response) {
                 '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
                 '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>                             ' +
                 '  </span></p> '+            
-                '  <p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="collector-status-'+uuid+'"></i> | '+
-                '  <span style="font-size: 15px; color: grey;">                                   ' +
+                '  <p><span style="font-size: 15px; color: grey;">                                   ' +
+                '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="collector-status-'+uuid+'"></i> | '+
                 '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
                 '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
                 '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
                 '  </span></p> '+   
                 '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
-                '  <img src="img/favicon.ico" height="25"> Knownports | '+
                 '  <span style="font-size: 15px; color: grey;">                                   ' +
+                '    <img src="img/favicon.ico" height="25">Knownports | '+
                 '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
                 '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
                 '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
+                '  </span></p> '+ 
+                '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
+                '  <span style="font-size: 15px; color: grey;">                                   ' +
+                '    <img src="img/favicon.ico" height="25">Analyzer | '+
+                '    <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span> <i style="padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i>                         ' +
                 '  </span></p> '+ 
             '</span">'+ 
             '</td>                                                            ' +
@@ -234,7 +240,6 @@ function generateAllNodesHTMLOutput(response) {
 }
 
 function showActions(action,uuid){
-    console.log(action);
     var addnids = document.getElementById(action+'-form-'+uuid);
     var icon = document.getElementById(action+'-form-icon-'+uuid);
     if (addnids.style.display == "none") {
@@ -270,16 +275,46 @@ function ChangeStatus(uuid){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status';
     
-    if(document.getElementById('ports-status-'+uuid).innerHTML == "Enabled"){
+    if(document.getElementById('ports-status-'+uuid).innerHTML == "ON"){
         var status ="Disabled";
     }else{
         var status ="Enabled";
     }
 
-    var jsonRuleUID = {}
-    jsonRuleUID["uuid"] = uuid;
-    jsonRuleUID["status"] = status;
-    var dataJSON = JSON.stringify(jsonRuleUID);
+    var jsonPorts = {}
+    jsonPorts["uuid"] = uuid;
+    jsonPorts["status"] = status;
+    var dataJSON = JSON.stringify(jsonPorts);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        GetAllNodes()
+    })
+    .catch(function (error) {
+    });
+}
+
+function ChangeAnalyzerStatus(uuid){
+
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer';
+    
+    if(document.getElementById('analyzer-status-'+uuid).innerHTML == "ON"){
+        var status ="Disabled";
+    }else if(document.getElementById('analyzer-status-'+uuid).innerHTML == "OFF"){
+        var status ="Enabled";
+    }
+
+    var jsonAnalyzer = {}
+    jsonAnalyzer["uuid"] = uuid;
+    jsonAnalyzer["status"] = status;
+    var dataJSON = JSON.stringify(jsonAnalyzer);
 
     axios({
         method: 'put',
@@ -1051,8 +1086,12 @@ function PingPorts(uuid) {
     })
         .then(function (response) {
             for(line in response.data){
+                if (response.data[line]["status"] == "Enabled"){
+                    document.getElementById('ports-status-'+uuid).innerHTML = "ON";
+                }else if (response.data[line]["status"] == "Disabled"){
+                    document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
+                }
                 document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-                document.getElementById('ports-status-'+uuid).innerHTML = response.data[line]["status"];
                 
                 if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
@@ -1062,6 +1101,34 @@ function PingPorts(uuid) {
                     document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
                 }                
             }
+            return true;
+        })
+        .catch(function (error) {
+            
+            return false;            
+        });
+    return false;
+}
+
+function PingAnalyzer(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingAnalyzer/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+            if (response.data["status"] == "Enabled"){
+                document.getElementById('analyzer-status-'+uuid).innerHTML = "ON";
+                document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-stop-circle";
+                document.getElementById('analyzer-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+            }else{
+                document.getElementById('analyzer-status-'+uuid).innerHTML = "OFF";
+                document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-play-circle";
+                document.getElementById('analyzer-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+            }                
             return true;
         })
         .catch(function (error) {

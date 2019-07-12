@@ -43,16 +43,6 @@ function generateAllRuleDataHTMLOutput(response) {
     '</div>'+
     '<br>'+
     '</div>'+
-    // '<br><br>'+
-    // '<div>'+
-    //     '<div class="input-group col-md-6">'+
-    //         '<div class="input-group-prepend">'+
-    //             '<span class="input-group-text">Search rule file</span>'+
-    //         '</div>'+
-    //         '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset()"'+
-    //             'placeholder="Search for rulesets..." title="Insert a ruleset name for search">'+
-    //     '</div>'+
-    // '</div>'+
     '<br><br><br>'+
 
     '<h5>Select rulesets</h5>'+
@@ -84,9 +74,9 @@ function generateAllRuleDataHTMLOutput(response) {
         '<thead>                                                      ' +
         '<tr>                                                         ' +
         '<th style="width: 10%">Select</th>                                                  ' +
-        '<th>Source name</th>                                                  ' +
-        '<th>File name</th>                                          ' +
-        '<th style="display:none;">path</th>                                          ' +
+        '<th>Ruleset name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
+        '<th>File name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
+        '<th>File path</th>                                          ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody>                                                      ' ;
@@ -264,6 +254,46 @@ function modalAddNewRuleset(){
         });
     }
 }
+
+function sortTable(n) {
+    console.log("JUST SORTING TABLE");
+    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    table = document.getElementById("new-ruleset-table");
+    switching = true;
+    dir = "asc";
+    while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+            if (dir == "asc") {
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            } else if (dir == "desc") {
+                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            switchcount++;
+        } else {
+            if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+}
+
+
 
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {

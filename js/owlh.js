@@ -177,7 +177,7 @@ function generateAllNodesHTMLOutput(response) {
                 '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>                             ' +
                 '  </span></p> '+            
                 '  <p><span style="font-size: 15px; color: grey;">                                   ' +
-                '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="collector-status-'+uuid+'"></i> | '+
+                '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i id="stap-collector-'+uuid+'">[N/A]</i> | '+
                 '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
                 '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
                 '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
@@ -411,6 +411,8 @@ function playCollector(uuid){
         timeout: 30000
     })
     .then(function (response) {
+        document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
+        document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
         return true;
     })
     .catch(function (error) {
@@ -428,6 +430,8 @@ function stopCollector(uuid){
         timeout: 30000
     })
     .then(function (response) {
+        document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
+        document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";
         return true;
     })
     .catch(function (error) {
@@ -447,9 +451,11 @@ function PingCollector(uuid){
     })
     .then(function (response) {
         if (response.data != ""){
-            collectorStatus.style.color="green";
+            document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
+            document.getElementById('stap-collector-' + uuid).innerHTML = "ON";            
         }else{
-            collectorStatus.style.color="red";
+            document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
+            document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";            
         }
     })
     .catch(function (error) {

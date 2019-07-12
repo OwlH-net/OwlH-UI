@@ -15,7 +15,6 @@ function saveFileChanged() {
         data: fileContent
     })
     .then(function (response) {
-        console.log(response);
         if (response.data.ack == "false"){
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

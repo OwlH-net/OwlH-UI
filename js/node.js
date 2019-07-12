@@ -33,6 +33,7 @@ function axiosAddNode(node) {
 }
 
 function modifyNode() {
+    console.log("MODIFY NODE VALUES");
     var name = document.getElementById('cfgnodename').value;
     var ip = document.getElementById('cfgnodeip').value;
     var port = document.getElementById('cfgnodeport').value;
@@ -45,12 +46,13 @@ function modifyNode() {
     nodejson["port"] = port;
     nodejson["ip"] = ip;
     nodejson["id"] = nid;
-    var nodeJSON = JSON.stringify(nodejson);
+    
+    var newValues = JSON.stringify(nodejson);
     axios({
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        data: nodeJSON
+        data: newValues
         })
         .then(function (response) {
             GetAllNodes();
@@ -64,6 +66,7 @@ function modifyNode() {
 }
 
 function cancelNode(){
+    console.log("CANCELLING MODIFY");
   document.getElementById('divconfigform').style.display = "none";
 }
 

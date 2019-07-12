@@ -48,7 +48,7 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
                 '<th align="center" style="width: 5%">Status</th>                           ' +
                 '<th style="width: 10%">Sid</th>                              ' +
                 '<th>Description</th>                                         ' ;
-                if(type != "source"){
+                if(type != "source" && type != "custom"){
                     html = html +'<th>Notes</th>                                               ' ;
                 }
                 html = html + '<th>IP info</th>                                             ' +
@@ -75,16 +75,16 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
             rules[rule]["sid"] +
             '</td><td style="word-wrap: break-word;">                                                           ' +
             rules[rule]["msg"] ;
-            if(type != "source"){
+            if(type != "source" && type != "custom"){
                 html = html + '</td><td style="word-wrap: break-word;" id="' + rules[rule]["sid"] + '-note">' +
                 rules[rule]["note"]  ;
             }
             html = html +'</td><td style="word-wrap: break-word;">                                                           ' +
             rules[rule]["ip"] +
-            '</td><td style="word-wrap: break-word;" align="center">                                                           ' +
+            '</td><td style="word-wrap: break-word;" align="left">                                                           ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>&nbsp';
-                    if(type != "source"){
+                    if(type != "source" && type != "custom"){
                         html = html +'<i class="fas fa-exchange-alt low-blue" id="' + rules[rule]["sid"] + '-change-status" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ruleStatus+'\')"></i>&nbsp' +
                         '<i class="fas fa-sticky-note low-blue" data-toggle="modal" data-target="#modal-window-ruleset" onclick="modalNotes(\''+rules[rule]["msg"]+'\', \''+rules[rule]["sid"]+'\', \''+uuid+'\')"></i>&nbsp';
                     }

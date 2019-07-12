@@ -129,37 +129,25 @@ function modalTimeSchedule(uuid, name, status){
     
             if(status=="enabled"){
                 html = html + '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
-                    '<div>'+
-                        '<div class="radio">'+
-                            '<div class="custom-control custom-radio custom-control-inline">'+
-                                '<input type="radio" id="status-disable" name="update-status" value="disabled" class="custom-control-input" checked>'+
-                                '<label class="custom-control-label" for="status-disable">Disable scheduler</label>'+
-                            '</div>'+
-                        '</div>'+
+                    // '<div>'+
+                        // '<div class="radio">'+
+                        '<p>Do you want to stop the scheduler for <b>'+name+'</b> ruleset?</p>'+
+                            // '<div class="custom-control custom-radio custom-control-inline">'+
+                            //     '<input type="radio" id="status-disable" name="update-status" value="disabled" class="custom-control-input" checked>'+
+                            //     '<label class="custom-control-label" for="status-disable">Disable scheduler</label>'+
+                            // '</div>'+
+                        // '</div>'+
                     '</div>'+
                     '<br>'+
                     
                     //submit button
-                    '<div>'+
-                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="timeSchedule(\''+uuid+'\',\''+status+'\')">Stop task</button>'+
+                    '<div class="modal-footer">'+
+                        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+    
+                        '<button type="submit" class="btn btn-danger" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="timeSchedule(\''+uuid+'\',\''+status+'\')">Stop task</button>'+
                     '</div>'+
                 '</div>';
             }else{                
                 html = html + '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
-                        //status
-                        // '<div>'+
-                        //     '<div class="radio">'+
-                        //         '<div class="custom-control custom-radio custom-control-inline">'+                            
-                        //             '<input type="radio" id="status-enable" name="update-status" value="enabled" class="custom-control-input" checked>'+
-                        //             '<label class="custom-control-label" for="status-enable">Enable scheduler</label>'+
-                        //         '</div>'+
-                        //         '<div class="custom-control custom-radio custom-control-inline">'+
-                        //             '<input type="radio" id="status-disable" name="update-status" value="disabled" class="custom-control-input">'+
-                        //             '<label class="custom-control-label" for="status-disable">Disable scheduler</label>'+
-                        //         '</div>'+
-                        //     '</div>'+
-                        // '</div>'+
-                        // '<br>'+
                         
                     //select update type
                     '<p>Update type:</p>'+
@@ -177,67 +165,65 @@ function modalTimeSchedule(uuid, name, status){
 
                     //Select date
                     '<p>Start date:</p>'+
-                    '<div class="form-group col-md-4">'+
-                        '<span>'+
-                            '<select class="form-control" name="Month" id="schedule-date-month">'+
-                                '<option value="01">January</a>'+
-                                '<option value="02">February</a>'+
-                                '<option value="03">March</a>'+
-                                '<option value="04">April</a>'+
-                                '<option value="05">May</a>'+
-                                '<option value="06">June</a>'+
-                                '<option value="07">July</a>'+
-                                '<option value="08">August</a>'+
-                                '<option value="09">September</a>'+
-                                '<option value="10">October</a>'+
-                                '<option value="11">November</a>'+
-                                '<option value="12">December</a>'+
-                            '</select>&nbsp'+
-                            '<select class="form-control" name="Day" id="schedule-date-day">'+
-                                '<option value="01">1</a>'+
-                                '<option value="02">2</a>'+
-                                '<option value="03">3</a>'+
-                                '<option value="04">4</a>'+
-                                '<option value="05">5</a>'+
-                                '<option value="06">6</a>'+
-                                '<option value="07">7</a>'+
-                                '<option value="08">8</a>'+
-                                '<option value="09">9</a>'+
-                                '<option value="10">10</a>'+
-                                '<option value="11">11</a>'+
-                                '<option value="12">12</a>'+
-                                '<option value="13">13</a>'+
-                                '<option value="14">14</a>'+
-                                '<option value="15">15</a>'+
-                                '<option value="16">16</a>'+
-                                '<option value="17">17</a>'+
-                                '<option value="18">18</a>'+
-                                '<option value="19">19</a>'+
-                                '<option value="20">20</a>'+
-                                '<option value="21">21</a>'+
-                                '<option value="22">22</a>'+
-                                '<option value="23">23</a>'+
-                                '<option value="24">24</a>'+
-                                '<option value="25">25</a>'+
-                                '<option value="26">26</a>'+
-                                '<option value="27">27</a>'+
-                                '<option value="28">28</a>'+
-                                '<option value="29">29</a>'+
-                                '<option value="30">30</a>'+
-                                '<option value="31">31</a>'+
-                            '</select>&nbsp'+
-                            '<select class="form-control" name="Year" id="schedule-date-year">'+
-                                '<option value="'+(today.getFullYear())+'">'+(today.getFullYear())+'</a>'+
-                                '<option value="'+(today.getFullYear()+1)+'">'+(today.getFullYear()+1)+'</a>'+
-                                '<option value="'+(today.getFullYear()+2)+'">'+(today.getFullYear()+2)+'</a>'+
-                            '</select>'+
-                        '</span>'+    
+                    '<div class="input-group">'+
+                        '<select class="form-control" name="Month" id="schedule-date-month">'+
+                            '<option value="01">January</a>'+
+                            '<option value="02">February</a>'+
+                            '<option value="03">March</a>'+
+                            '<option value="04">April</a>'+
+                            '<option value="05">May</a>'+
+                            '<option value="06">June</a>'+
+                            '<option value="07">July</a>'+
+                            '<option value="08">August</a>'+
+                            '<option value="09">September</a>'+
+                            '<option value="10">October</a>'+
+                            '<option value="11">November</a>'+
+                            '<option value="12">December</a>'+
+                        '</select>'+
+                        '<select class="form-control" name="Day" id="schedule-date-day">'+
+                            '<option value="01">1</a>'+
+                            '<option value="02">2</a>'+
+                            '<option value="03">3</a>'+
+                            '<option value="04">4</a>'+
+                            '<option value="05">5</a>'+
+                            '<option value="06">6</a>'+
+                            '<option value="07">7</a>'+
+                            '<option value="08">8</a>'+
+                            '<option value="09">9</a>'+
+                            '<option value="10">10</a>'+
+                            '<option value="11">11</a>'+
+                            '<option value="12">12</a>'+
+                            '<option value="13">13</a>'+
+                            '<option value="14">14</a>'+
+                            '<option value="15">15</a>'+
+                            '<option value="16">16</a>'+
+                            '<option value="17">17</a>'+
+                            '<option value="18">18</a>'+
+                            '<option value="19">19</a>'+
+                            '<option value="20">20</a>'+
+                            '<option value="21">21</a>'+
+                            '<option value="22">22</a>'+
+                            '<option value="23">23</a>'+
+                            '<option value="24">24</a>'+
+                            '<option value="25">25</a>'+
+                            '<option value="26">26</a>'+
+                            '<option value="27">27</a>'+
+                            '<option value="28">28</a>'+
+                            '<option value="29">29</a>'+
+                            '<option value="30">30</a>'+
+                            '<option value="31">31</a>'+
+                        '</select>'+
+                        '<select class="form-control" name="Year" id="schedule-date-year">'+
+                            '<option value="'+(today.getFullYear())+'">'+(today.getFullYear())+'</a>'+
+                            '<option value="'+(today.getFullYear()+1)+'">'+(today.getFullYear()+1)+'</a>'+
+                            '<option value="'+(today.getFullYear()+2)+'">'+(today.getFullYear()+2)+'</a>'+
+                        '</select>'+
                     '</div>'+
                     '<br>'+
 
                     //Select time
                     '<p>Start time:</p>'+
-                    '<div class="form-group col-md-4">'+
+                    '<div class="input-group">'+
                         '<select class="form-control" name="Hour" id="schedule-time-hour">'+
                             '<option value="00">00</a>'+
                             '<option value="01">01</a>'+
@@ -295,15 +281,12 @@ function modalTimeSchedule(uuid, name, status){
                             '<input type="radio" id="schedule-monthly" name="update-schedule" value="monthly" class="custom-control-input">'+
                             '<label class="custom-control-label" for="schedule-monthly">Monthly</label>'+
                         '</div>'+
-                        '<div class="custom-control custom-radio custom-control-inline">'+
-                            '<input type="radio" id="schedule-min" name="update-schedule" value="minute" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="schedule-min">1 min</label>'+
-                        '</div>'+
                     '</div>'+
                     '<br>'+
 
                     //button
-                    '<div>'+
+                    '<div class="modal-footer">'+
+                        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
                         '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="timeSchedule(\''+uuid+'\',\''+status+'\')">Define task</button>'+
                     '</div>'+
                 '</div>'+  
@@ -314,9 +297,15 @@ function modalTimeSchedule(uuid, name, status){
 
     var day;
     var month;
-    var hour = today.getHours();
+    var hour;
     var minutes = today.getMinutes();
     var minuteSelected = 00;
+
+    if (today.getHours() < 10){
+        hour = '0'+today.getHours();
+    }else{
+        hour = today.getHours();
+    }
 
     if (today.getDate() < 10){
         day = '0'+today.getDate();
@@ -356,7 +345,6 @@ function modalTimeSchedule(uuid, name, status){
         hour = today.getHours()+1;
         minuteSelected = '00';
     }
-
     document.getElementById('schedule-time-hour').value = hour;
     document.getElementById('schedule-time-minute').value = minuteSelected;
     document.getElementById('schedule-date-day').value = day;

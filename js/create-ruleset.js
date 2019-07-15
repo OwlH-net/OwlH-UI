@@ -10,20 +10,23 @@ function loadRulesData(){
         timeout: 30000
     })
     .then(function (response) {
-        result.innerHTML = generateAllRuleDataHTMLOutput(response);
+        result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
+        for (source in response.data){
+            document.getElementById('checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
+        }
     })
     .catch(function (error) {
+        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>';
     });
 }
 
-function generateAllRuleDataHTMLOutput(response) {
+function generateAllRuleDataHTMLOutput(sources) {
     var html = "";
     var isEmpty = true;
-    var sources = response.data;
-    var arrayRulesetsSelected = new Array();
+    var arrayRulesets = new Array();
 
-    if (response.data.ack == "false") {
+    if (sources.ack == "false") {
         return '<div style="text-align:center"><h3 style="color:red;">Error creating ruleset</h3></div>';
     }
     html = html + 
@@ -49,9 +52,9 @@ function generateAllRuleDataHTMLOutput(response) {
     '<div class="form-check">'+
         '<ul class="checkbox-grid">';
         for (source in sources) {
-            if(!arrayRulesetsSelected.includes(sources[source]["name"])){
-                arrayRulesetsSelected.push(sources[source]["name"]);
-                html = html + ' <li style="display: block; float: left; width: 25%"><input type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" /><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>';    
+            if(!arrayRulesets.includes(sources[source]["name"])){
+                arrayRulesets.push(sources[source]["name"]);
+                html = html + ' <li style="display: block; float: left; width: 25%"><input type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked /><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>';    
             }
         }
         html = html + '</ul>'+
@@ -74,17 +77,19 @@ function generateAllRuleDataHTMLOutput(response) {
         '<thead>                                                      ' +
         '<tr>                                                         ' +
         '<th style="width: 10%">Select</th>                                                  ' +
-        '<th>Ruleset name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
-        '<th>File name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
+        // '<th>Ruleset name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
+        '<th>Ruleset name</th>                                          ' +
+        // '<th>File name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
+        '<th>File name</th>                                          ' +
         '<th>File path</th>                                          ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody>                                                      ' ;
-    for (source in sources) {
+    for (source in sources) {        
         if(sources[source]["exists"]=="true"){
             isEmpty = false;
-            html = html + '<tr><td style="word-wrap: break-word;" align="center">'+
-                    '<input class="form-check-input" type="checkbox" id="'+source+'"></input>'+
+            html = html + '<tr id="row-'+source+'"><td style="width: 100%; word-wrap: break-word;" align="center">'+
+                    '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
                 '</td><td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'">'+
                     sources[source]["name"]+
                 '</td><td style="word-wrap: break-word;" id="fileNewRuleset-'+source+'">'+
@@ -101,6 +106,25 @@ function generateAllRuleDataHTMLOutput(response) {
     }else{
         return html;
     }
+}
+
+function addRulesetFilesToTable(sources){
+    $('input:checkbox:checked').each(function() {
+        var checked = $(this).prop("value");
+        for (source in sources){
+            if (checked == sources[source]["name"]){
+                document.getElementById("row-"+source).style.display = "";//in this case display is void, not none
+            }
+        }
+    });
+    $('input:checkbox:not(:checked)').each(function() {
+        var checked = $(this).prop("value");
+        for (source in sources){
+            if (checked == sources[source]["name"]){
+                document.getElementById("row-"+source).style.display = "none";
+            }
+        }
+    });
 }
 
 function searchRuleset(){
@@ -125,13 +149,16 @@ function searchRuleset(){
 function modalAddNewRuleset(){
     var newRuleset = new Map();
     $('input:checkbox:checked').each(function() {
-        var checked = $(this).prop("id");
-        newRuleset[checked] = new Map();
-        newRuleset[checked]["sourceName"] = document.getElementById('nameNewRuleset-'+checked+'').innerHTML;
-        newRuleset[checked]["fileName"] = document.getElementById('fileNewRuleset-'+checked+'').innerHTML;
-        newRuleset[checked]["filePath"] = document.getElementById('pathNewRuleset-'+checked+'').innerHTML;
-        newRuleset[checked]["rulesetName"] = document.getElementById('new-ruleset-name-input').value;
-        newRuleset[checked]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value;
+        var uuid = $(this).prop("id");
+        var value = $(this).prop("value");
+        if (value == "table-elements"){
+            newRuleset[uuid] = new Map();
+            newRuleset[uuid]["sourceName"] = document.getElementById('nameNewRuleset-'+uuid+'').innerHTML;
+            newRuleset[uuid]["fileName"] = document.getElementById('fileNewRuleset-'+uuid+'').innerHTML;
+            newRuleset[uuid]["filePath"] = document.getElementById('pathNewRuleset-'+uuid+'').innerHTML;
+            newRuleset[uuid]["rulesetName"] = document.getElementById('new-ruleset-name-input').value;
+            newRuleset[uuid]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value;
+        }
     });
 
     var isDuplicated = false;
@@ -250,7 +277,6 @@ function modalAddNewRuleset(){
             }
         })
         .catch(function (error) {
-            // result.innerHTML = '<h3 align="center">No connection</h3>';
         });
     }
 }

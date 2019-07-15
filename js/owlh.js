@@ -193,18 +193,18 @@ function generateAllNodesHTMLOutput(response) {
                 '  <span style="font-size: 15px; color: grey;">                                   ' +
                 '    <img src="img/favicon.ico" height="25">Analyzer | '+
                 '    <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span> <i style="padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i>                         ' +
+                '    <i class="fas fa-info-circle" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+nodes[node]['name']+'\')"></i>  ' +
                 '  </span></p> '+ 
             '</span">'+ 
             '</td>                                                            ' +
             '<td class="align-middle"> '+
             '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'actions\',\''+uuid+'\')"><b>Actions</b> <i class="fas fa-sort-down" id="actions-form-icon-'+uuid+'"></i></h6>'+
-            '<span id="actions-form-'+uuid+'" style="display:None">'+                                                       
+            '<span id="actions-form-'+uuid+'" style="display:None" color>'+                                                       
                 '<span style="font-size: 15px; color: Dodgerblue;" >                            ' +
                 '<i class="fas fa-arrow-alt-circle-down" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
                 '<br><i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node                            ' +
                 '<br><i class="fas fa-cog" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
                 '<br><i class="fas fa-trash-alt" style="color: red;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
-                // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
                 '</span>'+
             '</span>'+
             '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'deploy\',\''+uuid+'\')"><b>Deploy</b> <i class="fas fa-sort-down" id="deploy-form-icon-'+uuid+'"></i></h6>'+
@@ -223,10 +223,8 @@ function generateAllNodesHTMLOutput(response) {
                     '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
                     '<br>'+
                     '<i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> &nbsp; OwlH firewall &nbsp; | '+
-                    // '  <span style="font-size: 15px; color: grey;">                                   ' +
                     '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
                 '</span>'+
-            // '</div>'+
             '  </span>                                                                           ' +
             '</td>                                                                               ' +
             '</tr>';
@@ -239,6 +237,11 @@ function generateAllNodesHTMLOutput(response) {
     }
 }
 
+function editAnalyzer(uuid, file, nodeName){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+}
+
 function showActions(action,uuid){
     var addnids = document.getElementById(action+'-form-'+uuid);
     var icon = document.getElementById(action+'-form-icon-'+uuid);
@@ -246,12 +249,10 @@ function showActions(action,uuid){
         addnids.style.display = "block";
         icon.classList.add("fa-sort-up");
         icon.classList.remove("fa-sort-down");        
-        // icon.class = "fas fa-sort-up";
     } else {
         addnids.style.display = "none";
         icon.classList.add("fa-sort-down");
         icon.classList.remove("fa-sort-up");   
-        // icon.class = "fas fa-sort-down";
     }    
 }
 
@@ -482,7 +483,7 @@ function showCollector(uuid){
 
 function showModalCollector(response){
     var res = response.data.split("\n");
-    var html = '<div class="modal-dialog modal-lg">'+
+    var html = '<div class="modal-dialog modal-xlg">'+
                     '<div class="modal-content">'+
                 
                         '<div class="modal-header">'+

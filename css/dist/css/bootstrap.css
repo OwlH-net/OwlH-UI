@@ -5507,8 +5507,14 @@ button.close {
 
 @media (min-width: 992px) {
   .modal-lg {
-    max-width: 800px;
+    max-width: 900px;
   }
+}
+
+@media (min-width: 1200px) {
+    .modal-xlg {
+       width: 80%; 
+    }
 }
 
 .tooltip {

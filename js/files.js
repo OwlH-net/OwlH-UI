@@ -61,9 +61,9 @@ function generateAllFilesOutput(response, node) {
     }
 }
 
-function loadEditURL(uuid, nodeName){
+function loadEditURL(uuid, file, nodeName){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+nodeName+'&node='+nodeName;
+    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
 
 function loadJSONdata() {

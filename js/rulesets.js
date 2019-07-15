@@ -84,7 +84,7 @@ function modalShowLog(uuid, name){
                 '<div class="modal-content">'+
             
                     '<div class="modal-header">'+
-                        '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">LOG for ruleset '+name+'</h4>'+
+                        '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Log for ruleset '+name+'</h4>'+
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
                     '</div>'+
             

@@ -32,6 +32,7 @@ function PingNode(uuid) {
                 PingPorts(uuid);
                 PingAnalyzer(uuid);
                 PingCollector(uuid);
+                PingCheckDeploy(uuid);
                 return "true";
             } else {
                 document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
@@ -195,7 +196,62 @@ function generateAllNodesHTMLOutput(response) {
                 '    <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span> <i style="padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i>                         ' +
                 '    <i class="fas fa-info-circle" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+nodes[node]['name']+'\')"></i>  ' +
                 '  </span></p> '+ 
-            '</span">'+ 
+            '</span>'+ 
+
+            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Data flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
+            '<span id="flow-form-'+uuid+'" style="display:None">'+
+                '<table>'+
+                '<thead>'+
+                '<tr>                                                         ' +
+                    '<th>Collect from</th>                                                  ' +
+                    '<th>Analysis</th>                                          ' +
+                    '<th>Transport</th>                                ' +
+                    '<th>Info</th>                                ' +
+                '</tr>                                                        ' +
+                '</thead>                                                     ' +
+                '<tbody>                                                      ' +
+                    '<tr>'+
+                    '<td style="word-wrap: break-word;">'+
+                        '<div class="custom-control custom-radio">'+
+                            '<input type="radio" id="network-radio" name="collect-type" value="network" class="custom-control-input" checked>'+
+                            '<label class="custom-control-label" for="network-radio">Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
+                        '</div>'+
+                        '<div class="custom-control custom-radio">'+
+                            '<input type="radio" id="socket-pcap" name="collect-type" value="socket-pcap" class="custom-control-input">'+
+                            '<label class="custom-control-label" for="socket-radio">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
+                        '</div>'+
+                        '<div class="custom-control custom-radio">'+
+                            '<input type="radio" id="socket-network" name="collect-type" value="socket-network" class="custom-control-input">'+
+                            '<label class="custom-control-label" for="socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
+                        '</div>'+
+                        '<div class="custom-control custom-radio">'+
+                            '<input type="radio" id="pcap-network" name="collect-type" value="pcap-network" class="custom-control-input">'+
+                            '<label class="custom-control-label" for="pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;"title="Collector information"></i>'+
+                        '</div>'+
+                    '</td>'+
+                    '<td style="word-wrap: break-word;">'+
+                        '<div class="custom-control custom-radio">'+
+                            '<input type="radio" id="analyze-network" name="analysis-type" value="analyze-network" class="custom-control-input" checked>'+
+                            '<label class="custom-control-label" for="analyze-network">Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;"title="Collector information"></i>'+
+                        '</div>'+
+                        '<div class="custom-control custom-radio">'+
+                            '<input type="radio" id="analyze-pcap" name="analysis-type" value="analyze-pcap" class="custom-control-input">'+
+                            '<label class="custom-control-label" for="analyze-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
+                        '</div>'+
+                    '</td>'+
+                    '<td style="word-wrap: break-word;">'+
+                        '<div class="custom-control custom-radio">'+
+                            '<input type="radio" id="transport-wazuh" name="transport-type" value="transport-wazuh" class="custom-control-input" checked>'+
+                            '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
+                        '</div>'+                    
+                    '</td>'+
+                    '<td style="word-wrap: break-word;"></td>'+
+                    '</tr>'+
+                '</tbody>' +
+                    
+                '</table>'+
+            '</span>'+
+
             '</td>                                                            ' +
             '<td class="align-middle"> '+
             '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'actions\',\''+uuid+'\')"><b>Actions</b> <i class="fas fa-sort-down" id="actions-form-icon-'+uuid+'"></i></h6>'+
@@ -211,19 +267,19 @@ function generateAllNodesHTMLOutput(response) {
             '<span id="deploy-form-'+uuid+'" style="display:None">'+
                 '<span style="font-size: 15px; color: Dodgerblue;">'+
                     '<i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Suricata &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy Suricata" onclick="deploy(\'suricata\', \''+uuid+'\')"></i>                         ' +
                     '<br>'+
                     '<i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Zeek &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy Zeek" onclick="deploy(\'zeek\', \''+uuid+'\')"></i>                         ' +
                     '<br>'+
                     '<i style="color: Dodgerblue;" class="fas fa-search"></i> &nbsp; Moloch &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deploy(\'moloch\', \''+uuid+'\')"></i>                         ' +
                     '<br>'+
                     '<i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; OwlH interface &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy OwlH interface" onclick="deploy(\'interface\', \''+uuid+'\')"></i>                         ' +
                     '<br>'+
                     '<i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> &nbsp; OwlH firewall &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy OwlH firewall" onclick="deploy(\'firewall\', \''+uuid+'\')"></i>                         ' +
                 '</span>'+
             '  </span>                                                                           ' +
             '</td>                                                                               ' +
@@ -235,6 +291,33 @@ function generateAllNodesHTMLOutput(response) {
     }else{
         return  html;
     }
+}
+
+function deploy(value,uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/deploy';
+    var jsonDeploy = {}
+    jsonDeploy["value"] = value;
+    jsonDeploy["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonDeploy);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        // GetAllNodes()
+    })
+    .catch(function (error) {
+    });
+}
+
+function showMasterFile(file){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
 }
 
 function editAnalyzer(uuid, file, nodeName){
@@ -271,7 +354,6 @@ function loadEditURL(uuid, nodeName){
 
 
 function ChangeStatus(uuid){
-
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status';
@@ -860,6 +942,22 @@ function PingSuricata(uuid) {
     return false;
 }
 
+function PingCheckDeploy(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deploy';
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        console.log(response);
+    })
+    .catch(function (error) {
+
+    });
+}
 
 //Run Zeek system
 function RunZeek(uuid) {

@@ -2,6 +2,87 @@ function loadPlugins(){
     content = document.getElementById('master-table-plugins');
     content.innerHTML =
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+    '<h6 class="border-bottom border-gray pb-2 mb-0">Master configuration</h6>'+
+    '<br>'+
+    '<p><img src="img/favicon.ico" height="25"><span style="font-size: 15px; color: Grey;">&nbsp; Edit master configuration | </span>'+
+    '  <span style="font-size: 15px; color: grey;">                                   ' +
+    '    <i class="fas fa-info-circle" title="Edit Master configuration file" onclick="showMasterFile(\'main\')"></i>  ' +
+    '  </span></p> '+
+    '</div>'+
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+    '<h6 class="border-bottom border-gray pb-2 mb-0">Plugins</h6>'+
+    '<br>'+
+    '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i> | '+
+    '  <span style="font-size: 15px; color: grey;">                                   ' +
+    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+    '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopMasterCollector()"></i>                         ' +
+    '    <i class="fas fa-info-circle" title="Collector information" onclick="showMasterCollector()"></i>  ' +
+    '  </span></p> '+
+    '<p><i style="color: Dodgerblue;" class="fas fa-random"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Dispatcher &nbsp; | </span> <i class="fas fa-angle-double-down" id="dispatcher-status"></i> | '+
+    '  <span style="font-size: 15px; color: grey;">                                   ' +
+    '    <i class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i>                         ' +
+    '    <i class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i>  ' +
+    '  </span></p> '+
+    '</div>'+
+
+
+    '<div class="my-3 p-3 bg-white rounded shadow-sm" id="flow-form-master">'+
+    '<h6 class="border-bottom border-gray pb-2 mb-0">Flow</h6>'+
+    '<br>'+
+        '<table style=" width: 100%;height: 100%;">'+
+        '<thead>'+
+        '<tr>                                                         ' +
+            '<th>Collect from</th>                                                  ' +
+            '<th>Analysis</th>                                          ' +
+            '<th>Transport</th>                                ' +
+            '<th>Info</th>                                ' +
+        '</tr>                                                        ' +
+        '</thead>                                                     ' +
+        '<tbody>                                                      ' +
+            '<tr>'+
+            '<td style="word-wrap: break-word;">'+
+                '<div class="custom-control custom-radio">'+
+                    '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'network\')" id="collect-network" name="collect-type" value="network" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                '</div>'+
+                '<div class="custom-control custom-radio">'+
+                    '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'socket-pcap\')" id="collect-socket-pcap" name="collect-type" value="socket-pcap" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="collect-socket-pcap">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                '</div>'+
+                '<div class="custom-control custom-radio">'+
+                    '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'socket-network\')" id="collect-socket-network" name="collect-type" value="socket-network" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                '</div>'+
+                '<div class="custom-control custom-radio">'+
+                    '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'pcap-network\')" id="collect-pcap-network" name="collect-type" value="pcap-network" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                '</div>'+
+            '</td>'+
+            '<td style="word-wrap: break-word;">'+
+                '<div class="custom-control custom-radio">'+
+                    '<input type="radio" onclick="changePluginStatus(\'analysis\', \'value\', \'network\')" id="analysis-network" name="analysis-type" value="network" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="analysis-network">Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                '</div>'+
+                '<div class="custom-control custom-radio">'+
+                    '<input type="radio" onclick="changePluginStatus(\'analysis\', \'value\', \'pcap\')" id="analysis-pcap" name="analysis-type" value="pcap" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="analysis-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                '</div>'+
+            '</td>'+
+            '<td style="word-wrap: break-word;">'+
+                '<div class="custom-control custom-radio">'+
+                    '<input type="radio" id="transport-wazuh" name="transport-type" value="wazuh" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                '</div>'+                    
+            '</td>'+
+            '<td style="word-wrap: break-word;"></td>'+
+            '</tr>'+
+        '</tbody>' +
+            
+        '</table>'+
+    '</div>'+
+
+
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0">Deploy</h6>'+
         '<br>'+
         '<p><i style="color: Dodgerblue;" class="fas fa-search"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Moloch &nbsp; | '+
@@ -16,35 +97,83 @@ function loadPlugins(){
         '  <span style="font-size: 15px; color: grey;">                                   ' +
         '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
         '  </span></p> '+
-    '</div>'+
-    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0">Plugins</h6>'+
-        '<br>'+
-        '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i> | '+
-        '  <span style="font-size: 15px; color: grey;">                                   ' +
-        '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
-        '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopMasterCollector()"></i>                         ' +
-        '    <i class="fas fa-info-circle" title="Collector information" onclick="showMasterCollector()"></i>  ' +
-        '  </span></p> '+
-        '<p><i style="color: Dodgerblue;" class="fas fa-random"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Dispatcher &nbsp; | </span> <i class="fas fa-angle-double-down" id="master-dispatcher-status"></i> | '+
-        '  <span style="font-size: 15px; color: grey;">                                   ' +
-        '    <i class="fas fa-play-circle" title="Play dispatcher"></i>                         ' +
-        '    <i class="fas fa-stop-circle" title="Stop dispatcher"></i>                         ' +
-        '    <i class="fas fa-info-circle" title="Dispatcher information"></i>  ' +
-        '  </span></p> '+
     '</div>';
-    // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-    //     '<h6 class="border-bottom border-gray pb-2 mb-0">Dispatcher</h6>'+
-    //     '<br>'+
-    //     '<p><i style="color: Dodgerblue;" class="fas fa-random"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Dispatcher &nbsp; | </span> <i class="fas fa-angle-double-down" id="master-dispatcher-status"></i> | '+
-    //     '  <span style="font-size: 15px; color: grey;">                                   ' +
-    //     '    <i class="fas fa-play-circle" title="Play dispatcher"></i>                         ' +
-    //     '    <i class="fas fa-stop-circle" title="Stop dispatcher"></i>                         ' +
-    //     '    <i class="fas fa-info-circle" title="Dispatcher information"></i>  ' +
-    //     '  </span></p> '+
-    // '</div>';
     PingCollector();
+    PingPlugins();
 }
+
+function showMasterFile(file){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
+}
+
+function PingPlugins(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/pingPlugins';
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        var plugins = response.data;
+        for (plugin in plugins){
+            
+            if (plugin == "dispatcher"){
+                if (plugins[plugin]["status"] == "enabled"){
+                    document.getElementById(plugin+'-status').style.color = "green";
+                    document.getElementById(plugin+'-status').value = "disabled";
+                    document.getElementById(plugin+'-button').className = "fas fa-stop-circle";
+                    document.getElementById(plugin+'-button').title = "Stop "+plugin;
+                }else if (plugins[plugin]["status"] == "disabled"){
+                    document.getElementById(plugin+'-status').style.color = "red";
+                    document.getElementById(plugin+'-button').className = "fas fa-play-circle";
+                    document.getElementById(plugin+'-status').value = "enabled";
+                    document.getElementById(plugin+'-button').title = "Play "+plugin;
+                }
+            }
+            if (plugin == "collect"){
+                document.getElementById('collect-'+plugins[plugin]["value"]).checked = "true";
+            }else if (plugin == "analysis"){
+                document.getElementById('analysis-'+plugins[plugin]["value"]).checked = "true";
+            }else if (plugin == "transport"){
+                document.getElementById('transport-'+plugins[plugin]["value"]).checked = "true";
+            }
+        }
+    })
+    .catch(function (error) {
+        // return false;
+    });
+}
+
+function changePluginStatus(uuid,param,value){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/changePluginStatus';
+    var newStatus = {}
+    if (uuid == "dispatcher"){
+        newStatus["value"] = document.getElementById(uuid+'-status').value;
+    }else{
+        newStatus["value"] = value;
+    }
+    newStatus["param"] = param
+    newStatus["uuid"] = uuid;
+    var dataJSON = JSON.stringify(newStatus);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        loadPlugins();
+    })
+    .catch(function (error) {
+        // return false;
+    });
+}
+
 
 function PingCollector(){
     var ipmaster = document.getElementById('ip-master').value;

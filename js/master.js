@@ -43,7 +43,7 @@ function loadPlugins(){
             '<td style="word-wrap: break-word;">'+
                 '<div class="custom-control custom-radio">'+
                     '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'network\')" id="collect-network" name="collect-type" value="network" class="custom-control-input">'+
-                    '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                    '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="networkValues(\'main\')" style="color:grey;" title="Collector information"></i>'+
                 '</div>'+
                 '<div class="custom-control custom-radio">'+
                     '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'socket-pcap\')" id="collect-socket-pcap" name="collect-type" value="socket-pcap" class="custom-control-input">'+
@@ -70,7 +70,7 @@ function loadPlugins(){
             '</td>'+
             '<td style="word-wrap: break-word;">'+
                 '<div class="custom-control custom-radio">'+
-                    '<input type="radio" id="transport-wazuh" name="transport-type" value="wazuh" class="custom-control-input">'+
+                    '<input type="radio" onclick="changePluginStatus(\'transport\', \'value\', \'wazuh\')" id="transport-wazuh" name="transport-type" value="wazuh" class="custom-control-input">'+
                     '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
                 '</div>'+                    
             '</td>'+
@@ -133,6 +133,11 @@ function PingPlugins(){
                     document.getElementById(plugin+'-button').title = "Play "+plugin;
                 }
             }
+            // else{
+            //     for (flow in response.data){
+            //         document.getElementById(flow+'-'+response.data[flow]["value"]).checked = "true";
+            //     }
+            // }
             if (plugin == "collect"){
                 document.getElementById('collect-'+plugins[plugin]["value"]).checked = "true";
             }else if (plugin == "analysis"){

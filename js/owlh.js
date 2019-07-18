@@ -268,15 +268,15 @@ function generateAllNodesHTMLOutput(response) {
             '<span id="deploy-form-'+uuid+'" style="display:None">'+
                 '<span style="font-size: 15px; color: Dodgerblue;">'+
                     '<p id="deploy-node-suricata"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Suricata &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy Suricata" id="suricata-deploy-button" onclick="deployNode(\'suricata\', \''+uuid+'\')"></i></p>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy Suricata" id="suricata-deploy-button" onclick="deployNode(\'suricata\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
                     '<p id="deploy-node-zeek"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Zeek &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy Zeek" onclick="deployNode(\'zeek\', \''+uuid+'\')"></i></p>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy Zeek" onclick="deployNode(\'zeek\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
                     '<p id="deploy-node-moloch"><i style="color: Dodgerblue;" class="fas fa-search"></i> &nbsp; Moloch &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deployNode(\'moloch\', \''+uuid+'\')"></i></p>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deployNode(\'moloch\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
                     '<p id="deploy-node-interface"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; OwlH interface &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy OwlH interface" onclick="deployNode(\'interface\', \''+uuid+'\')"></i></p>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy OwlH interface" onclick="deployNode(\'interface\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
                     '<p id="deploy-node-firewall"><i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> &nbsp; OwlH firewall &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy OwlH firewall" onclick="deployNode(\'firewall\', \''+uuid+'\')"></i></p>                         ' +
+                    '    <i class="fas fa-play-circle" title="Deploy OwlH firewall" onclick="deployNode(\'firewall\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
                 '</span>'+
             '  </span>                                                                           ' +
             '</td>                                                                               ' +
@@ -301,7 +301,7 @@ function loadNetworkValues(uuid){
         timeout: 30000
     })
     .then(function (response) {
-
+        
         var html = '<div class="modal-dialog">'+
           '<div class="modal-content">'+
         
@@ -310,33 +310,40 @@ function loadNetworkValues(uuid){
               '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
     
-            '<div class="modal-body" id="delete-node-footer-table">'+ 
-              
-                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                    '<thead>              ' +
-                    '<tr>                 ' +
-                    '<th>Network</th>        ' +
-                    '<th>Select</th>     ' +
-                    '</tr>                ' +
-                    '</thead>             ' +
-                    '<tbody >             ' ;
-                    for (net in response.data){
-                        html = html + 
-                        '<tr>'+
-                            '<td style="word-wrap: break-word;">' +
-                                response.data[net]+
-                            '</td><td style="word-wrap: break-word;">' +
-                                '<input type="radio" id="net-value" value="'+net+'" name="net-select">'+
-                            '</td>'+
-                        '</tr>';
-                    }
-
-            '</div>'+
+            '<div class="modal-body" id="delete-node-footer-table">';
+            
+                if (response.data.ack == "false"){
+                    html = html + '<span><h6>Error loading interfaces</h6></span>';
+                } else {
+                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>              ' +
+                        '<tr>                 ' +
+                        '<th>Network</th>        ' +
+                        '<th>Select</th>     ' +
+                        '</tr>                ' +
+                        '</thead>             ' +
+                        '<tbody >             ' ;
+                        for (net in response.data){
+                            html = html + 
+                            '<tr>'+
+                                '<td style="word-wrap: break-word;">' +
+                                    response.data[net]+
+                                '</td><td style="word-wrap: break-word;">' +
+                                    '<input type="radio" id="net-value" value="'+net+'" name="net-select">'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                        html = html + '</tbody>'+
+                        '</table>';
+                }
+            html = html + '</div>'+
     
             '<div class="modal-footer" id="delete-node-footer-btn">'+
-              '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-              '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node">Deploy</button>'+
-            '</div>'+
+              '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
+              if (response.data.ack != "false"){
+                  html = html + '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
+              }
+            html = html + '</div>'+
     
           '</div>'+
         '</div>';
@@ -344,9 +351,31 @@ function loadNetworkValues(uuid){
 
     })
     .catch(function (error) {
-
     });
+}
 
+function updateNetworkInterface(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/updateNetworkInterface';
+    var valueSelected = "";
+    $('input:radio:checked').each(function() {
+        idRadio = $(this).prop("id");
+        if (idRadio == "net-value"){
+            valueSelected = $(this).prop("value");
+        }
+    });
+    var jsonDeploy = {}
+    jsonDeploy["value"] = valueSelected;
+    jsonDeploy["param"] = "interface";
+    jsonDeploy["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonDeploy);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
 }
 
 function changeDataflowValues(FlowUUID, param, value, uuid){
@@ -391,7 +420,7 @@ function PingDataflow(uuid){
     });
 }
 
-function deployNode(value,uuid){
+function deployNode(value,uuid,nodeName){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/deployNode';
@@ -407,7 +436,24 @@ function deployNode(value,uuid){
         data: dataJSON
     })
     .then(function (response) {
-        // GetAllNodes()
+        if (response.data.ack == "true") {
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Success!</strong> '+value+' deployed successfully for node '+nodeName+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            
+        }else{
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+value+' has not been deployed for node '+nodeName+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+        }
     })
     .catch(function (error) {
     });
@@ -691,24 +737,9 @@ function showModalCollector(response){
                                     '<tbody>                                                     ' 
                                     for(line in res) {
                                         if (res[line] != ""){
-                                            // var x = res[line].split(" ");
                                             var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
                                             var lineSplited = vregex.exec(res[line]);
-                                            // continue;
-                                            // for( var i = 0; i < x.length; i++){ 
-                                            //     if ( x[i] === "") {
-                                            //       x.splice(i, 1); 
-                                            //       i--;
-                                            //     }
-                                            //  }
-                                            // console.log(x);
-                                            // [ "tcp", "0", "0", "192.168.0.101:22", "192.168.0.164:55427", "ESTABLISHED", "4084/sshd:", "root@pts" ]
-
-    
-                                            // var lineSplited = res[line].split(" ");
                                             html = html + '<tr><td>' +
-                                            // lineSplited[0]+
-                                            // '</td><td>     ' +
                                             lineSplited[1]+
                                             '</td><td>     ' +
                                             lineSplited[2]+
@@ -723,7 +754,6 @@ function showModalCollector(response){
                                             '</td><td>     ' +
                                             lineSplited[7]+
                                             '</td></tr>'
-                                            // html = html + res[line].replace(" ","&#09;")+"<br>";
                                         }
                                     }
                                 }
@@ -1013,9 +1043,9 @@ function PingSuricata(uuid) {
                 document.getElementById(uuid + '-suricata').innerHTML = "N/A";
                 document.getElementById(uuid + '-suricata-icon').className = "fas fa-play-circle";
                 document.getElementById(uuid + '-suricata-icon').onclick = function () { RunSuricata(uuid); };
-                document.getElementById('suricata-deploy-button').onclick = function () { };                
-                document.getElementById('suricata-deploy-button').style.color = "grey";                
                 document.getElementById(uuid + '-suricata-icon').title = "Run Suricata";
+                // document.getElementById('suricata-deploy-button').onclick = function () { };                
+                // document.getElementById('suricata-deploy-button').style.color = "grey";                
             } else if (response.data.path || response.data.bin) {
                 if (response.data.running) {
                     document.getElementById(uuid + '-suricata').className = "badge bg-success align-text-bottom text-white";

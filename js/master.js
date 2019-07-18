@@ -42,36 +42,36 @@ function loadPlugins(){
             '<tr>'+
             '<td style="word-wrap: break-word;">'+
                 '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'network\')" id="collect-network" name="collect-type" value="network" class="custom-control-input">'+
-                    '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="networkValues(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                    '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'network\')" id="collect-network" name="collect-type" value="network" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-master" onclick="loadNetworkValues()" style="color:grey;" title="Interface information"></i>'+
                 '</div>'+
                 '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'socket-pcap\')" id="collect-socket-pcap" name="collect-type" value="socket-pcap" class="custom-control-input">'+
-                    '<label class="custom-control-label" for="collect-socket-pcap">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                    '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'socket-pcap\')" id="collect-socket-pcap" name="collect-type" value="socket-pcap" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="collect-socket-pcap">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Interface information"></i>'+
                 '</div>'+
                 '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'socket-network\')" id="collect-socket-network" name="collect-type" value="socket-network" class="custom-control-input">'+
-                    '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                    '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'socket-network\')" id="collect-socket-network" name="collect-type" value="socket-network" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Interface information"></i>'+
                 '</div>'+
                 '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changePluginStatus(\'collect\', \'value\', \'pcap-network\')" id="collect-pcap-network" name="collect-type" value="pcap-network" class="custom-control-input">'+
-                    '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
-                '</div>'+
-            '</td>'+
-            '<td style="word-wrap: break-word;">'+
-                '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changePluginStatus(\'analysis\', \'value\', \'network\')" id="analysis-network" name="analysis-type" value="network" class="custom-control-input">'+
-                    '<label class="custom-control-label" for="analysis-network">Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
-                '</div>'+
-                '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changePluginStatus(\'analysis\', \'value\', \'pcap\')" id="analysis-pcap" name="analysis-type" value="pcap" class="custom-control-input">'+
-                    '<label class="custom-control-label" for="analysis-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                    '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'pcap-network\')" id="collect-pcap-network" name="collect-type" value="pcap-network" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Interface information"></i>'+
                 '</div>'+
             '</td>'+
             '<td style="word-wrap: break-word;">'+
                 '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changePluginStatus(\'transport\', \'value\', \'wazuh\')" id="transport-wazuh" name="transport-type" value="wazuh" class="custom-control-input">'+
-                    '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Collector information"></i>'+
+                    '<input type="radio" onclick="changeDataflowStatus(\'analysis\', \'value\', \'network\')" id="analysis-network" name="analysis-type" value="network" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="analysis-network">Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Analysis information"></i>'+
+                '</div>'+
+                '<div class="custom-control custom-radio">'+
+                    '<input type="radio" onclick="changeDataflowStatus(\'analysis\', \'value\', \'pcap\')" id="analysis-pcap" name="analysis-type" value="pcap" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="analysis-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Analysis information"></i>'+
+                '</div>'+
+            '</td>'+
+            '<td style="word-wrap: break-word;">'+
+                '<div class="custom-control custom-radio">'+
+                    '<input type="radio" onclick="changeDataflowStatus(\'transport\', \'value\', \'wazuh\')" id="transport-wazuh" name="transport-type" value="wazuh" class="custom-control-input">'+
+                    '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Transport information"></i>'+
                 '</div>'+                    
             '</td>'+
             '<td style="word-wrap: break-word;"></td>'+
@@ -87,24 +87,143 @@ function loadPlugins(){
         '<br>'+
         '<p><i style="color: Dodgerblue;" class="fas fa-search"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Moloch &nbsp; | '+
         '  <span style="font-size: 15px; color: grey;">                                   ' +
-        '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+        '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deployMaster(\'moloch\')"></i>                         ' +
         '  </span></p> '+
         '<p><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> <span style="font-size: 15px; color: Grey;">&nbsp; OwlH interface &nbsp; | '+
         '  <span style="font-size: 15px; color: grey;">                                   ' +
-        '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+        '    <i class="fas fa-play-circle" title="Deploy interface" onclick="deployMaster(\'interface\')"></i>                         ' +
         '  </span></p> '+
         '<p><i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> <span style="font-size: 15px; color: Grey;">&nbsp; OwlH firewall &nbsp; | '+
         '  <span style="font-size: 15px; color: grey;">                                   ' +
-        '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+        '    <i class="fas fa-play-circle" title="Deploy firewall" onclick="deployMaster(\'firewall\')"></i>                         ' +
         '  </span></p> '+
     '</div>';
     PingCollector();
+    PingDataflow();
     PingPlugins();
 }
 
 function showMasterFile(file){
     var ipmaster = document.getElementById('ip-master').value;
     document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
+}
+
+function deployMaster(value){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/deployMaster';
+    var jsonDeploy = {}
+    jsonDeploy["value"] = value;
+    var dataJSON = JSON.stringify(jsonDeploy);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        if (response.data.ack == "true") {
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Success!</strong> '+value+' deployed successfully.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            
+        }else{
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+value+' has not been deployed.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+        }
+    })
+    .catch(function (error) {
+    });
+}
+
+function loadNetworkValues(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/interface';
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+
+        var html = '<div class="modal-dialog">'+
+          '<div class="modal-content">'+
+        
+            '<div class="modal-header">'+
+              '<h4 class="modal-title" id="delete-node-header">Network</h4>'+
+              '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+    
+            '<div class="modal-body" id="delete-node-footer-table">';
+            
+                if (response.data.ack == "false"){
+                    html = html + '<span><h6>Error loading interfaces</h6></span>';
+                } else {
+                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>              ' +
+                        '<tr>                 ' +
+                        '<th>Network</th>        ' +
+                        '<th>Select</th>     ' +
+                        '</tr>                ' +
+                        '</thead>             ' +
+                        '<tbody >             ' ;
+                        for (net in response.data){
+                            html = html + 
+                            '<tr>'+
+                                '<td style="word-wrap: break-word;">' +
+                                    response.data[net]+
+                                '</td><td style="word-wrap: break-word;">' +
+                                    '<input type="radio" id="net-value" value="'+net+'" name="net-select">'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                        html = html + '</tbody>'+
+                        '</table>';
+                }
+            html = html + '</div>'+
+    
+            '<div class="modal-footer" id="delete-node-footer-btn">'+
+              '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+              '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node">Deploy</button>'+
+            '</div>'+
+    
+          '</div>'+
+        '</div>';
+        document.getElementById('modal-master').innerHTML = html;
+
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+}
+
+function PingDataflow(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/pingFlow';
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    }).then(function (response) {
+        var flows = response.data;
+        for (flow in flows){
+            document.getElementById(flow+'-'+flows[flow]["value"]).checked = "true";
+        }
+    }).catch(function (error) {
+        // return false;
+    });
 }
 
 function PingPlugins(){
@@ -133,18 +252,6 @@ function PingPlugins(){
                     document.getElementById(plugin+'-button').title = "Play "+plugin;
                 }
             }
-            // else{
-            //     for (flow in response.data){
-            //         document.getElementById(flow+'-'+response.data[flow]["value"]).checked = "true";
-            //     }
-            // }
-            if (plugin == "collect"){
-                document.getElementById('collect-'+plugins[plugin]["value"]).checked = "true";
-            }else if (plugin == "analysis"){
-                document.getElementById('analysis-'+plugins[plugin]["value"]).checked = "true";
-            }else if (plugin == "transport"){
-                document.getElementById('transport-'+plugins[plugin]["value"]).checked = "true";
-            }
         }
     })
     .catch(function (error) {
@@ -159,10 +266,32 @@ function changePluginStatus(uuid,param,value){
     var newStatus = {}
     if (uuid == "dispatcher"){
         newStatus["value"] = document.getElementById(uuid+'-status').value;
-    }else{
-        newStatus["value"] = value;
     }
     newStatus["param"] = param
+    newStatus["uuid"] = uuid;
+    var dataJSON = JSON.stringify(newStatus);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        loadPlugins();
+    })
+    .catch(function (error) {
+        // return false;
+    });
+}
+
+function changeDataflowStatus(uuid,param,value){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/changeDataflowStatus';
+    
+    var newStatus = {}
+    newStatus["value"] = value;
+    newStatus["param"] = param;
     newStatus["uuid"] = uuid;
     var dataJSON = JSON.stringify(newStatus);
     axios({

@@ -301,7 +301,6 @@ function loadNetworkValues(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        
         var html = '<div class="modal-dialog">'+
           '<div class="modal-content">'+
         
@@ -316,25 +315,25 @@ function loadNetworkValues(uuid){
                     html = html + '<span><h6>Error loading interfaces</h6></span>';
                 } else {
                     html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                        '<thead>              ' +
-                        '<tr>                 ' +
-                        '<th>Network</th>        ' +
-                        '<th>Select</th>     ' +
-                        '</tr>                ' +
-                        '</thead>             ' +
-                        '<tbody >             ' ;
-                        for (net in response.data){
-                            html = html + 
-                            '<tr>'+
-                                '<td style="word-wrap: break-word;">' +
-                                    response.data[net]+
-                                '</td><td style="word-wrap: break-word;">' +
-                                    '<input type="radio" id="net-value" value="'+net+'" name="net-select">'+
-                                '</td>'+
-                            '</tr>';
-                        }
-                        html = html + '</tbody>'+
-                        '</table>';
+                    '<thead>              ' +
+                    '<tr>                 ' +
+                    '<th>Network</th>        ' +
+                    '<th>Select</th>     ' +
+                    '</tr>                ' +
+                    '</thead>             ' +
+                    '<tbody >             ' ;
+                    for (net in response.data){
+                        html = html + 
+                        '<tr>'+
+                            '<td style="word-wrap: break-word;">' +
+                                response.data[net]+
+                            '</td><td style="word-wrap: break-word;">' +
+                                '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                            '</td>'+
+                        '</tr>';
+                    }
+                    html = html + '</tbody>'+
+                    '</table>';
                 }
             html = html + '</div>'+
     
@@ -348,7 +347,24 @@ function loadNetworkValues(uuid){
           '</div>'+
         '</div>';
         document.getElementById('modal-window').innerHTML = html;
+        LoadNetworkValuesSelected(uuid);
+    })
+    .catch(function (error) {
+    });
+}
 
+function LoadNetworkValuesSelected(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid;
+
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        document.getElementById('net-value-'+response.data[uuid]["interface"]).checked = "true"
     })
     .catch(function (error) {
     });
@@ -361,7 +377,7 @@ function updateNetworkInterface(uuid){
     var valueSelected = "";
     $('input:radio:checked').each(function() {
         idRadio = $(this).prop("id");
-        if (idRadio == "net-value"){
+        if (idRadio == "net-value-"+$(this).prop("value")){
             valueSelected = $(this).prop("value");
         }
     });
@@ -376,6 +392,10 @@ function updateNetworkInterface(uuid){
         timeout: 30000,
         data: dataJSON
     })
+    .then(function (response) {
+    })
+    .catch(function (error) {
+    });
 }
 
 function changeDataflowValues(FlowUUID, param, value, uuid){

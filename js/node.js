@@ -8,10 +8,6 @@ function addNode() {
     nodejson["port"] = nport;
     nodejson["ip"] = nip;
     var nodeJSON = JSON.stringify(nodejson);
-    axiosAddNode(nodeJSON);
-}
-
-function axiosAddNode(node) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
@@ -32,7 +28,7 @@ function axiosAddNode(node) {
     return false;
 }
 
-function modifyNode() {
+function modifyNodeInformation() {
     console.log("MODIFY NODE VALUES");
     var name = document.getElementById('cfgnodename').value;
     var ip = document.getElementById('cfgnodeip').value;
@@ -55,7 +51,7 @@ function modifyNode() {
         data: newValues
         })
         .then(function (response) {
-            GetAllNodes();
+            // GetAllNodes();
             return true;
         })
         .catch(function (error) {
@@ -65,9 +61,9 @@ function modifyNode() {
         return false;
 }
 
-function cancelNode(){
+function cancelNodeModification(){
     console.log("CANCELLING MODIFY");
-  document.getElementById('divconfigform').style.display = "none";
+    document.getElementById('divconfigform').style.display = "none";
 }
 
 function loadBPF(nid, name){

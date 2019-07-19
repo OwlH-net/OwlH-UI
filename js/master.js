@@ -157,54 +157,120 @@ function loadNetworkValues(){
     })
     .then(function (response) {
 
-        var html = '<div class="modal-dialog">'+
-          '<div class="modal-content">'+
-        
-            '<div class="modal-header">'+
-              '<h4 class="modal-title" id="delete-node-header">Network</h4>'+
-              '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-            '</div>'+
-    
-            '<div class="modal-body" id="delete-node-footer-table">';
-            
-                if (response.data.ack == "false"){
-                    html = html + '<span><h6>Error loading interfaces</h6></span>';
-                } else {
-                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                        '<thead>              ' +
-                        '<tr>                 ' +
-                        '<th>Network</th>        ' +
-                        '<th>Select</th>     ' +
-                        '</tr>                ' +
-                        '</thead>             ' +
-                        '<tbody >             ' ;
-                        for (net in response.data){
-                            html = html + 
-                            '<tr>'+
-                                '<td style="word-wrap: break-word;">' +
-                                    response.data[net]+
-                                '</td><td style="word-wrap: break-word;">' +
-                                    '<input type="radio" id="net-value" value="'+net+'" name="net-select">'+
-                                '</td>'+
-                            '</tr>';
-                        }
-                        html = html + '</tbody>'+
-                        '</table>';
-                }
-            html = html + '</div>'+
-    
-            '<div class="modal-footer" id="delete-node-footer-btn">'+
-              '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-              '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node">Deploy</button>'+
-            '</div>'+
-    
-          '</div>'+
-        '</div>';
+        var html = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">'+
+                '<div class="modal-dialog" role="document">'+
+                    '<div class="modal-content">'+
+                        '<div class="modal-header">'+
+                            '<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>'+
+                            '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                                '<span aria-hidden="true">×</span>'+
+                            '</button>'+
+                        '</div>'+
+                        '<div class="modal-body">'+
+                            '...'+
+                '</div>'+
+                        '<div class="modal-footer">'+
+                            '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                            '<button type="button" class="btn btn-primary">Save changes</button>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
         document.getElementById('modal-master').innerHTML = html;
-
+        // '<div class="modal-dialog">'+
+        //     '<div class="modal-content">'+
+        
+        //         '<div class="modal-header">'+
+        //             '<h4 class="modal-title" id="delete-node-header">Network</h4>'+
+        //             '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+        //         '</div>'+
+    
+        //         '<div class="modal-body" id="delete-node-footer-table">';
+                
+        //             if (response.data.ack == "false"){
+        //                 html = html + '<span><h6>Error loading interfaces</h6></span>';
+        //             } else {
+        //                 html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+        //                     '<thead>              ' +
+        //                     '<tr>                 ' +
+        //                     '<th>Network</th>        ' +
+        //                     '<th>Select</th>     ' +
+        //                     '</tr>                ' +
+        //                     '</thead>             ' +
+        //                     '<tbody >             ' ;
+        //                     for (net in response.data){
+        //                         html = html + 
+        //                         '<tr>'+
+        //                             '<td style="word-wrap: break-word;">' +
+        //                                 response.data[net]+
+        //                             '</td><td style="word-wrap: break-word;">' +
+        //                                 '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+        //                             '</td>'+
+        //                         '</tr>';
+        //                     }
+        //                     html = html + '</tbody>'+
+        //                     '</table>';
+        //             }
+        //         html = html + '</div>'+
+    
+        //         '<div class="modal-footer" id="delete-node-footer-btn">'+
+        //             '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+        //             '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="updateMasterNetworkInterface()">Deploy</button>'+
+        //         '</div>'+
+    
+        //     '</div>'+
+        // '</div>';
+        // document.getElementById('modal-master').innerHTML = html;
+        // LoadMasterNetworkValuesSelected();        
     })
     .catch(function (error) {
-        console.log(error);
+    });
+}
+
+
+function updateMasterNetworkInterface(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/updateMasterNetworkInterface';
+    var valueSelected = "";
+    $('input:radio:checked').each(function() {
+        idRadio = $(this).prop("id");
+        if (idRadio == "net-value-"+$(this).prop("value")){
+            valueSelected = $(this).prop("value");
+        }
+    });
+    var jsonDeploy = {}
+    jsonDeploy["value"] = valueSelected;
+    jsonDeploy["param"] = "value";
+    jsonDeploy["uuid"] = "interface";
+    var dataJSON = JSON.stringify(jsonDeploy);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        $('#modal-master').modal('dismiss');
+    })
+    .catch(function (error) {
+    });
+}
+
+function LoadMasterNetworkValuesSelected(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/loadMasterNetworkValuesSelected';
+
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        document.getElementById('net-value-'+response.data["interface"]["value"]).checked = "true"
+    })
+    .catch(function (error) {
     });
 }
 
@@ -421,79 +487,100 @@ function showMasterCollector(){
 }
 
 function showMasterModalCollector(response){
-    var res = response.data.split("\n");
-    var html = '<div class="modal-dialog modal-lg">'+
+    var html = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">'+
+                '<div class="modal-dialog" role="document">'+
                     '<div class="modal-content">'+
-                
                         '<div class="modal-header">'+
-                            '<h4 class="modal-title" id="modal-collector-header">Master STAP Collector status</h4>'+
+                            '<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>'+
                             '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-                                '<span aria-hidden="true">&times;</span>'+
+                                '<span aria-hidden="true">×</span>'+
                             '</button>'+
                         '</div>'+
+                        '<div class="modal-body">'+
+                            '...'+
+                '</div>'+
+                        '<div class="modal-footer">'+
+                            '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                            '<button type="button" class="btn btn-primary">Save changes</button>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+        document.getElementById('modal-master').innerHTML = html;
+    
+    // var res = response.data.split("\n");
+    // var html = '<div class="modal-dialog modal-lg">'+
+    //                 '<div class="modal-content">'+
                 
-                        '<div class="modal-body">'
-                                if (response.data == ""){
-                                    html = html + '<p>There are no ports</p>';
-                                }else{
-                                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                                    '<thead>                                                      ' +
-                                        '<tr>                                                         ' +
-                                            '<th>Proto</th>                                             ' +
-                                            '<th>RECV</th>                                             ' +
-                                            '<th>SEND</th>                                             ' +
-                                            '<th style="width: 25%">LOCAL IP</th>                                             ' +
-                                            '<th style="width: 25%">REMOTE IP</th>                                             ' +
-                                            '<th style="width: 15%">STATUS</th>                                             ' +
-                                            '<th></th>                                             ' +
-                                        '</tr>                                                        ' +
-                                    '</thead>                                                     ' +
-                                    '<tbody>                                                     ' 
-                                    for(line in res) {
-                                        if (res[line] != ""){
-                                            // var x = res[line].split(" ");
-                                            var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
-                                            var lineSplited = vregex.exec(res[line]);
-                                            // continue;
-                                            // for( var i = 0; i < x.length; i++){ 
-                                            //     if ( x[i] === "") {
-                                            //       x.splice(i, 1); 
-                                            //       i--;
-                                            //     }
-                                            //  }
-                                            // console.log(x);
-                                            // [ "tcp", "0", "0", "192.168.0.101:22", "192.168.0.164:55427", "ESTABLISHED", "4084/sshd:", "root@pts" ]
+    //                     '<div class="modal-header">'+
+    //                         '<h4 class="modal-title" id="modal-collector-header">Master STAP Collector status</h4>'+
+    //                         '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+    //                             '<span aria-hidden="true">&times;</span>'+
+    //                         '</button>'+
+    //                     '</div>'+
+                
+    //                     '<div class="modal-body">'
+    //                             if (response.data == ""){
+    //                                 html = html + '<p>There are no ports</p>';
+    //                             }else{
+    //                                 html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+    //                                 '<thead>                                                      ' +
+    //                                     '<tr>                                                         ' +
+    //                                         '<th>Proto</th>                                             ' +
+    //                                         '<th>RECV</th>                                             ' +
+    //                                         '<th>SEND</th>                                             ' +
+    //                                         '<th style="width: 25%">LOCAL IP</th>                                             ' +
+    //                                         '<th style="width: 25%">REMOTE IP</th>                                             ' +
+    //                                         '<th style="width: 15%">STATUS</th>                                             ' +
+    //                                         '<th></th>                                             ' +
+    //                                     '</tr>                                                        ' +
+    //                                 '</thead>                                                     ' +
+    //                                 '<tbody>                                                     ' 
+    //                                 for(line in res) {
+    //                                     if (res[line] != ""){
+    //                                         // var x = res[line].split(" ");
+    //                                         var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
+    //                                         var lineSplited = vregex.exec(res[line]);
+    //                                         // continue;
+    //                                         // for( var i = 0; i < x.length; i++){ 
+    //                                         //     if ( x[i] === "") {
+    //                                         //       x.splice(i, 1); 
+    //                                         //       i--;
+    //                                         //     }
+    //                                         //  }
+    //                                         // console.log(x);
+    //                                         // [ "tcp", "0", "0", "192.168.0.101:22", "192.168.0.164:55427", "ESTABLISHED", "4084/sshd:", "root@pts" ]
 
     
-                                            // var lineSplited = res[line].split(" ");
-                                            html = html + '<tr><td>' +
-                                            // lineSplited[0]+
-                                            // '</td><td>     ' +
-                                            lineSplited[1]+
-                                            '</td><td>     ' +
-                                            lineSplited[2]+
-                                            '</td><td>     ' +
-                                            lineSplited[3]+
-                                            '</td><td>     ' +
-                                            lineSplited[4]+
-                                            '</td><td>     ' +
-                                            lineSplited[5]+
-                                            '</td><td>     ' +
-                                            lineSplited[6]+
-                                            '</td><td>     ' +
-                                            lineSplited[7]+
-                                            '</td></tr>'
-                                            // html = html + res[line].replace(" ","&#09;")+"<br>";
-                                        }
-                                    }
-                                }
-                        html = html +
-                        '</div>'+
+    //                                         // var lineSplited = res[line].split(" ");
+    //                                         html = html + '<tr><td>' +
+    //                                         // lineSplited[0]+
+    //                                         // '</td><td>     ' +
+    //                                         lineSplited[1]+
+    //                                         '</td><td>     ' +
+    //                                         lineSplited[2]+
+    //                                         '</td><td>     ' +
+    //                                         lineSplited[3]+
+    //                                         '</td><td>     ' +
+    //                                         lineSplited[4]+
+    //                                         '</td><td>     ' +
+    //                                         lineSplited[5]+
+    //                                         '</td><td>     ' +
+    //                                         lineSplited[6]+
+    //                                         '</td><td>     ' +
+    //                                         lineSplited[7]+
+    //                                         '</td></tr>'
+    //                                         // html = html + res[line].replace(" ","&#09;")+"<br>";
+    //                                     }
+    //                                 }
+    //                             }
+    //                     html = html +
+    //                     '</div>'+
                 
-                    '</div>'+
-                '</div>';
-    document.getElementById('modal-master').innerHTML = html;
-    $('#modal-master').modal('show')
+    //                 '</div>'+
+    //             '</div>';
+    // document.getElementById('modal-master').innerHTML = html;
+    // $('#modal-master').modal('show')
 }
 
 function loadJSONdata(){

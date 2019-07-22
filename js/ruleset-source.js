@@ -193,7 +193,7 @@ function loadCustomRulesetRules(uuid,path,type){
         timeout: 30000
     })
     .then(function (response) {
-        document.location.href = 'https://' + ipmaster + '/ruleset.html?uuid='+response.data+'&rule='+ruleFileName+'&type='+type;
+        document.location.href = 'https://' + ipmaster + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
     })
     .catch(function (error) {
         result.innerHTML = '<h3 align="center">No connection</h3>';

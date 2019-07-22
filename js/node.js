@@ -15,7 +15,7 @@ function addNode() {
         method: 'post',
         url: nodeurl,
         timeout: 30000,
-        data: node
+        data: nodeJSON
     })
         .then(function (response) {
             GetAllNodes();
@@ -29,7 +29,6 @@ function addNode() {
 }
 
 function modifyNodeInformation() {
-    console.log("MODIFY NODE VALUES");
     var name = document.getElementById('cfgnodename').value;
     var ip = document.getElementById('cfgnodeip').value;
     var port = document.getElementById('cfgnodeport').value;
@@ -51,18 +50,22 @@ function modifyNodeInformation() {
         data: newValues
         })
         .then(function (response) {
-            // GetAllNodes();
-            return true;
+            GetAllNodes();
         })
         .catch(function (error) {
-            return false;
+            var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
         });   
         document.getElementById('divconfigform').style.display = "none";
         return false;
 }
 
 function cancelNodeModification(){
-    console.log("CANCELLING MODIFY");
     document.getElementById('divconfigform').style.display = "none";
 }
 

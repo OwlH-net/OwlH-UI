@@ -19,7 +19,7 @@ function GetAllRulesetDetails(){
         if (response.data.ack){
             result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
         }else{
-            result.innerHTML = generateAllRulesetDetailsHTMLOutput(response, sourceName, type);
+            result.innerHTML = generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid);
             // changeIconAttributes(response.data);
         }
     })
@@ -28,7 +28,7 @@ function GetAllRulesetDetails(){
     });
 }
 
-function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
+function generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid){
     if (response.data.ack == "false") {
         return '<div style="text-align:center"><h3 style="color:red;">Error retrieving all ruleset details for ruleset ' + sourceName + '</h3></div>';
     }  
@@ -53,14 +53,14 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type){
                 '<span style="font-size: 20px; color: Dodgerblue;">';
                     if(type == "source"){
                         if(files[file]["exists"] == "true"){
-                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\', \''+type+'\')"></i> ';
+                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\', \''+type+'\', \''+uuid+'\')"></i> ';
                         }else{
                             html = html + '<i class="fas fa-file-alt" style="color: grey;" title="File do not exists"></i>'+
                             ' | <i class="fas fa-times-circle" style="color: red;"></i>';
                         }
                     }else{                        
                         if(files[file]["exists"] == "true"){
-                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\', \''+type+'\')"></i> '+
+                            html = html + '<i class="fas fa-file-alt" title="Show Rules" onclick="loadDetails(\''+file+'\', \''+files[file]["file"]+'\', \''+type+'\', \''+uuid+'\')"></i> '+
                             ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete file" data-toggle="modal" data-target="#modal-detail" onclick="modalDeleteRulesetDetail(\''+files[file]["file"]+'\', \''+file+'\')"></i>';
                             if(files[file]["existsSourceFile"] == "false"){
                                 html = html + ' | <i class="fas fa-times-circle" style="color: red;" title="Source file don\'t exist"></i>';
@@ -130,9 +130,9 @@ function viewDifferences(uuid, ruleFile){
     document.location.href = 'https://' + ipmaster + '/compare-files.html?uuid='+uuid+'&file='+ruleFile;
 }
 
-function loadDetails(uuid, ruleFile, type){
+function loadDetails(fileuuid, ruleFile, type, rulesetuuid){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/ruleset.html?uuid='+uuid+'&rule='+ruleFile+'&type='+type;
+    document.location.href = 'https://' + ipmaster + '/ruleset.html?file='+fileuuid+'&rule='+ruleFile+'&type='+type+'&ruleset='+rulesetuuid;
 }
 
 function modalDeleteRulesetDetail(name, uuid){

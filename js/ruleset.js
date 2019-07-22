@@ -1,6 +1,7 @@
 function GetAllRuleset() {
     var url = new URL(window.location.href);
-    var uuid = url.searchParams.get("uuid");
+    var fileuuid = url.searchParams.get("file");
+    var rulesetuuid = url.searchParams.get("ruleset");
     var rule = url.searchParams.get("rule");
     var type = url.searchParams.get("type");
     var resultElement = document.getElementById('ruleset-table');
@@ -10,9 +11,9 @@ function GetAllRuleset() {
     bannerTitle.innerHTML = "Ruleset: " + rule;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + uuid)
+    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid)
         .then(function (response) {
-            resultElement.innerHTML = generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, rule, type);
+            resultElement.innerHTML = generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, rule, type, rulesetuuid);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
             
@@ -22,7 +23,7 @@ function GetAllRuleset() {
         });
 }
 
-function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleName, type) {
+function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ruleName, type, rulesetuuid) {
     if (response.data.ack == "false") {
        return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
     }
@@ -38,9 +39,9 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
         }
     }
     if(type == "ruleset"){
-        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="addToCustomRuleset()">Add to custom</button><br><br>';
+        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="addToCustomRuleset(\''+rulesetuuid+'\')">Add to custom</button><br><br>';
     }if(type == "custom"){
-        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+uuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
+        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+fileuuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
     }       
     html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
@@ -83,10 +84,10 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
             rules[rule]["ip"] +
             '</td><td style="word-wrap: break-word;" align="left">                                                           ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>&nbsp';
+                    '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>&nbsp';
                     if(type != "source" && type != "custom"){
-                        html = html +'<i class="fas fa-exchange-alt low-blue" id="' + rules[rule]["sid"] + '-change-status" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\', \''+uuid+'\', \''+ruleStatus+'\')"></i>&nbsp' +
-                        '<i class="fas fa-sticky-note low-blue" data-toggle="modal" data-target="#modal-window-ruleset" onclick="modalNotes(\''+rules[rule]["msg"]+'\', \''+rules[rule]["sid"]+'\', \''+uuid+'\')"></i>&nbsp';
+                        html = html +'<i class="fas fa-exchange-alt low-blue" id="' + rules[rule]["sid"] + '-change-status" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\', \''+ruleStatus+'\')"></i>&nbsp' +
+                        '<i class="fas fa-sticky-note low-blue" data-toggle="modal" data-target="#modal-window-ruleset" onclick="modalNotes(\''+rules[rule]["msg"]+'\', \''+rules[rule]["sid"]+'\', \''+fileuuid+'\')"></i>&nbsp';
                     }
                     html = html +'</span>'+
             '</td>';
@@ -103,7 +104,7 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
         document.getElementById('progressBar-ruleset-div').style.display = "none";
         if (type == "custom"){
             return '<div style="text-align:center"><h3>No rules for ruleset ' + ruleName + ' available...</h3></div>'+
-            '<br><button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+uuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
+            '<br><button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+fileuuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
         }else{
             return '<div style="text-align:center"><h3>No rules for ruleset ' + ruleName + ' available...</h3></div>';    
         }
@@ -112,17 +113,17 @@ function generateAllRulesHTMLOutput(response, uuid, ipmaster, portmaster, ruleNa
     }
 }
 
-function editRuleset(uuid, nodeName){
+function editRuleset(fileuuid, nodeName){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit-ruleset.html?uuid='+uuid+'&file='+nodeName;
+    document.location.href = 'https://' + ipmaster + '/edit-ruleset.html?fileuuid='+fileuuid+'&file='+nodeName;
 }
 
-function loadRulesetDetails(sid, uuid, ipmaster, portmaster){
+function loadRulesetDetails(sid, fileuuid, ipmaster, portmaster){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/rules/showRuleDetails.php?sid='+sid+'&uuid='+uuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster;
+    document.location.href = 'https://' + ipmaster + '/rules/showRuleDetails.php?sid='+sid+'&fileuuid='+fileuuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster;
 }
 
-function addToCustomRuleset(){
+function addToCustomRuleset(rulesetuuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var customRulesetsURL = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/custom';
@@ -174,7 +175,7 @@ function addToCustomRuleset(){
                                         html = html + '<tr><td style="word-wrap: break-word;">'+
                                             customRulesets[source]['name']+
                                         '</td><td style="word-wrap: break-word;">'+
-                                            '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\')">Add</button>' +
+                                            '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\',\''+rulesetuuid+'\')">Add</button>' +
                                         '</td></tr>';
                                     }
                                 html = html + '</tbody></table>'+
@@ -198,16 +199,17 @@ function addToCustomRuleset(){
     }
 }
 
-function addrulesToCustomRuleset(rules, sourceUUID){
+function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
     var url = new URL(window.location.href);
-    var uuid = url.searchParams.get("uuid");
+    var fileuuid = url.searchParams.get("file");
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addRulesToCustom';
 
     var jsondata = {}
-    jsondata["orig"] = uuid;
-    jsondata["dest"] = sourceUUID;
+    jsondata["orig"] = fileuuid;
+    jsondata["dest"] = sourcefileuuid;
+    jsondata["ruleset"] = ruleset;
     jsondata["sids"] = rules
     var bpfjson = JSON.stringify(jsondata);
     axios({
@@ -232,14 +234,14 @@ function addrulesToCustomRuleset(rules, sourceUUID){
         });
 }
 
-function changeRulesetStatus(sid, uuid, action) {
+function changeRulesetStatus(sid, fileuuid, action) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/action';
 
     var jsonbpfdata = {}
     jsonbpfdata["sid"] = sid;
-    jsonbpfdata["uuid"] = uuid;
+    jsonbpfdata["fileuuid"] = fileuuid;
     jsonbpfdata["action"] = action;
     var bpfjson = JSON.stringify(jsonbpfdata);
 
@@ -252,10 +254,10 @@ function changeRulesetStatus(sid, uuid, action) {
         .then(function (response) {
             if (action == "Disable") {
                 document.getElementById(sid + '-rule-status').innerHTML = '<i class="fas fa-times-circle" style="color:red;"></i>';
-                document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, uuid, "Enable"); };
+                document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, fileuuid, "Enable"); };
             } else {
                 document.getElementById(sid + '-rule-status').innerHTML = '<i class="fas fa-check-circle" style="color:green;"></i>';
-                document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, uuid, "Disable"); };
+                document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, fileuuid, "Disable"); };
             }
             return true
         })
@@ -264,7 +266,7 @@ function changeRulesetStatus(sid, uuid, action) {
         });
 }
 
-function modalNotes(msg, sid, uuid){
+function modalNotes(msg, sid, fileuuid){
     var modalWindow = document.getElementById('modal-window-ruleset');
     modalWindow.innerHTML = 
     '<div class="modal-dialog" role="document">'+
@@ -282,18 +284,18 @@ function modalNotes(msg, sid, uuid){
 
         '<div class="modal-footer" id="ruleset-note-footer-btn">'+
             '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-            '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="rulesetNotes(\''+sid+'\',\''+uuid+'\')">Save changes</button>'+
+            '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="rulesetNotes(\''+sid+'\',\''+fileuuid+'\')">Save changes</button>'+
         '</div>'+
 
         '</div>'+
     '</div>';
-    getRuleNote("ruleset-notes", uuid, sid);
+    getRuleNote("ruleset-notes", fileuuid, sid);
 }
 
-function getRuleNote(elementID, uuid, sid) {
+function getRuleNote(elementID, fileuuid, sid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/getnote/' + uuid + '/' + sid;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/getnote/' + fileuuid + '/' + sid;
     var loadNote = document.getElementById(elementID);
     axios({
         method: 'get',
@@ -314,14 +316,14 @@ function getRuleNote(elementID, uuid, sid) {
 }
 
 
-function rulesetNotes(sid, uuid) {
+function rulesetNotes(sid, fileuuid) {
     var textAreaNote = document.getElementById('ruleset-notes').value;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/note';
     var jsonNoteData = {}
     jsonNoteData["sid"] = sid;
-    jsonNoteData["uuid"] = uuid;
+    jsonNoteData["fileuuid"] = fileuuid;
     jsonNoteData["note"] = textAreaNote;
     var bpfjson = JSON.stringify(jsonNoteData);
     axios({

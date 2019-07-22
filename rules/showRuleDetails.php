@@ -59,7 +59,7 @@
                     //take a raw rule from API
                     //put raw inside $line
                     $sid = htmlspecialchars($_GET['sid']);
-                    $uuid = htmlspecialchars($_GET['uuid']);
+                    $uuid = htmlspecialchars($_GET['fileuuid']);
                     $ipmaster = htmlspecialchars($_GET['ipmaster']);
                     $portmaster = htmlspecialchars($_GET['portmaster']);
                     $url = 'https://'.$ipmaster.':'.$portmaster.'/v1/ruleset/rule/'.$sid.'/'.$uuid;

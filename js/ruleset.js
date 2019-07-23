@@ -29,18 +29,21 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
     }
     var isEmptyRuleset = true;
     var rules = response.data;
-    var rawLines = new Object();
     var html = "";
-    var isSourceType;
+    var isCustomSourceType;
     for (rule in rules) {
+        console.log(rules[rule]["sourceType"]);
         if (rules[rule]["sourceType"] == "custom"){
-            isSourceType = true;
+            isCustomSourceType = true;
+            continue;
+        }else{
+            isCustomSourceType = false;
             continue;
         }
     }
-    if(type == "ruleset"){
+    if(type == "ruleset" && !isCustomSourceType){
         html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="addToCustomRuleset(\''+rulesetuuid+'\')">Add to custom</button><br><br>';
-    }if(type == "custom"){
+    }else if(type == "custom"){
         html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+fileuuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
     }       
     html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -49,12 +52,12 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
                 '<th align="center" style="width: 5%">Status</th>                           ' +
                 '<th style="width: 10%">Sid</th>                              ' +
                 '<th>Description</th>                                         ' ;
-                if(type != "source" && type != "custom"){
+                if(type != "source"){
                     html = html +'<th>Notes</th>                                               ' ;
                 }
                 html = html + '<th>IP info</th>                                             ' +
                 '<th style="width: 8%">Actions</th>                                             ' ;
-                if(type == "ruleset"){
+                if(type == "ruleset" && !isCustomSourceType){
                     html = html + '<th style="width: 8%">Clone</th>                                             ';
                 }                    
             html = html + '</tr>                                                        ' +
@@ -76,7 +79,7 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
             rules[rule]["sid"] +
             '</td><td style="word-wrap: break-word;">                                                           ' +
             rules[rule]["msg"] ;
-            if(type != "source" && type != "custom"){
+            if(type != "source"){
                 html = html + '</td><td style="word-wrap: break-word;" id="' + rules[rule]["sid"] + '-note">' +
                 rules[rule]["note"]  ;
             }
@@ -85,13 +88,13 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
             '</td><td style="word-wrap: break-word;" align="left">                                                           ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>&nbsp';
-                    if(type != "source" && type != "custom"){
+                    if(type != "source"){
                         html = html +'<i class="fas fa-exchange-alt low-blue" id="' + rules[rule]["sid"] + '-change-status" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\', \''+ruleStatus+'\')"></i>&nbsp' +
                         '<i class="fas fa-sticky-note low-blue" data-toggle="modal" data-target="#modal-window-ruleset" onclick="modalNotes(\''+rules[rule]["msg"]+'\', \''+rules[rule]["sid"]+'\', \''+fileuuid+'\')"></i>&nbsp';
                     }
                     html = html +'</span>'+
             '</td>';
-            if(type == "ruleset"){
+            if(type == "ruleset" && !isCustomSourceType){
                 html = html + '<td style="word-wrap: break-word;" align="center">                                                           ' +
                     '<input class="form-check-input" type="checkbox" id="'+rule+'"></input>'+
                 '</td>';
@@ -241,7 +244,7 @@ function changeRulesetStatus(sid, fileuuid, action) {
 
     var jsonbpfdata = {}
     jsonbpfdata["sid"] = sid;
-    jsonbpfdata["fileuuid"] = fileuuid;
+    jsonbpfdata["uuid"] = fileuuid;
     jsonbpfdata["action"] = action;
     var bpfjson = JSON.stringify(jsonbpfdata);
 
@@ -323,7 +326,7 @@ function rulesetNotes(sid, fileuuid) {
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/note';
     var jsonNoteData = {}
     jsonNoteData["sid"] = sid;
-    jsonNoteData["fileuuid"] = fileuuid;
+    jsonNoteData["uuid"] = fileuuid;
     jsonNoteData["note"] = textAreaNote;
     var bpfjson = JSON.stringify(jsonNoteData);
     axios({

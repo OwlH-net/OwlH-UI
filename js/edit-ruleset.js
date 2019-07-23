@@ -1,6 +1,6 @@
 function loadRulesetContent(){
     var url = new URL(window.location.href);
-    var uuid = url.searchParams.get("uuid");
+    var uuid = url.searchParams.get("fileuuid");
     var file = url.searchParams.get("file");
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -28,7 +28,7 @@ function loadRulesetContent(){
 
 function saveRulesetContent(){
     var url = new URL(window.location.href);
-    var uuid = url.searchParams.get("uuid");
+    var uuid = url.searchParams.get("fileuuid");
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var textArea = document.getElementById('inputTextUI');

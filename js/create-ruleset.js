@@ -16,12 +16,13 @@ function loadRulesData(){
         }
     })
     .catch(function (error) {
-        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>';
     });
 }
 
 function generateAllRuleDataHTMLOutput(sources) {
+    console.log(sources);
+
     var html = "";
     var isEmpty = true;
     var arrayRulesets = new Array();
@@ -82,6 +83,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         // '<th>File name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
         '<th>File name</th>                                          ' +
         '<th>File path</th>                                          ' +
+        '<th>Source</th>                                          ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody>                                                      ' ;
@@ -90,13 +92,20 @@ function generateAllRuleDataHTMLOutput(sources) {
             isEmpty = false;
             html = html + '<tr id="row-'+source+'"><td style="width: 100%; word-wrap: break-word;" align="center">'+
                     '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
-                '</td><td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'">'+
+                '</td>'+
+                '<td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'" value="'+sources[source]["sourceType"]+'">'+                 
                     sources[source]["name"]+
                 '</td><td style="word-wrap: break-word;" id="fileNewRuleset-'+source+'">'+
                     sources[source]["file"]+
-                '</td><td style="word-wrap: break-word;" style="display:none;" id="pathNewRuleset-'+source+'">'+
+                '</td><td style="word-wrap: break-word;" id="pathNewRuleset-'+source+'">'+
                     sources[source]["path"]+
-                '</td></tr>';
+                '</td><td style="word-wrap: break-word;" style="display:none;" id="source-type-'+source+'">';
+                    if (sources[source]["sourceType"]){
+                        html = html + sources[source]["sourceType"];
+                    }else{
+                        html = html + sources[source]["type"];
+                    }
+                html = html + '</td></tr>';
         }
     }
     html = html + '</tbody></table>'+
@@ -146,7 +155,7 @@ function searchRuleset(){
     }
 }
 
-function modalAddNewRuleset(){
+function modalAddNewRuleset(){    
     var newRuleset = new Map();
     $('input:checkbox:checked').each(function() {
         var uuid = $(this).prop("id");
@@ -158,6 +167,7 @@ function modalAddNewRuleset(){
             newRuleset[uuid]["filePath"] = document.getElementById('pathNewRuleset-'+uuid+'').innerHTML;
             newRuleset[uuid]["rulesetName"] = document.getElementById('new-ruleset-name-input').value;
             newRuleset[uuid]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value;
+            newRuleset[uuid]["sourceType"] = document.getElementById('source-type-'+uuid).innerHTML;
         }
     });
 
@@ -282,7 +292,6 @@ function modalAddNewRuleset(){
 }
 
 function sortTable(n) {
-    console.log("JUST SORTING TABLE");
     var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     table = document.getElementById("new-ruleset-table");
     switching = true;

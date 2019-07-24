@@ -12,17 +12,21 @@ function loadRulesData(){
     .then(function (response) {
         result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
         for (source in response.data){
-            document.getElementById('checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
+            if (response.data[source]["type"]){
+                document.getElementById('checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
+            }else{
+                continue;
+            }
         }
     })
     .catch(function (error) {
-        result.innerHTML = '<h3 align="center">No connection</h3>';
+        result.innerHTML = '<h3 align="center">No connection</h3>'+
+        '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
+        checkStatus();
     });
 }
 
 function generateAllRuleDataHTMLOutput(sources) {
-    console.log(sources);
-
     var html = "";
     var isEmpty = true;
     var arrayRulesets = new Array();
@@ -50,16 +54,20 @@ function generateAllRuleDataHTMLOutput(sources) {
     '<br><br><br>'+
 
     '<h5>Select rulesets</h5>'+
-    '<div class="form-check">'+
-        '<ul class="checkbox-grid">';
-        for (source in sources) {
+    '<div class="form-check">';
+    for (source in sources) {
+        if(sources[source]["type"] == "source"){            
             if(!arrayRulesets.includes(sources[source]["name"])){
                 arrayRulesets.push(sources[source]["name"]);
-                html = html + ' <li style="display: block; float: left; width: 25%"><input type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked /><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>';    
+                html = html +'<ul class="checkbox-grid">'+
+                ' <li style="display: block; float: left; width: 25%"><input type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked /><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
+                '</ul>';
             }
+        }else{
+            continue;
         }
-        html = html + '</ul>'+
-    '</div>'+
+    }
+    html = html +'</div>'+
         
     '<br><br>'+
     '<br><br><br>'+
@@ -88,24 +96,28 @@ function generateAllRuleDataHTMLOutput(sources) {
         '</thead>                                                     ' +
         '<tbody>                                                      ' ;
     for (source in sources) {        
-        if(sources[source]["exists"]=="true"){
-            isEmpty = false;
-            html = html + '<tr id="row-'+source+'"><td style="width: 100%; word-wrap: break-word;" align="center">'+
-                    '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
-                '</td>'+
-                '<td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'" value="'+sources[source]["sourceType"]+'">'+                 
-                    sources[source]["name"]+
-                '</td><td style="word-wrap: break-word;" id="fileNewRuleset-'+source+'">'+
-                    sources[source]["file"]+
-                '</td><td style="word-wrap: break-word;" id="pathNewRuleset-'+source+'">'+
-                    sources[source]["path"]+
-                '</td><td style="word-wrap: break-word;" style="display:none;" id="source-type-'+source+'">';
-                    if (sources[source]["sourceType"]){
-                        html = html + sources[source]["sourceType"];
-                    }else{
-                        html = html + sources[source]["type"];
-                    }
-                html = html + '</td></tr>';
+        if(sources[source]["type"]){
+            if(sources[source]["exists"]=="true"){
+                isEmpty = false;
+                html = html + '<tr id="row-'+source+'"><td style="width: 100%; word-wrap: break-word;" align="center">'+
+                        '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
+                    '</td>'+
+                    '<td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'" value="'+sources[source]["sourceType"]+'">'+                 
+                        sources[source]["name"]+
+                    '</td><td style="word-wrap: break-word;" id="fileNewRuleset-'+source+'">'+
+                        sources[source]["file"]+
+                    '</td><td style="word-wrap: break-word;" id="pathNewRuleset-'+source+'">'+
+                        sources[source]["path"]+
+                    '</td><td style="word-wrap: break-word;" style="display:none;" id="source-type-'+source+'">';
+                        if (sources[source]["sourceType"]){
+                            html = html + sources[source]["sourceType"];
+                        }else{
+                            html = html + sources[source]["type"];
+                        }
+                    html = html + '</td></tr>';
+            }
+        }else{
+            continue;
         }
     }
     html = html + '</tbody></table>'+
@@ -328,7 +340,12 @@ function sortTable(n) {
     }
 }
 
-
+function checkStatus() {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
+    document.getElementById('check-status-config').href = nodeurl;
+}
 
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
@@ -337,7 +354,7 @@ function loadJSONdata(){
       var portLoad = document.getElementById('port-master');
       portLoad.value = data.master.port;      
       loadRulesData();
-      loadTitleJSONdata();
+      loadTitleJSONdata();      
     });
   }
   loadJSONdata();

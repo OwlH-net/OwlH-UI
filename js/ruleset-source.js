@@ -16,13 +16,12 @@ function formAddRulesetSource(){
 }
 
 function addRulesetSource() {
-    var sourceName = document.getElementById('ruleset-source-name').value;
-    var sourceDesc = document.getElementById('ruleset-source-desc').value;
-    var sourceUrl = document.getElementById('ruleset-source-url').value;
-    var fileName = sourceUrl.split(/[\s/]+/);
+    var formName = document.getElementById('ruleset-source-name').value;
+    var formDesc = document.getElementById('ruleset-source-desc').value;
+    var formUrl = document.getElementById('ruleset-source-url').value;
+    var fileName = formUrl.split(/[\s/]+/);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    // var sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
     var sourceType;
     var sourceURL;
     var alert = document.getElementById('floating-alert');
@@ -32,7 +31,7 @@ function addRulesetSource() {
     });
 
     if (sourceType == "url"){
-        if(sourceUrl == ""){
+        if(formUrl == ""){
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error! </strong> For URL source type, please inserta a valid URL.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -47,15 +46,15 @@ function addRulesetSource() {
 
     formAddRulesetSource();//close add ruleset source form
     var nodejson = {}
-    nodejson["name"] = sourceName;
-    nodejson["desc"] = sourceDesc;
-    nodejson["fileName"] = fileName[fileName.length-1];
-    nodejson["url"] = sourceUrl;
+    nodejson["name"] = formName;
+    nodejson["desc"] = formDesc;
+    if (sourceType == "url"){nodejson["fileName"] = fileName[fileName.length-1];}//only for source, not for custom
+    if (sourceType == "url"){nodejson["url"] = formUrl;}//only for source, not for custom
     nodejson["type"] = "source";
     nodejson["sourceType"] = sourceType;
-    nodejson["isDownloaded"] = "false";
+    if (sourceType == "url"){nodejson["isDownloaded"] = "false";} //only for source, not for custom
     var nodeJSON = JSON.stringify(nodejson);
-
+    
     axios({
         method: 'post',
         url: sourceURL,
@@ -101,7 +100,9 @@ function GetAllRulesetSource(){
         changeIconAttributes(response.data);
     })
     .catch(function (error) {
-        result.innerHTML = '<h3 align="center">No connection</h3>';
+        result.innerHTML = '<h3 align="center">No connection</h3>'+
+        '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
+        checkStatus();
     });
 }
 
@@ -196,7 +197,9 @@ function loadCustomRulesetRules(uuid,path,type){
         document.location.href = 'https://' + ipmaster + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
     })
     .catch(function (error) {
-        result.innerHTML = '<h3 align="center">No connection</h3>';
+        result.innerHTML = '<h3 align="center">No connection</h3>'+
+        '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
+        checkStatus();
     });
 
 }
@@ -493,6 +496,13 @@ function overwriteDownload(name, path, url, uuid){
         icon.style.color="Grey";
         downloadStatus.value = "false";
     });
+}
+
+function checkStatus() {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
+    document.getElementById('check-status-config').href = nodeurl;
 }
 
 function loadJSONdata(){

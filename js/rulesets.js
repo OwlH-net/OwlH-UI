@@ -12,7 +12,9 @@ function GetAllRulesets() {
             resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
         })
         .catch(function (error) {
-            resultElement.innerHTML = '<div style="text-align:center"><h3>No connection</h3></div>';
+            resultElement.innerHTML = '<div style="text-align:center"><h3>No connection</h3></div>'+
+            '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
+            checkStatus();
         });
     }
     
@@ -455,6 +457,29 @@ function deleteRulesetModal(name, uuid){
     '</div>';
 }
 
+function modalSynchronizeAllRulesets(){
+    var modalWindow = document.getElementById('modal-ruleset');
+    modalWindow.innerHTML = '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+    
+            '<div class="modal-header">'+
+                '<h4 class="modal-title" id="delete-ruleset-header">Ruleset</h4>'+
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+    
+            '<div class="modal-body" id="delete-ruleset-footer-table">'+ 
+                '<p>Do you want to Synchronize all the rulesets?</p>'+
+            '</div>'+
+    
+            '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
+                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-sync-ruleset" onclick="synchronizeAllRulesets()">Synchronize</button>'+
+            '</div>'+
+  
+        '</div>'+
+    '</div>';
+}
+
 // function cloneRuleset(name, path){
 //     var modalWindow = document.getElementById('modal-ruleset');
 //     modalWindow.innerHTML = 
@@ -486,6 +511,45 @@ function deleteRulesetModal(name, uuid){
 //     '</div>';
 // }
 
+function synchronizeAllRulesets() {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/syncAllRulesets';
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+            if (response.data.ack == "true"){
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> All rulesets had been synchronized successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+            }else{
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+            }
+        })
+        .catch(function (error) {
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+        });
+}
+
 function deleteRuleset(name, uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -501,9 +565,26 @@ function deleteRuleset(name, uuid) {
         data: bpfjson
     })
         .then(function (response) {
-            GetAllRulesets();
+            if (response.data.ack == "false"){
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+            }else{
+                GetAllRulesets();
+            }
         })
         .catch(function (error) {
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
         });
 }
 
@@ -577,6 +658,13 @@ function syncRuleset(uuid){
         })
         .catch(function (error) {
         });
+}
+
+function checkStatus() {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
+    document.getElementById('check-status-config').href = nodeurl;
 }
 
 function loadJSONdata(){

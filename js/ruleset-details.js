@@ -15,7 +15,6 @@ function GetAllRulesetDetails(){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response);
         if (response.data.ack){
             result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
         }else{
@@ -24,7 +23,9 @@ function GetAllRulesetDetails(){
         }
     })
     .catch(function (error) {
-        result.innerHTML = '<h3 align="center">Error: No connection</h3>';
+        result.innerHTML = '<h3 align="center">No connection</h3>'+
+        '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
+        checkStatus();
     });
 }
 
@@ -214,6 +215,13 @@ function deleteRulesetDetails(uuid){
         })
         .catch(function error() {
         });
+}
+
+function checkStatus() {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
+    document.getElementById('check-status-config').href = nodeurl;
 }
 
 function loadJSONdata(){

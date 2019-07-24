@@ -21,7 +21,9 @@ function getAllFiles() {
             files.innerHTML = generateAllFilesOutput(response, node);
         })
         .catch(function (error) {
-            files.innerHTML = '<h3 align="center">No connection</h3>';
+            files.innerHTML = '<h3 align="center">No connection</h3>'+
+            '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
+            checkStatus();
         });
 }
 
@@ -64,6 +66,13 @@ function generateAllFilesOutput(response, node) {
 function loadEditURL(uuid, file, nodeName){
     var ipmaster = document.getElementById('ip-master').value;
     document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+}
+
+function checkStatus() {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
+    document.getElementById('check-status-config').href = nodeurl;
 }
 
 function loadJSONdata() {

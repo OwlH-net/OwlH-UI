@@ -201,7 +201,7 @@ function generateAllNodesHTMLOutput(response) {
                 '  </span></p> '+ 
             '</span>'+ 
 
-            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Data flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
+            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
             '<span id="flow-form-'+uuid+'" style="display:None">'+
                 '<table>'+
                 '<thead>'+

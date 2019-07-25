@@ -15,23 +15,24 @@ function saveFileChanged() {
         data: fileContent
     })
     .then(function (response) {
-        if (response.data.ack == "false"){
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-        }else{
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> File saved succesfully.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-        }
+        location.reload(true);
+        // if (response.data.ack == "false"){
+        //     var alert = document.getElementById('floating-alert');
+        //     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        //         '<strong>Error!</strong> '+response.data.error+'.'+
+        //         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+        //             '<span aria-hidden="true">&times;</span>'+
+        //         '</button>'+
+        //     '</div>';
+        // }else{
+        //     var alert = document.getElementById('floating-alert');
+        //     alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+        //         '<strong>Success!</strong> File saved succesfully.'+
+        //         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+        //             '<span aria-hidden="true">&times;</span>'+
+        //         '</button>'+
+        //     '</div>';
+        // }
         
     })
     .catch(function (error) {

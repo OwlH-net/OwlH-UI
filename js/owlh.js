@@ -25,6 +25,7 @@ function PingNode(uuid) {
             if (response.data.ping=='pong') {
                 document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
                 document.getElementById(uuid+'-online').innerHTML = "ON LINE";
+                PingService(uuid);
                 PingSuricata(uuid);
                 PingZeek(uuid);
                 PingWazuh(uuid);
@@ -44,6 +45,46 @@ function PingNode(uuid) {
             return "false";
         });   
     return "false";
+}
+
+function PingService(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/pingservice/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+            if (response.data.ack == "true"){
+                document.getElementById(uuid+'-owlhservice').style.display = "none";
+            }else {
+                document.getElementById(uuid+'-owlhservice').style.display = "block";
+            }
+            return true;
+        })
+        .catch(function (error) {
+            return false;
+        }); 
+}
+
+function DeployService(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/deployservice/'+uuid;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+            GetAllNodes();
+            return true;
+        })
+        .catch(function (error) {
+            return false;
+        });   
 }
 
 function GetAllNodes() {
@@ -137,10 +178,12 @@ function generateAllNodesHTMLOutput(response) {
 
         html = html + '<tr>                                                                     '+
             '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
-            ' <td class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
-            ' <p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
-            ' <i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'                        +
-            '</td>' +
+            '   <td class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
+                '   <p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
+                '   <i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
+                '   <br><br>'+
+                '   <span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
+            '   </td>' +
             '<td class="align-middle">                                                        ';
         html = html + '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span></td>'+
             '<td class="align-middle">'+

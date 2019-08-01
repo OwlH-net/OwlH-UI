@@ -17,7 +17,8 @@ function loadRulesData(){
             }else{
                 continue;
             }
-        }
+        }  
+        document.getElementById('select-all-create-ruleset').addEventListener("click", CheckAll());      
     })
     .catch(function (error) {
         result.innerHTML = '<h3 align="center">No connection</h3>'+
@@ -85,7 +86,7 @@ function generateAllRuleDataHTMLOutput(sources) {
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
-        '<th style="width: 10%">Select</th>                                                  ' +
+        '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset"></th>' +
         // '<th>Ruleset name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
         '<th>Ruleset name</th>                                          ' +
         // '<th>File name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
@@ -127,6 +128,19 @@ function generateAllRuleDataHTMLOutput(sources) {
     }else{
         return html;
     }
+}
+
+function CheckAll(){
+    $('input[type=checkbox]').each(function () {
+        var value = $(this).prop("value");
+        if (value == "table-elements"){
+            if(
+            $("input").prop("checked", true);
+
+            $("input").prop("checked", false);
+
+        }
+    });
 }
 
 function addRulesetFilesToTable(sources){

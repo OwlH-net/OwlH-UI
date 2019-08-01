@@ -2,27 +2,28 @@ function loadPlugins(){
     content = document.getElementById('master-table-plugins');
     content.innerHTML =
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-    '<h6 class="border-bottom border-gray pb-2 mb-0">Master configuration</h6>'+
-    '<br>'+
-    '<p><img src="img/favicon.ico" height="25"><span style="font-size: 15px; color: Grey;">&nbsp; Edit master configuration | </span>'+
-    '  <span style="font-size: 15px; color: grey;">                                   ' +
-    '    <i class="fas fa-info-circle" title="Edit Master configuration file" onclick="showMasterFile(\'main\')"></i>  ' +
-    '  </span></p> '+
-    '</div>'+
-    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-    '<h6 class="border-bottom border-gray pb-2 mb-0">Plugins</h6>'+
-    '<br>'+
-    '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i> | '+
-    '  <span style="font-size: 15px; color: grey;">                                   ' +
-    '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
-    '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopMasterCollector()"></i>                         ' +
-    '    <i class="fas fa-info-circle" title="Collector information" onclick="showMasterCollector()"></i>  ' +
-    '  </span></p> '+
-    '<p><i style="color: Dodgerblue;" class="fas fa-random"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Dispatcher &nbsp; | </span> <i class="fas fa-angle-double-down" id="dispatcher-status"></i> | '+
-    '  <span style="font-size: 15px; color: grey;">                                   ' +
-    '    <i class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i>                         ' +
-    '    <i class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i>  ' +
-    '  </span></p> '+
+        '<h6 class="border-bottom border-gray pb-2 mb-0">Master configuration</h6>'+
+        '<br>'+
+        '<p><img src="img/favicon.ico" height="25"><span style="font-size: 15px; color: Grey;">&nbsp; Edit master configuration | </span>'+
+        '  <span style="font-size: 15px; color: grey;">                                   ' +
+        '    <i class="fas fa-info-circle" title="Edit Master configuration file" onclick="showMasterFile(\'main\')"></i>  ' +
+        '  </span></p> '+
+        '   <span id="owlhMasterService" style="display:none; font-size: 15px; cursor: default;" class="col-md-2 badge bg-warning align-text-bottom text-white" onclick="DeployServiceMaster()">Install service</span>'+
+        '</div>'+
+        '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0">Plugins</h6>'+
+        '<br>'+
+        '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i> | '+
+        '  <span style="font-size: 15px; color: grey;">                                   ' +
+        '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+        '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopMasterCollector()"></i>                         ' +
+        '    <i class="fas fa-info-circle" title="Collector information" onclick="showMasterCollector()"></i>  ' +
+        '  </span></p> '+
+        '<p><i style="color: Dodgerblue;" class="fas fa-random"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Dispatcher &nbsp; | </span> <i class="fas fa-angle-double-down" id="dispatcher-status"></i> | '+
+        '  <span style="font-size: 15px; color: grey;">                                   ' +
+        '    <i class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i>                         ' +
+        '    <i class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i>  ' +
+        '  </span></p> '+
     '</div>'+
 
 
@@ -102,6 +103,7 @@ function loadPlugins(){
     PingCollector();
     PingDataflow();
     PingPlugins();
+    PingServiceMaster();
 }
 
 function showMasterFile(file){
@@ -238,6 +240,47 @@ function updateMasterNetworkInterface(){
     })
     .then(function (response) {
         $('#modal-master').modal('dismiss');
+    })
+    .catch(function (error) {
+    });
+}
+
+function DeployServiceMaster(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/deployservice';
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        if (response.data.ack == "true"){
+            document.getElementById('owlhMasterService').style.display = "none";
+        }else {
+            document.getElementById('owlhMasterService').style.display = "block";
+        }
+    })
+    .catch(function (error) {
+    });
+}
+
+function PingServiceMaster(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/pingservice';
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        console.log(response.data.ack);
+        if (response.data.ack == "true"){
+            document.getElementById('owlhMasterService').style.display = "none";
+        }else {
+            document.getElementById('owlhMasterService').style.display = "block";
+        }
     })
     .catch(function (error) {
     });
@@ -539,7 +582,7 @@ function loadJSONdata(){
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
-        loadPlugins();
+        loadPlugins();        
         loadTitleJSONdata();
     });
   }

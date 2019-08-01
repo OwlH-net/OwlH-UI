@@ -30,7 +30,6 @@ function GetAllRulesetDetails(){
 }
 
 function generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid){
-    console.log(response.data);
     if (response.data.ack == "false") {
         return '<div style="text-align:center"><h3 style="color:red;">Error retrieving all ruleset details for ruleset ' + sourceName + '</h3></div>';
     }  

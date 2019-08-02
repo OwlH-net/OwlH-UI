@@ -3,7 +3,6 @@ function loadRulesData(){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/getAllRuleData';
-
     axios({
         method: 'get',
         url: sourceurl,
@@ -17,10 +16,10 @@ function loadRulesData(){
             }else{
                 continue;
             }
-        }  
-        document.getElementById('select-all-create-ruleset').addEventListener("click", CheckAll());      
+        }         
     })
     .catch(function (error) {
+        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
@@ -86,7 +85,7 @@ function generateAllRuleDataHTMLOutput(sources) {
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
-        '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset"></th>' +
+        '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset" onchange="CheckAll(this)"></th>' +
         // '<th>Ruleset name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
         '<th>Ruleset name</th>                                          ' +
         // '<th>File name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
@@ -95,7 +94,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         '<th>Source</th>                                          ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
-        '<tbody>                                                      ' ;
+        '<tbody id="create-ruleset-table-body">' ;
     for (source in sources) {        
         if(sources[source]["type"]){
             if(sources[source]["exists"]=="true"){
@@ -122,7 +121,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         }
     }
     html = html + '</tbody></table>'+
-    '<br><a class="btn btn-primary float-right" style="color: white;" onclick="modalAddNewRuleset()">Add</a><br><br>';
+    '<br><a class="btn btn-primary float-right" style="color: white;" onclick="modalAddNewRuleset()">Add</a><br><br>';    
     if (isEmpty){
         return '<h3 style="text-align:center">No sources created</h3>';
     }else{
@@ -130,17 +129,40 @@ function generateAllRuleDataHTMLOutput(sources) {
     }
 }
 
-function CheckAll(){
-    $('input[type=checkbox]').each(function () {
-        var value = $(this).prop("value");
-        if (value == "table-elements"){
-            if(
-            $("input").prop("checked", true);
-
-            $("input").prop("checked", false);
-
-        }
-    });
+function CheckAll(ele){
+    if (ele.checked) {
+        $('input:checkbox:not(checked)').each(function() {
+            var value = $(this).prop("value");
+            var id = $(this).prop("id");
+            // var styleValue = document.getElementById("row-"+id).style.display;
+            if (value == "table-elements" && document.getElementById("row-"+id).style.display != 'none'){                
+                // $('#create-ruleset-table').find('tr').each(function(i, el) {
+                //     var str = el.id;
+                //     var res = str.split("--");
+                //     if ($(el).css('display') == 'none'){
+                //         console.log(res[1]);
+                //     }
+                // });
+                $(this).prop("checked", true);
+            }
+        });
+    } else {
+        $('input:checkbox:checked').each(function() {
+            var value = $(this).prop("value");
+            var id = $(this).prop("id");
+            // var styleValue = document.getElementById("row-"+id).style.display;
+            if (value == "table-elements" && document.getElementById("row-"+id).style.display != 'none'){
+                // $('#create-ruleset-table').find('tr').each(function(i, el) {
+                //     var str = el.id;
+                //     var res = str.split("--");
+                //     if ($(el).css('display') == 'none'){
+                //         console.log(res[1]);
+                //     }
+                // });
+                $(this).prop("checked", false);
+            }
+        });
+    }
 }
 
 function addRulesetFilesToTable(sources){
@@ -149,6 +171,7 @@ function addRulesetFilesToTable(sources){
         for (source in sources){
             if (checked == sources[source]["name"]){
                 document.getElementById("row-"+source).style.display = "";//in this case display is void, not none
+                document.getElementById("row-"+source).value = "true"; //true == visible at table
             }
         }
     });
@@ -157,6 +180,7 @@ function addRulesetFilesToTable(sources){
         for (source in sources){
             if (checked == sources[source]["name"]){
                 document.getElementById("row-"+source).style.display = "none";
+                document.getElementById("row-"+source).value = "false"; //false == hidden at table
             }
         }
     });

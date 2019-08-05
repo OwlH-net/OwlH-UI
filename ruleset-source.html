@@ -100,7 +100,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                            <input type="text" class="form-control" id="ruleset-source-url" placeholder="Url" required>
+                            <input type="text" class="form-control" id="ruleset-source-url" placeholder="url" required>
                         </div>
                     </div>
                 </div>
@@ -108,12 +108,16 @@
                 <h5>Select Ruleset type:</h5>
                 <div class="radio">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline1" name="customRadioInline1" value="url" class="custom-control-input" checked>
-                        <label class="custom-control-label" for="customRadioInline1">URL</label>
+                        <input type="radio" id="create-url" name="create-new-source-radiobuttons" value="url" class="custom-control-input" checked>
+                        <label class="custom-control-label" for="create-url">URL</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline2" name="customRadioInline1" value="custom" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadioInline2">Custom</label>
+                        <input type="radio" id="create-path-custom" name="create-new-source-radiobuttons" value="custom" class="custom-control-input">
+                        <label class="custom-control-label" for="create-path-custom">Custom</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="create-thread" name="create-new-source-radiobuttons" value="thread" class="custom-control-input">
+                        <label class="custom-control-label" for="create-thread">Threat Intelligence</label>
                     </div>  
                 </div>
 

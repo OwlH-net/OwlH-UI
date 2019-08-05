@@ -30,11 +30,11 @@ function generateAllLinesHTMLOutput (response){
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
-        '<th style="width: 8%">Sid</th>                                                 ' +
+        '<th style="width: 10%">Sid</th>                                                 ' +
         '<th style="width: 10%">Ruleset file status</th>                                ' +
-        '<th style="width: 31%">Ruleset file line</th>                                       ' +
+        '<th style="width: 30%">Ruleset file line</th>                                       ' +
         '<th style="width: 10%">Source file line status</th>                                ' +
-        '<th style="width: 31%">Source file line</th>                                       ' +
+        '<th style="width: 30%">Source file line</th>                                       ' +
         '<th style="width: 10%">Actions</th>                                             ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +

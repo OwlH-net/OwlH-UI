@@ -30,7 +30,7 @@ function addRulesetSource() {
         sourceType = $(this).prop("value");
     });
 
-    if (sourceType == "url"){
+    if (sourceType == "url" || sourceType == "thread"){
         if(formUrl == ""){
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error! </strong> For URL source type, please inserta a valid URL.'+
@@ -48,11 +48,15 @@ function addRulesetSource() {
     var nodejson = {}
     nodejson["name"] = formName;
     nodejson["desc"] = formDesc;
-    if (sourceType == "url"){nodejson["fileName"] = fileName[fileName.length-1];}//only for source, not for custom
-    if (sourceType == "url"){nodejson["url"] = formUrl;}//only for source, not for custom
+    if (sourceType == "url" || sourceType == "thread"){ //only for source, not for custom
+        nodejson["fileName"] = fileName[fileName.length-1];
+        nodejson["url"] = formUrl;
+    }else if (sourceType == "path"){
+        nodejson["url"] = formUrl;
+    }
     nodejson["type"] = "source";
     nodejson["sourceType"] = sourceType;
-    if (sourceType == "url"){nodejson["isDownloaded"] = "false";} //only for source, not for custom
+    if (sourceType == "url" || sourceType == "thread"){nodejson["isDownloaded"] = "false";} //only for source, not for custom
     var nodeJSON = JSON.stringify(nodejson);
     
     axios({
@@ -98,11 +102,24 @@ function GetAllRulesetSource(){
         document.getElementById('ruleset-source-text-bot').style.display ="block";
         result.innerHTML = generateAllRulesetSourceHTMLOutput(response);
         changeIconAttributes(response.data);
+        RadioButtonListener();
     })
     .catch(function (error) {
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
+    });
+}
+
+function RadioButtonListener(){
+    $('input:radio').on('click', function(e) {
+        var inputRadioClicked = $(e.currentTarget);
+        if (inputRadioClicked.attr('value') == "custom"){
+            document.getElementById("ruleset-source-url").style.display = "none";            
+        }else if (inputRadioClicked.attr('value') == "url"){
+            document.getElementById("ruleset-source-url").style.display = "block";            
+            document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
+        }
     });
 }
 
@@ -137,6 +154,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
         '</thead>                                                     ' +
         '<tbody>                                                      ' 
     for (source in sources) {
+        console.log(sources[source]);
         isEmpty = false;
         html = html + '<tr><td style="word-wrap: break-word;">'+
             sources[source]['name']+
@@ -146,14 +164,14 @@ function generateAllRulesetSourceHTMLOutput(response) {
             sources[source]['path']+
             '</td><td style="word-wrap: break-word;">';
             if (sources[source]['sourceType'] == "custom"){
-                html = html + 'Custom';
+                html = html + sources[source]['path'];
             }else {
                 html = html + sources[source]['url'];
             }
             html = html + '</td><td align="right" style="word-wrap: break-word;">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">';
-                    if(sources[source]['sourceType'] == "url"){
+                    if(sources[source]['sourceType'] != "custom"){
                         html = html +'<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['name']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
                     }
                     html = html + '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';

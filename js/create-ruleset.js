@@ -134,15 +134,7 @@ function CheckAll(ele){
         $('input:checkbox:not(checked)').each(function() {
             var value = $(this).prop("value");
             var id = $(this).prop("id");
-            // var styleValue = document.getElementById("row-"+id).style.display;
             if (value == "table-elements" && document.getElementById("row-"+id).style.display != 'none'){                
-                // $('#create-ruleset-table').find('tr').each(function(i, el) {
-                //     var str = el.id;
-                //     var res = str.split("--");
-                //     if ($(el).css('display') == 'none'){
-                //         console.log(res[1]);
-                //     }
-                // });
                 $(this).prop("checked", true);
             }
         });
@@ -150,15 +142,7 @@ function CheckAll(ele){
         $('input:checkbox:checked').each(function() {
             var value = $(this).prop("value");
             var id = $(this).prop("id");
-            // var styleValue = document.getElementById("row-"+id).style.display;
             if (value == "table-elements" && document.getElementById("row-"+id).style.display != 'none'){
-                // $('#create-ruleset-table').find('tr').each(function(i, el) {
-                //     var str = el.id;
-                //     var res = str.split("--");
-                //     if ($(el).css('display') == 'none'){
-                //         console.log(res[1]);
-                //     }
-                // });
                 $(this).prop("checked", false);
             }
         });
@@ -206,6 +190,11 @@ function searchRuleset(){
 }
 
 function modalAddNewRuleset(){    
+
+    //show progress-bar
+    document.getElementById('progressBar-create-ruleset-div').style.display="block";
+    document.getElementById('progressBar-create-ruleset').style.display="block";
+
     var newRuleset = new Map();
     $('input:checkbox:checked').each(function() {
         var uuid = $(this).prop("id");
@@ -231,6 +220,9 @@ function modalAddNewRuleset(){
     }
 
     if(document.getElementById('new-ruleset-name-input').value == "" || document.getElementById('new-ruleset-description-input').value == "") {
+        document.getElementById('progressBar-create-ruleset-div').style.display="none";
+        document.getElementById('progressBar-create-ruleset').style.display="none";
+
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Name or description fields are null.'+
@@ -238,7 +230,10 @@ function modalAddNewRuleset(){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-    }else if (isDuplicated){        
+    }else if (isDuplicated){      
+        document.getElementById('progressBar-create-ruleset-div').style.display="none";
+        document.getElementById('progressBar-create-ruleset').style.display="none";
+        
         document.getElementById('modal-window').innerHTML = 
         '<div class="modal-dialog">'+
             '<div class="modal-content">'+
@@ -274,8 +269,12 @@ function modalAddNewRuleset(){
         })
         .then(function (response) {
             if (response.data.ack == "true"){
+                document.getElementById('progressBar-create-ruleset-div').style.display="none";
+                document.getElementById('progressBar-create-ruleset').style.display="none";
                 document.location.href = 'https://' + ipmaster + '/rulesets.html';
             }else if (response.data.ack == "false"){
+                document.getElementById('progressBar-create-ruleset-div').style.display="none";
+                document.getElementById('progressBar-create-ruleset').style.display="none";
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+
@@ -284,6 +283,9 @@ function modalAddNewRuleset(){
                     '</button>'+
                 '</div>';
             }else{
+                document.getElementById('progressBar-create-ruleset-div').style.display="none";
+                document.getElementById('progressBar-create-ruleset').style.display="none";
+
                 lines = JSON.parse(response.data)
                 var html =
                 '<div class="modal-dialog modal-lg">'+

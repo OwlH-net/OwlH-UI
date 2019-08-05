@@ -193,7 +193,8 @@ function modalAddNewRuleset(){
 
     //show progress-bar
     document.getElementById('progressBar-create-ruleset-div').style.display="block";
-    document.getElementById('progressBar-create-ruleset').style.display="block";
+    console.log(document.getElementById('progressBar-create-ruleset-div'));
+    // document.getElementById('progressBar-create-ruleset').style.display="block";
 
     var newRuleset = new Map();
     $('input:checkbox:checked').each(function() {
@@ -221,7 +222,7 @@ function modalAddNewRuleset(){
 
     if(document.getElementById('new-ruleset-name-input').value == "" || document.getElementById('new-ruleset-description-input').value == "") {
         document.getElementById('progressBar-create-ruleset-div').style.display="none";
-        document.getElementById('progressBar-create-ruleset').style.display="none";
+        // document.getElementById('progressBar-create-ruleset').style.display="none";
 
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -232,7 +233,7 @@ function modalAddNewRuleset(){
             '</div>';
     }else if (isDuplicated){      
         document.getElementById('progressBar-create-ruleset-div').style.display="none";
-        document.getElementById('progressBar-create-ruleset').style.display="none";
+        // document.getElementById('progressBar-create-ruleset').style.display="none";
         
         document.getElementById('modal-window').innerHTML = 
         '<div class="modal-dialog">'+
@@ -270,11 +271,11 @@ function modalAddNewRuleset(){
         .then(function (response) {
             if (response.data.ack == "true"){
                 document.getElementById('progressBar-create-ruleset-div').style.display="none";
-                document.getElementById('progressBar-create-ruleset').style.display="none";
+                // document.getElementById('progressBar-create-ruleset').style.display="none";
                 document.location.href = 'https://' + ipmaster + '/rulesets.html';
             }else if (response.data.ack == "false"){
                 document.getElementById('progressBar-create-ruleset-div').style.display="none";
-                document.getElementById('progressBar-create-ruleset').style.display="none";
+                // document.getElementById('progressBar-create-ruleset').style.display="none";
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+
@@ -284,7 +285,7 @@ function modalAddNewRuleset(){
                 '</div>';
             }else{
                 document.getElementById('progressBar-create-ruleset-div').style.display="none";
-                document.getElementById('progressBar-create-ruleset').style.display="none";
+                // document.getElementById('progressBar-create-ruleset').style.display="none";
 
                 lines = JSON.parse(response.data)
                 var html =

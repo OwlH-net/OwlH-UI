@@ -268,7 +268,7 @@ function generateAllNodesHTMLOutput(response) {
                         '</div>'+
                         '<div class="custom-control custom-radio">'+
                         '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-network\', \''+uuid+'\')" id="collect-socket-network" name="network" value="socket-network" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
+                            '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="socketToNetwork(\''+node+'\')" style="color:grey;" title="Socket to Network information"></i>'+
                         '</div>'+
                         '<div class="custom-control custom-radio">'+
                         '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'pcap-network\', \''+uuid+'\')" id="collect-pcap-network" name="network" value="pcap-network" class="custom-control-input">'+
@@ -385,18 +385,187 @@ function loadNetworkValues(uuid){
             '<div class="modal-footer" id="delete-node-footer-btn">'+
               '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
               if (response.data.ack != "false"){
-                  html = html + '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
+                  html = html + '<a class="btn btn-success" data-toggle="modal" data-target="#modal-window1" id="btn-new-local">New local</a>'+
+                  '<a class="btn btn-success" data-toggle="modal" data-target="#modal-window2" id="btn-new-vxlan">New VxLAN</a>'+
+                  '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
               }
             html = html + '</div>'+
     
           '</div>'+
+        '</div>'+
+
+        //Modal for new local
+        '<div class="modal fade" id="modal-window1">'+
+            '<div class="modal-dialog">'+
+                '<div class="modal-content">'+
+                
+                '<div class="modal-header">'+
+                    '<h4 class="modal-title" id="delete-node-header">New Local</h4>'+
+                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                '</div>'+
+            
+                '<div class="modal-body">'+ 
+                    '<form>'+
+                        '<div class="form-group row">'+
+                            '<label for="listenPortNewLocal" class="ml-4 col-form-label align-middle">Interface Name: </label>'+
+                            '<input type="text" class="ml-4 mr-4 form-control" id="listenPortNewLocal" value="owlh">'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-group row">'+
+                            '<label for="certificateNewLocal" class="ml-4 col-form-label">MTU: </label>'+
+                            '<input type="text" class="ml-4 mr-4 form-control" id="certificateNewLocal" value="65535">'+
+                        '</div>'+
+                    '</form>'+
+                '</div>'+
+            
+                '<div class="modal-footer" id="delete-node-footer-btn">'+
+                    '<button type="button" class="btn btn-secondary" id="btn-new-local-close" >Close</button>'+
+                    '<button type="submit" class="btn btn-primary" id="btn-new-local-ok" onclick="saveNewLocal(\''+uuid+'\')">Deploy</button>'+
+                '</div>'+
+            
+                '</div>'+
+            '</div>'+
+        '</div>'+
+
+        //Modal for new VxLAN
+        '<div class="modal fade" id="modal-window2">'+
+            '<div class="modal-dialog">'+
+                '<div class="modal-content">'+
+                
+                '<div class="modal-header">'+
+                    '<h4 class="modal-title" id="delete-node-header">New Local</h4>'+
+                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                '</div>'+
+            
+                '<div class="modal-body">'+ 
+                    '<form>'+
+                        '<div class="form-group row">'+
+                            '<label for="ifaceNameVxLAN" class="ml-4 col-form-label align-middle">Interface Name: </label>'+
+                            '<input type="text" class="ml-4 mr-4 form-control" id="ifaceNameVxLAN" value="owlh">'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-group row">'+
+                            '<label for="VxLANid" class="ml-4 col-form-label">VxLAN ID: </label>'+
+                            '<input type="text" class="ml-4 mr-4 form-control" id="VxLANid" value="vxlan0">'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-group row">'+
+                            '<label for="locaIPVxLAN" class="ml-4 col-form-label">Local IP: </label>'+
+                            '<input type="text" class="ml-4 mr-4 form-control" id="locaIPVxLAN" value="1.1.1.1">'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-group row">'+
+                            '<label for="portVxLAN" class="ml-4 col-form-label">Port: </label>'+
+                            '<input type="text" class="ml-4 mr-4 form-control" id="portVxLAN" value="4785">'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-group row">'+
+                            '<label for="baseInterfaceVxLAN" class="ml-4 col-form-label">Base Interface: </label>'+
+                            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                // '<thead>              ' +
+                                //     '<tr>                 ' +
+                                //         '<th>Network</th>        ' +
+                                //         '<th>Select</th>     ' +
+                                //     '</tr>                ' +
+                                // '</thead>             ' +
+                                '<tbody >             ' ;
+                                for (net in response.data){
+                                    html = html + 
+                                    '<tr>'+
+                                        '<td style="word-wrap: break-word;">' +
+                                            response.data[net]+
+                                        '</td><td style="word-wrap: break-word;">' +
+                                            '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                                        '</td>'+
+                                    '</tr>';
+                                }
+                                html = html + '</tbody>'+
+                            '</table>'+
+                        '</div>'+
+                    '</form>'+
+                '</div>'+
+            
+                '<div class="modal-footer" id="delete-node-footer-btn">'+
+                    '<button type="button" class="btn btn-secondary" id="btn-vxlan-close" >Close</button>'+
+                    '<button type="submit" class="btn btn-primary" id="btn-vxlan-ok" onclick="saveVxLAN(\''+uuid+'\')">Deploy</button>'+
+                '</div>'+
+            
+                '</div>'+
+            '</div>'+
         '</div>';
+
         document.getElementById('modal-window').innerHTML = html;
         LoadNetworkValuesSelected(uuid);
+        //load dataflow values for secondary modals
+        axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadDataflowValues/'+uuid)
+        .then(function (response) {
+            console.log(response.data);
+            document.getElementById('listenPortNewLocal').value = response.data["newlocal"]["name"];
+            document.getElementById('certificateNewLocal').value = response.data["newlocal"]["cert"];
+            document.getElementById('ifaceNameVxLAN').value = response.data["vxlan"]["name"];
+            document.getElementById('VxLANid').value = response.data["vxlan"]["vxlanID"];
+            document.getElementById('locaIPVxLAN').value = response.data["vxlan"]["localIp"];
+            document.getElementById('portVxLAN').value = response.data["vxlan"]["portIp"];
+            document.getElementById('baseInterfaceVxLAN').value = response.data["vxlan"]["baseIface"];
+        })
+
+        //jQuery for close secondary modal
+        $('#btn-new-local-close').click(function(){ $('#modal-window1').modal('toggle');  });
+        $('#btn-new-local-ok').click(function(){ $('#modal-window1').modal('toggle'); });
+        $('#btn-vxlan-close').click(function(){ $('#modal-window2').modal('toggle');  });
+        $('#btn-vxlan-ok').click(function(){ $('#modal-window2').modal('toggle');  });
     })
     .catch(function (error) {
     });
 }
+
+function saveNewLocal(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveNewLocal';
+
+    var jsonPorts = {}
+    jsonPorts["uuid"] = uuid;
+    jsonPorts["listenPortNewLocal"] = document.getElementById('listenPortNewLocal').value;
+    jsonPorts["certificate"] = document.getElementById('certificateNewLocal').value;
+    var dataJSON = JSON.stringify(jsonPorts);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+    })
+    .catch(function (error) {
+    });
+}
+
+function saveVxLAN(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveNewLocal';
+
+    var jsonPorts = {}
+    jsonPorts["uuid"] = uuid;
+    jsonPorts["interface"] = document.getElementById('ifaceNameVxLAN').value;
+    jsonPorts["lanIp"] = document.getElementById('VxLANid').value;
+    jsonPorts["localIp"] = document.getElementById('locaIPVxLAN').value;
+    jsonPorts["portIp"] = document.getElementById('portVxLAN').value;
+    jsonPorts["baseInterface"] = document.getElementById('baseInterfaceVxLAN').value;
+    var dataJSON = JSON.stringify(jsonPorts);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+    })
+    .catch(function (error) {
+    });
+}
+
 
 function LoadNetworkValuesSelected(uuid){
     var ipmaster = document.getElementById('ip-master').value;
@@ -409,7 +578,82 @@ function LoadNetworkValuesSelected(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        document.getElementById('net-value-'+response.data[uuid]["interface"]).checked = "true"
+        document.getElementById('net-value-'+response.data[uuid]["interface"]).checked = "true";
+    })
+    .catch(function (error) {
+    });
+}
+
+function socketToNetwork(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadDataflowValues/'+uuid;
+
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        var modalWindow = document.getElementById('modal-window');
+        modalWindow.innerHTML = 
+        '<div class="modal-dialog">'+
+            '<div class="modal-content">'+
+            
+                '<div class="modal-header">'+
+                '<h4 class="modal-title">Socket to Network</h4>'+
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                '</div>'+
+        
+                '<div class="modal-body">'+ 
+                    '<form>'+
+                        '<div class="form-group row">'+
+                            '<label for="listenPort" class="ml-4 col-form-label align-middle">Listen port: </label>'+
+                            '<input type="text" class="ml-4 mr-4 form-control" id="listenPort" value="'+response.data["sockettonetwork"]["port"]+'">'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-group row">'+
+                            '<label for="certificate" class="ml-4 col-form-label">Cert: </label>'+
+                            '<input type="text" class="ml-4 mr-4 form-control" id="certificate" value="'+response.data["sockettonetwork"]["cert"]+'">'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-group row">'+
+                            '<label for="interface" class="ml-4 col-form-label">Interface: </label>'+
+                            '<input type="text" class="ml-4 mr-4 form-control" id="interface" value="'+response.data["sockettonetwork"]["interface"]+'">'+
+                        '</div>'+
+                '</div>'+
+        
+                '<div class="modal-footer">'+
+                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                    '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="saveSocketToNetwork(\''+uuid+'\')">Save</button>'+
+                '</div>'+
+        
+            '</div>'+
+        '</div>';
+        return response.data;
+    })
+    .catch(function (error) {
+    });
+}
+
+function saveSocketToNetwork(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveSocketToNetwork';
+    
+    var jsonDeploy = {}
+    jsonDeploy["cert"] = document.getElementById('certificate').value;
+    jsonDeploy["interface"] = document.getElementById('interface').value;
+    jsonDeploy["port"] = document.getElementById('listenPort').value;
+    jsonDeploy["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonDeploy);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
     })
     .catch(function (error) {
     });

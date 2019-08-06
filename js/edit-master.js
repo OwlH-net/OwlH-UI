@@ -1,22 +1,15 @@
 function loadFileIntoTextarea(){
-    var uuidHidden = document.getElementById('uuid-hidden-text');
-    var fileHidden = document.getElementById('file-hidden-text');
-
     var urlData = new URL(window.location.href);
-    var uuid = urlData.searchParams.get("uuid");
     var file = urlData.searchParams.get("file");
-    var node = urlData.searchParams.get("node");
     
+    var fileHidden = document.getElementById('file-hidden-text');
     var txtArea = document.getElementById('inputTextToSave');
-    var title = document.getElementById('title-edit');
-    var subtitle = document.getElementById('subtitle-edit');
-
-    title.innerHTML = "File: "+file;
-    subtitle.innerHTML = "Node: "+node;
+    document.getElementById('title-edit').innerHTML = "dispatcher configuration";
+    document.getElementById('subtitle-edit').innerHTML = "Master file";
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadfile/'+uuid+'/'+file;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/editFile/'+file;
         
     axios({
         method: 'get',
@@ -28,7 +21,6 @@ function loadFileIntoTextarea(){
             return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
         }else{
             txtArea.innerHTML = response.data.fileContent;
-            uuidHidden.value = response.data.nodeUUID;
             fileHidden.value = response.data.fileName;
         }
         return true;
@@ -37,27 +29,25 @@ function loadFileIntoTextarea(){
         return false;
     });
 }
-loadFileIntoTextarea();
+// loadFileIntoTextarea();
 
 function saveFileChanged() {
-    var uuidHidden = document.getElementById('uuid-hidden-text');
     var fileHidden = document.getElementById('file-hidden-text');
     var fileContent = document.getElementById('inputTextToSave');
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/savefile';
+    var masterURL = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/savefile';
     
-    var nodejson = {}
-    nodejson["uuid"] = uuidHidden.value;
-    nodejson["file"] = fileHidden.value;
-    nodejson["content"] = fileContent.value;
-    var nodeJSON = JSON.stringify(nodejson);
+    var masterDataEdit = {}
+    masterDataEdit["file"] = fileHidden.value;
+    masterDataEdit["content"] = fileContent.value;
+    var masterJSON = JSON.stringify(masterDataEdit);
     axios({
         method: 'put',
-        url: nodeurl,
+        url: masterURL,
         timeout: 30000,
-        data: nodeJSON
+        data: masterJSON
     })
     .then(function (response) {
         window.history.back();

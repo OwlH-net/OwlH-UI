@@ -16,7 +16,6 @@
     <!-- fontawesome -->
     <link rel="stylesheet" href="css/fontawesome/css/all.css">
 
-
     <!-- Custom styles for this template -->
     <link href="css/offcanvas.css" rel="stylesheet">
   </head>
@@ -31,9 +30,10 @@
             <span class="navbar-toggler-icon"></span>
         </button>
     
+    
         <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="nodes.html">Nodes</a>
                 </li>
                 <li class="nav-item">
@@ -45,7 +45,7 @@
                 <!-- <li class="nav-item">
                     <a class="nav-link" href="kibana.html">Kibana</a>
                 </li> -->
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="master.html">Master</a>
                 </li>
                 <li class="nav-item">
@@ -57,22 +57,32 @@
 
 
     <main role="main" class="container">
+
+        <!--Alert-->
+        <div id="floating-alert" style="top: 5px;">
+        </div>
+
         <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
             <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
             <div class="lh-100">
-                <h3 class="mb-0 text-white lh-100" id="title-banner"></h3>
-                <small>Files</small>
+                <h3 class="mb-0 text-white lh-100">Master</h3>
+                <small>Master configuration panel</small>
             </div>
         </div>
-      
-        <!--Rule rows-->
-        <div class="container" id="files-table">
+
+        <!-- Modal -->
+        <div class="fade modal" id="modal-master">
         </div>
+
+        <!--Every rule row-->
+        <div class="container" id="master-table-plugins">
+        </div>
+        
         <!-- Load master ip/port -->
         <div id="load-json-data" style="display: none;">
-          <input id="ip-master" type="text" class="form-control">
-          <input id="port-master" type="text" class="form-control">
-        </div>        
+            <input id="ip-master" type="text" class="form-control">
+            <input id="port-master" type="text" class="form-control">
+        </div>
     </main>
 
 
@@ -83,7 +93,7 @@
     <script src="js/jquery-3.3.1.js"></script>
     <script src="css/dist/js/bootstrap.min.js"></script>
     <script src="js/offcanvas.js"></script>
-    <script src="js/files.js"></script>
+    <script src="js/master.js"></script>
     <script src="js/loadTitle.js"></script>
   </body>
 </html>

@@ -16,7 +16,6 @@
     <!-- fontawesome -->
     <link rel="stylesheet" href="css/fontawesome/css/all.css">
 
-
     <!-- Custom styles for this template -->
     <link href="css/offcanvas.css" rel="stylesheet">
   </head>
@@ -31,9 +30,10 @@
             <span class="navbar-toggler-icon"></span>
         </button>
     
+    
         <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="nodes.html">Nodes</a>
                 </li>
                 <li class="nav-item">
@@ -48,7 +48,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="master.html">Master</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="config.html">Config</a>
                 </li>
             </ul>
@@ -57,24 +57,56 @@
 
 
     <main role="main" class="container">
-        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
+        
+        <!--Alert-->
+        <div id="floating-alert" style="top: 5px;">
+        </div>
+
+        <div>
+            <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
             <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
             <div class="lh-100">
-                <h3 class="mb-0 text-white lh-100" id="title-banner"></h3>
-                <small>Files</small>
+                <h3 class="mb-0 text-white lh-100">Configuration</h3>
+                <small>Configuration panel</small>
             </div>
         </div>
-      
-        <!--Rule rows-->
-        <div class="container" id="files-table">
+
+        <table style="width: 100%;">
+            <tr><td height="20"></td></tr>
+            <tr>
+                <td class="text-right">
+                    <a id="check-status-config" href="" class="btn btn-success" target="_blank">Check Master API connection</a> 
+                    <!-- <button type="button" class="btn btn-success" onclick="checkStatus()">Check status</button> -->
+                    <button type="button" class="btn btn-primary" onclick="saveFileChanged()">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeFileChanged()">Close</button>
+                </td>
+            </tr>
+            <tr><td height="20"></td></tr>
+            <tr style="width: 100%; height: 500px">
+                <td>
+                    <textarea id="inputTextUI" class="form-control" style="width: 100%; height: 800px"></textarea>
+                </td>
+            </tr> 
+            
+            <tr><td height="20"></td></tr>
+            <tr>
+                <td class="text-right">
+                    <button type="button" class="btn btn-primary" onclick="saveFileChanged()">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeFileChanged()">Close</button>
+                    <input type="hidden" id="uuid-hidden-text">
+                    <input type="hidden" id="file-hidden-text">
+                </td>
+            </tr>
+            <tr><td height="20"></td></tr>
+        </table>
         </div>
+
         <!-- Load master ip/port -->
         <div id="load-json-data" style="display: none;">
-          <input id="ip-master" type="text" class="form-control">
-          <input id="port-master" type="text" class="form-control">
-        </div>        
+            <input id="ip-master" type="text" class="form-control">
+            <input id="port-master" type="text" class="form-control">
+        </div>
     </main>
-
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -83,7 +115,7 @@
     <script src="js/jquery-3.3.1.js"></script>
     <script src="css/dist/js/bootstrap.min.js"></script>
     <script src="js/offcanvas.js"></script>
-    <script src="js/files.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/loadTitle.js"></script>
   </body>
 </html>

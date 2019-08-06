@@ -17,7 +17,6 @@
 
         <!-- Custom styles for this template -->
         <link href="css/offcanvas.css" rel="stylesheet">
-        
     </head>
     <body class="bg-light">
         <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
@@ -35,7 +34,7 @@
                         <a class="nav-link" href="nodes.html">Nodes</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="rulesets.html">Open Rules</span></a>
+                        <a class="nav-link" href="rulesets.html">Open Rules</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="response.html">Adapt & Response</a>
@@ -54,41 +53,17 @@
         </nav>
 
         <main role="main" class="container">
-
-            <!--Alert-->
-            <div id="floating-alert" style="top: 5px;">
-            </div>
-
             <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
                 <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
                 <div class="lh-100">
-                    <h3 class="mb-0 text-white lh-100">Rulesets</h3>
-                    <small>Rules</small>
+                    <h3 class="mb-0 text-white lh-100" id="ruleset-compare-files-title"></h3>
+                    <small>File comparison</small>
                 </div>
             </div>
-
-            <div class="float-right" style="width:100%;">
-                <a class="text-white btn btn-danger float-right" style="margin: 10px;" data-toggle="modal" data-target="#modal-ruleset" onclick="modalSynchronizeAllRulesets()">Synchronize all</a>
-                <a class="text-white btn btn-primary float-right" style="margin: 10px;" href="ruleset-source.html">Edit ruleset source</a>
-                <a class="text-white btn btn-success float-right" style="margin: 10px;" href="create-ruleset.html" >Create new ruleset</a>
-            </div>
-            <br><br><br><br>
                 
-            <!-- Modal -->
-            <div class="modal fade" id="modal-ruleset">
+            <!--Every line row-->
+            <div class="container" id="compare-lines-table">
             </div>
-
-            <!--Every rule row-->
-            <div class="container" id="rulesets-table">
-            </div>
-
-            <br><br>
-            <div class="float-right" style="width:100%;">
-                <a class="text-white btn btn-danger float-right" style="margin: 10px;" data-toggle="modal" data-target="#modal-ruleset" onclick="modalSynchronizeAllRulesets()">Synchronize all</a>
-                <a class="text-white btn btn-primary float-right" style="margin: 10px;" href="ruleset-source.html">Edit ruleset source</a>
-                <a class="text-white btn btn-success float-right" style="margin: 10px;" href="create-ruleset.html" >Create new ruleset</a>
-            </div>
-            <br><br>
 
             <!-- Load master ip/port -->
             <div id="load-json-data" style="display: none;">
@@ -101,10 +76,9 @@
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="js/axios/dist/axios.js"></script>
         <script src="js/jquery-3.3.1.js"></script>
-        <script src="css/popper/popper.min.js"></script>
         <script src="css/dist/js/bootstrap.min.js"></script>
         <script src="js/offcanvas.js"></script>
-        <script src="js/rulesets.js"></script>
+        <script src="js/compare-files.js"></script>
         <script src="js/loadTitle.js"></script>
     </body>
 </html>

@@ -24,8 +24,6 @@
         <img class="mr-3" src="../img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
                 href="../nodes.html"><small>Master </small><i class="text-warning" id="menu-title"
                 ></i> | </a>    
-        <!-- <img class="mr-3" src="../img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
-                href="home.html"><small>Master </small><i class="text-warning">OwlHMDemo01</i> | </a> -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
                 aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -34,30 +32,26 @@
         
             <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item ">
-                        <!-- <a class="nav-link" href="../home.html">Dashboard <span class="sr-only">(current)</a>
-                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="../nodes.html">Nodes</a>
                     </li>
                     <li class="nav-item active">
                         <a class="nav-link" href="../rulesets.html">Open Rules</span></a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="../pci.html">Enrichment</a>
-                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="../response.html">Adapt & Response</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="../kibana.html">Kibana</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="../config.html">Config</a>
                     </li>
                 </ul>
             </div>
         </nav>
 
         <main role="main" class="container">
-
             <div>
                 <?php
                     //call API with sid
@@ -65,7 +59,7 @@
                     //take a raw rule from API
                     //put raw inside $line
                     $sid = htmlspecialchars($_GET['sid']);
-                    $uuid = htmlspecialchars($_GET['uuid']);
+                    $uuid = htmlspecialchars($_GET['fileuuid']);
                     $ipmaster = htmlspecialchars($_GET['ipmaster']);
                     $portmaster = htmlspecialchars($_GET['portmaster']);
                     $url = 'https://'.$ipmaster.':'.$portmaster.'/v1/ruleset/rule/'.$sid.'/'.$uuid;

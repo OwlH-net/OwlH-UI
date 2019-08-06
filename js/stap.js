@@ -68,6 +68,9 @@ function GetAllServers() {
 }
 
 function generateAllServerHTMLOutput(response) {
+    if (response.data.ack == "false") {
+        return '<div style="text-align:center"><h3 style="color:red;">Error retrieving data for STAP</h3></div>';
+    }  
     var isEmptyStaps = true;
     var servers = response.data;
     var html =  
@@ -90,11 +93,11 @@ function generateAllServerHTMLOutput(response) {
                     html = html + 
                     '<tr>                                                                     '+
                         '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
-                        '<td class="align-middle">' + servers[server]['ip'] +'</td>'+
-                        '<td class="align-middle">' + servers[server]['name'] + '</td>';
+                        '<td style="word-wrap: break-word;" class="align-middle">' + servers[server]['ip'] +'</td>'+
+                        '<td style="word-wrap: break-word;" class="align-middle">' + servers[server]['name'] + '</td>';
                     if (servers[server]['status'] == "true"){
-                            html = html + '<td class="align-middle"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span>              '+
-                            '<td class="align-middle">                                                                                                             ' +
+                            html = html + '<td style="word-wrap: break-word;" class="align-middle"> <span class="badge badge-pill bg-success align-text-bottom text-white">ON</span>              '+
+                            '<td style="word-wrap: break-word;" class="align-middle">                                                                                                             ' +
                             '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
                             '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
                             '       <i class="fas fa-stop-circle low-blue" title="Stop server" id="'+server+'-server-icon-stap" onclick="StopStapServer(\''+server+'\')"></i>  ' +
@@ -102,8 +105,8 @@ function generateAllServerHTMLOutput(response) {
                             '  </span>                                                                                                                             ' +
                             '</td>' ;
                         } else if (servers[server]['status'] == "false"){
-                            html = html + '<td class="align-middle"> <span class="badge badge-pill bg-danger align-text-bottom text-white">OFF</span>              ' +
-                            '<td class="align-middle">                                                                                                             ' +
+                            html = html + '<td style="word-wrap: break-word;" class="align-middle"> <span class="badge badge-pill bg-danger align-text-bottom text-white">OFF</span>              ' +
+                            '<td style="word-wrap: break-word;" class="align-middle">                                                                                                             ' +
                             '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                 ' +
                             '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                           ' +
                             '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>         ' +
@@ -112,9 +115,9 @@ function generateAllServerHTMLOutput(response) {
                             '</td>' ;
                         }else if(servers[server]['status'] == "error"){
                             html = html + 
-                            '<td class="align-middle"> '+
+                            '<td style="word-wrap: break-word;" class="align-middle"> '+
                             '<span class="badge badge-pill bg-warning align-text-bottom text-white">ERROR</span>                                                         ' +
-                            '<td class="align-middle">                                                                                                              ' +
+                            '<td style="word-wrap: break-word;" class="align-middle">                                                                                                              ' +
                             '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
                             '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
                             '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>          ' +
@@ -123,9 +126,9 @@ function generateAllServerHTMLOutput(response) {
                             '</td>' ;
                         } else {
                             html = html + 
-                            '<td class="align-middle"> '+
+                            '<td style="word-wrap: break-word;" class="align-middle"> '+
                             '<span class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span>                                                         ' +
-                            '<td class="align-middle">                                                                                                              ' +
+                            '<td style="word-wrap: break-word;" class="align-middle">                                                                                                              ' +
                             '  <span style="font-size: 20px; color: Dodgerblue;" >                                                                                  ' +
                             '       <i class="fas fa-eye low-blue" title="Show details" onclick="loadServerDetails(\''+server+'\')"></i>                            ' +
                             '       <i class="fas fa-play-circle low-blue" id="'+server+'-server-icon-stap" title="Run server" onclick="RunStapServer(\''+server+'\')"></i>      ' +
@@ -183,13 +186,13 @@ function generateAllServerHTMLOutput(response) {
                 for (nameDetail in response.data[server]){                                                                        
                     htmDetails = htmDetails +
                     '<tr>                                                                                                   ' +
-                        '<td id class="align-middle">'+nameDetail+'</td>                                                    ' +
-                        '<td id class="align-middle" >'+response.data[server][nameDetail]+'</td>                            ' +
-                        '<td><i class="fas fa-sticky-note low-blue" title="Edit" data-toggle="modal" data-target="#modal-edit-stap-server" onclick="ModalEditStapServer(\''+server+'\',\''+nameDetail+'\',\''+response.data[server][nameDetail]+'\',\''+response.data[server]['name']+'\')"></i></td>                                  ' +
+                        '<td style="word-wrap: break-word;" id class="align-middle">'+nameDetail+'</td>                                                    ' +
+                        '<td style="word-wrap: break-word;" id class="align-middle" >'+response.data[server][nameDetail]+'</td>                            ' +
+                        '<td style="word-wrap: break-word;"><i class="fas fa-sticky-note low-blue" title="Edit" data-toggle="modal" data-target="#modal-edit-stap-server" onclick="ModalEditStapServer(\''+server+'\',\''+nameDetail+'\',\''+response.data[server][nameDetail]+'\',\''+response.data[server]['name']+'\')"></i></td>                                  ' +
                     '</tr>                                                                                                  ' ;
                 }
             htmDetails = htmDetails +
-            '<tr><td></td><td></td><td></td></tr>'+
+            '<tr><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td></tr>'+
             '</tbody>                                                                                                   ' +
         '</table>                                                                                                       ' +
         '<div>                                                                                                          '+

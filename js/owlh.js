@@ -268,7 +268,7 @@ function generateAllNodesHTMLOutput(response) {
                         '</div>'+
                         '<div class="custom-control custom-radio">'+
                         '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-network\', \''+uuid+'\')" id="collect-socket-network" name="network" value="socket-network" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="socketToNetworkList(\''+node+'\')" style="color:grey;" title="Socket to Network information"></i>'+
+                            '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="SocketToNetworkList(\''+node+'\')" style="color:grey;" title="Socket to Network information"></i>'+
                         '</div>'+
                         '<div class="custom-control custom-radio">'+
                         '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'pcap-network\', \''+uuid+'\')" id="collect-pcap-network" name="network" value="pcap-network" class="custom-control-input">'+
@@ -334,54 +334,6 @@ function generateAllNodesHTMLOutput(response) {
         return  html;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function PingDataflow(uuid){
     var ipmaster = document.getElementById('ip-master').value;

@@ -12,14 +12,14 @@ function loadNetworkValues(uuid){
     .then(function (response) {
         var html = '<div class="modal-dialog" id="network-modal-window">'+
           '<div class="modal-content">'+
-        
+
             '<div class="modal-header">'+
               '<h4 class="modal-title" id="delete-node-header">Network</h4>'+
               '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
-    
+
             '<div class="modal-body" id="delete-node-footer-table">';
-            
+
                 if (response.data.ack == "false"){
                     html = html + '<span><h6>Error loading interfaces</h6></span>';
                 } else {
@@ -32,7 +32,7 @@ function loadNetworkValues(uuid){
                     '</thead>             ' +
                     '<tbody >             ' ;
                     for (net in response.data){
-                        html = html + 
+                        html = html +
                         '<tr>'+
                             '<td style="word-wrap: break-word;">' +
                                 response.data[net]+
@@ -45,17 +45,17 @@ function loadNetworkValues(uuid){
                     '</table>';
                 }
             html = html + '</div>'+
-    
+
             '<div class="modal-footer" id="delete-node-footer-btn">'+
               '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
               if (response.data.ack != "false"){
-                  html = html + 
+                  html = html +
                     '<button class="btn btn-success text-white" id="btn-load-all-new-local">New local</button>'+
                     '<button class="btn btn-success text-white" id="btn-load-all-vxlan">New VxLAN</button>'+
                     '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
               }
             html = html + '</div>'+
-    
+
           '</div>'+
         '</div>';
 
@@ -69,27 +69,27 @@ function loadNetworkValues(uuid){
     });
 }
 
-function LoadAllVxLAN(uuid){   
+function LoadAllVxLAN(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadDataflowValues/'+uuid;
-    
+
     axios({
         method: 'get',
         url: nodeurl,
         timeout: 30000
     })
-    .then(function (response) { 
+    .then(function (response) {
         var areElements = false;
-        for (type in response.data){                 
+        for (type in response.data){
             if (response.data[type]["type"] == "networkvxlan"){
                 areElements = true;
                 break;
             }
-        }           
-        var html = '<div class="modal-dialog modal-lg" id="load-all-vxlan-modal">'+
+        }
+        var html = '<div class="modal-dialog modal-lg" id="load-all-vxlan-modal" style="width:1000px;">'+
                 '<div class="modal-content">'+
-                
+
                     '<div class="modal-header">'+
                         '<h4 class="modal-title">Network VxLANs</h4>'+
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
@@ -109,7 +109,7 @@ function LoadAllVxLAN(uuid){
                             '</tr>                ' +
                             '</thead>             ' +
                             '<tbody >             ' ;
-                            for (type in response.data){  
+                            for (type in response.data){
                                 if (response.data[type]["type"] == "networkvxlan"){
                                     html = html + '<tr>'+
                                         '<td style="word-wrap: break-word;">' +
@@ -126,11 +126,12 @@ function LoadAllVxLAN(uuid){
                                             '<div>'+
                                                 // '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="">Start</a> &nbsp'+
                                                 '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
+                                                // '<button type="submit" class="btn btn-danger" id="btn-delete-vxlan" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
                                                 '<button type="submit" class="btn btn-danger" id="btn-delete-vxlan" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
                                             '</div>'+
                                         '</td>'+
                                     '</tr>';
-                                }                      
+                                }
                             }
                             html = html + '</tbody>'+
                             '</table>';
@@ -147,7 +148,7 @@ function LoadAllVxLAN(uuid){
 
                 '</div>'+
             '</div>';
-        
+
         document.getElementById('modal-window').innerHTML = html;
         // $('#load-all-vxlan-modal').modal("show");
         // $('#btn-create-new-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove(); CreateNewVxLAN(uuid); });
@@ -159,16 +160,16 @@ function LoadAllVxLAN(uuid){
     });
 }
 
-function CreateNewVxLAN(uuid){       
+function CreateNewVxLAN(uuid){
     var html = '<div class="modal-dialog" id="create-new-vxlan">'+
             '<div class="modal-content">'+
-            
+
             '<div class="modal-header">'+
                 '<h4 class="modal-title" id="delete-node-header">New Local</h4>'+
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
-        
-            '<div class="modal-body">'+ 
+
+            '<div class="modal-body">'+
                 '<form>'+
                     '<div class="form-group row">'+
                         '<label for="ifaceNameVxLAN" class="ml-4 col-form-label align-middle">Interface Name: </label>'+
@@ -199,12 +200,12 @@ function CreateNewVxLAN(uuid){
                     '</div>'+
                 '</form>'+
             '</div>'+
-        
+
             '<div class="modal-footer" id="delete-node-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" id="btn-vxlan-close" >Close</button>'+
                 '<button type="button" class="btn btn-primary" id="btn-vxlan-ok">Save</button>'+
             '</div>'+
-        
+
             '</div>'+
         '</div>'+
     '</div>';
@@ -216,7 +217,7 @@ function CreateNewVxLAN(uuid){
     .then(function (response) {
         var inner = "";
         for (net in response.data){
-            inner = inner + 
+            inner = inner +
             '<tr>'+
                 '<td style="word-wrap: break-word;">' +
                     '<p class="ml-4">'+response.data[net]+'</p>'+
@@ -268,27 +269,27 @@ function SaveVxLAN(uuid){
     });
 }
 
-function LoadAllNewLocal(uuid){   
+function LoadAllNewLocal(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadDataflowValues/'+uuid;
-    
+
     axios({
         method: 'get',
         url: nodeurl,
         timeout: 30000
     })
-    .then(function (response) { 
+    .then(function (response) {
         var areElements = false;
-        for (type in response.data){                 
+        for (type in response.data){
             if (response.data[type]["type"] == "networknewlocal"){
                 areElements = true;
                 break;
             }
-        }           
+        }
         var html = '<div class="modal-dialog modal-lg" id="load-all-new-local-modal">'+
                 '<div class="modal-content">'+
-                
+
                     '<div class="modal-header">'+
                         '<h4 class="modal-title">Network new locals</h4>'+
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
@@ -305,7 +306,7 @@ function LoadAllNewLocal(uuid){
                             '</tr>                ' +
                             '</thead>             ' +
                             '<tbody >             ' ;
-                            for (type in response.data){  
+                            for (type in response.data){
                                 if (response.data[type]["type"] == "networknewlocal"){
                                     html = html + '<tr>'+
                                         '<td style="word-wrap: break-word;">' +
@@ -315,11 +316,12 @@ function LoadAllNewLocal(uuid){
                                         '</td><td style="word-wrap: break-word;">' +
                                             '<div>'+
                                                 '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
+                                                // '<button class="btn btn-danger" id="btn-del-new-local" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
                                                 '<button class="btn btn-danger" id="btn-del-new-local" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
                                             '</div>'+
                                         '</td>'+
                                     '</tr>';
-                                }                      
+                                }
                             }
                             html = html + '</tbody>'+
                             '</table>';
@@ -336,7 +338,7 @@ function LoadAllNewLocal(uuid){
 
                 '</div>'+
             '</div>';
-        
+
         document.getElementById('modal-window').innerHTML = html;
         $('#btn-create-new-local').click(function(){ $('#load-all-new-local-modal').modal("hide"); CreateNewLocal(uuid); });
     })
@@ -347,13 +349,13 @@ function LoadAllNewLocal(uuid){
 function CreateNewLocal(uuid){
     var html = '<div class="modal-dialog modal-sm" id="create-new-local-modal">'+
             '<div class="modal-content">'+
-            
+
             '<div class="modal-header">'+
                 '<h4 class="modal-title" id="delete-node-header">New Local</h4>'+
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
-        
-            '<div class="modal-body">'+ 
+
+            '<div class="modal-body">'+
                 '<form>'+
                     '<div class="form-group row">'+
                         '<label for="InterfaceNameNewLocal" class="ml-4 col-form-label align-middle">Interface Name: </label>'+
@@ -366,12 +368,12 @@ function CreateNewLocal(uuid){
                     '</div>'+
                 '</form>'+
             '</div>'+
-        
+
                 '<div class="modal-footer" id="delete-node-footer-btn">'+
                     '<button type="button" class="btn btn-secondary" id="btn-new-local-close">Close</button>'+
                     '<button type="button" class="btn btn-primary" id="btn-save-new-local">Save</button>'+
                 '</div>'+
-            
+
             '</div>'+
         '</div>';
     document.getElementById('modal-window').innerHTML = html;
@@ -483,7 +485,7 @@ function updateNetworkInterface(uuid){
 //-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-function socketToNetworkList(uuid){
+function SocketToNetworkList(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadDataflowValues/'+uuid;
@@ -493,29 +495,29 @@ function socketToNetworkList(uuid){
         url: nodeurl,
         timeout: 30000
     })
-    .then(function (response) { 
-        var html = "";       
+    .then(function (response) {
+        var html = "";
         var areElements = false;
-        for (type in response.data){                 
+        for (type in response.data){
             if (response.data[type]["type"] == "sockettonetwork"){
                 areElements = true;
                 break;
             }
-        }              
+        }
         html = html + '<div class="modal-dialog modal-lg" id="socket-to-network-list">'+
             '<div class="modal-content">'+
-            
+
                 '<div class="modal-header">'+
                     '<h4 class="modal-title">Socket -> Network</h4>'+
                     '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
                 '</div>'+
-        
-                '<div class="modal-body">'; 
+
+                '<div class="modal-body">';
                 if (areElements){
                     html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
                     '<thead>              ' +
                     '<tr>                 ' +
-                    '<th>File</th>        ' +
+                    '<th>File name</th>        ' +
                     '<th>Interface</th>        ' +
                     '<th>Port</th>        ' +
                     '<th>Cert</th>        ' +
@@ -523,7 +525,7 @@ function socketToNetworkList(uuid){
                     '</tr>                ' +
                     '</thead>             ' +
                     '<tbody >             ' ;
-                    for (type in response.data){  
+                    for (type in response.data){
                         if (response.data[type]["type"] == "sockettonetwork"){
                             html = html + '<tr>'+
                                 '<td style="word-wrap: break-word;">' +
@@ -537,11 +539,12 @@ function socketToNetworkList(uuid){
                                 '</td><td style="word-wrap: break-word;">' +
                                     '<div>'+
                                         '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
-                                        '<a class="btn btn-danger text-white" data-dismiss="modal" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\', \''+response.data[type]["type"]+'\')">Delete</a>'+
+                                        '<button class="btn btn-danger" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\', \''+response.data[type]["type"]+'\')">Delete</button>'+
+                                        // '<button class="btn btn-danger" id="btn-load-delete-modal-'+type+'" data-toggle="modal" data-target="#socket-to-network-delete-modal">Delete</button>'+
                                     '</div>'+
                                 '</td>'+
                             '</tr>';
-                        }                      
+                        }
                     }
                     html = html + '</tbody>'+
                     '</table>';
@@ -549,15 +552,64 @@ function socketToNetworkList(uuid){
                     html = html + '<p>There are not Socket to Network entries.</p>';
                 }
                 html = html + '</div>'+
-        
+
                 '<div class="modal-footer">'+
                     '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
                     '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="createSocketToNetwork(\''+uuid+'\')">Create</button>'+
                 '</div>'+
-        
+
             '</div>'+
         '</div>';
+
+        // for (type in response.data){
+        // //delete modal
+        //     html = html +'<div class="modal hide fade" id="socket-to-network-delete-modal" aria-hidden="true" role="dialog">'+
+        //         '<div class="modal-dialog">'+
+        //             '<div class="modal-content">'+
+
+        //                 '<div class="modal-header">'+
+        //                 '<h4 class="modal-title">Delete Socket -> Network element</h4>'+
+        //                 '<button type="button" class="close" id="cross-close-delete-modal">&times;</button>'+
+        //                 '</div>'+
+
+        //                 '<div class="modal-body" id="body-secondary-modal-'+type+'">'+
+        //                 '</div>'+
+
+        //                 '<div class="modal-footer">'+
+        //                     '<button type="button" class="btn btn-secondary" id="btn-remove-dataflow-element-close">Close</button>'+
+        //                     '<button type="button" class="btn btn-danger" id="btn-remove-dataflow-element-'+type+'">Delete</button>'+
+        //                 '</div>'+
+
+        //             '</div>'+
+        //         '</div>'+
+        //     '</div>';
+        // }
+
+
         document.getElementById('modal-window').innerHTML = html;
+        // $('#socket-to-network-delete-modal').modal({backdrop: 'static', keyboard: false})
+
+        // for (type in response.data){
+        //     $('#socket-to-network-delete-modal').modal("hide")
+
+        //     $('#btn-load-delete-modal-'+type).click(function(){
+        //         console.log(type);
+        //         $('#socket-to-network-list').fadeTo( "fast" , 0.4, function() {});
+        //         document.getElementById('body-secondary-modal-'+type).innerHTML = '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> Socket -> Network element? </p>';
+        //     });
+        //     $('#btn-remove-dataflow-element-close').click(function(){
+        //         $('#socket-to-network-delete-modal').modal("hide");
+        //         $('#socket-to-network-list').fadeTo( "fast" , 1, function(){});
+        //     });
+        //     $('#cross-close-delete-modal').click(function(){
+        //         $('#socket-to-network-delete-modal').modal("hide");
+        //         $('#socket-to-network-list').fadeTo( "fast" , 1, function(){});
+        //     });
+        //     $('#btn-remove-dataflow-element-'+type).click(function(){
+        //         $('#socket-to-network-delete-modal').modal("hide");
+        //         DeleteDataFlowValueSelected(uuid, type, response.data[type]["type"]);
+        //     });
+        // }
 
     })
     .catch(function (error) {
@@ -569,16 +621,16 @@ function createSocketToNetwork(uuid){
     var portmaster = document.getElementById('port-master').value;
 
     var modalWindow = document.getElementById('modal-window');
-    modalWindow.innerHTML = 
+    modalWindow.innerHTML =
     '<div class="modal-dialog" id="create-socket-to-network-modal">'+
         '<div class="modal-content">'+
-        
+
             '<div class="modal-header">'+
             '<h4 class="modal-title">Socket to Network</h4>'+
             '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
-    
-            '<div class="modal-body">'+ 
+
+            '<div class="modal-body">'+
                 '<form>'+
                     '<div class="form-group row">'+
                         '<label for="socketName" class="ml-4 col-form-label align-middle"><b>Socket to Network name: </b></label>'+
@@ -598,17 +650,17 @@ function createSocketToNetwork(uuid){
                     '<div class="form-group row">'+
                         '<label for="interface" class="ml-4 col-form-label"><b>Interface: </b></label>'+
                         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                                '<tbody id="body-create-socket-network">' +                                                                    
+                                '<tbody id="body-create-socket-network">' +
                                 '</tbody>'+
                             '</table>'+
                     '</div>'+
             '</div>'+
-    
+
             '<div class="modal-footer">'+
-                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-create-socket-network" onclick="saveSocketToNetwork(\''+uuid+'\')">Save</button>'+
+                '<button type="button" class="btn btn-secondary" id="btn-create-socket-network-close">Close</button>'+
+                '<button type="button" class="btn btn-primary" id="btn-create-socket-network">Save</button>'+
             '</div>'+
-    
+
         '</div>'+
     '</div>';
 
@@ -616,7 +668,7 @@ function createSocketToNetwork(uuid){
     .then(function (response) {
         var inner = ""
         for (net in response.data){
-            inner = inner + 
+            inner = inner +
             '<tr>'+
                 '<td style="word-wrap: break-word;">' +
                     '<p class="ml-4">'+response.data[net]+'</p>'+
@@ -629,14 +681,15 @@ function createSocketToNetwork(uuid){
         document.getElementById('create-socket-network-'+net).checked = "true";
     });
 
-    $('#btn-create-socket-network').click(function(){ $('#create-socket-to-network-modal').modal("hide"); socketToNetworkList(uuid);});
+    $('#btn-create-socket-network').click(function(){       $('#create-socket-to-network-modal').modal("hide"); saveSocketToNetwork(uuid);});
+    $('#btn-create-socket-network-close').click(function(){ $('#create-socket-to-network-modal').modal("hide"); SocketToNetworkList(uuid);});
 }
 
 function saveSocketToNetwork(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveSocketToNetwork';
-    
+
     var valueSelected = "";
     $('input:radio:checked').each(function() {
         valueSelected = $(this).prop("value");
@@ -656,7 +709,7 @@ function saveSocketToNetwork(uuid){
         data: dataJSON
     })
     .then(function (response) {
-        socketToNetworkList(uuid);
+        SocketToNetworkList(uuid);
     })
     .catch(function (error) {
     });
@@ -684,6 +737,7 @@ function saveSocketToNetworkSelected(uuid, nodeUUID){
 }
 
 function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
+    console.log(uuid+"  --  "+nodeUUID+"  --  "+type);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/deleteDataFlowValueSelected';
@@ -700,9 +754,9 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
     })
     .then(function (response) {
         if (type == "sockettonetwork"){
-            socketToNetworkList(uuid);
+            SocketToNetworkList(uuid);
         }else if(type == "networknewlocal"){
-            LoadAllNewLocal(uuid);        
+            LoadAllNewLocal(uuid);
         }else if(type == "networkvxlan"){
             LoadAllVxLAN(uuid);
         }

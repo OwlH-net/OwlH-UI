@@ -62,7 +62,7 @@ function loadNetworkValues(uuid){
         document.getElementById('modal-window').innerHTML = html;
         LoadNetworkValuesSelected(uuid);
 
-        $('#btn-load-all-vxlan').click(function(){ $('#network-modal-window').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove(); LoadAllVxLAN(uuid); });
+        $('#btn-load-all-vxlan').click(function(){ $('#network-modal-window').modal("hide"); LoadAllVxLAN(uuid); });
         $('#btn-load-all-new-local').click(function(){ $('#network-modal-window').modal("hide"); LoadAllNewLocal(uuid); });
     })
     .catch(function (error) {
@@ -142,25 +142,25 @@ function LoadAllVxLAN(uuid){
 
                     '<div class="modal-footer">'+
                         '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                        '<button class="btn btn-success" id="btn-create-new-vxlan">New local</button>'+
+                        '<button class="btn btn-success" id="btn-create-new-vxlan">New VxLAN</button>'+
                     '</div>'+
 
                 '</div>'+
             '</div>';
         
         document.getElementById('modal-window').innerHTML = html;
-        $('#load-all-vxlan-modal').modal("show");
-        $('#btn-create-new-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove(); CreateNewVxLAN(uuid); });
-        $('#btn-delete-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove(); });
-        // $('#btn-del-new-local').click(function(){  $('#load-all-vxlan-modal').modal("hide");});
+        // $('#load-all-vxlan-modal').modal("show");
+        // $('#btn-create-new-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove(); CreateNewVxLAN(uuid); });
+        // $('#btn-delete-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove(); });
+        $('#btn-create-new-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); CreateNewVxLAN(uuid); });
+        // $('#btn-delete-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); });
     })
     .catch(function (error) {
     });
 }
 
 function CreateNewVxLAN(uuid){       
-    var html = '<div class="modal" id="create-new-vxlan-modal">'+
-        '<div class="modal-dialog">'+
+    var html = '<div class="modal-dialog" id="create-new-vxlan">'+
             '<div class="modal-content">'+
             
             '<div class="modal-header">'+
@@ -202,7 +202,7 @@ function CreateNewVxLAN(uuid){
         
             '<div class="modal-footer" id="delete-node-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" id="btn-vxlan-close" >Close</button>'+
-                '<button type="submit" class="btn btn-primary" id="btn-vxlan-ok">Save</button>'+
+                '<button type="button" class="btn btn-primary" id="btn-vxlan-ok">Save</button>'+
             '</div>'+
         
             '</div>'+
@@ -229,9 +229,43 @@ function CreateNewVxLAN(uuid){
         document.getElementById('create-network-vxlan-'+net).checked = "true";
     });
 
-    $('#create-new-vxlan-modal').modal("show");
-    $('#btn-vxlan-close').click(function(){ $('#create-new-vxlan-modal').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove(); LoadAllVxLAN(uuid);});
-    $('#btn-vxlan-ok').click(function(){ $('#create-new-vxlan-modal').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove();  SaveVxLAN(uuid);});
+    $('#btn-vxlan-close').click(function(){ $('#create-new-vxlan-modal').modal("hide"); LoadAllVxLAN(uuid);});
+    $('#btn-vxlan-ok').click(function(){ $('#create-new-local-modal').modal("hide"); SaveVxLAN(uuid);});
+}
+
+function SaveVxLAN(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveVxLAN';
+
+    var valueSelected = "";
+    $('input:radio:checked').each(function() {
+        idRadio = $(this).prop("id");
+        if (idRadio == "create-network-vxlan-"+$(this).prop("value")){
+            valueSelected = $(this).prop("value");
+        }
+    });
+
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    jsonValues["interface"] = document.getElementById('ifaceNameVxLAN').value;
+    jsonValues["lanIp"] = document.getElementById('VxLANid').value;
+    jsonValues["localIp"] = document.getElementById('locaIPVxLAN').value;
+    jsonValues["portIp"] = document.getElementById('portVxLAN').value;
+    jsonValues["type"] = "networkvxlan";
+    jsonValues["baseInterface"] = valueSelected;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        LoadAllVxLAN(uuid);
+    })
+    .catch(function (error) {
+    });
 }
 
 function LoadAllNewLocal(uuid){   
@@ -305,7 +339,6 @@ function LoadAllNewLocal(uuid){
         
         document.getElementById('modal-window').innerHTML = html;
         $('#btn-create-new-local').click(function(){ $('#load-all-new-local-modal').modal("hide"); CreateNewLocal(uuid); });
-        // $('#btn-del-new-local').click(function(){  $('#load-all-new-local-modal').modal("hide");});
     })
     .catch(function (error) {
     });
@@ -391,42 +424,6 @@ function selectNewLocal(uuid, nodeUUID){
     });
 }
 
-function SaveVxLAN(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveVxLAN';
-
-    var valueSelected = "";
-    $('input:radio:checked').each(function() {
-        idRadio = $(this).prop("id");
-        if (idRadio == "create-network-vxlan-"+$(this).prop("value")){
-            valueSelected = $(this).prop("value");
-        }
-    });
-
-    var jsonValues = {}
-    jsonValues["uuid"] = uuid;
-    jsonValues["interface"] = document.getElementById('ifaceNameVxLAN').value;
-    jsonValues["lanIp"] = document.getElementById('VxLANid').value;
-    jsonValues["localIp"] = document.getElementById('locaIPVxLAN').value;
-    jsonValues["portIp"] = document.getElementById('portVxLAN').value;
-    jsonValues["type"] = "networkvxlan";
-    jsonValues["baseInterface"] = valueSelected;
-    var dataJSON = JSON.stringify(jsonValues);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        LoadAllVxLAN(uuid);
-    })
-    .catch(function (error) {
-    });
-}
-
-
 function LoadNetworkValuesSelected(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -444,6 +441,47 @@ function LoadNetworkValuesSelected(uuid){
     .catch(function (error) {
     });
 }
+
+function updateNetworkInterface(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/updateNetworkInterface';
+    var valueSelected = "";
+    $('input:radio:checked').each(function() {
+        idRadio = $(this).prop("id");
+        if (idRadio == "net-value-"+$(this).prop("value")){
+            valueSelected = $(this).prop("value");
+        }
+    });
+    var jsonDeploy = {}
+    jsonDeploy["value"] = valueSelected;
+    jsonDeploy["param"] = "interface";
+    jsonDeploy["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonDeploy);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+    })
+    .catch(function (error) {
+    });
+}
+
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-----SOCKET TO NETWORK--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function socketToNetworkList(uuid){
     var ipmaster = document.getElementById('ip-master').value;
@@ -464,7 +502,7 @@ function socketToNetworkList(uuid){
                 break;
             }
         }              
-        html = html + '<div class="modal-dialog modal-lg">'+
+        html = html + '<div class="modal-dialog modal-lg" id="socket-to-network-list">'+
             '<div class="modal-content">'+
             
                 '<div class="modal-header">'+
@@ -520,6 +558,7 @@ function socketToNetworkList(uuid){
             '</div>'+
         '</div>';
         document.getElementById('modal-window').innerHTML = html;
+
     })
     .catch(function (error) {
     });
@@ -531,7 +570,7 @@ function createSocketToNetwork(uuid){
 
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML = 
-    '<div class="modal-dialog">'+
+    '<div class="modal-dialog" id="create-socket-to-network-modal">'+
         '<div class="modal-content">'+
         
             '<div class="modal-header">'+
@@ -543,17 +582,17 @@ function createSocketToNetwork(uuid){
                 '<form>'+
                     '<div class="form-group row">'+
                         '<label for="socketName" class="ml-4 col-form-label align-middle"><b>Socket to Network name: </b></label>'+
-                        '<input type="text" class="ml-4 mr-4 form-control" id="socketName" value="">'+
+                        '<input type="text" class="ml-4 mr-4 form-control" id="socketName" value="owlh">'+
                     '</div>'+
                     '<br>'+
                     '<div class="form-group row">'+
                         '<label for="listenPort" class="ml-4 col-form-label align-middle"><b>Listen port:</b> </label>'+
-                        '<input type="text" class="ml-4 mr-4 form-control" id="listenPort" value="">'+
+                        '<input type="text" class="ml-4 mr-4 form-control" id="listenPort" value="50010">'+
                     '</div>'+
                     '<br>'+
                     '<div class="form-group row">'+
                         '<label for="certificate" class="ml-4 col-form-label"><b>Cert:</b> </label>'+
-                        '<input type="text" class="ml-4 mr-4 form-control" id="certificate" value="">'+
+                        '<input type="text" class="ml-4 mr-4 form-control" id="certificate" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem">'+
                     '</div>'+
                     '<br>'+
                     '<div class="form-group row">'+
@@ -589,6 +628,8 @@ function createSocketToNetwork(uuid){
         document.getElementById('body-create-socket-network').innerHTML = inner;
         document.getElementById('create-socket-network-'+net).checked = "true";
     });
+
+    $('#btn-create-socket-network').click(function(){ $('#create-socket-to-network-modal').modal("hide"); socketToNetworkList(uuid);});
 }
 
 function saveSocketToNetwork(uuid){
@@ -615,6 +656,7 @@ function saveSocketToNetwork(uuid){
         data: dataJSON
     })
     .then(function (response) {
+        socketToNetworkList(uuid);
     })
     .catch(function (error) {
     });
@@ -664,34 +706,6 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
         }else if(type == "networkvxlan"){
             LoadAllVxLAN(uuid);
         }
-    })
-    .catch(function (error) {
-    });
-}
-
-function updateNetworkInterface(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/updateNetworkInterface';
-    var valueSelected = "";
-    $('input:radio:checked').each(function() {
-        idRadio = $(this).prop("id");
-        if (idRadio == "net-value-"+$(this).prop("value")){
-            valueSelected = $(this).prop("value");
-        }
-    });
-    var jsonDeploy = {}
-    jsonDeploy["value"] = valueSelected;
-    jsonDeploy["param"] = "interface";
-    jsonDeploy["uuid"] = uuid;
-    var dataJSON = JSON.stringify(jsonDeploy);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
     })
     .catch(function (error) {
     });

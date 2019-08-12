@@ -5,6 +5,7 @@ function loadTitleJSONdata(){
     var title = document.getElementById('menu-title');
     var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/getMasterTitle';
 
+
     $.get('../conf/current.version', function(data) {
         document.getElementById('current-version-show').innerHTML = data;        
     }, 'text');

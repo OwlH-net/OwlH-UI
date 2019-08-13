@@ -235,38 +235,64 @@ function CreateNewVxLAN(uuid){
 }
 
 function SaveVxLAN(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveVxLAN';
-
-    var valueSelected = "";
-    $('input:radio:checked').each(function() {
-        idRadio = $(this).prop("id");
-        if (idRadio == "create-network-vxlan-"+$(this).prop("value")){
-            valueSelected = $(this).prop("value");
+    if (document.getElementById('ifaceNameVxLAN').value == "" || document.getElementById('VxLANid').value == "" || document.getElementById('locaIPVxLAN').value == "" || document.getElementById('portVxLAN').value == ""){
+        if (document.getElementById('ifaceNameVxLAN').value == ""){
+            document.getElementById('ifaceNameVxLAN').placeholder = "Please insert valid Name";
+            document.getElementById('ifaceNameVxLAN').required = "true";
         }
-    });
+        if (document.getElementById('VxLANid').value == ""){
+            document.getElementById('VxLANid').placeholder = "Please insert LAN ID";
+            document.getElementById('VxLANid').required = "true";
+        }
+        if (document.getElementById('locaIPVxLAN').value == ""){
+            document.getElementById('locaIPVxLAN').placeholder = "Please insert Local IP";
+            document.getElementById('locaIPVxLAN').required = "true";
+        }
+        if (document.getElementById('portVxLAN').value == ""){
+            document.getElementById('portVxLAN').placeholder = "Please insert port";
+            document.getElementById('portVxLAN').required = "true";
+        }
+    }else{
 
-    var jsonValues = {}
-    jsonValues["uuid"] = uuid;
-    jsonValues["interface"] = document.getElementById('ifaceNameVxLAN').value;
-    jsonValues["lanIp"] = document.getElementById('VxLANid').value;
-    jsonValues["localIp"] = document.getElementById('locaIPVxLAN').value;
-    jsonValues["portIp"] = document.getElementById('portVxLAN').value;
-    jsonValues["type"] = "networkvxlan";
-    jsonValues["baseInterface"] = valueSelected;
-    var dataJSON = JSON.stringify(jsonValues);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        LoadAllVxLAN(uuid);
-    })
-    .catch(function (error) {
-    });
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveVxLAN';
+
+        var valueSelected = "";
+        $('input:radio:checked').each(function() {
+            idRadio = $(this).prop("id");
+            if (idRadio == "create-network-vxlan-"+$(this).prop("value")){
+                valueSelected = $(this).prop("value");
+            }
+        });
+
+        var jsonValues = {}
+        jsonValues["uuid"] = uuid;
+        jsonValues["interface"] = document.getElementById('ifaceNameVxLAN').value;
+        jsonValues["lanIp"] = document.getElementById('VxLANid').value;
+        jsonValues["localIp"] = document.getElementById('locaIPVxLAN').value;
+        jsonValues["portIp"] = document.getElementById('portVxLAN').value;
+        jsonValues["type"] = "networkvxlan";
+        jsonValues["baseInterface"] = valueSelected;
+        var dataJSON = JSON.stringify(jsonValues);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+            if(response.data.ack=="false"){
+                document.getElementById('ifaceNameVxLAN').value = "";
+                document.getElementById('ifaceNameVxLAN').placeholder = "Name used. Use other name.";
+                document.getElementById('ifaceNameVxLAN').required = "true";
+            }else{
+                LoadAllVxLAN(uuid);
+            }
+        })
+        .catch(function (error) {
+        });
+    }
 }
 
 function LoadAllNewLocal(uuid){
@@ -383,26 +409,44 @@ function CreateNewLocal(uuid){
 }
 
 function SaveNewLocal(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveNewLocal';
+    if (document.getElementById('mtuNewLocal').value == "" || document.getElementById('InterfaceNameNewLocal').value == ""){
+        if (document.getElementById('mtuNewLocal').value == ""){
+            document.getElementById('mtuNewLocal').placeholder = "Please insert a MTU";
+            document.getElementById('mtuNewLocal').required = "true";
+        }
+        if (document.getElementById('InterfaceNameNewLocal').value == ""){
+            document.getElementById('InterfaceNameNewLocal').placeholder = "Please insert a name";
+            document.getElementById('InterfaceNameNewLocal').required = "true";
+        }
+    }else{
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveNewLocal';
 
-    var jsonValues = {}
-    jsonValues["uuid"] = uuid;
-    jsonValues["name"] = document.getElementById('InterfaceNameNewLocal').value;
-    jsonValues["mtu"] = document.getElementById('mtuNewLocal').value;
-    var dataJSON = JSON.stringify(jsonValues);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        LoadAllNewLocal(uuid);
-    })
-    .catch(function (error) {
-    });
+        var jsonValues = {}
+        jsonValues["uuid"] = uuid;
+        jsonValues["name"] = document.getElementById('InterfaceNameNewLocal').value;
+        jsonValues["mtu"] = document.getElementById('mtuNewLocal').value;
+        var dataJSON = JSON.stringify(jsonValues);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+            if(response.data.ack=="false"){
+                document.getElementById('InterfaceNameNewLocal').value = "";
+                document.getElementById('InterfaceNameNewLocal').placeholder = "Name used. Use other name.";
+                document.getElementById('InterfaceNameNewLocal').required = "true";
+            }else{
+                LoadAllNewLocal(uuid);
+            }
+        })
+        .catch(function (error) {
+        });
+    }
+
 }
 
 function selectNewLocal(uuid, nodeUUID){
@@ -555,7 +599,7 @@ function SocketToNetworkList(uuid){
 
                 '<div class="modal-footer">'+
                     '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                    '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="createSocketToNetwork(\''+uuid+'\')">Create</button>'+
+                    '<button type="submit" class="btn btn-success" data-dismiss="modal" onclick="createSocketToNetwork(\''+uuid+'\')">Create</button>'+
                 '</div>'+
 
             '</div>'+
@@ -686,33 +730,54 @@ function createSocketToNetwork(uuid){
 }
 
 function saveSocketToNetwork(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveSocketToNetwork';
+    if (document.getElementById('socketName').value == "" || document.getElementById('listenPort').value == "" || document.getElementById('certificate').value == ""){
+        if (document.getElementById('socketName').value == ""){
+            document.getElementById('socketName').placeholder = "Please insert name";
+            document.getElementById('socketName').required = "true";
+        }
+        if (document.getElementById('listenPort').value == ""){
+            document.getElementById('listenPort').placeholder = "Please insert port";
+            document.getElementById('listenPort').required = "true";
+        }
+        if (document.getElementById('certificate').value == ""){
+            document.getElementById('certificate').placeholder = "Please insert certificate";
+            document.getElementById('certificate').required = "true";
+        }
+    }else{
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveSocketToNetwork';
 
-    var valueSelected = "";
-    $('input:radio:checked').each(function() {
-        valueSelected = $(this).prop("value");
-    });
+        var valueSelected = "";
+        $('input:radio:checked').each(function() {
+            valueSelected = $(this).prop("value");
+        });
 
-    var jsonSave = {}
-    jsonSave["name"] = document.getElementById('socketName').value;
-    jsonSave["cert"] = document.getElementById('certificate').value;
-    jsonSave["interface"] = valueSelected;
-    jsonSave["port"] = document.getElementById('listenPort').value;
-    jsonSave["uuid"] = uuid;
-    var dataJSON = JSON.stringify(jsonSave);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        SocketToNetworkList(uuid);
-    })
-    .catch(function (error) {
-    });
+        var jsonSave = {}
+        jsonSave["name"] = document.getElementById('socketName').value;
+        jsonSave["cert"] = document.getElementById('certificate').value;
+        jsonSave["interface"] = valueSelected;
+        jsonSave["port"] = document.getElementById('listenPort').value;
+        jsonSave["uuid"] = uuid;
+        var dataJSON = JSON.stringify(jsonSave);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+            if(response.data.ack=="false"){
+                document.getElementById('socketName').value = "";
+                document.getElementById('socketName').placeholder = "Name used. Use other name.";
+                document.getElementById('socketName').required = "true";
+            }else{
+                SocketToNetworkList(uuid);
+            }
+        })
+        .catch(function (error) {
+        });
+    }
 }
 
 function saveSocketToNetworkSelected(uuid, nodeUUID){
@@ -734,10 +799,10 @@ function saveSocketToNetworkSelected(uuid, nodeUUID){
     })
     .catch(function (error) {
     });
+    
 }
 
 function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
-    console.log(uuid+"  --  "+nodeUUID+"  --  "+type);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/deleteDataFlowValueSelected';

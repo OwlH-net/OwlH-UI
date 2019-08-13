@@ -119,6 +119,9 @@ function RadioButtonListener(){
         }else if (inputRadioClicked.attr('value') == "url"){
             document.getElementById("ruleset-source-url").style.display = "block";            
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
+        }else if (inputRadioClicked.attr('value') == "thread"){
+            document.getElementById("ruleset-source-url").style.display = "block";            
+            document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
         }
     });
 }

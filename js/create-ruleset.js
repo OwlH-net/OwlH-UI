@@ -10,6 +10,7 @@ function loadRulesData(){
     })
     .then(function (response) {
         result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
+        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
         for (source in response.data){
             if (response.data[source]["type"]){
                 document.getElementById('checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
@@ -81,7 +82,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         '</div>'+
     '</div>'+
 
-    '<a class="btn btn-primary float-right" style="color: white;" onclick="modalAddNewRuleset()">Add</a>'+
+    '<button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
@@ -121,7 +122,8 @@ function generateAllRuleDataHTMLOutput(sources) {
         }
     }
     html = html + '</tbody></table>'+
-    '<br><a class="btn btn-primary float-right" style="color: white;" onclick="modalAddNewRuleset()">Add</a><br><br>';    
+    '<br><button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
+
     if (isEmpty){
         return '<h3 style="text-align:center">No sources created</h3>';
     }else{
@@ -189,7 +191,8 @@ function searchRuleset(){
     }
 }
 
-function modalAddNewRuleset(){    
+function modalAddNewRuleset(){   
+    $(".createNewRulesetLocal").unbind("click");
 
     //show progress-bar
     document.getElementById('progressBar-create-ruleset-div').style.display="block";
@@ -231,6 +234,7 @@ function modalAddNewRuleset(){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
     }else if (isDuplicated){      
         document.getElementById('progressBar-create-ruleset-div').style.display="none";
         // document.getElementById('progressBar-create-ruleset').style.display="none";
@@ -255,9 +259,10 @@ function modalAddNewRuleset(){
             '</div>'+
         '</div>';
 
-        $('#modal-window').modal('show')     
-    } else {
-        $('#modal-window').modal('dispose')
+        $('#modal-window').modal('show');
+        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});     
+    } else {        
+        $('#modal-window').modal('dispose');        
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
@@ -269,13 +274,12 @@ function modalAddNewRuleset(){
             data: nodeJSON
         })
         .then(function (response) {
-            if (response.data.ack == "true"){
+            if (response.data.ack == "true"){                
                 document.getElementById('progressBar-create-ruleset-div').style.display="none";
-                // document.getElementById('progressBar-create-ruleset').style.display="none";
                 document.location.href = 'https://' + ipmaster + '/rulesets.html';
             }else if (response.data.ack == "false"){
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
                 document.getElementById('progressBar-create-ruleset-div').style.display="none";
-                // document.getElementById('progressBar-create-ruleset').style.display="none";
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+
@@ -284,9 +288,8 @@ function modalAddNewRuleset(){
                     '</button>'+
                 '</div>';
             }else{
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
                 document.getElementById('progressBar-create-ruleset-div').style.display="none";
-                // document.getElementById('progressBar-create-ruleset').style.display="none";
-
                 lines = JSON.parse(response.data)
                 var html =
                 '<div class="modal-dialog modal-lg">'+

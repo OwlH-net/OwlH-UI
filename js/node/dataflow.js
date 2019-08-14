@@ -584,9 +584,25 @@ function SocketToNetworkList(uuid){
                                     '<div>'+
                                         '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
                                         '<button class="btn btn-danger" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\', \''+response.data[type]["type"]+'\')">Delete</button>'+
-                                        // '<button class="btn btn-danger" id="btn-load-delete-modal-'+type+'" data-toggle="modal" data-target="#socket-to-network-delete-modal">Delete</button>'+
                                     '</div>'+
                                 '</td>'+
+                            '</tr>';
+
+                            //div for delete
+                            html = html + '<tr>'+
+                                '<th align="center" bgcolor="LightSalmon" colspan="5" id="delete-row-'+type+'" style="display:none;">'+                     
+                                    '<div id="delete-div-'+type+'" style="display:none;">'+
+                                        '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
+                                        '<div>'+
+                                            '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
+                                            '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</th>'+
+                                '<th></th>'+
+                                '<th></th>'+
+                                '<th></th>'+
+                                '<th></th>'+
                             '</tr>';
                         }
                     }
@@ -807,17 +823,9 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/deleteDataFlowValueSelected';
 
-    var jsonSelected = {}
-    jsonSelected["uuid"] = uuid;
-    jsonSelected["uuidNode"] = nodeUUID;
-    var dataJSON = JSON.stringify(jsonSelected);
-    axios({
-        method: 'delete',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
+    document.getElementById('delete-row-'+nodeUUID).style.display="block";
+    document.getElementById('delete-div-'+nodeUUID).style.display="block";
+    $(".confirm-delete-dataflow-close-"+nodeUUID).bind("click", function(){
         if (type == "sockettonetwork"){
             SocketToNetworkList(uuid);
         }else if(type == "networknewlocal"){
@@ -825,8 +833,30 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
         }else if(type == "networkvxlan"){
             LoadAllVxLAN(uuid);
         }
-    })
-    .catch(function (error) {
+    });
+
+    $(".confirm-delete-dataflow-"+nodeUUID).bind("click", function(){
+        var jsonSelected = {}
+        jsonSelected["uuid"] = uuid;
+        jsonSelected["uuidNode"] = nodeUUID;
+        var dataJSON = JSON.stringify(jsonSelected);
+        axios({
+            method: 'delete',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+            if (type == "sockettonetwork"){
+                SocketToNetworkList(uuid);
+            }else if(type == "networknewlocal"){
+                LoadAllNewLocal(uuid);
+            }else if(type == "networkvxlan"){
+                LoadAllVxLAN(uuid);
+            }
+        })
+        .catch(function (error) {
+        });
     });
 }
 

@@ -48,12 +48,14 @@ function addRulesetSource() {
     var nodejson = {}
     nodejson["name"] = formName;
     nodejson["desc"] = formDesc;
-    if (sourceType == "url" || sourceType == "thread"){ //only for source, not for custom
-        nodejson["fileName"] = fileName[fileName.length-1];
-        nodejson["url"] = formUrl;
-    }else if (sourceType == "path"){
-        nodejson["url"] = formUrl;
-    }
+    // if (sourceType == "url" || sourceType == "thread"){ 
+    nodejson["url"] = formUrl;
+    nodejson["fileName"] = fileName[fileName.length-1];
+    // } 
+    // if (sourceType == "custom"){ 
+    //     nodejson["url"] = formUrl;
+    //     nodejson["fileName"] = fileName[fileName.length-1];
+    // }//only for source, not for custom
     nodejson["type"] = "source";
     nodejson["sourceType"] = sourceType;
     if (sourceType == "url" || sourceType == "thread"){nodejson["isDownloaded"] = "false";} //only for source, not for custom
@@ -115,12 +117,13 @@ function RadioButtonListener(){
     $('input:radio').on('click', function(e) {
         var inputRadioClicked = $(e.currentTarget);
         if (inputRadioClicked.attr('value') == "custom"){
-            document.getElementById("ruleset-source-url").style.display = "none";            
+            // document.getElementById("ruleset-source-url").style.display = "block";            
+            document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
         }else if (inputRadioClicked.attr('value') == "url"){
-            document.getElementById("ruleset-source-url").style.display = "block";            
+            // document.getElementById("ruleset-source-url").style.display = "block";            
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
         }else if (inputRadioClicked.attr('value') == "thread"){
-            document.getElementById("ruleset-source-url").style.display = "block";            
+            // document.getElementById("ruleset-source-url").style.display = "block";            
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
         }
     });
@@ -166,11 +169,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
             '</td><td style="word-wrap: break-word;">'+
             sources[source]['path']+
             '</td><td style="word-wrap: break-word;">';
-            if (sources[source]['sourceType'] == "custom"){
-                html = html + sources[source]['path'];
-            }else {
-                html = html + sources[source]['url'];
-            }
+            if (sources[source]['sourceType'] != "custom"){html = html + sources[source]['url'];}
             html = html + '</td><td align="right" style="word-wrap: break-word;">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">';

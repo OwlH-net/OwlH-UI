@@ -1,7 +1,8 @@
 function loadFileIntoTextarea(){
     var fileContent = document.getElementById('inputTextUI');  
     $.getJSON('../conf/ui.conf', function (data) {
-        fileContent.value = JSON.stringify(data, null, "\t");
+        // fileContent.value = JSON.stringify(data, null, "\t");
+        fileContent.value = JSON.stringify(data, null, "    ");
     });
 }
 

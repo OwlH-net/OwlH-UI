@@ -23,7 +23,7 @@ function PingNode(uuid) {
     })
         .then(function (response) {
             if (response.data.ping=='pong') {
-                document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
+                document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white node-option-"+uuid;
                 document.getElementById(uuid+'-online').innerHTML = "ON LINE";
                 PingService(uuid);
                 PingSuricata(uuid);
@@ -37,7 +37,7 @@ function PingNode(uuid) {
                 PingDataflow(uuid);
                 return "true";
             } else {
-                document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
+                document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white node-option-"+uuid;
                 document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
             }      
         })
@@ -184,121 +184,127 @@ function generateAllNodesHTMLOutput(response) {
                 '   <br><br>'+
                 '   <span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
             '   </td>' +
-            '<td class="align-middle">                                                        ';
-        html = html + '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span></td>'+
             '<td class="align-middle">'+
-            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
-            '<span id="network-ids-form-'+uuid+'" style="display:None">'+
-                '<p><img src="img/suricata.png" alt="" width="30"> '      +
-                '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
-                '  <span style="font-size: 15px; color: grey;" >                                   ' +
-                '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
-                '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+nodes[node]['name']+'\')"></i>                                 ' +
-                '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+nodes[node]['name']+'\')">BPF</i>'+
-                '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>                        ' +
-                '  </span>                                                                        ' +
-                '  </p>                                                                           ' +
-                '  <p><img  src="img/bro.png" alt="" width="30">'+
-                '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
-                '  <span style="font-size: 15px; color: grey;" >                                   ' +
-                '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
-                '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
-                '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i>                  ' +
-                '  </span>' +
-                '  </p>   '+
-            '</span>'+
-            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'transport\',\''+uuid+'\')"><b>Transport</b> <i class="fas fa-sort-down" id="transport-form-icon-'+uuid+'"></i></h6>'+                                                                        
-            '<span id="transport-form-'+uuid+'" style="display:None">'+
-                '  <p><img src="img/wazuh.png" alt="" width="30"> '+
-                '  <span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
-                '  <span style="font-size: 15px; color: grey;" >                                  ' +
-                '    <i class="fas fa-stop-circle" id="'+uuid+'-wazuh-icon"></i>                         ' +
-                '  </span></p> '+
-            '</span>'+
-            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Plugins</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
-            '<span id="plugins-form-'+uuid+'" style="display:None">'+
-                '  <p><i class="fas fa-plug fa-lg"></i>'+
-                '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
-                '  <span style="font-size: 15px; color: grey;">                                   ' +
-                '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
-                '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>                             ' +
-                '  </span></p> '+            
-                '  <p><span style="font-size: 15px; color: grey;">                                   ' +
-                '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i id="stap-collector-'+uuid+'">[N/A]</i> | '+
-                '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
-                '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
-                '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
-                '  </span></p> '+   
-                '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
-                '  <span style="font-size: 15px; color: grey;">                                   ' +
-                '    <img src="img/favicon.ico" height="25">Knownports | '+
-                '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
-                '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
-                '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
-                '  </span></p> '+ 
-                '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
-                '  <span style="font-size: 15px; color: grey;">                                   ' +
-                '    <img src="img/favicon.ico" height="25">Analyzer | '+
-                '    <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span> <i style="padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i>                         ' +
-                '    <i class="fas fa-info-circle" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+nodes[node]['name']+'\')"></i>  ' +
-                '  </span></p> '+ 
-            '</span>'+ 
+        '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white node-option-'+uuid+'">N/A</span></td>';            
+        $(document).on("click", ".node-option-"+uuid, function(){
+            var ipmaster = document.getElementById('ip-master').value;
+            var portmaster = document.getElementById('port-master').value;
+            document.location.href = 'https://' + ipmaster + '/node-options.html?uuid='+uuid+'&node='+nodes[node]['name'];
+        });
 
-            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
-            '<span id="flow-form-'+uuid+'" style="display:None">'+
-                '<table>'+
-                '<thead>'+
-                '<tr>                                                         ' +
-                    '<th>Collect from</th>                                                  ' +
-                    '<th>Analysis</th>                                          ' +
-                    '<th>Transport</th>                                ' +
-                    '<th>Info</th>                                ' +
-                '</tr>                                                        ' +
-                '</thead>                                                     ' +
-                '<tbody>                                                      ' +
-                    '<tr>'+
-                    '<td style="word-wrap: break-word;">'+
-                        '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'network\', \''+uuid+'\')" id="collect-network" name="network" value="network" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="loadNetworkValues(\''+uuid+'\')" style="color:grey;" title="Collector information"></i>'+
-                        '</div>'+
-                        '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-pcap\', \''+uuid+'\')" id="collect-socket-pcap" name="network" value="socket-pcap" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="collect-socket-pcap">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
-                        '</div>'+
-                        '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-network\', \''+uuid+'\')" id="collect-socket-network" name="network" value="socket-network" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="SocketToNetworkList(\''+node+'\')" style="color:grey;" title="Socket to Network information"></i>'+
-                        '</div>'+
-                        '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'pcap-network\', \''+uuid+'\')" id="collect-pcap-network" name="network" value="pcap-network" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;"title="Collector information"></i>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;">'+
-                        '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowValues(\'analysis\', \'value\', \'network\', \''+uuid+'\')" id="analysis-network" name="analysis" value="network" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="analysis-network">Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;"title="Collector information"></i>'+
-                        '</div>'+
-                        '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowValues(\'analysis\', \'value\', \'pcap\', \''+uuid+'\')" id="analysis-pcap" name="analysis" value="pcap" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="analysis-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;">'+
-                        '<div class="custom-control custom-radio">'+
-                            '<input type="radio" onclick="changeDataflowValues(\'transport\', \'value\', \'wazuh\', \''+uuid+'\')" id="transport-wazuh" name="transport" value="wazuh" class="custom-control-input">'+
-                            '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
-                        '</div>'+                    
-                    '</td>'+
-                    '<td style="word-wrap: break-word;"></td>'+
-                    '</tr>'+
-                '</tbody>' +
+            html = html + '<td class="align-middle">'+
+            // '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
+            // '<span id="network-ids-form-'+uuid+'" style="display:None">'+
+            //     '<p><img src="img/suricata.png" alt="" width="30"> '      +
+            //     '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
+            //     '  <span style="font-size: 15px; color: grey;" >                                   ' +
+            //     '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
+            //     '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+nodes[node]['name']+'\')"></i>                                 ' +
+            //     '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+nodes[node]['name']+'\')">BPF</i>'+
+            //     '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>                        ' +
+            //     '  </span>                                                                        ' +
+            //     '  </p>                                                                           ' +
+            //     '  <p><img  src="img/bro.png" alt="" width="30">'+
+            //     '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
+            //     '  <span style="font-size: 15px; color: grey;" >                                   ' +
+            //     '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
+            //     '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
+            //     '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i>                  ' +
+            //     '  </span>' +
+            //     '  </p>   '+
+            // '</span>'+
+            // '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'transport\',\''+uuid+'\')"><b>Transport</b> <i class="fas fa-sort-down" id="transport-form-icon-'+uuid+'"></i></h6>'+                                                                        
+            // '<span id="transport-form-'+uuid+'" style="display:None">'+
+            //     '  <p><img src="img/wazuh.png" alt="" width="30"> '+
+            //     '  <span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
+            //     '  <span style="font-size: 15px; color: grey;" >                                  ' +
+            //     '    <i class="fas fa-stop-circle" id="'+uuid+'-wazuh-icon"></i>                         ' +
+            //     '  </span></p> '+
+            // '</span>'+
+            // '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Plugins</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
+            // '<span id="plugins-form-'+uuid+'" style="display:None">'+
+            //     '  <p><i class="fas fa-plug fa-lg"></i>'+
+            //     '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
+            //     '  <span style="font-size: 15px; color: grey;">                                   ' +
+            //     '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
+            //     '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i>                             ' +
+            //     '  </span></p> '+            
+            //     '  <p><span style="font-size: 15px; color: grey;">                                   ' +
+            //     '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i id="stap-collector-'+uuid+'">[N/A]</i> | '+
+            //     '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
+            //     '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
+            //     '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
+            //     '  </span></p> '+   
+            //     '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
+            //     '  <span style="font-size: 15px; color: grey;">                                   ' +
+            //     '    <img src="img/favicon.ico" height="25">Knownports | '+
+            //     '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
+            //     '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
+            //     '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
+            //     '  </span></p> '+ 
+            //     '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
+            //     '  <span style="font-size: 15px; color: grey;">                                   ' +
+            //     '    <img src="img/favicon.ico" height="25">Analyzer | '+
+            //     '    <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span> <i style="padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i>                         ' +
+            //     '    <i class="fas fa-info-circle" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+nodes[node]['name']+'\')"></i>  ' +
+            //     '  </span></p> '+ 
+            // '</span>'+ 
+
+            // '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
+            // '<span id="flow-form-'+uuid+'" style="display:None">'+
+            //     '<table>'+
+            //     '<thead>'+
+            //     '<tr>                                                         ' +
+            //         '<th>Collect from</th>                                                  ' +
+            //         '<th>Analysis</th>                                          ' +
+            //         '<th>Transport</th>                                ' +
+            //         '<th>Info</th>                                ' +
+            //     '</tr>                                                        ' +
+            //     '</thead>                                                     ' +
+            //     '<tbody>                                                      ' +
+            //         '<tr>'+
+            //         '<td style="word-wrap: break-word;">'+
+            //             '<div class="custom-control custom-radio">'+
+            //             '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'network\', \''+uuid+'\')" id="collect-network" name="network" value="network" class="custom-control-input">'+
+            //                 '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="loadNetworkValues(\''+uuid+'\')" style="color:grey;" title="Collector information"></i>'+
+            //             '</div>'+
+            //             '<div class="custom-control custom-radio">'+
+            //             '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-pcap\', \''+uuid+'\')" id="collect-socket-pcap" name="network" value="socket-pcap" class="custom-control-input">'+
+            //                 '<label class="custom-control-label" for="collect-socket-pcap">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
+            //             '</div>'+
+            //             '<div class="custom-control custom-radio">'+
+            //             '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-network\', \''+uuid+'\')" id="collect-socket-network" name="network" value="socket-network" class="custom-control-input">'+
+            //                 '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="SocketToNetworkList(\''+node+'\')" style="color:grey;" title="Socket to Network information"></i>'+
+            //             '</div>'+
+            //             '<div class="custom-control custom-radio">'+
+            //             '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'pcap-network\', \''+uuid+'\')" id="collect-pcap-network" name="network" value="pcap-network" class="custom-control-input">'+
+            //                 '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;"title="Collector information"></i>'+
+            //             '</div>'+
+            //         '</td>'+
+            //         '<td style="word-wrap: break-word;">'+
+            //             '<div class="custom-control custom-radio">'+
+            //             '<input type="radio" onclick="changeDataflowValues(\'analysis\', \'value\', \'network\', \''+uuid+'\')" id="analysis-network" name="analysis" value="network" class="custom-control-input">'+
+            //                 '<label class="custom-control-label" for="analysis-network">Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;"title="Collector information"></i>'+
+            //             '</div>'+
+            //             '<div class="custom-control custom-radio">'+
+            //             '<input type="radio" onclick="changeDataflowValues(\'analysis\', \'value\', \'pcap\', \''+uuid+'\')" id="analysis-pcap" name="analysis" value="pcap" class="custom-control-input">'+
+            //                 '<label class="custom-control-label" for="analysis-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
+            //             '</div>'+
+            //         '</td>'+
+            //         '<td style="word-wrap: break-word;">'+
+            //             '<div class="custom-control custom-radio">'+
+            //                 '<input type="radio" onclick="changeDataflowValues(\'transport\', \'value\', \'wazuh\', \''+uuid+'\')" id="transport-wazuh" name="transport" value="wazuh" class="custom-control-input">'+
+            //                 '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')" style="color:grey;" title="Collector information"></i>'+
+            //             '</div>'+                    
+            //         '</td>'+
+            //         '<td style="word-wrap: break-word;"></td>'+
+            //         '</tr>'+
+            //     '</tbody>' +
                     
-                '</table>'+
-            '</span>'+
+            //     '</table>'+
+            // '</span>'+
+            // '</td>                                                            ' +
 
-            '</td>                                                            ' +
             '<td class="align-middle"> '+
             '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'actions\',\''+uuid+'\')"><b>Actions</b> <i class="fas fa-sort-down" id="actions-form-icon-'+uuid+'"></i></h6>'+
             '<span id="actions-form-'+uuid+'" style="display:None" color>'+                                                       
@@ -309,22 +315,22 @@ function generateAllNodesHTMLOutput(response) {
                 '<br><i class="fas fa-trash-alt" style="color: red;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
                 '</span>'+
             '</span>'+
-            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'deploy\',\''+uuid+'\')"><b>Deploy</b> <i class="fas fa-sort-down" id="deploy-form-icon-'+uuid+'"></i></h6>'+
-            '<span id="deploy-form-'+uuid+'" style="display:None">'+
-                '<span style="font-size: 15px; color: Dodgerblue;">'+
-                    '<p id="deploy-node-suricata"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Suricata &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy Suricata" id="suricata-deploy-button" onclick="deployNode(\'suricata\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
-                    '<p id="deploy-node-zeek"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Zeek &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy Zeek" onclick="deployNode(\'zeek\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
-                    '<p id="deploy-node-moloch"><i style="color: Dodgerblue;" class="fas fa-search"></i> &nbsp; Moloch &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deployNode(\'moloch\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
-                    '<p id="deploy-node-interface"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; OwlH interface &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy OwlH interface" onclick="deployNode(\'interface\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
-                    '<p id="deploy-node-firewall"><i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> &nbsp; OwlH firewall &nbsp; | '+
-                    '    <i class="fas fa-play-circle" title="Deploy OwlH firewall" onclick="deployNode(\'firewall\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
-                '</span>'+
-            '  </span>                                                                           ' +
-            '</td>                                                                               ' +
+            // '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'deploy\',\''+uuid+'\')"><b>Deploy</b> <i class="fas fa-sort-down" id="deploy-form-icon-'+uuid+'"></i></h6>'+
+            // '<span id="deploy-form-'+uuid+'" style="display:None">'+
+            //     '<span style="font-size: 15px; color: Dodgerblue;">'+
+            //         '<p id="deploy-node-suricata"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Suricata &nbsp; | '+
+            //         '    <i class="fas fa-play-circle" title="Deploy Suricata" id="suricata-deploy-button" onclick="deployNode(\'suricata\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
+            //         '<p id="deploy-node-zeek"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Zeek &nbsp; | '+
+            //         '    <i class="fas fa-play-circle" title="Deploy Zeek" onclick="deployNode(\'zeek\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
+            //         '<p id="deploy-node-moloch"><i style="color: Dodgerblue;" class="fas fa-search"></i> &nbsp; Moloch &nbsp; | '+
+            //         '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deployNode(\'moloch\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
+            //         '<p id="deploy-node-interface"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; OwlH interface &nbsp; | '+
+            //         '    <i class="fas fa-play-circle" title="Deploy OwlH interface" onclick="deployNode(\'interface\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
+            //         '<p id="deploy-node-firewall"><i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> &nbsp; OwlH firewall &nbsp; | '+
+            //         '    <i class="fas fa-play-circle" title="Deploy OwlH firewall" onclick="deployNode(\'firewall\', \''+uuid+'\', \''+nodes[node]['name']+'\')"></i></p>                         ' +
+            //     '</span>'+
+            // '  </span>                                                                           ' +
+            // '</td>                                                                               ' +
             '</tr>';
     }
     html = html + '</tbody></table>';

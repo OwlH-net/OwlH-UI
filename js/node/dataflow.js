@@ -124,13 +124,24 @@ function LoadAllVxLAN(uuid){
                                             response.data[type]["baseInterface"]+
                                         '</td><td style="word-wrap: break-word;">' +
                                             '<div>'+
-                                                // '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="">Start</a> &nbsp'+
                                                 '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
-                                                // '<button type="submit" class="btn btn-danger" id="btn-delete-vxlan" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
                                                 '<button type="submit" class="btn btn-danger" id="btn-delete-vxlan" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
                                             '</div>'+
                                         '</td>'+
                                     '</tr>';
+
+                                    //div for delete
+                                    html = html + '<tr style="display: none" id="delete-row-'+type+'">'+
+                                    '<td colspan="6" bgcolor="LightSalmon" align="center">'+                  
+                                        '<div>'+
+                                            '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
+                                            '<div>'+
+                                                '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
+                                                '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</td>'+
+                                '</tr>';
                                 }
                             }
                             html = html + '</tbody>'+
@@ -150,11 +161,7 @@ function LoadAllVxLAN(uuid){
             '</div>';
 
         document.getElementById('modal-window').innerHTML = html;
-        // $('#load-all-vxlan-modal').modal("show");
-        // $('#btn-create-new-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove(); CreateNewVxLAN(uuid); });
-        // $('#btn-delete-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); $('body').removeClass('modal-open'); $('.modal-backdrop').remove(); });
         $('#btn-create-new-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); CreateNewVxLAN(uuid); });
-        // $('#btn-delete-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); });
     })
     .catch(function (error) {
     });
@@ -342,8 +349,20 @@ function LoadAllNewLocal(uuid){
                                         '</td><td style="word-wrap: break-word;">' +
                                             '<div>'+
                                                 '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
-                                                // '<button class="btn btn-danger" id="btn-del-new-local" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
                                                 '<button class="btn btn-danger" id="btn-del-new-local" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
+                                            '</div>'+
+                                        '</td>'+
+                                    '</tr>';
+
+                                    //div for delete
+                                    html = html + '<tr style="display: none" id="delete-row-'+type+'">'+
+                                        '<td colspan="3" bgcolor="LightSalmon" align="center">'+                  
+                                            '<div>'+
+                                                '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
+                                                '<div>'+
+                                                    '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
+                                                    '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
+                                                '</div>'+
                                             '</div>'+
                                         '</td>'+
                                     '</tr>';
@@ -589,20 +608,16 @@ function SocketToNetworkList(uuid){
                             '</tr>';
 
                             //div for delete
-                            html = html + '<tr>'+
-                                '<th align="center" bgcolor="LightSalmon" colspan="5" id="delete-row-'+type+'" style="display:none;">'+                     
-                                    '<div id="delete-div-'+type+'" style="display:none;">'+
+                            html = html + '<tr style="display: none" id="delete-row-'+type+'">'+
+                                '<td colspan="5" bgcolor="LightSalmon" align="center">'+                  
+                                    '<div>'+
                                         '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
                                         '<div>'+
                                             '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
                                             '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
                                         '</div>'+
                                     '</div>'+
-                                '</th>'+
-                                '<th></th>'+
-                                '<th></th>'+
-                                '<th></th>'+
-                                '<th></th>'+
+                                '</td>'+
                             '</tr>';
                         }
                     }
@@ -614,63 +629,16 @@ function SocketToNetworkList(uuid){
                 html = html + '</div>'+
 
                 '<div class="modal-footer">'+
-                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                    '<button class="btn btn-secondary" type="button" data-dismiss="modal" id="btn-close-socket-network">Close</button>'+
                     '<button type="submit" class="btn btn-success" data-dismiss="modal" onclick="createSocketToNetwork(\''+uuid+'\')">Create</button>'+
                 '</div>'+
 
             '</div>'+
         '</div>';
-
-        // for (type in response.data){
-        // //delete modal
-        //     html = html +'<div class="modal hide fade" id="socket-to-network-delete-modal" aria-hidden="true" role="dialog">'+
-        //         '<div class="modal-dialog">'+
-        //             '<div class="modal-content">'+
-
-        //                 '<div class="modal-header">'+
-        //                 '<h4 class="modal-title">Delete Socket -> Network element</h4>'+
-        //                 '<button type="button" class="close" id="cross-close-delete-modal">&times;</button>'+
-        //                 '</div>'+
-
-        //                 '<div class="modal-body" id="body-secondary-modal-'+type+'">'+
-        //                 '</div>'+
-
-        //                 '<div class="modal-footer">'+
-        //                     '<button type="button" class="btn btn-secondary" id="btn-remove-dataflow-element-close">Close</button>'+
-        //                     '<button type="button" class="btn btn-danger" id="btn-remove-dataflow-element-'+type+'">Delete</button>'+
-        //                 '</div>'+
-
-        //             '</div>'+
-        //         '</div>'+
-        //     '</div>';
-        // }
-
-
+                
+        // $('#btn-close-socket-network').click(function(){ $('#socket-to-network-list').modal("toggle"); });
         document.getElementById('modal-window').innerHTML = html;
-        // $('#socket-to-network-delete-modal').modal({backdrop: 'static', keyboard: false})
-
-        // for (type in response.data){
-        //     $('#socket-to-network-delete-modal').modal("hide")
-
-        //     $('#btn-load-delete-modal-'+type).click(function(){
-        //         console.log(type);
-        //         $('#socket-to-network-list').fadeTo( "fast" , 0.4, function() {});
-        //         document.getElementById('body-secondary-modal-'+type).innerHTML = '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> Socket -> Network element? </p>';
-        //     });
-        //     $('#btn-remove-dataflow-element-close').click(function(){
-        //         $('#socket-to-network-delete-modal').modal("hide");
-        //         $('#socket-to-network-list').fadeTo( "fast" , 1, function(){});
-        //     });
-        //     $('#cross-close-delete-modal').click(function(){
-        //         $('#socket-to-network-delete-modal').modal("hide");
-        //         $('#socket-to-network-list').fadeTo( "fast" , 1, function(){});
-        //     });
-        //     $('#btn-remove-dataflow-element-'+type).click(function(){
-        //         $('#socket-to-network-delete-modal').modal("hide");
-        //         DeleteDataFlowValueSelected(uuid, type, response.data[type]["type"]);
-        //     });
-        // }
-
+        
     })
     .catch(function (error) {
     });
@@ -733,7 +701,7 @@ function createSocketToNetwork(uuid){
                 '<td style="word-wrap: break-word;">' +
                     '<p class="ml-4">'+response.data[net]+'</p>'+
                 '</td><td style="word-wrap: break-word;">' +
-                    '<input type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">'+
+                    '<input class="socket-network-radio" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">'+
                 '</td>'+
             '</tr>';
         }
@@ -766,7 +734,14 @@ function saveSocketToNetwork(uuid){
 
         var valueSelected = "";
         $('input:radio:checked').each(function() {
-            valueSelected = $(this).prop("value");
+            // var classValueInput = $('socket-network-radio-'+uuid).attr("class");
+            
+            // console.log($(this).Id('socket-network-radio-'+uuid));
+            console.log($(this).attr('id'));
+            
+            if($(this).attr('class') == 'socket-network-radio'){
+                valueSelected = $(this).prop("value");
+            }                        
         });
 
         var jsonSave = {}
@@ -823,16 +798,10 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/deleteDataFlowValueSelected';
 
-    document.getElementById('delete-row-'+nodeUUID).style.display="block";
-    document.getElementById('delete-div-'+nodeUUID).style.display="block";
+    document.getElementById('delete-row-'+nodeUUID).style.display="table-row";
+    // document.getElementById('delete-div-'+nodeUUID).style.display="block";
     $(".confirm-delete-dataflow-close-"+nodeUUID).bind("click", function(){
-        if (type == "sockettonetwork"){
-            SocketToNetworkList(uuid);
-        }else if(type == "networknewlocal"){
-            LoadAllNewLocal(uuid);
-        }else if(type == "networkvxlan"){
-            LoadAllVxLAN(uuid);
-        }
+        document.getElementById('delete-row-'+nodeUUID).style.display="none";
     });
 
     $(".confirm-delete-dataflow-"+nodeUUID).bind("click", function(){
@@ -878,7 +847,7 @@ function changeDataflowValues(FlowUUID, param, value, uuid){
         data: dataJSON
     })
     .then(function (response) {
-        GetAllNodes();
+        loadPlugins();
     })
     .catch(function (error) {
     });

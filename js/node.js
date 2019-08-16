@@ -142,8 +142,6 @@ function saveBPF(nid){
     });   
 }
 
-
-
 function loadRuleset(nid){
   var modalWindow = document.getElementById('modal-window');
   modalWindow.innerHTML = 
@@ -262,28 +260,28 @@ function deleteNodeModal(node, name){
 }
 
 function syncRulesetModal(node, name){
-  var modalWindow = document.getElementById('modal-window');
-  modalWindow.innerHTML = 
-  '<div class="modal-dialog">'+
-    '<div class="modal-content">'+
-    
-      '<div class="modal-header">'+
-        '<h4 class="modal-title" id="sync-node-header">Node</h4>'+
-        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+    var modalWindow = document.getElementById('modal-window');
+    modalWindow.innerHTML = 
+    '<div class="modal-dialog">'+
+      '<div class="modal-content">'+
+      
+        '<div class="modal-header">'+
+          '<h4 class="modal-title" id="sync-node-header">Node</h4>'+
+          '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+        '</div>'+
+  
+        '<div class="modal-body" id="sync-node-footer-table">'+ 
+          '<p>Do you want to sync ruleset for <b>'+name+'</b> node?</p>'+
+        '</div>'+
+  
+        '<div class="modal-footer" id="sync-node-footer-btn">'+
+          '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
+          '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-sync-node" onclick="sendRulesetToNode(\''+node+'\')">sync</button>'+
+        '</div>'+
+  
       '</div>'+
-
-      '<div class="modal-body" id="sync-node-footer-table">'+ 
-        '<p>Do you want to sync ruleset for <b>'+name+'</b> node?</p>'+
-      '</div>'+
-
-      '<div class="modal-footer" id="sync-node-footer-btn">'+
-        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
-        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-sync-node" onclick="sendRulesetToNode(\''+node+'\')">sync</button>'+
-      '</div>'+
-
-    '</div>'+
-  '</div>';
-}
+    '</div>';
+  }
 
 function loadJSONdata(){
   $.getJSON('../conf/ui.conf', function(data) {

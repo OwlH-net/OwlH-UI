@@ -25,16 +25,17 @@ function PingNode(uuid) {
             if (response.data.ping=='pong') {
                 document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white node-option-"+uuid;
                 document.getElementById(uuid+'-online').innerHTML = "ON LINE";
-                PingService(uuid);
-                PingSuricata(uuid);
-                PingZeek(uuid);
-                PingWazuh(uuid);
-                PingStap(uuid);
-                PingPorts(uuid);
-                PingAnalyzer(uuid);
-                PingCollector(uuid);
-                PingCheckDeploy(uuid);
-                PingDataflow(uuid);
+                PingMonitor(uuid);
+                // PingService(uuid);
+                // PingSuricata(uuid);
+                // PingZeek(uuid);
+                // PingWazuh(uuid);
+                // PingStap(uuid);
+                // PingPorts(uuid);
+                // PingAnalyzer(uuid);
+                // PingCollector(uuid);
+                // PingCheckDeploy(uuid);
+                // PingDataflow(uuid);
                 return "true";
             } else {
                 document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white node-option-"+uuid;
@@ -66,6 +67,24 @@ function PingService(uuid){
         })
         .catch(function (error) {
             return false;
+        }); 
+}
+
+function PingMonitor(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/pingmonitor/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+            document.getElementById('cpu-'+uuid).innerHTML = document.getElementById('cpu-'+uuid).innerHTML + parseFloat(response.data.cpus[0].percentage).toFixed(2)+" %";
+            document.getElementById('mem-'+uuid).innerHTML = document.getElementById('mem-'+uuid).innerHTML + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
+            document.getElementById('sto-'+uuid).innerHTML = document.getElementById('sto-'+uuid).innerHTML + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
+        })
+        .catch(function (error) {
         }); 
 }
 
@@ -161,7 +180,7 @@ function generateAllNodesHTMLOutput(response) {
                 '<th scope="col">Name</th>                                    ' +
                 '<th scope="col">Status</th>                                  ' +
                 '<th scope="col"></th>                                ' +
-                '<th scope="col"></th>                                 ' +
+                '<th scope="col" width="25%">Actions</th>                                 ' +
                 '</tr>                                                        ' +
                 '</thead>                                                     ' +
                 '<tbody >'
@@ -176,16 +195,25 @@ function generateAllNodesHTMLOutput(response) {
         PingNode(uuid);
         getRulesetUID(uuid);
 
+
         html = html + '<tr>                                                                     '+
             '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
-            '   <td class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
-                '   <p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
-                '   <i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
-                '   <br><br>'+
-                '   <span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
-            '   </td>' +
-            '<td class="align-middle">'+
-        '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white node-option-'+uuid+'">N/A</span></td>';            
+                '<td class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
+                    '<p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
+                    '<i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
+                    '<br><br>'+
+                    '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
+                '</td>' +
+                '<td class="align-middle">'+
+                    '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white node-option-'+uuid+'" style="cursor: pointer;">N/A</span> <br>'+
+                    '<span>'+
+                        '<div><p></p></div>'+
+                        '<div id="cpu-'+uuid+'"><b>CPU:</b> </div>'+
+                        '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
+                        '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+
+                    '</span>'+
+                '</td>';
+        
         $(document).on("click", ".node-option-"+uuid, function(){
             var ipmaster = document.getElementById('ip-master').value;
             var portmaster = document.getElementById('port-master').value;
@@ -306,15 +334,15 @@ function generateAllNodesHTMLOutput(response) {
             // '</td>                                                            ' +
 
             '<td class="align-middle"> '+
-            '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'actions\',\''+uuid+'\')"><b>Actions</b> <i class="fas fa-sort-down" id="actions-form-icon-'+uuid+'"></i></h6>'+
-            '<span id="actions-form-'+uuid+'" style="display:None" color>'+                                                       
+            // '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'actions\',\''+uuid+'\')"><b>Actions</b> <i class="fas fa-sort-down" id="actions-form-icon-'+uuid+'"></i></h6>'+
+            // '<span id="actions-form-'+uuid+'" style="display:None" color>'+                                                       
                 '<span style="font-size: 15px; color: Dodgerblue;" >                            ' +
-                '<i class="fas fa-arrow-alt-circle-down" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
-                '<br><i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node                            ' +
-                '<br><i class="fas fa-cog" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
-                '<br><i class="fas fa-trash-alt" style="color: red;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
+                    '<i class="fas fa-arrow-alt-circle-down" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
+                    '<br><i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node                            ' +
+                    '<br><i class="fas fa-cog" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
+                    '<br><i class="fas fa-trash-alt" style="color: red;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
                 '</span>'+
-            '</span>'+
+            // '</span>'+
             // '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'deploy\',\''+uuid+'\')"><b>Deploy</b> <i class="fas fa-sort-down" id="deploy-form-icon-'+uuid+'"></i></h6>'+
             // '<span id="deploy-form-'+uuid+'" style="display:None">'+
             //     '<span style="font-size: 15px; color: Dodgerblue;">'+

@@ -15,18 +15,64 @@ function loadPlugins(){
     var name = urlWeb.searchParams.get("node");
     var uuid = urlWeb.searchParams.get("uuid");
     document.getElementById('node-config-title').innerHTML = name;
-    document.getElementById('master-table-plugins').innerHTML = 
-    // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-    //     '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'actions\',\''+uuid+'\')"><b>Actions</b> <i class="fas fa-sort-down" id="actions-form-icon-'+uuid+'"></i></h6>'+
-    //     '<span id="actions-form-'+uuid+'" style="display:None" color><br>'+                                                       
-    //         '<span style="font-size: 15px; color: Dodgerblue;" >                            ' +
-    //         '<i class="fas fa-arrow-alt-circle-down" title="See node files" style="font-size:20px;" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
-    //         '<br><i class="fas fa-cogs" title="Modify node details" style="font-size:20px;" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+')"></i> | Modify node                            ' +
-    //         '<br><i class="fas fa-cog" title="Edit node configuration" style="font-size:20px;" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
-    //         '<br><i class="fas fa-trash-alt" style="color: red; font-size:20px;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+')"></i> | Delete node                         ' +
-    //         '</span>'+
-    //     '</span>'+
-    // '</div>'+ 
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    
+    var html = 
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'monitor\', \''+uuid+'\')"><b>Node monitor</b> <i class="fas fa-sort-down" id="monitor-form-icon-'+uuid+'"></i></h6>'+
+        '<span id="monitor-form-'+uuid+'" style="display:None"><br>'+
+            // '<table width="100%">'+
+            //     '<thead>'+
+            //         '<th width="33%">CPU</th>'+
+            //         '<th width="33%">Memory</th>'+
+            //         '<th width="34%">Storage</th>'+
+            //     '</thead>'+
+            //     '<tbody>'+                
+            //         '<tr>'+
+            //             '<td id="cpu-percentage"></td>'+
+            //             '<td id="mem-percentage"></td>'+
+            //             '<td id="sto-percentage"></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-used"></td>'+
+            //             '<td id="sto-total-disk"></td>'+                        
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-free"></td>'+
+            //             '<td id="sto-free-disk"></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-total"></td>'+
+            //             '<td id="sto-use-disk"></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-alloc"></td>'+
+            //             '<td></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-total-alloc"></td>'+
+            //             '<td></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-sys"></td>'+
+            //             '<td></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-gc"></td>'+
+            //             '<td></td>'+
+            //         '</tr>'+               
+            //     '</tbody>'+
+            // '</table>'+
+        '</span>'+
+    '</div>'+    
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
         '<span id="network-ids-form-'+uuid+'" style="display:None"><br>'+
@@ -162,6 +208,8 @@ function loadPlugins(){
         '</span>' +
     '</div>';
     
+    document.getElementById('master-table-plugins').innerHTML = html;
+
     PingSuricata(uuid);
     PingZeek(uuid);
     PingWazuh(uuid);
@@ -169,7 +217,123 @@ function loadPlugins(){
     PingPorts(uuid);
     PingAnalyzer(uuid);
     PingDataflow(uuid);
-    PingCollector(uuid)
+    PingCollector(uuid);
+    PingMonitor(uuid);
+}
+
+function PingMonitor(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/pingmonitor/' + uuid;
+    var html = "";
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+
+            // var html = html + '<table width="100%">'+
+            //     '<thead>'+
+            //         '<th width="33%">CPU</th>'+
+            //         '<th width="33%">Memory</th>'+
+            //         '<th width="34%">Storage</th>'+
+            //     '</thead>'+
+            //     '<tbody>'+                
+            //         '<tr>'+
+            //             '<td id="cpu-percentage"></td>'+
+            //             '<td id="mem-percentage"></td>'+
+            //             '<td id="sto-percentage"></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-used"></td>'+
+            //             '<td id="sto-total-disk"></td>'+                        
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-free"></td>'+
+            //             '<td id="sto-free-disk"></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-total"></td>'+
+            //             '<td id="sto-use-disk"></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-alloc"></td>'+
+            //             '<td></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-total-alloc"></td>'+
+            //             '<td></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-sys"></td>'+
+            //             '<td></td>'+
+            //         '</tr>'+               
+            //         '<tr>'+
+            //             '<td></td>'+
+            //             '<td id="mem-gc"></td>'+
+            //             '<td></td>'+
+            //         '</tr>'+               
+            //     '</tbody>'+
+            // '</table>';
+
+
+
+            html = html + '<table>'+
+                '<tr><td><b>CPU</b></td></tr>';
+                for(x in response.data.cpus){                                                  
+                    html = html + '<tr>'+
+                        '<td>Core '+response.data.cpus[x].id+' used: '+parseFloat(response.data.cpus[x].percentage).toFixed(2)+' %</td>'+
+                    '</tr>';
+                }
+                html = html + 
+                    '<tr></tr>'+
+                    '<tr><td><b>STORAGE</b></td></tr>'+
+                    '<tr><td>STO percentage used: '+parseFloat(response.data.disk.percentage).toFixed(2)+' %</td></tr>'+
+                    '<tr><td>STO used disk: '+parseFloat(response.data.disk.useddisk)+' kBytes</td></tr>'+
+                    '<tr><td>STO free disk: '+parseFloat(response.data.disk.freedisk)+' kBytes</td></tr>'+
+                    '<tr><td>STO total disk: '+parseFloat(response.data.disk.totaldisk)+' kBytes</td></tr>'+
+                    '<tr></tr>'+
+
+                    '<tr class="blank_row"><td></td></tr>'+
+
+                    '<tr><td><b>MEMORY</b></td></tr>'+
+                    '<tr><td>MEM percentage used: '+parseFloat(response.data.mem.percentage).toFixed(2)+' %</td></tr>'+
+                    '<tr><td>MEM alloc: '+parseFloat(response.data.mem.alloc)+' kBytes</td></tr>'+
+                    '<tr><td>MEM free space: '+parseFloat(response.data.mem.freemem)+' kBytes</td></tr>'+
+                    '<tr><td>MEM gc: '+parseFloat(response.data.mem.gc)+' kBytes</td></tr>'+
+                    '<tr><td>MEM sys: '+parseFloat(response.data.mem.sys)+' kBytes</td></tr>'+
+                    '<tr><td>MEM total alloc space: '+parseFloat(response.data.mem.totalalloc)+' kBytes</td></tr>'+
+                    '<tr><td>MEM total space: '+parseFloat(response.data.mem.totalmem)+' kBytes</td></tr>'+
+                    '<tr><td>MEM used space: '+parseFloat(response.data.mem.usedmem)+' kBytes</td></tr>'+
+                '</tr>'+
+            '</table>';
+
+            // document.getElementById('cpu-percentage').innerHTML = "<b>CPU percentage used: </b>"+parseFloat(response.data.cpus[0].percentage).toFixed(2)+" %";
+            // document.getElementById('sto-percentage').innerHTML = "<b>STO percentage used: </b>"+parseFloat(response.data.disk.percentage).toFixed(2)+" %";            
+            // document.getElementById('sto-use-disk').innerHTML =   "<b>STO used disk: </b>"+parseFloat(response.data.disk.useddisk)+" kBytes";            
+            // document.getElementById('sto-free-disk').innerHTML =  "<b>STO free disk: </b>"+parseFloat(response.data.disk.freedisk)+" kBytes";
+            // document.getElementById('sto-total-disk').innerHTML =  "<b>STO total disk: </b>"+parseFloat(response.data.disk.totaldisk)+" kBytes";            
+
+            // document.getElementById('mem-percentage').innerHTML = "<b>MEM percentage used: </b>"+parseFloat(response.data.mem.percentage).toFixed(2)+" %";
+            // document.getElementById('mem-alloc').innerHTML = "<b>MEM alloc: </b>"+parseFloat(response.data.mem.alloc)+" kBytes";
+            // document.getElementById('mem-free').innerHTML = "<b>MEM free: </b>"+parseFloat(response.data.mem.freemem)+" kBytes";
+            // document.getElementById('mem-gc').innerHTML = "<b>MEM gc: </b>"+parseFloat(response.data.mem.gc)+" kBytes";
+            // document.getElementById('mem-sys').innerHTML = "<b>MEM sys: </b>"+parseFloat(response.data.mem.sys)+" kBytes";
+            // document.getElementById('mem-total-alloc').innerHTML = "<b>MEM total alloc: </b>"+parseFloat(response.data.mem.totalalloc)+" kBytes";
+            // document.getElementById('mem-total').innerHTML = "<b>MEM total: </b>"+parseFloat(response.data.mem.totalmem)+" kBytes";
+            // document.getElementById('mem-used').innerHTML = "<b>MEM used: </b>"+parseFloat(response.data.mem.usedmem)+" kBytes";
+            
+            document.getElementById('monitor-form-'+uuid).innerHTML = html;
+        })
+        .catch(function (error) {
+        }); 
 }
 
 function PingDataflow(uuid){
@@ -752,6 +916,63 @@ function showPorts(uuid){
     .catch(function (error) {
         return false;
     });
+}
+
+function showModalPorts(response, uuid){
+    var html = '<div class="modal-dialog modal-lg">'+
+        '<div class="modal-content">'+
+    
+            '<div class="modal-header">'+
+                '<h4 class="modal-title">PORTS</h4>'+
+                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+
+            if (response.data.ack=="false"){
+                html = html + '<div class="modal-body">  '+
+                    '<h5 class="modal-title" style="color:red;">Error retrieving ports...</h5>'+
+                '</div>';
+            }else{
+                html = html + '<div class="modal-body">  '+
+                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>                                                      ' +
+                            '<tr>                                                         ' +
+                                '<th width="30%">Portproto</th>                                    ' +
+                                '<th>First</th>                                         ' +
+                                '<th>Last</th>                                 ' +
+                                '<th width="10%">Select</th>                                 ' +
+                            '</tr>                                                        ' +
+                        '</thead>                                                     ' +
+                        '<tbody>                                                     ' 
+                            for(line in response.data){
+                                var first = new Date(response.data[line]["first"]*1000);
+                                var last = new Date(response.data[line]["last"]*1000);
+                                
+                                html = html + '<tr><td id="">                            ' +
+                                response.data[line]["portprot"]+'<br>'                    +
+                                '</td><td>'+
+                                first+
+                                '</td><td>'+
+                                last+
+                                '</td><td align="center">'+
+                                '<input class="form-check-input" type="checkbox" id="'+line+'"></input>'+
+                                '</td></tr>'
+                            }
+                    html = html +'</tbody>'+
+                    '</table>'+
+                '</div>'+
+
+                '<div class="modal-footer" id="ruleset-note-footer-btn">'+
+                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                    '<button type="button" class="btn btn-dark" data-dismiss="modal" onclick="deleteAllPorts(\''+uuid+'\')">Delete all</button>' +
+                    '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePorts(\''+uuid+'\')">Delete</button>' +
+                '</div>';
+            }
+
+        html = html + '</div>'+
+    '</div>';
+    document.getElementById('modal-window').innerHTML = html;
 }
 
 function deletePorts(uuid){

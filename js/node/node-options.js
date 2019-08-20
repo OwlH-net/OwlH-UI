@@ -22,55 +22,15 @@ function loadPlugins(){
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'monitor\', \''+uuid+'\')"><b>Node monitor</b> <i class="fas fa-sort-down" id="monitor-form-icon-'+uuid+'"></i></h6>'+
         '<span id="monitor-form-'+uuid+'" style="display:None"><br>'+
-            // '<table width="100%">'+
-            //     '<thead>'+
-            //         '<th width="33%">CPU</th>'+
-            //         '<th width="33%">Memory</th>'+
-            //         '<th width="34%">Storage</th>'+
-            //     '</thead>'+
-            //     '<tbody>'+                
-            //         '<tr>'+
-            //             '<td id="cpu-percentage"></td>'+
-            //             '<td id="mem-percentage"></td>'+
-            //             '<td id="sto-percentage"></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-used"></td>'+
-            //             '<td id="sto-total-disk"></td>'+                        
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-free"></td>'+
-            //             '<td id="sto-free-disk"></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-total"></td>'+
-            //             '<td id="sto-use-disk"></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-alloc"></td>'+
-            //             '<td></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-total-alloc"></td>'+
-            //             '<td></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-sys"></td>'+
-            //             '<td></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-gc"></td>'+
-            //             '<td></td>'+
-            //         '</tr>'+               
-            //     '</tbody>'+
-            // '</table>'+
+            '<table width="100%">'+
+                '<tbody>'+                
+                    '<tr>'+
+                        '<td width="33%" valign="top"><div id="cpu-node-monitor-'+uuid+'"></div></td>'+
+                        '<td width="33%" valign="top"><div id="mem-node-monitor-'+uuid+'"></div></td>'+
+                        '<td width="34%" valign="top"><div id="sto-node-monitor-'+uuid+'"></div></td>'+
+                    '</tr>'+               
+                '</tbody>'+
+            '</table>'+
         '</span>'+
     '</div>'+    
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -232,105 +192,24 @@ function PingMonitor(uuid){
         timeout: 30000
     })
         .then(function (response) {
+            for(x in response.data.cpus){
+                document.getElementById('cpu-node-monitor-'+uuid).innerHTML = document.getElementById('cpu-node-monitor-'+uuid).innerHTML + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
+            }
 
-            // var html = html + '<table width="100%">'+
-            //     '<thead>'+
-            //         '<th width="33%">CPU</th>'+
-            //         '<th width="33%">Memory</th>'+
-            //         '<th width="34%">Storage</th>'+
-            //     '</thead>'+
-            //     '<tbody>'+                
-            //         '<tr>'+
-            //             '<td id="cpu-percentage"></td>'+
-            //             '<td id="mem-percentage"></td>'+
-            //             '<td id="sto-percentage"></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-used"></td>'+
-            //             '<td id="sto-total-disk"></td>'+                        
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-free"></td>'+
-            //             '<td id="sto-free-disk"></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-total"></td>'+
-            //             '<td id="sto-use-disk"></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-alloc"></td>'+
-            //             '<td></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-total-alloc"></td>'+
-            //             '<td></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-sys"></td>'+
-            //             '<td></td>'+
-            //         '</tr>'+               
-            //         '<tr>'+
-            //             '<td></td>'+
-            //             '<td id="mem-gc"></td>'+
-            //             '<td></td>'+
-            //         '</tr>'+               
-            //     '</tbody>'+
-            // '</table>';
-
-
-
-            html = html + '<table>'+
-                '<tr><td><b>CPU</b></td></tr>';
-                for(x in response.data.cpus){                                                  
-                    html = html + '<tr>'+
-                        '<td>Core '+response.data.cpus[x].id+' used: '+parseFloat(response.data.cpus[x].percentage).toFixed(2)+' %</td>'+
-                    '</tr>';
-                }
-                html = html + 
-                    '<tr></tr>'+
-                    '<tr><td><b>STORAGE</b></td></tr>'+
-                    '<tr><td>STO percentage used: '+parseFloat(response.data.disk.percentage).toFixed(2)+' %</td></tr>'+
-                    '<tr><td>STO used disk: '+parseFloat(response.data.disk.useddisk)+' kBytes</td></tr>'+
-                    '<tr><td>STO free disk: '+parseFloat(response.data.disk.freedisk)+' kBytes</td></tr>'+
-                    '<tr><td>STO total disk: '+parseFloat(response.data.disk.totaldisk)+' kBytes</td></tr>'+
-                    '<tr></tr>'+
-
-                    '<tr class="blank_row"><td></td></tr>'+
-
-                    '<tr><td><b>MEMORY</b></td></tr>'+
-                    '<tr><td>MEM percentage used: '+parseFloat(response.data.mem.percentage).toFixed(2)+' %</td></tr>'+
-                    '<tr><td>MEM alloc: '+parseFloat(response.data.mem.alloc)+' kBytes</td></tr>'+
-                    '<tr><td>MEM free space: '+parseFloat(response.data.mem.freemem)+' kBytes</td></tr>'+
-                    '<tr><td>MEM gc: '+parseFloat(response.data.mem.gc)+' kBytes</td></tr>'+
-                    '<tr><td>MEM sys: '+parseFloat(response.data.mem.sys)+' kBytes</td></tr>'+
-                    '<tr><td>MEM total alloc space: '+parseFloat(response.data.mem.totalalloc)+' kBytes</td></tr>'+
-                    '<tr><td>MEM total space: '+parseFloat(response.data.mem.totalmem)+' kBytes</td></tr>'+
-                    '<tr><td>MEM used space: '+parseFloat(response.data.mem.usedmem)+' kBytes</td></tr>'+
-                '</tr>'+
-            '</table>';
-
-            // document.getElementById('cpu-percentage').innerHTML = "<b>CPU percentage used: </b>"+parseFloat(response.data.cpus[0].percentage).toFixed(2)+" %";
-            // document.getElementById('sto-percentage').innerHTML = "<b>STO percentage used: </b>"+parseFloat(response.data.disk.percentage).toFixed(2)+" %";            
-            // document.getElementById('sto-use-disk').innerHTML =   "<b>STO used disk: </b>"+parseFloat(response.data.disk.useddisk)+" kBytes";            
-            // document.getElementById('sto-free-disk').innerHTML =  "<b>STO free disk: </b>"+parseFloat(response.data.disk.freedisk)+" kBytes";
-            // document.getElementById('sto-total-disk').innerHTML =  "<b>STO total disk: </b>"+parseFloat(response.data.disk.totaldisk)+" kBytes";            
-
-            // document.getElementById('mem-percentage').innerHTML = "<b>MEM percentage used: </b>"+parseFloat(response.data.mem.percentage).toFixed(2)+" %";
-            // document.getElementById('mem-alloc').innerHTML = "<b>MEM alloc: </b>"+parseFloat(response.data.mem.alloc)+" kBytes";
-            // document.getElementById('mem-free').innerHTML = "<b>MEM free: </b>"+parseFloat(response.data.mem.freemem)+" kBytes";
-            // document.getElementById('mem-gc').innerHTML = "<b>MEM gc: </b>"+parseFloat(response.data.mem.gc)+" kBytes";
-            // document.getElementById('mem-sys').innerHTML = "<b>MEM sys: </b>"+parseFloat(response.data.mem.sys)+" kBytes";
-            // document.getElementById('mem-total-alloc').innerHTML = "<b>MEM total alloc: </b>"+parseFloat(response.data.mem.totalalloc)+" kBytes";
-            // document.getElementById('mem-total').innerHTML = "<b>MEM total: </b>"+parseFloat(response.data.mem.totalmem)+" kBytes";
-            // document.getElementById('mem-used').innerHTML = "<b>MEM used: </b>"+parseFloat(response.data.mem.usedmem)+" kBytes";
+            document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-1"><b>STORAGE percentage used: </b>'+parseFloat(response.data.disk.percentage).toFixed(2)+' %</div>';            
+            document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-2"><b>STORAGE used: </b>'+parseFloat(response.data.disk.useddisk).toFixed(2)+' MB</div>';            
+            document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-3"><b>STORAGE free: </b>'+parseFloat(response.data.disk.freedisk).toFixed(2)+' MB</div>';            
+            document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-4"><b>STORAGE total: </b>'+parseFloat(response.data.disk.totaldisk).toFixed(2)+' MB</div>';            
             
-            document.getElementById('monitor-form-'+uuid).innerHTML = html;
+            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-1"><b>MEMORY percentage: </b>'+parseFloat(response.data.mem.percentage).toFixed(2)+' %</div>';            
+            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-6"><b>MEMORY total alloc: </b>'+parseFloat(response.data.mem.totalalloc).toFixed(2)+' MB</div>';            
+            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-2"><b>MEMORY alloc: </b>'+parseFloat(response.data.mem.alloc).toFixed(2)+' MB</div>';            
+            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-4"><b>MEMORY gc: </b>'+parseFloat(response.data.mem.gc).toFixed(2)+' MB</div>';            
+            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-5"><b>MEMORY sys: </b>'+parseFloat(response.data.mem.sys).toFixed(2)+' MB</div>';            
+            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-8"><b>MEMORY used: </b>'+parseFloat(response.data.mem.usedmem).toFixed(2)+' MB</div>';            
+            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-3"><b>MEMORY free: </b>'+parseFloat(response.data.mem.freemem).toFixed(2)+' MB</div>';            
+            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-7"><b>MEMORY total: </b>'+parseFloat(response.data.mem.totalmem).toFixed(2)+' MB</div>';            
+            
         })
         .catch(function (error) {
         }); 

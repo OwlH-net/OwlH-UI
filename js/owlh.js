@@ -80,7 +80,10 @@ function PingMonitor(uuid){
         timeout: 30000
     })
         .then(function (response) {
-            document.getElementById('cpu-'+uuid).innerHTML = document.getElementById('cpu-'+uuid).innerHTML + parseFloat(response.data.cpus[0].percentage).toFixed(2)+" %";
+            for(x in response.data.cpus){
+                document.getElementById('node-values-'+uuid).innerHTML = document.getElementById('node-values-'+uuid).innerHTML + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
+            }
+            // document.getElementById('cpu-'+uuid).innerHTML = document.getElementById('cpu-'+uuid).innerHTML + parseFloat(response.data.cpus[0].percentage).toFixed(2)+" %";
             document.getElementById('mem-'+uuid).innerHTML = document.getElementById('mem-'+uuid).innerHTML + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
             document.getElementById('sto-'+uuid).innerHTML = document.getElementById('sto-'+uuid).innerHTML + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
         })
@@ -208,9 +211,11 @@ function generateAllNodesHTMLOutput(response) {
                     '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white node-option-'+uuid+'" style="cursor: pointer;">N/A</span> <br>'+
                     '<span>'+
                         '<div><p></p></div>'+
-                        '<div id="cpu-'+uuid+'"><b>CPU:</b> </div>'+
-                        '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
-                        '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+
+
+                        '<div id="node-values-'+uuid+'">'+
+                            '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
+                            '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
+                        '</div>'+
                     '</span>'+
                 '</td>';
         

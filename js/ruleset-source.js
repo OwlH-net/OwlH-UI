@@ -69,8 +69,10 @@ function addRulesetSource() {
         nodejson["fileName"] = fileName[fileName.length-1];
         nodejson["type"] = "source";
         nodejson["sourceType"] = sourceType;
-        if (sourceType == "url" || sourceType == "thread"){nodejson["isDownloaded"] = "false";} //only for source, not for custom
+        if (sourceType != "custom"){nodejson["isDownloaded"] = "false";} //only for source and threat, not for custom ruleset source
         var nodeJSON = JSON.stringify(nodejson);
+
+        console.log(nodejson);
 
         axios({
             method: 'post',
@@ -109,10 +111,12 @@ function GetAllRulesetSource(){
     var portmaster = document.getElementById('port-master').value;
     var result = document.getElementById('list-ruleset-source');
     var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/';
+    var portmaster = document.getElementById('create-url').checked = "true";
+    document.getElementById('progressBar-create-div').style.display = "none";
+    document.getElementById('progressBar-create').style.display = "none";
     document.getElementById('ruleset-source-text-top').style.display ="none";
     document.getElementById('ruleset-source-text-bot').style.display ="none";
 
-    var portmaster = document.getElementById('create-url').checked = "true";
     document.getElementById('ruleset-source-name').value = "";
     document.getElementById('ruleset-source-desc').value = "";
     document.getElementById('ruleset-source-url').value = "";
@@ -158,7 +162,7 @@ function RadioButtonListener(){
 function changeIconAttributes(sources){
     for (source in sources) {
         var icon = document.getElementById('SourceDetails-'+source);
-        if (sources[source]['isDownloaded'] == "false" && sources[source]['sourceType'] == "url"){
+        if (sources[source]['isDownloaded'] == "false" && sources[source]['sourceType'] != "custom"){
             icon.style.color = "grey";
             document.getElementById('download-status-'+source).value = "false";
         }else if (sources[source]['sourceType'] == "url"){
@@ -407,12 +411,14 @@ function deleteRulesetSource(sourceUUID,sourceType){
         });
 }
 
-function downloadFile(name, path, url, sourceUUID){
+function downloadFile(name, path, url, sourceUUID){    
     var downloadStatus = document.getElementById('download-status-'+sourceUUID);
     var icon = document.getElementById('SourceDetails-'+sourceUUID);
     if (downloadStatus.value == "true"){
         modalOverwriteDownload(name,path, url, sourceUUID);
     }else{
+        document.getElementById('progressBar-create-div').style.display = "block";
+        document.getElementById('progressBar-create').style.display = "block";
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/downloadFile';
@@ -440,7 +446,10 @@ function downloadFile(name, path, url, sourceUUID){
                     '</div>';
                     icon.style.color="Dodgerblue";
                     downloadStatus.value = "true";  
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);             
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);        
+                    
+                    document.getElementById('progressBar-create').style.display = "none";
+                    document.getElementById('progressBar-create-div').style.display = "none";
                 }else{
                     var alert = document.getElementById('floating-alert');
                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -451,6 +460,9 @@ function downloadFile(name, path, url, sourceUUID){
                     '</div>';
                     downloadStatus.value = "false";
                     setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    
+                    document.getElementById('progressBar-create').style.display = "none";
+                    document.getElementById('progressBar-create-div').style.display = "none";
                 }
         })
             .catch(function error() {
@@ -463,6 +475,9 @@ function downloadFile(name, path, url, sourceUUID){
                 '</div>';
                 downloadStatus.value = "false";
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
+                
+                document.getElementById('progressBar-create').style.display = "none";
+                document.getElementById('progressBar-create-div').style.display = "none";
         });
     }
 }
@@ -490,10 +505,12 @@ function modalOverwriteDownload(name,path, url, sourceUUID){
         '</div>'+
     '</div>';
 
-    $('#modal-delete-source').modal('show')     
+    $('#modal-delete-source').modal('show');     
 }
 
 function overwriteDownload(name, path, url, uuid){
+    document.getElementById('progressBar-create-div').style.display = "block";
+    document.getElementById('progressBar-create').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var downloadStatus = document.getElementById('download-status-'+source);
@@ -524,6 +541,9 @@ function overwriteDownload(name, path, url, uuid){
             icon.style.color="Dodgerblue";
             downloadStatus.value = "true";
             setTimeout(function() {$(".alert").alert('close')}, 5000);
+            
+            document.getElementById('progressBar-create').style.display = "none";
+            document.getElementById('progressBar-create-div').style.display = "none";
         }else{
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong>'+response.data.error+''+
@@ -534,6 +554,9 @@ function overwriteDownload(name, path, url, uuid){
             icon.style.color="Grey";
             downloadStatus.value = "false";
             setTimeout(function() {$(".alert").alert('close')}, 5000);
+            
+            document.getElementById('progressBar-create').style.display = "none";
+            document.getElementById('progressBar-create-div').style.display = "none";
         }
     })
     .catch(function error(error) {
@@ -546,6 +569,9 @@ function overwriteDownload(name, path, url, uuid){
         icon.style.color="Grey";
         downloadStatus.value = "false";
         setTimeout(function() {$(".alert").alert('close')}, 5000);
+        
+        document.getElementById('progressBar-create').style.display = "none";
+        document.getElementById('progressBar-create-div').style.display = "none";
     });
 }
 

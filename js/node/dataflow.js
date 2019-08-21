@@ -242,10 +242,16 @@ function CreateNewVxLAN(uuid){
 }
 
 function SaveVxLAN(uuid){
-    if (document.getElementById('ifaceNameVxLAN').value == "" || document.getElementById('VxLANid').value == "" || document.getElementById('locaIPVxLAN').value == "" || document.getElementById('portVxLAN').value == ""){
-        if (document.getElementById('ifaceNameVxLAN').value == ""){
-            document.getElementById('ifaceNameVxLAN').placeholder = "Please insert valid Name";
-            document.getElementById('ifaceNameVxLAN').required = "true";
+    if (document.getElementById('ifaceNameVxLAN').value == "" || document.getElementById('VxLANid').value == "" || document.getElementById('locaIPVxLAN').value == "" || document.getElementById('portVxLAN').value == "" || /\s/g.test(document.getElementById('ifaceNameVxLAN').value)){
+        if (document.getElementById('ifaceNameVxLAN').value == "" || /\s/g.test(document.getElementById('ifaceNameVxLAN').value)){
+            if (document.getElementById('ifaceNameVxLAN').value == ""){
+                document.getElementById('ifaceNameVxLAN').placeholder = "Please insert a valid name";
+                document.getElementById('ifaceNameVxLAN').required = "true";
+            }else{                
+                document.getElementById('ifaceNameVxLAN').value = "";
+                document.getElementById('ifaceNameVxLAN').placeholder = "Please insert a valid name without spaces";
+                document.getElementById('ifaceNameVxLAN').required = "true";
+            }
         }
         if (document.getElementById('VxLANid').value == ""){
             document.getElementById('VxLANid').placeholder = "Please insert LAN ID";
@@ -428,14 +434,20 @@ function CreateNewLocal(uuid){
 }
 
 function SaveNewLocal(uuid){
-    if (document.getElementById('mtuNewLocal').value == "" || document.getElementById('InterfaceNameNewLocal').value == ""){
+    if (document.getElementById('mtuNewLocal').value == "" || document.getElementById('InterfaceNameNewLocal').value == "" || /\s/g.test(document.getElementById('InterfaceNameNewLocal').value)){
+        if (document.getElementById('InterfaceNameNewLocal').value == "" || /\s/g.test(document.getElementById('InterfaceNameNewLocal').value)){
+            if (document.getElementById('InterfaceNameNewLocal').value == ""){
+                document.getElementById('InterfaceNameNewLocal').placeholder = "Please insert a name    ";
+                document.getElementById('InterfaceNameNewLocal').required = "true";
+            }else{
+                document.getElementById('InterfaceNameNewLocal').value = "";
+                document.getElementById('InterfaceNameNewLocal').placeholder = "Please insert a name without spaces";
+                document.getElementById('InterfaceNameNewLocal').required = "true";
+            }
+        }
         if (document.getElementById('mtuNewLocal').value == ""){
             document.getElementById('mtuNewLocal').placeholder = "Please insert a MTU";
             document.getElementById('mtuNewLocal').required = "true";
-        }
-        if (document.getElementById('InterfaceNameNewLocal').value == ""){
-            document.getElementById('InterfaceNameNewLocal').placeholder = "Please insert a name";
-            document.getElementById('InterfaceNameNewLocal').required = "true";
         }
     }else{
         var ipmaster = document.getElementById('ip-master').value;
@@ -709,15 +721,28 @@ function createSocketToNetwork(uuid){
         document.getElementById('create-socket-network-'+net).checked = "true";
     });
 
-    $('#btn-create-socket-network').click(function(){       $('#create-socket-to-network-modal').modal("hide"); saveSocketToNetwork(uuid);});
-    $('#btn-create-socket-network-close').click(function(){ $('#create-socket-to-network-modal').modal("hide"); SocketToNetworkList(uuid);});
+    $('#btn-create-socket-network').click(function(){
+        $('#create-socket-to-network-modal').modal("toggle");
+        $('#create-socket-to-network-modal').modal("hide");
+        saveSocketToNetwork(uuid);}
+    );
+    $('#btn-create-socket-network-close').click(function(){ 
+        $('#create-socket-to-network-modal').modal("hide"); 
+        SocketToNetworkList(uuid);
+    });
 }
 
-function saveSocketToNetwork(uuid){
-    if (document.getElementById('socketName').value == "" || document.getElementById('listenPort').value == "" || document.getElementById('certificate').value == ""){
-        if (document.getElementById('socketName').value == ""){
-            document.getElementById('socketName').placeholder = "Please insert name";
-            document.getElementById('socketName').required = "true";
+function saveSocketToNetwork(uuid){  
+    if (document.getElementById('socketName').value == "" || document.getElementById('listenPort').value == "" || document.getElementById('certificate').value == "" || /\s/g.test(document.getElementById('socketName').value)){
+        if (document.getElementById('socketName').value == "" || /\s/g.test(document.getElementById('socketName').value)){
+            if (document.getElementById('socketName').value == ""){                
+                document.getElementById('socketName').placeholder = "Please insert a name";
+                document.getElementById('socketName').required = "true";
+            }else{
+                document.getElementById('socketName').value = "";
+                document.getElementById('socketName').placeholder = "Please insert a name without spaces";
+                document.getElementById('socketName').required = "true";
+            }
         }
         if (document.getElementById('listenPort').value == ""){
             document.getElementById('listenPort').placeholder = "Please insert port";
@@ -733,12 +758,7 @@ function saveSocketToNetwork(uuid){
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/saveSocketToNetwork';
 
         var valueSelected = "";
-        $('input:radio:checked').each(function() {
-            // var classValueInput = $('socket-network-radio-'+uuid).attr("class");
-            
-            // console.log($(this).Id('socket-network-radio-'+uuid));
-            console.log($(this).attr('id'));
-            
+        $('input:radio:checked').each(function() {            
             if($(this).attr('class') == 'socket-network-radio'){
                 valueSelected = $(this).prop("value");
             }                        

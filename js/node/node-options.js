@@ -25,9 +25,10 @@ function loadPlugins(){
             '<table width="100%">'+
                 '<tbody>'+                
                     '<tr>'+
-                        '<td width="33%" valign="top"><div id="cpu-node-monitor-'+uuid+'"></div></td>'+
-                        '<td width="33%" valign="top"><div id="mem-node-monitor-'+uuid+'"></div></td>'+
-                        '<td width="34%" valign="top"><div id="sto-node-monitor-'+uuid+'"></div></td>'+
+                        '<td width="15%" valign="top"><div id="cpu-node-monitor-'+uuid+'"></div></td>'+
+                        '<td width="30%" valign="top"><div id="mem-node-monitor-'+uuid+'"></div></td>'+
+                        '<td width="25%" valign="top"><div id="owlh-node-monitor-'+uuid+'"></div></td>'+
+                        '<td width="30%" valign="top"><div id="sto-node-monitor-'+uuid+'"></div></td>'+
                     '</tr>'+               
                 '</tbody>'+
             '</table>'+
@@ -201,11 +202,12 @@ function PingMonitor(uuid){
             document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-3"><b>STORAGE free: </b>'+parseFloat(response.data.disk.freedisk).toFixed(2)+' MB</div>';            
             document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-4"><b>STORAGE total: </b>'+parseFloat(response.data.disk.totaldisk).toFixed(2)+' MB</div>';            
             
-            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-1"><b>MEMORY percentage: </b>'+parseFloat(response.data.mem.percentage).toFixed(2)+' %</div>';            
-            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-6"><b>MEMORY total alloc: </b>'+parseFloat(response.data.mem.totalalloc).toFixed(2)+' MB</div>';            
-            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-2"><b>MEMORY alloc: </b>'+parseFloat(response.data.mem.alloc).toFixed(2)+' MB</div>';            
-            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-4"><b>MEMORY gc: </b>'+parseFloat(response.data.mem.gc).toFixed(2)+' MB</div>';            
-            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-5"><b>MEMORY sys: </b>'+parseFloat(response.data.mem.sys).toFixed(2)+' MB</div>';            
+            document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-6"><b>OWLH total alloc: </b>'+parseFloat(response.data.mem.totalalloc).toFixed(2)+' MB</div>';            
+            document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-2"><b>OWLH alloc: </b>'+parseFloat(response.data.mem.alloc).toFixed(2)+' MB</div>';            
+            document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-4"><b>OWLH gc: </b>'+parseFloat(response.data.mem.gc).toFixed(2)+' MB</div>';            
+            document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-5"><b>OWLH sys: </b>'+parseFloat(response.data.mem.sys).toFixed(2)+' MB</div>';            
+
+            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-1"><b>MEMORY percentage used: </b>'+parseFloat(response.data.mem.percentage).toFixed(2)+' %</div>';            
             document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-8"><b>MEMORY used: </b>'+parseFloat(response.data.mem.usedmem).toFixed(2)+' MB</div>';            
             document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-3"><b>MEMORY free: </b>'+parseFloat(response.data.mem.freemem).toFixed(2)+' MB</div>';            
             document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-7"><b>MEMORY total: </b>'+parseFloat(response.data.mem.totalmem).toFixed(2)+' MB</div>';            

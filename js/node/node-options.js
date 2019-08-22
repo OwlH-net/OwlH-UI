@@ -1,10 +1,10 @@
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
-        var ipLoad = document.getElementById('ip-master'); 
+        var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
-        loadPlugins();        
+        loadPlugins();
         loadTitleJSONdata();
     });
 }
@@ -17,28 +17,38 @@ function loadPlugins(){
     document.getElementById('node-config-title').innerHTML = name;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    
-    var html = 
+
+    var html =
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'monitor\', \''+uuid+'\')"><b>Node monitor</b> <i class="fas fa-sort-down" id="monitor-form-icon-'+uuid+'"></i></h6>'+
         '<span id="monitor-form-'+uuid+'" style="display:None"><br>'+
             '<table width="100%">'+
-                '<tbody>'+                
+                '<tbody>'+
                     '<tr>'+
-                        '<td width="15%" valign="top"><div id="cpu-node-monitor-'+uuid+'"></div></td>'+
-                        '<td width="30%" valign="top"><div id="mem-node-monitor-'+uuid+'"></div></td>'+
-                        '<td width="25%" valign="top"><div id="owlh-node-monitor-'+uuid+'"></div></td>'+
-                        '<td width="30%" valign="top"><div id="sto-node-monitor-'+uuid+'"></div></td>'+
-                    '</tr>'+               
+                            '<div>'+
+                                '<td valign="top" width="50%"><canvas id="myChartPercentage"></canvas></td>'+
+                            '</div>'+
+                            '<div>'+
+                                '<td valign="top" width="50%"><canvas id="myChartOwlh"></canvas></td>'+
+                            '</div>'+
+                    '</tr>'+
+                    '<tr>'+
+                            '<div>'+
+                                '<td valign="top" width="50%"><canvas id="myChartMem"></canvas></td>'+
+                            '</div>'+
+                            '<div>'+
+                                '<td valign="top" width="50%"><canvas id="myChartSto"></canvas></td>'+
+                            '</div>'+
+                    '</tr>'+                   
                 '</tbody>'+
             '</table>'+
         '</span>'+
-    '</div>'+    
+    '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
         '<span id="network-ids-form-'+uuid+'" style="display:None"><br>'+
             '<p><img src="img/suricata.png" alt="" width="30"> '      +
-            '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' + 
+            '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
             '  <span style="font-size: 15px; color: grey;" >                                   ' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
             '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
@@ -55,9 +65,9 @@ function loadPlugins(){
             '  </span>' +
             '  </p>   '+
         '</span>'+
-    '</div>'+    
+    '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'transport\',\''+uuid+'\')"><b>Transport</b> <i class="fas fa-sort-down" id="transport-form-icon-'+uuid+'"></i></h6>'+                                                                        
+        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'transport\',\''+uuid+'\')"><b>Transport</b> <i class="fas fa-sort-down" id="transport-form-icon-'+uuid+'"></i></h6>'+
         '<span id="transport-form-'+uuid+'" style="display:None"><br>'+
             '  <p><img src="img/wazuh.png" alt="" width="30"> '+
             '  <span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
@@ -74,27 +84,27 @@ function loadPlugins(){
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
             '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+name+'\')"></i>                             ' +
-            '  </span></p> '+            
+            '  </span></p> '+
             '  <p><span style="font-size: 15px; color: grey;">                                   ' +
             '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i id="stap-collector-'+uuid+'">[N/A]</i> | '+
             '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
-            '  </span></p> '+   
+            '  </span></p> '+
             '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <img src="img/favicon.ico" height="25">Knownports | '+
             '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
             '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
             '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
-            '  </span></p> '+ 
+            '  </span></p> '+
             '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <img src="img/favicon.ico" height="25">Analyzer | '+
             '    <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span> <i style="padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-info-circle" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i>  ' +
-            '  </span></p> '+ 
-        '  </span>'+ 
+            '  </span></p> '+
+        '  </span>'+
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
@@ -142,12 +152,12 @@ function loadPlugins(){
                     '<div class="custom-control custom-radio">'+
                         '<input type="radio" onclick="changeDataflowValues(\'transport\', \'value\', \'wazuh\', \''+uuid+'\')" id="transport-wazuh" name="transport" value="wazuh" class="custom-control-input">'+
                         '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;" title="Collector information"></i>'+
-                    '</div>'+                    
+                    '</div>'+
                 '</td>'+
                 '<td style="word-wrap: break-word;"></td>'+
                 '</tr>'+
             '</tbody>' +
-                
+
             '</table>'+
         '</span>'+
     '</div>'+
@@ -168,7 +178,7 @@ function loadPlugins(){
             '</span>'+
         '</span>' +
     '</div>';
-    
+
     document.getElementById('master-table-plugins').innerHTML = html;
 
     PingSuricata(uuid);
@@ -193,28 +203,131 @@ function PingMonitor(uuid){
         timeout: 30000
     })
         .then(function (response) {
+            console.log(response.data);
+            // for(x in response.data.cpus){
+            //     document.getElementById('cpu-node-monitor-'+uuid).innerHTML = document.getElementById('cpu-node-monitor-'+uuid).innerHTML + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
+            // }
+
+            // document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-1"><b>STORAGE percentage used: </b>'+parseFloat(response.data.disk.percentage).toFixed(2)+' %</div>';
+            // document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-2"><b>STORAGE used: </b>'+parseFloat(response.data.disk.useddisk).toFixed(2)+' MB</div>';
+            // document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-3"><b>STORAGE free: </b>'+parseFloat(response.data.disk.freedisk).toFixed(2)+' MB</div>';
+            // document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-4"><b>STORAGE total: </b>'+parseFloat(response.data.disk.totaldisk).toFixed(2)+' MB</div>';
+
+            // document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-6"><b>OWLH total alloc: </b>'+parseFloat(response.data.mem.totalalloc).toFixed(2)+' MB</div>';
+            // document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-2"><b>OWLH alloc: </b>'+parseFloat(response.data.mem.alloc).toFixed(2)+' MB</div>';
+            // document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-4"><b>OWLH gc: </b>'+parseFloat(response.data.mem.gc).toFixed(2)+' MB</div>';
+            // document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-5"><b>OWLH sys: </b>'+parseFloat(response.data.mem.sys).toFixed(2)+' MB</div>';
+
+            // document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-1"><b>MEMORY percentage used: </b>'+parseFloat(response.data.mem.percentage).toFixed(2)+' %</div>';
+            // document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-8"><b>MEMORY used: </b>'+parseFloat(response.data.mem.usedmem).toFixed(2)+' MB</div>';
+            // document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-3"><b>MEMORY free: </b>'+parseFloat(response.data.mem.freemem).toFixed(2)+' MB</div>';
+            // document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-7"><b>MEMORY total: </b>'+parseFloat(response.data.mem.totalmem).toFixed(2)+' MB</div>';
+
+            var CPUvalues = [];
+            var CPUpercentage = [];
             for(x in response.data.cpus){
-                document.getElementById('cpu-node-monitor-'+uuid).innerHTML = document.getElementById('cpu-node-monitor-'+uuid).innerHTML + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
+                CPUvalues.push("CPU: "+x);
+                CPUpercentage.push(parseFloat(response.data.cpus[x].percentage).toFixed(2));
             }
 
-            document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-1"><b>STORAGE percentage used: </b>'+parseFloat(response.data.disk.percentage).toFixed(2)+' %</div>';            
-            document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-2"><b>STORAGE used: </b>'+parseFloat(response.data.disk.useddisk).toFixed(2)+' MB</div>';            
-            document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-3"><b>STORAGE free: </b>'+parseFloat(response.data.disk.freedisk).toFixed(2)+' MB</div>';            
-            document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-4"><b>STORAGE total: </b>'+parseFloat(response.data.disk.totaldisk).toFixed(2)+' MB</div>';            
-            
-            document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-6"><b>OWLH total alloc: </b>'+parseFloat(response.data.mem.totalalloc).toFixed(2)+' MB</div>';            
-            document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-2"><b>OWLH alloc: </b>'+parseFloat(response.data.mem.alloc).toFixed(2)+' MB</div>';            
-            document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-4"><b>OWLH gc: </b>'+parseFloat(response.data.mem.gc).toFixed(2)+' MB</div>';            
-            document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-5"><b>OWLH sys: </b>'+parseFloat(response.data.mem.sys).toFixed(2)+' MB</div>';            
+            var ctx_cpu = document.getElementById('myChartPercentage').getContext('2d');
+            var chart = new Chart(ctx_cpu, {
+                type: 'bar',
+                data: {
+                    labels: CPUvalues,
+                    datasets: [{
+                        label: 'CPU percentage usage',
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: CPUpercentage
+                    }]
+                },
+                options: {
+                    layout: {padding: {left: 0,right: 50,top: 0,bottom: 0}},
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    
+                }
+            });
 
-            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-1"><b>MEMORY percentage used: </b>'+parseFloat(response.data.mem.percentage).toFixed(2)+' %</div>';            
-            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-8"><b>MEMORY used: </b>'+parseFloat(response.data.mem.usedmem).toFixed(2)+' MB</div>';            
-            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-3"><b>MEMORY free: </b>'+parseFloat(response.data.mem.freemem).toFixed(2)+' MB</div>';            
-            document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-7"><b>MEMORY total: </b>'+parseFloat(response.data.mem.totalmem).toFixed(2)+' MB</div>';            
-            
+            var ctx_owlh = document.getElementById('myChartOwlh').getContext('2d');
+            var chart = new Chart(ctx_owlh, {
+                type: 'bar',
+                data: {
+                    labels: ['OWLH total alloc', 'OWLH alloc', 'OWLH gc', 'OWLH sys'],
+                    datasets: [{
+                        label: 'OWLH stats',
+                        backgroundColor: ['rgb(144,238,144)','rgb(240,230,140)','rgb(135,206,235)','rgb(169,169,169)'],
+                        borderColor: 'rgb(255, 255, 255)',
+                        data: [
+                                parseFloat(response.data.mem.totalalloc).toFixed(2),
+                                parseFloat(response.data.mem.alloc).toFixed(2),
+                                parseFloat(response.data.mem.gc).toFixed(2),
+                                parseFloat(response.data.mem.sys).toFixed(2)
+                            ],
+                        }
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    layout: {padding: {left: 50,right: 0,top: 0,bottom: 0}}
+                }
+            });
+
+            var ctx_mem = document.getElementById('myChartMem').getContext('2d');
+            var chart = new Chart(ctx_mem, {
+                type: 'doughnut',
+                data: {
+                    labels: ['MEMORY used', 'MEMORY free'],
+                    datasets: [{
+                        label: 'MEMORY stats',
+                        backgroundColor: ['rgb(250,128,114)','rgb(173,255,47)'],
+                        borderColor: 'rgb(255, 255, 255)',
+                        data: [
+                            parseFloat(response.data.mem.usedmem).toFixed(2),
+                            parseFloat(response.data.mem.freemem).toFixed(2)
+                        ]
+                    }]
+                },
+                options: {
+                    layout: {padding: {left: 0,right: 50,top: 50,bottom: 0}},
+                    responsive: true,
+                    maintainAspectRatio: true,
+                }
+            });
+
+            var ctx_sto = document.getElementById('myChartSto').getContext('2d');
+            var chart = new Chart(ctx_sto, {
+                type: 'doughnut',
+                data: {
+                    labels: ['STORAGE used','STORAGE free'],
+                    datasets: [{
+                        label: 'STORAGE stats',
+                        backgroundColor: ['rgb(250,128,114)','rgb(173,255,47)'],
+                        borderColor: 'rgb(255, 255, 255)',
+                        data: [
+                            parseFloat(response.data.disk.useddisk).toFixed(2),
+                            parseFloat(response.data.disk.freedisk).toFixed(2)
+                        ]
+                    }]
+                },
+                options: {
+                    layout: {
+                        padding: {left: 50,right: 0,top: 50,bottom: 0}
+                    },
+                    responsive: true,
+                    maintainAspectRatio: true,
+                }
+            });
+
+            ctx_cpu.render();
+            ctx_owlh.render();
+            ctx_mem.render();
+            ctx_sto.render();
         })
         .catch(function (error) {
-        }); 
+        });
 }
 
 function PingDataflow(uuid){
@@ -254,7 +367,7 @@ function ChangeAnalyzerStatus(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer';
-    
+
     if(document.getElementById('analyzer-status-'+uuid).innerHTML == "ON"){
         var status ="Disabled";
     }else if(document.getElementById('analyzer-status-'+uuid).innerHTML == "OFF"){
@@ -285,12 +398,12 @@ function showActions(action,uuid){
     if (addnids.style.display == "none") {
         addnids.style.display = "block";
         icon.classList.add("fa-sort-up");
-        icon.classList.remove("fa-sort-down");        
+        icon.classList.remove("fa-sort-down");
     } else {
         addnids.style.display = "none";
         icon.classList.add("fa-sort-down");
-        icon.classList.remove("fa-sort-up");   
-    }    
+        icon.classList.remove("fa-sort-up");
+    }
 }
 
 function deployNode(value,uuid,nodeName){
@@ -317,7 +430,7 @@ function deployNode(value,uuid,nodeName){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            
+
         }else{
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -355,16 +468,16 @@ function StopSuricata(uuid) {
 
 function syncRulesetModal(node, name){
   var modalWindow = document.getElementById('modal-window');
-  modalWindow.innerHTML = 
+  modalWindow.innerHTML =
   '<div class="modal-dialog">'+
     '<div class="modal-content">'+
-    
+
       '<div class="modal-header">'+
         '<h4 class="modal-title" id="sync-node-header">Node</h4>'+
         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
       '</div>'+
 
-      '<div class="modal-body" id="sync-node-footer-table">'+ 
+      '<div class="modal-body" id="sync-node-footer-table">'+
         '<p>Do you want to sync ruleset for <b>'+name+'</b> node?</p>'+
       '</div>'+
 
@@ -381,20 +494,20 @@ function loadBPF(nid, name){
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML = '<div class="modal-dialog">'+
                 '<div class="modal-content">'+
-    
+
                  '<div class="modal-header">'+
                         '<h4 class="modal-title" id="bpf-header">BPF</h4>'+
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
                     '</div>'+
-    
+
                     '<div class="modal-body" id="modal-footer-inputtext">'+
                         '<input type="text" class="form-control" id="recipient-name">'+
                     '</div>'+
-    
+
                     '<div class="modal-footer" id="modal-footer-btn">'+
                         '<!-- Buttons -->'+
                     '</div>'+
-    
+
                 '</div>'+
             '</div>';
   var inputBPF = document.getElementById('recipient-name');
@@ -413,7 +526,7 @@ function loadBPF(nid, name){
   })
     .then(function (response) {
         if('bpf' in response.data){
-            inputBPF.value=response.data.bpf;     
+            inputBPF.value=response.data.bpf;
         }else{
             inputBPF.value='';
             headerBPF.innerHTML = headerBPF.innerHTML + '<br>Not defined';
@@ -421,7 +534,7 @@ function loadBPF(nid, name){
     })
     .catch(function (error) {
       windowModalLog.innerHTML = error+"++<br>";
-    });   
+    });
 }
 
 function saveBPF(nid){
@@ -433,7 +546,7 @@ function saveBPF(nid){
     jsonbpfdata["nid"] = nid;
     jsonbpfdata["bpf"] = inputBPF.value;
     var bpfjson = JSON.stringify(jsonbpfdata);
-  
+
     axios({
       method: 'put',
       url: nodeurl,
@@ -445,27 +558,27 @@ function saveBPF(nid){
       })
       .catch(function (error) {
         return false;
-      });   
+      });
   }
 
 function loadRuleset(nid){
     var modalWindow = document.getElementById('modal-window');
-    modalWindow.innerHTML = 
+    modalWindow.innerHTML =
     '<div class="modal-dialog modal-lg">'+
       '<div class="modal-content">'+
-  
+
         '<div class="modal-header">'+
           '<h4 class="modal-title" id="ruleset-manager-header">Rules</h4>'+
           '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
         '</div>'+
-  
-        '<div class="modal-body" id="ruleset-manager-footer-table">'+ 
+
+        '<div class="modal-body" id="ruleset-manager-footer-table">'+
         '</div>'+
-  
+
         '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
           '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
         '</div>'+
-  
+
       '</div>'+
     '</div>';
     var resultElement = document.getElementById('ruleset-manager-footer-table');
@@ -481,29 +594,29 @@ function loadRuleset(nid){
     })
     .catch(function (error) {
         resultElement.innerHTML = '<p>Error retrieving rules</p>';
-    });  
+    });
   }
 
   function deployZeekModal(uuid){
     var modalWindow = document.getElementById('modal-window');
-    modalWindow.innerHTML = 
+    modalWindow.innerHTML =
     '<div class="modal-dialog">'+
       '<div class="modal-content">'+
-      
+
         '<div class="modal-header">'+
           '<h4 class="modal-title" id="delete-node-header">Node</h4>'+
           '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
         '</div>'+
-  
-        '<div class="modal-body" id="delete-node-footer-table">'+ 
+
+        '<div class="modal-body" id="delete-node-footer-table">'+
           '<p>Do you want to Deploy Zeek policy?</p>'+
         '</div>'+
-  
+
         '<div class="modal-footer" id="delete-node-footer-btn">'+
           '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
           '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="deployZeek(\''+uuid+'\')">Deploy</button>'+
         '</div>'+
-  
+
       '</div>'+
     '</div>';
 }
@@ -536,7 +649,7 @@ function generateAllRulesModal(response, nid) {
                 '<th width="15%">Options</th>                                 ' +
                 '</tr>                                                        ' +
                 '</thead>                                                     ' +
-                '<tbody >                                                     ' 
+                '<tbody >                                                     '
     for (rule in rules) {
         isEmpty = false;
         html = html + '<tr><td style="word-wrap: break-word;" width="30%">                                       ' +
@@ -548,7 +661,7 @@ function generateAllRulesModal(response, nid) {
         '</td></tr>                                                           '
     }
     html = html + '</tbody></table>';
-    
+
     if (isEmpty){
         return '<p>No rules available...</p>';;
     }else{
@@ -578,7 +691,7 @@ function saveRuleSelected(rule, nid){
         })
             .catch(function (error) {
             return false;
-        }); 
+        });
 }
 
 function loadStapURL(uuid, nodeName){
@@ -645,14 +758,14 @@ function showModalCollector(response){
     var res = response.data.split("\n");
     var html = '<div class="modal-dialog modal-lg">'+
                     '<div class="modal-content">'+
-                
+
                         '<div class="modal-header">'+
                             '<h4 class="modal-title" id="modal-collector-header">STAP Collector status</h4>'+
                             '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>'+
-                
+
                         '<div class="modal-body">'
                                 if (response.data == ""){
                                     html = html + '<p>There are no ports</p>';
@@ -669,7 +782,7 @@ function showModalCollector(response){
                                             '<th></th>                                             ' +
                                         '</tr>                                                        ' +
                                     '</thead>                                                     ' +
-                                    '<tbody>                                                     ' 
+                                    '<tbody>                                                     '
                                     for(line in res) {
                                         if (res[line] != ""){
                                             var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
@@ -694,7 +807,7 @@ function showModalCollector(response){
                                 }
                         html = html +
                         '</div>'+
-                
+
                     '</div>'+
                 '</div>';
     document.getElementById('modal-window').innerHTML = html;
@@ -713,10 +826,10 @@ function PingCollector(uuid){
     .then(function (response) {
         if (response.data != ""){
             document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
-            document.getElementById('stap-collector-' + uuid).innerHTML = "ON";            
+            document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
         }else{
             document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
-            document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";            
+            document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";
         }
     })
     .catch(function (error) {
@@ -728,7 +841,7 @@ function ChangeStatus(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status';
-    
+
     if(document.getElementById('ports-status-'+uuid).innerHTML == "ON"){
         var status ="Disabled";
     }else{
@@ -757,7 +870,7 @@ function ChangeMode(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/mode';
-    
+
     if(document.getElementById('ports-mode-'+uuid).innerHTML == "Learning"){
         var mode ="Production";
     }else{
@@ -792,7 +905,7 @@ function showPorts(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        showModalPorts(response, uuid);                
+        showModalPorts(response, uuid);
     })
     .catch(function (error) {
         return false;
@@ -802,7 +915,7 @@ function showPorts(uuid){
 function showModalPorts(response, uuid){
     var html = '<div class="modal-dialog modal-lg">'+
         '<div class="modal-content">'+
-    
+
             '<div class="modal-header">'+
                 '<h4 class="modal-title">PORTS</h4>'+
                 '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
@@ -825,11 +938,11 @@ function showModalPorts(response, uuid){
                                 '<th width="10%">Select</th>                                 ' +
                             '</tr>                                                        ' +
                         '</thead>                                                     ' +
-                        '<tbody>                                                     ' 
+                        '<tbody>                                                     '
                             for(line in response.data){
                                 var first = new Date(response.data[line]["first"]*1000);
                                 var last = new Date(response.data[line]["last"]*1000);
-                                
+
                                 html = html + '<tr><td id="">                            ' +
                                 response.data[line]["portprot"]+'<br>'                    +
                                 '</td><td>'+
@@ -872,10 +985,10 @@ function deletePorts(uuid){
         timeout: 30000,
         data: nodeJSON
         }).then(function (response) {
-        
+
         }).catch(function (error) {
 
-        }); 
+        });
 
 }
 
@@ -891,7 +1004,7 @@ function deleteAllPorts(uuid){
 
     }).catch(function (error) {
 
-    }); 
+    });
 
 }
 
@@ -919,7 +1032,7 @@ function sendRulesetToNode(uuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            
+
         }else{
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -999,7 +1112,7 @@ function PingSuricata(uuid) {
                 document.getElementById(uuid + '-suricata').innerHTML = "N/A";
                 document.getElementById(uuid + '-suricata-icon').className = "fas fa-play-circle";
                 document.getElementById(uuid + '-suricata-icon').onclick = function () { RunSuricata(uuid); };
-                document.getElementById(uuid + '-suricata-icon').title = "Run Suricata";             
+                document.getElementById(uuid + '-suricata-icon').title = "Run Suricata";
             } else if (response.data.path || response.data.bin) {
                 if (response.data.running) {
                     document.getElementById(uuid + '-suricata').className = "badge bg-success align-text-bottom text-white";
@@ -1264,20 +1377,20 @@ function PingPorts(uuid) {
                     document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
                 }
                 document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-                
+
                 if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
                     document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
                 }else{
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
                     document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                }                
+                }
             }
             return true;
         })
         .catch(function (error) {
-            
-            return false;            
+
+            return false;
         });
     return false;
 }
@@ -1300,12 +1413,12 @@ function PingAnalyzer(uuid) {
                 document.getElementById('analyzer-status-'+uuid).innerHTML = "OFF";
                 document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-play-circle";
                 document.getElementById('analyzer-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-            }                
+            }
             return true;
         })
         .catch(function (error) {
-            
-            return false;            
+
+            return false;
         });
     return false;
 }

@@ -551,8 +551,8 @@ function overwriteDownload(name, path, url, uuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            icon.style.color="Grey";
-            downloadStatus.value = "false";
+            // icon.style.color="Grey";
+            // downloadStatus.value = "false";
             setTimeout(function() {$(".alert").alert('close')}, 5000);
             
             document.getElementById('progressBar-create').style.display = "none";
@@ -566,8 +566,8 @@ function overwriteDownload(name, path, url, uuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        icon.style.color="Grey";
-        downloadStatus.value = "false";
+        // icon.style.color="Grey";
+        // downloadStatus.value = "false";
         setTimeout(function() {$(".alert").alert('close')}, 5000);
         
         document.getElementById('progressBar-create').style.display = "none";

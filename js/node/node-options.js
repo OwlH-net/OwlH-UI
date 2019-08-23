@@ -188,11 +188,12 @@ function loadPlugins(){
     PingPorts(uuid);
     PingAnalyzer(uuid);
     PingDataflow(uuid);
-    PingCollector(uuid);
+    PingCollector(uuid);    
     PingMonitor(uuid);
+    var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
 }
 
-function PingMonitor(uuid){
+function PingMonitor(uuid){            
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/pingmonitor/' + uuid;
@@ -202,132 +203,117 @@ function PingMonitor(uuid){
         url: nodeurl,
         timeout: 30000
     })
-        .then(function (response) {
-            console.log(response.data);
-            // for(x in response.data.cpus){
-            //     document.getElementById('cpu-node-monitor-'+uuid).innerHTML = document.getElementById('cpu-node-monitor-'+uuid).innerHTML + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
-            // }
-
-            // document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-1"><b>STORAGE percentage used: </b>'+parseFloat(response.data.disk.percentage).toFixed(2)+' %</div>';
-            // document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-2"><b>STORAGE used: </b>'+parseFloat(response.data.disk.useddisk).toFixed(2)+' MB</div>';
-            // document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-3"><b>STORAGE free: </b>'+parseFloat(response.data.disk.freedisk).toFixed(2)+' MB</div>';
-            // document.getElementById('sto-node-monitor-'+uuid).innerHTML = document.getElementById('sto-node-monitor-'+uuid).innerHTML + '<div id="sto-node-values-4"><b>STORAGE total: </b>'+parseFloat(response.data.disk.totaldisk).toFixed(2)+' MB</div>';
-
-            // document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-6"><b>OWLH total alloc: </b>'+parseFloat(response.data.mem.totalalloc).toFixed(2)+' MB</div>';
-            // document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-2"><b>OWLH alloc: </b>'+parseFloat(response.data.mem.alloc).toFixed(2)+' MB</div>';
-            // document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-4"><b>OWLH gc: </b>'+parseFloat(response.data.mem.gc).toFixed(2)+' MB</div>';
-            // document.getElementById('owlh-node-monitor-'+uuid).innerHTML = document.getElementById('owlh-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-5"><b>OWLH sys: </b>'+parseFloat(response.data.mem.sys).toFixed(2)+' MB</div>';
-
-            // document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-1"><b>MEMORY percentage used: </b>'+parseFloat(response.data.mem.percentage).toFixed(2)+' %</div>';
-            // document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-8"><b>MEMORY used: </b>'+parseFloat(response.data.mem.usedmem).toFixed(2)+' MB</div>';
-            // document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-3"><b>MEMORY free: </b>'+parseFloat(response.data.mem.freemem).toFixed(2)+' MB</div>';
-            // document.getElementById('mem-node-monitor-'+uuid).innerHTML = document.getElementById('mem-node-monitor-'+uuid).innerHTML + '<div id="mem-node-values-7"><b>MEMORY total: </b>'+parseFloat(response.data.mem.totalmem).toFixed(2)+' MB</div>';
-
-            var CPUvalues = [];
-            var CPUpercentage = [];
-            for(x in response.data.cpus){
-                CPUvalues.push("CPU: "+x);
-                CPUpercentage.push(parseFloat(response.data.cpus[x].percentage).toFixed(2));
+    .then(function (response) {
+        console.log(response.data.mem.percentage);
+        var CPUvalues = [];
+        var CPUpercentage = [];
+        for(x in response.data.cpus){
+            CPUvalues.push("CPU: "+x);
+            CPUpercentage.push(parseFloat(response.data.cpus[x].percentage).toFixed(2));
+        }
+        //CPU USE PERCENTAGE
+        var ctx_cpu = document.getElementById('myChartPercentage').getContext('2d');
+        var chart = new Chart(ctx_cpu, {
+            type: 'bar',
+            data: {
+                labels: CPUvalues,
+                datasets: [{
+                    label: 'CPU percentage usage',
+                    backgroundColor: 'rgb(36, 138, 216)',
+                    borderColor: 'rgb(208, 91, 91)',
+                    data: CPUpercentage
+                }]
+            },
+            options: {
+                animation: false,
+                layout: {padding: {left: 0,right: 50,top: 0,bottom: 0}},
+                responsive: true,
+                maintainAspectRatio: true,
+                
             }
-
-            var ctx_cpu = document.getElementById('myChartPercentage').getContext('2d');
-            var chart = new Chart(ctx_cpu, {
-                type: 'bar',
-                data: {
-                    labels: CPUvalues,
-                    datasets: [{
-                        label: 'CPU percentage usage',
-                        backgroundColor: 'rgb(255, 99, 132)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        data: CPUpercentage
-                    }]
-                },
-                options: {
-                    layout: {padding: {left: 0,right: 50,top: 0,bottom: 0}},
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    
-                }
-            });
-
-            var ctx_owlh = document.getElementById('myChartOwlh').getContext('2d');
-            var chart = new Chart(ctx_owlh, {
-                type: 'bar',
-                data: {
-                    labels: ['OWLH total alloc', 'OWLH alloc', 'OWLH gc', 'OWLH sys'],
-                    datasets: [{
-                        label: 'OWLH stats',
-                        backgroundColor: ['rgb(144,238,144)','rgb(240,230,140)','rgb(135,206,235)','rgb(169,169,169)'],
-                        borderColor: 'rgb(255, 255, 255)',
-                        data: [
-                                parseFloat(response.data.mem.totalalloc).toFixed(2),
-                                parseFloat(response.data.mem.alloc).toFixed(2),
-                                parseFloat(response.data.mem.gc).toFixed(2),
-                                parseFloat(response.data.mem.sys).toFixed(2)
-                            ],
-                        }
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    layout: {padding: {left: 50,right: 0,top: 0,bottom: 0}}
-                }
-            });
-
-            var ctx_mem = document.getElementById('myChartMem').getContext('2d');
-            var chart = new Chart(ctx_mem, {
-                type: 'doughnut',
-                data: {
-                    labels: ['MEMORY used', 'MEMORY free'],
-                    datasets: [{
-                        label: 'MEMORY stats',
-                        backgroundColor: ['rgb(250,128,114)','rgb(173,255,47)'],
-                        borderColor: 'rgb(255, 255, 255)',
-                        data: [
-                            parseFloat(response.data.mem.usedmem).toFixed(2),
-                            parseFloat(response.data.mem.freemem).toFixed(2)
-                        ]
-                    }]
-                },
-                options: {
-                    layout: {padding: {left: 0,right: 50,top: 50,bottom: 0}},
-                    responsive: true,
-                    maintainAspectRatio: true,
-                }
-            });
-
-            var ctx_sto = document.getElementById('myChartSto').getContext('2d');
-            var chart = new Chart(ctx_sto, {
-                type: 'doughnut',
-                data: {
-                    labels: ['STORAGE used','STORAGE free'],
-                    datasets: [{
-                        label: 'STORAGE stats',
-                        backgroundColor: ['rgb(250,128,114)','rgb(173,255,47)'],
-                        borderColor: 'rgb(255, 255, 255)',
-                        data: [
-                            parseFloat(response.data.disk.useddisk).toFixed(2),
-                            parseFloat(response.data.disk.freedisk).toFixed(2)
-                        ]
-                    }]
-                },
-                options: {
-                    layout: {
-                        padding: {left: 50,right: 0,top: 50,bottom: 0}
-                    },
-                    responsive: true,
-                    maintainAspectRatio: true,
-                }
-            });
-
-            ctx_cpu.render();
-            ctx_owlh.render();
-            ctx_mem.render();
-            ctx_sto.render();
-        })
-        .catch(function (error) {
         });
+        //OWLH STATS
+        var ctx_owlh = document.getElementById('myChartOwlh').getContext('2d');
+        var chart = new Chart(ctx_owlh, {
+            type: 'bar',
+            data: {
+                labels: ['Total alloc', 'alloc', 'gc', 'sys'],
+                datasets: [{
+                    label: 'OWLH stats',
+                    backgroundColor: ['rgb(48,216,36)','rgb(216,150,36)','rgb(36,168,216)','rgb(216,36,54)'],
+                    borderColor: 'rgb(255, 255, 255)',
+                    data: [
+                            parseFloat(response.data.mem.totalalloc).toFixed(2),
+                            parseFloat(response.data.mem.alloc).toFixed(2),
+                            parseFloat(response.data.mem.gc).toFixed(2),
+                            parseFloat(response.data.mem.sys).toFixed(2)
+                        ],
+                    }
+                ],
+            },
+            options: {
+                animation: false,
+                responsive: true,
+                maintainAspectRatio: true,
+                layout: {padding: {left: 50,right: 0,top: 0,bottom: 0}}
+            }
+        });
+        //MEMORY STATS
+        var ctx_mem = document.getElementById('myChartMem').getContext('2d');
+        var chart = new Chart(ctx_mem, {
+            type: 'doughnut',
+            data: {
+                labels: ['MEMORY used', 'MEMORY free'],
+                datasets: [{
+                    label: 'MEMORY stats',
+                    backgroundColor: ['rgb(216,36,54)','rgb(48,216,36)'],
+                    borderColor: 'rgb(255, 255, 255)',
+                    data: [
+                        parseFloat(response.data.mem.usedmem).toFixed(2),
+                        parseFloat(response.data.mem.freemem).toFixed(2)
+                    ]
+                }]
+            },
+            options: {
+                animation: false,
+                layout: {padding: {left: 0,right: 50,top: 50,bottom: 0}},
+                responsive: true,
+                maintainAspectRatio: true,
+            }
+        });
+        //STORAGE STATS
+        var ctx_sto = document.getElementById('myChartSto').getContext('2d');
+        var chart = new Chart(ctx_sto, {
+            type: 'doughnut',
+            data: {
+                labels: ['STORAGE used','STORAGE free'],
+                datasets: [{
+                    label: 'STORAGE stats',
+                    backgroundColor: ['rgb(216,36,54)','rgb(48,216,36)'],
+                    borderColor: 'rgb(255, 255, 255)',
+                    data: [
+                        parseFloat(response.data.disk.useddisk).toFixed(2),
+                        parseFloat(response.data.disk.freedisk).toFixed(2)
+                    ]
+                }]
+            },
+            options: {
+                layout: {
+                    padding: {left: 50,right: 0,top: 50,bottom: 0}
+                },
+                animation: false,
+                responsive: true,
+                maintainAspectRatio: true,
+            }
+        });
+
+        ctx_cpu.render();
+        ctx_owlh.render();
+        ctx_mem.render();
+        ctx_sto.render();
+    })
+    .catch(function (error) {
+    });    
 }
 
 function PingDataflow(uuid){

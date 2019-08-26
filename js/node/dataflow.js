@@ -64,6 +64,7 @@ function loadNetworkValues(uuid){
 
         $('#btn-load-all-vxlan').click(function(){ $('#network-modal-window').modal("hide"); LoadAllVxLAN(uuid); });
         $('#btn-load-all-new-local').click(function(){ $('#network-modal-window').modal("hide"); LoadAllNewLocal(uuid); });
+        $('#modal-window').modal("show");
     })
     .catch(function (error) {
     });
@@ -162,6 +163,7 @@ function LoadAllVxLAN(uuid){
 
         document.getElementById('modal-window').innerHTML = html;
         $('#btn-create-new-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); CreateNewVxLAN(uuid); });
+        $('#modal-window').modal("show");
     })
     .catch(function (error) {
     });
@@ -235,10 +237,11 @@ function CreateNewVxLAN(uuid){
         }
         document.getElementById('body-create-vxlan').innerHTML = inner;
         document.getElementById('create-network-vxlan-'+net).checked = "true";
-    });
 
-    $('#btn-vxlan-close').click(function(){ $('#create-new-vxlan-modal').modal("hide"); LoadAllVxLAN(uuid);});
-    $('#btn-vxlan-ok').click(function(){ $('#create-new-local-modal').modal("hide"); SaveVxLAN(uuid);});
+        $('#btn-vxlan-close').click(function(){ $('#create-new-vxlan-modal').modal("hide"); LoadAllVxLAN(uuid);});
+        $('#btn-vxlan-ok').click(function(){ $('#create-new-local-modal').modal("hide"); SaveVxLAN(uuid);});
+        $('#modal-window').modal("show");
+    });    
 }
 
 function SaveVxLAN(uuid){
@@ -391,7 +394,9 @@ function LoadAllNewLocal(uuid){
             '</div>';
 
         document.getElementById('modal-window').innerHTML = html;
+        
         $('#btn-create-new-local').click(function(){ $('#load-all-new-local-modal').modal("hide"); CreateNewLocal(uuid); });
+        $('#modal-window').modal("show");
     })
     .catch(function (error) {
     });
@@ -428,9 +433,9 @@ function CreateNewLocal(uuid){
             '</div>'+
         '</div>';
     document.getElementById('modal-window').innerHTML = html;
-
     $('#btn-new-local-close').click(function(){ $('#create-new-local-modal').modal("hide"); LoadAllNewLocal(uuid);});
     $('#btn-save-new-local').click(function(){ $('#create-new-local-modal').modal("hide"); SaveNewLocal(uuid);});
+    $('#modal-window').modal("show");
 }
 
 function SaveNewLocal(uuid){
@@ -613,7 +618,8 @@ function SocketToNetworkList(uuid){
                                     response.data[type]["cert"]+
                                 '</td><td style="word-wrap: break-word;">' +
                                     '<div>'+
-                                        '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
+                                        // '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
+                                        '<a class="btn btn-primary text-white" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
                                         '<button class="btn btn-danger" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\', \''+response.data[type]["type"]+'\')">Delete</button>'+
                                     '</div>'+
                                 '</td>'+
@@ -641,8 +647,10 @@ function SocketToNetworkList(uuid){
                 html = html + '</div>'+
 
                 '<div class="modal-footer">'+
-                    '<button class="btn btn-secondary" type="button" data-dismiss="modal" id="btn-close-socket-network">Close</button>'+
-                    '<button type="submit" class="btn btn-success" data-dismiss="modal" onclick="createSocketToNetwork(\''+uuid+'\')">Create</button>'+
+                    // '<button class="btn btn-secondary" type="button" data-dismiss="modal" id="btn-close-socket-network">Close</button>'+
+                    // '<button type="submit" class="btn btn-success" data-dismiss="modal" onclick="createSocketToNetwork(\''+uuid+'\')">Create</button>'+
+                    '<button class="btn btn-secondary" type="button" id="btn-close-socket-network">Close</button>'+
+                    '<button type="button" class="btn btn-success" id="btn-create-socket-network">Create</button>'+
                 '</div>'+
 
             '</div>'+
@@ -650,7 +658,9 @@ function SocketToNetworkList(uuid){
                 
         // $('#btn-close-socket-network').click(function(){ $('#socket-to-network-list').modal("toggle"); });
         document.getElementById('modal-window').innerHTML = html;
-        
+        $('#btn-close-socket-network').click(function(){ $('#modal-window').modal("hide");});
+        $('#btn-create-socket-network').click(function(){ $('#socket-to-network-list').modal("hide"); createSocketToNetwork(uuid);});
+        $('#modal-window').modal("show");
     })
     .catch(function (error) {
     });
@@ -660,9 +670,9 @@ function createSocketToNetwork(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
 
-    var modalWindow = document.getElementById('modal-window');
-    modalWindow.innerHTML =
-    '<div class="modal-dialog" id="create-socket-to-network-modal">'+
+    // var modalWindow = document.getElementById('modal-window');
+    // modalWindow.innerHTML =
+    var html = '<div class="modal-dialog" id="create-socket-to-network-modal">'+
         '<div class="modal-content">'+
 
             '<div class="modal-header">'+
@@ -698,7 +708,7 @@ function createSocketToNetwork(uuid){
 
             '<div class="modal-footer">'+
                 '<button type="button" class="btn btn-secondary" id="btn-create-socket-network-close">Close</button>'+
-                '<button type="button" class="btn btn-primary" id="btn-create-socket-network">Save</button>'+
+                '<button type="button" class="btn btn-primary" id="btn-create-socket-network-form">Save</button>'+
             '</div>'+
 
         '</div>'+
@@ -706,30 +716,31 @@ function createSocketToNetwork(uuid){
 
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
     .then(function (response) {
-        var inner = ""
+        var isChecked = false;
+        var inner = "";
         for (net in response.data){
-            inner = inner +
-            '<tr>'+
+            inner = inner + '<tr>'+
                 '<td style="word-wrap: break-word;">' +
                     '<p class="ml-4">'+response.data[net]+'</p>'+
-                '</td><td style="word-wrap: break-word;">' +
-                    '<input class="socket-network-radio" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">'+
                 '</td>'+
+                '<td style="word-wrap: break-word;">';
+                    if (!isChecked){
+                        inner = inner + '<input class="socket-network-radio" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                        isChecked = true;
+                    }else{
+                        inner = inner + '<input class="socket-network-radio" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                    }
+                inner = inner + '</td>'+
             '</tr>';
         }
         document.getElementById('body-create-socket-network').innerHTML = inner;
-        document.getElementById('create-socket-network-'+net).checked = "true";
     });
+    document.getElementById('modal-window').innerHTML = html;
 
-    $('#btn-create-socket-network').click(function(){
-        $('#create-socket-to-network-modal').modal("toggle");
-        $('#create-socket-to-network-modal').modal("hide");
-        saveSocketToNetwork(uuid);}
-    );
-    $('#btn-create-socket-network-close').click(function(){ 
-        $('#create-socket-to-network-modal').modal("hide"); 
-        SocketToNetworkList(uuid);
-    });
+    $('#btn-create-socket-network-form').click(function(){ $('#create-socket-to-network-modal').modal("hide"); saveSocketToNetwork(uuid);});
+    $('#btn-create-socket-network-close').click(function(){ $('#create-socket-to-network-modal').modal("hide"); SocketToNetworkList(uuid);});
+    $('#modal-window').modal("show");
+
 }
 
 function saveSocketToNetwork(uuid){  

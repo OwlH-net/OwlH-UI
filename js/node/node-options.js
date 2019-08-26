@@ -49,7 +49,7 @@ function loadPlugins(){
         '<span id="network-ids-form-'+uuid+'" style="display:None"><br>'+
             '<p><img src="img/suricata.png" alt="" width="30"> '      +
             '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
-            '  <span style="font-size: 15px; color: grey;" >                                   ' +
+            '  <span style="font-size: 15px; color: grey;" >  ' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
             '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
             '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
@@ -89,14 +89,16 @@ function loadPlugins(){
             '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i id="stap-collector-'+uuid+'">[N/A]</i> | '+
             '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
             '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
-            '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
+            // '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
+            '    <i class="fas fa-info-circle" title="Collector information" id="show-collector-info"></i>  ' +
             '  </span></p> '+
             '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
             '    <img src="img/favicon.ico" height="25">Knownports | '+
             '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
             '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
-            '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
+            // '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
+            '    <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
             '  </span></p> '+
             '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
             '  <span style="font-size: 15px; color: grey;">                                   ' +
@@ -123,7 +125,8 @@ function loadPlugins(){
                 '<td style="word-wrap: break-word;">'+
                     '<div class="custom-control custom-radio">'+
                     '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'network\', \''+uuid+'\')" id="collect-network" name="network" value="network" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="loadNetworkValues(\''+uuid+'\')" style="color:grey;" title="Collector information"></i>'+
+                        // '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="loadNetworkValues(\''+uuid+'\')" style="color:grey;" title="Collector information"></i>'+
+                        '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="loadNetworkValues(\''+uuid+'\')" style="color:grey;" title="Collector information"></i>'+
                     '</div>'+
                     '<div class="custom-control custom-radio">'+
                     '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-pcap\', \''+uuid+'\')" id="collect-socket-pcap" name="network" value="socket-pcap" class="custom-control-input">'+
@@ -131,10 +134,12 @@ function loadPlugins(){
                     '</div>'+
                     '<div class="custom-control custom-radio">'+
                     '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-network\', \''+uuid+'\')" id="collect-socket-network" name="network" value="socket-network" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="SocketToNetworkList(\''+uuid+'\')" style="color:grey;" title="Socket to Network information"></i>'+
+                        // '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="SocketToNetworkList(\''+uuid+'\')" style="color:grey;" title="Socket to Network information"></i>'+
+                        '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="SocketToNetworkList(\''+uuid+'\')" style="color:grey;" title="Socket to Network information"></i>'+
                     '</div>'+
                     '<div class="custom-control custom-radio">'+
                     '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'pcap-network\', \''+uuid+'\')" id="collect-pcap-network" name="network" value="pcap-network" class="custom-control-input">'+
+                        // '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;"title="Collector information"></i>'+
                         '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;"title="Collector information"></i>'+
                     '</div>'+
                 '</td>'+
@@ -191,6 +196,9 @@ function loadPlugins(){
     PingCollector(uuid);    
     PingMonitor(uuid);
     var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
+    
+    $('#show-collector-info').click(function(){ showCollector(uuid);});    
+    $('#show-ports-plugin').click(function(){ showPorts(uuid);});    
 }
 
 function PingMonitor(uuid){            
@@ -204,7 +212,6 @@ function PingMonitor(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data.mem.percentage);
         var CPUvalues = [];
         var CPUpercentage = [];
         for(x in response.data.cpus){
@@ -798,6 +805,7 @@ function showModalCollector(response){
                     '</div>'+
                 '</div>';
     document.getElementById('modal-window').innerHTML = html;
+    $('#modal-window').modal("show");
 }
 
 function PingCollector(uuid){
@@ -954,6 +962,7 @@ function showModalPorts(response, uuid){
         html = html + '</div>'+
     '</div>';
     document.getElementById('modal-window').innerHTML = html;
+    $('#modal-window').modal("show");
 }
 
 function deletePorts(uuid){

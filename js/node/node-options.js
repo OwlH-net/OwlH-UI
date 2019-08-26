@@ -21,7 +21,7 @@ function loadPlugins(){
     var html =
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'monitor\', \''+uuid+'\')"><b>Node monitor</b> <i class="fas fa-sort-down" id="monitor-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="monitor-form-'+uuid+'" style="display:None"><br>'+
+        '<span id="monitor-form-'+uuid+'" style="display:block"><br>'+
             '<table width="100%">'+
                 '<tbody>'+
                     '<tr>'+
@@ -46,7 +46,7 @@ function loadPlugins(){
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="network-ids-form-'+uuid+'" style="display:None"><br>'+
+        '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             '<p><img src="img/suricata.png" alt="" width="30"> '      +
             '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
             '  <span style="font-size: 15px; color: grey;" >  ' +
@@ -68,7 +68,7 @@ function loadPlugins(){
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'transport\',\''+uuid+'\')"><b>Transport</b> <i class="fas fa-sort-down" id="transport-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="transport-form-'+uuid+'" style="display:None"><br>'+
+        '<span id="transport-form-'+uuid+'" style="display:block"><br>'+
             '  <p><img src="img/wazuh.png" alt="" width="30"> '+
             '  <span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
             '  <span style="font-size: 15px; color: grey;" >                                  ' +
@@ -78,7 +78,7 @@ function loadPlugins(){
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Plugins</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="plugins-form-'+uuid+'" style="display:None"><br>'+
+        '<span id="plugins-form-'+uuid+'" style="display:block"><br>'+
             '  <p><i class="fas fa-plug fa-lg"></i>'+
             '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
             '  <span style="font-size: 15px; color: grey;">                                   ' +
@@ -110,7 +110,7 @@ function loadPlugins(){
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="flow-form-'+uuid+'" style="display:none"><br>'+
+        '<span id="flow-form-'+uuid+'" style="display:block"><br>'+
             '<table style="width:100%">'+
             '<thead>'+
             '<tr>                                                         ' +
@@ -168,7 +168,7 @@ function loadPlugins(){
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'deploy\',\''+uuid+'\')"><b>Deploy</b> <i class="fas fa-sort-down" id="deploy-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="deploy-form-'+uuid+'" style="display:None"><br>'+
+        '<span id="deploy-form-'+uuid+'" style="display:block"><br>'+
             '<span style="font-size: 15px; color: Dodgerblue;">'+
                 '<p id="deploy-node-suricata"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Suricata &nbsp; | '+
                 '    <i class="fas fa-play-circle" title="Deploy Suricata" id="suricata-deploy-button" onclick="deployNode(\'suricata\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
@@ -218,11 +218,14 @@ function PingMonitor(uuid){
             CPUvalues.push("CPU: "+x);
             CPUpercentage.push(parseFloat(response.data.cpus[x].percentage).toFixed(2));
         }
+
         //CPU USE PERCENTAGE
         var ctx_cpu = document.getElementById('myChartPercentage').getContext('2d');
         var chart = new Chart(ctx_cpu, {
             type: 'bar',
+            
             data: {
+                scaleOverride : true,
                 labels: CPUvalues,
                 datasets: [{
                     label: 'CPU percentage usage',
@@ -236,17 +239,38 @@ function PingMonitor(uuid){
                 layout: {padding: {left: 0,right: 50,top: 0,bottom: 0}},
                 responsive: true,
                 maintainAspectRatio: true,
-                
+                // title: {
+				// 	display: true,
+				// 	text: 'Min and Max Settings'
+				// },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Percentage'
+                        },
+						ticks: {
+                            beginAtZero: true, 
+							min: 0,
+                            max: 100,
+                            // maxTicksLimit: 5            
+                        }
+                    }],
+                    xAxes: [{                        
+                        barPercentage: 0.3
+                    }]
+                }
             }
         });
-        //OWLH STATS
+
+        //MEMORY STATS
         var ctx_owlh = document.getElementById('myChartOwlh').getContext('2d');
         var chart = new Chart(ctx_owlh, {
             type: 'bar',
             data: {
                 labels: ['Total alloc', 'alloc', 'gc', 'sys'],
                 datasets: [{
-                    label: 'OWLH stats',
+                    label: 'MEMORY OwlH stats',
                     backgroundColor: ['rgb(48,216,36)','rgb(216,150,36)','rgb(36,168,216)','rgb(216,36,54)'],
                     borderColor: 'rgb(255, 255, 255)',
                     data: [
@@ -262,7 +286,21 @@ function PingMonitor(uuid){
                 animation: false,
                 responsive: true,
                 maintainAspectRatio: true,
-                layout: {padding: {left: 50,right: 0,top: 0,bottom: 0}}
+                layout: {padding: {left: 50,right: 0,top: 0,bottom: 0}},
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Memory in MiB'
+                        },
+                        ticks: {
+                            beginAtZero: true, 
+                            // min: 0,
+                            // max: 5000,
+                            // maxTicksLimit: 5
+                        }
+                    }]
+                }
             }
         });
         //MEMORY STATS

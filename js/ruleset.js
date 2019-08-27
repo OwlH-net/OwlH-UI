@@ -145,6 +145,7 @@ function addToCustomRuleset(rulesetuuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     }else{
         axios({
             method: 'get',
@@ -236,6 +237,7 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 

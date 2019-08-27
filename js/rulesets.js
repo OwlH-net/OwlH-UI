@@ -529,6 +529,7 @@ function synchronizeAllRulesets() {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -537,6 +538,7 @@ function synchronizeAllRulesets() {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }
         })
         .catch(function (error) {
@@ -547,6 +549,7 @@ function synchronizeAllRulesets() {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 
@@ -573,6 +576,7 @@ function deleteRuleset(name, uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 GetAllRulesets();
             }
@@ -585,6 +589,7 @@ function deleteRuleset(name, uuid) {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 
@@ -645,6 +650,7 @@ function syncRuleset(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -653,6 +659,7 @@ function syncRuleset(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }
 
         })

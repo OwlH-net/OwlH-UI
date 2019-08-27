@@ -235,6 +235,7 @@ function modalAddNewRuleset(){
                 '</button>'+
             '</div>';
             $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
     }else if (isDuplicated){      
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none";
@@ -290,6 +291,7 @@ function modalAddNewRuleset(){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
                 document.getElementById('progressBar-create-div').style.display="none";

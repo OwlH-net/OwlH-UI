@@ -134,7 +134,7 @@ function deployMaster(value){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -143,6 +143,7 @@ function deployMaster(value){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }
     })
     .catch(function (error) {
@@ -423,6 +424,7 @@ function PingCollector(){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else if (response.data != ""){
             collectorMasterStatus.style.color="green";
         }else{
@@ -452,6 +454,7 @@ function playMasterCollector(){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
         }
         return true;
     })
@@ -478,6 +481,7 @@ function stopMasterCollector(){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
             return true;
         }
@@ -505,6 +509,7 @@ function showMasterCollector(){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
             showMasterModalCollector(response);
             return true;

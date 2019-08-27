@@ -23,9 +23,10 @@ function PingNode(uuid) {
     })
         .then(function (response) {
             if (response.data.ping=='pong') {
-                document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white node-option-"+uuid;
+                document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
                 document.getElementById(uuid+'-online').innerHTML = "ON LINE";
                 PingMonitor(uuid);
+                var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
                 // PingService(uuid);
                 // PingSuricata(uuid);
                 // PingZeek(uuid);
@@ -38,7 +39,7 @@ function PingNode(uuid) {
                 // PingDataflow(uuid);
                 return "true";
             } else {
-                document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white node-option-"+uuid;
+                document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
                 document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
             }      
         })
@@ -80,12 +81,13 @@ function PingMonitor(uuid){
         timeout: 30000
     })
         .then(function (response) {
+            var cpuData = "";
             for(x in response.data.cpus){
-                document.getElementById('node-values-'+uuid).innerHTML = document.getElementById('node-values-'+uuid).innerHTML + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
+                cpuData = cpuData + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
             }
-            // document.getElementById('cpu-'+uuid).innerHTML = document.getElementById('cpu-'+uuid).innerHTML + parseFloat(response.data.cpus[0].percentage).toFixed(2)+" %";
-            document.getElementById('mem-'+uuid).innerHTML = document.getElementById('mem-'+uuid).innerHTML + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
-            document.getElementById('sto-'+uuid).innerHTML = document.getElementById('sto-'+uuid).innerHTML + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
+            document.getElementById('mem-'+uuid).innerHTML = "<b>MEM: </b>" + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
+            document.getElementById('sto-'+uuid).innerHTML = "<b>STO: </b>" + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
+            document.getElementById('cpu-'+uuid).innerHTML = cpuData;
         })
         .catch(function (error) {
         }); 
@@ -179,10 +181,10 @@ function generateAllNodesHTMLOutput(response) {
     var html =  '<table class="table table-hover">                            ' +
                 '<thead>                                                      ' +
                 '<tr>                                                         ' +
-                '<th scope="col"></th>                                        ' +
-                '<th scope="col">Name</th>                                    ' +
-                '<th scope="col">Status</th>                                  ' +
-                '<th scope="col"></th>                                ' +
+                '<th scope="col" width="5%"></th>                                        ' +
+                '<th scope="col" width="30%" align="left">Name</th>                                    ' +
+                '<th scope="col" width="25%" align="right">Status</th>                                  ' +
+                '<th scope="col" width="10%"></th>                                ' +
                 '<th scope="col" width="25%">Actions</th>                                 ' +
                 '</tr>                                                        ' +
                 '</thead>                                                     ' +
@@ -208,13 +210,14 @@ function generateAllNodesHTMLOutput(response) {
                     '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
                 '</td>' +
                 '<td class="align-middle">'+
-                    '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white node-option-'+uuid+'" style="cursor: pointer;">N/A</span> <br>'+
+                    '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
+                    '<span id="'+uuid+'-online" class="badge bg-primary align-text-bottom text-white node-option-'+uuid+'" style="cursor: pointer;">See details</span> <br>'+
                     '<span>'+
                         '<div><p></p></div>'+
-
                         '<div id="node-values-'+uuid+'">'+
                             '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
                             '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
+                            '<div id="cpu-'+uuid+'"></div>'+                        
                         '</div>'+
                     '</span>'+
                 '</td>';
@@ -416,7 +419,7 @@ function deployNode(value,uuid,nodeName){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -425,6 +428,7 @@ function deployNode(value,uuid,nodeName){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }
     })
     .catch(function (error) {
@@ -935,7 +939,7 @@ function sendRulesetToNode(uuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -944,6 +948,7 @@ function sendRulesetToNode(uuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }
     })
     .catch(function (error) {
@@ -954,6 +959,7 @@ function sendRulesetToNode(uuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -1360,13 +1366,13 @@ function getRulesetUID(uuid) {
         url: nodeurl,
         timeout: 30000
     })
-        .then(function (response) {
-            getRuleName(response.data, uuid);
-            return true;
-        })
-        .catch(function (error) {
-            return false;
-        });
+    .then(function (response) {
+        getRuleName(response.data, uuid);
+        return true;
+    })
+    .catch(function (error) {
+        return false;
+    });
 }
 
 function getRuleName(uuidRuleset, uuid) {

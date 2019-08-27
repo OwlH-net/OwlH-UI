@@ -46,14 +46,14 @@ function loadPlugins(){
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
+        '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+            
             '<p><img src="img/suricata.png" alt="" width="30"> '      +
             '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
             '  <span style="font-size: 15px; color: grey;" >  ' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
             '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
             '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
-            '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>                        ' +
+            '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options">asd</i>'+        
             '  </span>                                                                        ' +
             '  </p>                                                                           ' +
             '  <p><img  src="img/bro.png" alt="" width="30">'+
@@ -63,7 +63,7 @@ function loadPlugins(){
             '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
             '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i>                  ' +
             '  </span>' +
-            '  </p>   '+
+            '</p>'+
         '</span>'+
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -79,34 +79,72 @@ function loadPlugins(){
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Plugins</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
         '<span id="plugins-form-'+uuid+'" style="display:block"><br>'+
-            '  <p><i class="fas fa-plug fa-lg"></i>'+
-            '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
-            '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+name+'\')"></i>                             ' +
-            '  </span></p> '+
-            '  <p><span style="font-size: 15px; color: grey;">                                   ' +
-            '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i id="stap-collector-'+uuid+'">[N/A]</i> | '+
-            '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
-            '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
-            // '    <i class="fas fa-info-circle" title="Collector information" data-toggle="modal" data-target="#modal-window" onclick="showCollector(\''+uuid+'\')"></i>  ' +
-            '    <i class="fas fa-info-circle" title="Collector information" id="show-collector-info"></i>  ' +
-            '  </span></p> '+
-            '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <img src="img/favicon.ico" height="25">Knownports | '+
-            '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
-            '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
-            // '    <i style="cursor: default; color: grey;" title="Show ports" data-toggle="modal" data-target="#modal-window" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
-            '    <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
-            '  </span></p> '+
-            '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <img src="img/favicon.ico" height="25">Analyzer | '+
-            '    <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span> <i style="padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i>                         ' +
-            '    <i class="fas fa-info-circle" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i>  ' +
-            '  </span></p> '+
-        '  </span>'+
+            '<table width="100%">'+
+                '<tr>'+
+                    '<td width="25%"><i class="fas fa-plug fa-lg"></i> STAP</th>'+
+                    '<td width="25%">Status: <i id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</i></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i></td>'+
+                    '<td width="25%">Configuration: <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+name+'\')"></i></td>'+
+                '</tr>'+       
+            '</table>'+
+            '<div id="ports-table1"></div>&nbsp &nbsp &nbsp'+
+            '<table width="100%">'+              
+                '<tr>'+
+                    '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
+                    '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i></td>'+
+                    '<td width="25%">ports: <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
+                '</tr>'+            
+            '</table>'+
+            '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
+            '<table width="100%">'+ 
+                '<tr>'+
+                    '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
+                    '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
+                    '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
+                '</tr>'+  
+            '</table>'+
+            '<div id="ports-table3"></div>&nbsp &nbsp &nbsp'+
+            '<table width="100%">'+     
+                '<tr>'+
+                    '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> STAP Collector </th>'+
+                    '<td width="25%">Status: <i id="stap-collector-'+uuid+'">[N/A]</i></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i> <i class="fas fa-stop-circle" style="color: grey;" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i></td>'+
+                    '<td width="25%">Info: <i class="fas fa-info-circle" style="color: grey;" title="Collector information" id="show-collector-info"></i></td>'+
+                '</tr>'+                    
+            '</table>'+
+            '<div id="ports-table4"></div>'+
+
+            // '  <p><i class="fas fa-plug fa-lg"></i>'+
+            // '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
+            // '  <span style="font-size: 15px; color: grey;">                                   ' +
+            // '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
+            // '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+name+'\')"></i>                             ' +
+            // '  </span></p> '+
+
+            // '  <p><span style="font-size: 15px; color: grey;">                                   ' +
+            // '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i id="stap-collector-'+uuid+'">[N/A]</i> | '+
+            // '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
+            // '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
+            // '    <i class="fas fa-info-circle" title="Collector information" id="show-collector-info"></i>  ' +
+            // '  </span></p> '+
+
+            // '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
+            // '  <span style="font-size: 15px; color: grey;">                                   ' +
+            // '    <img src="img/favicon.ico" height="25">Knownports | '+
+            // '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
+            // '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
+            // '    <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
+            // '  </span></p> '+
+
+            // '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
+            // '  <span style="font-size: 15px; color: grey;">                                   ' +
+            // '    <img src="img/favicon.ico" height="25">Analyzer | '+
+            // '    <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span> <i style="padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i>                         ' +
+            // '    <i class="fas fa-info-circle" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i>  ' +
+            // '  </span></p> '+
+        '</span>'+
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
@@ -114,10 +152,10 @@ function loadPlugins(){
             '<table style="width:100%">'+
             '<thead>'+
             '<tr>                                                         ' +
-                '<th>Collect from</th>                                                  ' +
-                '<th>Analysis</th>                                          ' +
-                '<th>Transport</th>                                ' +
-                '<th>Info</th>                                ' +
+                '<th width="25%">Collect from</th>                                                  ' +
+                '<th width="25%">Analysis</th>                                          ' +
+                '<th width="25%">Transport</th>                                ' +
+                '<th width="25%">Info</th>                                ' +
             '</tr>                                                        ' +
             '</thead>                                                     ' +
             '<tbody>                                                      ' +
@@ -183,8 +221,57 @@ function loadPlugins(){
             '</span>'+
         '</span>' +
     '</div>';
-
     document.getElementById('master-table-plugins').innerHTML = html;
+
+
+    axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid)
+    .then(function (response) {
+        if (response.data.ack){
+            document.getElementById('ports-table').innerHTML = "No remote systems yet";
+        }else if(response.data){
+            var res = response.data.split("\n");
+            var html =                         
+            '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
+                '<thead>                                                      ' +
+                    '<th>Proto</th>                                             ' +
+                    '<th>RECV</th>                                             ' +
+                    '<th>SEND</th>                                             ' +
+                    '<th style="width: 25%">LOCAL IP</th>                                             ' +
+                    '<th style="width: 25%">REMOTE IP</th>                                             ' +
+                    '<th style="width: 15%">STATUS</th>                                             ' +
+                    '<th></th>                                             ' +
+                '</thead>                                                     ' +
+                '<tbody>                                                     '
+                for(line in res) {
+                    if (res[line] != ""){
+                        var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
+                        var lineSplited = vregex.exec(res[line]);
+                        html = html + '<tr><td>' +
+                        lineSplited[1]+
+                        '</td><td>     ' +
+                        lineSplited[2]+
+                        '</td><td>     ' +
+                        lineSplited[3]+
+                        '</td><td>     ' +
+                        lineSplited[4]+
+                        '</td><td>     ' +
+                        lineSplited[5]+
+                        '</td><td>     ' +
+                        lineSplited[6]+
+                        '</td><td>     ' +
+                        lineSplited[7]+
+                        '</td></tr>';
+                    }
+                }                
+                html = html + '</tbody>'+
+            '</table>';
+            document.getElementById('ports-table1').innerHTML = html;
+            document.getElementById('ports-table2').innerHTML = html;
+            document.getElementById('ports-table3').innerHTML = html;
+            document.getElementById('ports-table4').innerHTML = html;
+        }
+    })
+
 
     PingSuricata(uuid);
     PingZeek(uuid);
@@ -195,10 +282,34 @@ function loadPlugins(){
     PingDataflow(uuid);
     PingCollector(uuid);    
     PingMonitor(uuid);
+    getCurrentRulesetName(uuid);
     var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
     
     $('#show-collector-info').click(function(){ showCollector(uuid);});    
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});    
+}
+
+function getCurrentRulesetName(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
+        })
+        .then(function (response2) { 
+            document.getElementById('current-ruleset-options').innerHTML = response2.data;
+        })
+        .catch(function (error) {
+        });
+    })
+    .catch(function (error) {
+        
+    });
 }
 
 function PingMonitor(uuid){            
@@ -240,20 +351,19 @@ function PingMonitor(uuid){
                 responsive: true,
                 maintainAspectRatio: true,
                 // title: {
-				// 	display: true,
-				// 	text: 'Min and Max Settings'
-				// },
+                // 	display: true,
+                // 	text: 'Min and Max Settings'
+                // },
                 scales: {
                     yAxes: [{
                         scaleLabel: {
                             display: true,
                             labelString: 'Percentage'
                         },
-						ticks: {
+                        ticks: {
                             beginAtZero: true, 
-							min: 0,
+                            min: 0,
                             max: 100,
-                            // maxTicksLimit: 5            
                         }
                     }],
                     xAxes: [{                        
@@ -489,13 +599,13 @@ function StopSuricata(uuid) {
     })
         .then(function (response) {
             // loadPlugins();
+            setTimeout(function (){
+                loadPlugins();
+            }, 1500);
         })
         .catch(function error() {
         });
 
-    setTimeout(function (){
-        loadPlugins();
-    }, 1000);
 }
 
 function syncRulesetModal(node, name){
@@ -627,6 +737,7 @@ function loadRuleset(nid){
     .catch(function (error) {
         resultElement.innerHTML = '<p>Error retrieving rules</p>';
     });
+    
   }
 
   function deployZeekModal(uuid){
@@ -718,7 +829,7 @@ function saveRuleSelected(rule, nid){
         data: uidJSON
     })
         .then(function (response) {
-            getRulesetUID(nid);
+            loadPlugins();
             return true;
         })
             .catch(function (error) {
@@ -780,6 +891,7 @@ function showCollector(uuid){
     })
     .then(function (response) {
         showModalCollector(response);
+        
     })
     .catch(function (error) {
         return false;
@@ -837,7 +949,8 @@ function showModalCollector(response){
                                         }
                                     }
                                 }
-                        html = html +
+                        html = html + '</tbody>'+
+                        '</table>'+
                         '</div>'+
 
                     '</div>'+
@@ -1103,13 +1216,13 @@ function RunSuricata(uuid) {
     })
         .then(function (response) {
             // loadPlugins();
+            setTimeout(function (){
+                loadPlugins();
+            }, 1500);
         })
         .catch(function error() {
         });
 
-    setTimeout(function (){
-        loadPlugins();
-    }, 1000);
 }
 
 //Stop suricata system
@@ -1124,13 +1237,13 @@ function StopSuricata(uuid) {
     })
         .then(function (response) {
             // loadPlugins();
+            setTimeout(function (){
+                loadPlugins();
+            }, 1500);
         })
         .catch(function error() {
         });
 
-    setTimeout(function (){
-        loadPlugins();
-    }, 1000);
 }
 
 function PingSuricata(uuid) {
@@ -1185,12 +1298,14 @@ function RunZeek(uuid) {
         url: nodeurl,
         timeout: 30000
     })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
+    .then(function (response) {
+        setTimeout(function (){
+            loadPlugins();
+        }, 1500);
+    })
+    .catch(function error() {
+    });
 
-    loadPlugins();
 }
 
 //Stop Zeek system
@@ -1203,12 +1318,14 @@ function StopZeek(uuid) {
         url: nodeurl,
         timeout: 30000,
     })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
+    .then(function (response) {
+        setTimeout(function (){
+            loadPlugins();
+        }, 1500);
+    })
+    .catch(function error() {
+    });
 
-    loadPlugins();
 }
 
 function PingZeek(uuid) {
@@ -1281,12 +1398,14 @@ function StopWazuh(uuid) {
         url: nodeurl,
         timeout: 30000,
     })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
-
-    loadPlugins();
+    .then(function (response) {
+        
+            setTimeout(function (){
+                loadPlugins();
+            }, 1500);
+    })
+    .catch(function error() {
+    });
 }
 
 function PingWazuh(uuid) {
@@ -1340,11 +1459,13 @@ function RunStap(uuid) {
         url: nodeurl,
         timeout: 30000
     })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
-    loadPlugins();
+    .then(function (response) {
+        setTimeout(function (){
+            loadPlugins();
+        }, 1500);
+    })
+    .catch(function error() {
+    });
 }
 
 //Stop stap system
@@ -1357,11 +1478,13 @@ function StopStap(uuid) {
         url: nodeurl,
         timeout: 30000,
     })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
-    loadPlugins();
+    .then(function (response) {
+        setTimeout(function (){
+            loadPlugins();
+        }, 1500);
+    })
+    .catch(function error() {
+    });
 }
 
 function PingStap(uuid) {
@@ -1409,18 +1532,18 @@ function PingPorts(uuid) {
             for(line in response.data){
                 if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
-                }else if (response.data[line]["status"] == "Disabled"){
-                    document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
-                }
-                document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-
-                if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
                     document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-                }else{
+                }else if (response.data[line]["status"] == "Disabled"){
+                    document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
                     document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
                 }
+                document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+
+                // if (response.data[line]["status"] == "Enabled"){
+                // }else{
+                // }
             }
             return true;
         })

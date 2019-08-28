@@ -227,7 +227,10 @@ function loadPlugins(){
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid)
     .then(function (response) {
         if (response.data.ack){
-            document.getElementById('ports-table').innerHTML = "No remote systems yet";
+            document.getElementById('ports-table1').innerHTML = "No remote systems yet";
+            document.getElementById('ports-table2').innerHTML = "No remote systems yet";
+            document.getElementById('ports-table3').innerHTML = "No remote systems yet";
+            document.getElementById('ports-table4').innerHTML = "No remote systems yet";
         }else if(response.data){
             var res = response.data.split("\n");
             var html =                         
@@ -272,7 +275,6 @@ function loadPlugins(){
         }
     })
 
-
     PingSuricata(uuid);
     PingZeek(uuid);
     PingWazuh(uuid);
@@ -302,7 +304,12 @@ function getCurrentRulesetName(uuid) {
         axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
         })
         .then(function (response2) { 
-            document.getElementById('current-ruleset-options').innerHTML = response2.data;
+            if(response2.data.ack){
+                document.getElementById('current-ruleset-options').innerHTML = "No ruleset selected...";
+                document.getElementById('current-ruleset-options').style.color = "red";
+            }else{
+                document.getElementById('current-ruleset-options').innerHTML = response2.data;                
+            }
         })
         .catch(function (error) {
         });

@@ -1,4 +1,6 @@
 function loadPlugins(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
     content = document.getElementById('master-table-plugins');
     content.innerHTML =
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -8,24 +10,43 @@ function loadPlugins(){
         '  <span style="font-size: 15px; color: grey;">                                   ' +
         '    <i class="fas fa-info-circle" title="Edit Master configuration file" onclick="showMasterFile(\'main\')"></i>  ' +
         '  </span></p> '+
-        '   <span id="owlhMasterService" style="display:none; font-size: 15px; cursor: default;" class="col-md-2 badge bg-warning align-text-bottom text-white" onclick="DeployServiceMaster()">Install service</span>'+
-        '</div>'+
-        '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0">Plugins</h6>'+
-        '<br>'+
-        '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i> | '+
-        '  <span style="font-size: 15px; color: grey;">                                   ' +
-        '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
-        '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopMasterCollector()"></i>                         ' +
-        '    <i class="fas fa-info-circle" title="Collector information" onclick="showMasterCollector()"></i>  ' +
-        '  </span></p> '+
-        '<p><i style="color: Dodgerblue;" class="fas fa-random"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Dispatcher &nbsp; | </span> <i class="fas fa-angle-double-down" id="dispatcher-status"></i> | '+
-        '  <span style="font-size: 15px; color: grey;">                                   ' +
-        '    <i class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i>                         ' +
-        '    <i class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i>  ' +
-        '  </span></p> '+
+        '  <span id="owlhMasterService" style="display:none; font-size: 15px; cursor: default;" class="col-md-2 badge bg-warning align-text-bottom text-white" onclick="DeployServiceMaster()">Install service</span>'+
     '</div>'+
 
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0">Plugins</h6>'+
+        '<br>'+
+    //     '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i> | '+
+    //     '  <span style="font-size: 15px; color: grey;">                                   ' +
+    //     '    <i class="fas fa-play-circle" title="Play collector" onclick="playMasterCollector()"></i>                         ' +
+    //     '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopMasterCollector()"></i>                         ' +
+    //     '    <i class="fas fa-info-circle" title="Collector information" onclick="showMasterCollector()"></i>  ' +
+    //     '  </span></p> '+
+
+    //     '<p><i style="color: Dodgerblue;" class="fas fa-random"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Dispatcher &nbsp; | </span> <i class="fas fa-angle-double-down" id="dispatcher-status"></i> | '+
+    //     '  <span style="font-size: 15px; color: grey;">                                   ' +
+    //     '    <i class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i>                         ' +
+    //     '    <i class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i>  ' +
+    //     '  </span></p> '+
+        '<table width="100%">'+
+            '<tr>'+
+                '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> STAP Collector</td>'+
+                '<td width="25%">Status: <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i></td>'+
+                '<td width="25%">Start/Stop: <i class="fas fa-play-circle" style="color: grey;"  title="Play collector" onclick="playMasterCollector()"></i> <i class="fas fa-stop-circle" style="color: grey;" title="Stop collector" onclick="stopMasterCollector()"></i></td>'+
+                '<td width="25%">Information: <i class="fas fa-info-circle" style="color: grey;" title="Collector information" onclick="showMasterCollector()"></i></td>'+
+            '</tr>'+       
+        '</table>'+
+        '<div id="ports-table1"></div>&nbsp &nbsp &nbsp'+
+        '<table width="100%">'+
+            '<tr>'+
+                '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-random"></i> Dispatcher</td>'+
+                '<td width="25%">Status: <i style="color: grey;" class="fas fa-angle-double-down" id="dispatcher-status"></i></td>'+
+                '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i> </td>'+
+                '<td width="25%">Dispatcher nodes: <i style="color: grey;" class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i></td>'+
+            '</tr>'+       
+        '</table>'+
+        '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
+    '</div>'+
 
     '<div class="my-3 p-3 bg-white rounded shadow-sm" id="flow-form-master">'+
     '<h6 class="border-bottom border-gray pb-2 mb-0">Flow</h6>'+
@@ -100,6 +121,54 @@ function loadPlugins(){
         '    <i class="fas fa-play-circle" title="Deploy firewall" onclick="deployMaster(\'firewall\')"></i>                         ' +
         '  </span></p> '+
     '</div>';
+
+    axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/showMasterCollector')
+    .then(function (response) {
+        console.log(response);
+        if (response.data.ack){
+            document.getElementById('ports-table').innerHTML = "No remote systems yet";
+        }else if(response.data){
+            var res = response.data.split("\n");
+            var html =                         
+            '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
+                '<thead>                                                      ' +
+                    '<th>Proto</th>                                             ' +
+                    '<th>RECV</th>                                             ' +
+                    '<th>SEND</th>                                             ' +
+                    '<th style="width: 25%">LOCAL IP</th>                                             ' +
+                    '<th style="width: 25%">REMOTE IP</th>                                             ' +
+                    '<th style="width: 15%">STATUS</th>                                             ' +
+                    '<th></th>                                             ' +
+                '</thead>                                                     ' +
+                '<tbody>                                                     '
+                for(line in res) {
+                    if (res[line] != ""){
+                        var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
+                        var lineSplited = vregex.exec(res[line]);
+                        html = html + '<tr><td>' +
+                        lineSplited[1]+
+                        '</td><td>     ' +
+                        lineSplited[2]+
+                        '</td><td>     ' +
+                        lineSplited[3]+
+                        '</td><td>     ' +
+                        lineSplited[4]+
+                        '</td><td>     ' +
+                        lineSplited[5]+
+                        '</td><td>     ' +
+                        lineSplited[6]+
+                        '</td><td>     ' +
+                        lineSplited[7]+
+                        '</td></tr>';
+                    }
+                }                
+                html = html + '</tbody>'+
+            '</table>';
+            document.getElementById('ports-table1').innerHTML = html;
+            document.getElementById('ports-table2').innerHTML = html;
+        }
+    });
+
     PingCollector();
     PingDataflow();
     PingPlugins();

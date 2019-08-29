@@ -19,6 +19,7 @@ function loadPlugins(){
     var portmaster = document.getElementById('port-master').value;
 
     var html =
+    //CHARTS
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'monitor\', \''+uuid+'\')"><b>Node monitor</b> <i class="fas fa-sort-down" id="monitor-form-icon-'+uuid+'"></i></h6>'+
         '<span id="monitor-form-'+uuid+'" style="display:block"><br>'+
@@ -44,6 +45,8 @@ function loadPlugins(){
             '</table>'+
         '</span>'+
     '</div>'+
+
+    //SURICATA & ZEEK
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+            
@@ -54,11 +57,12 @@ function loadPlugins(){
             '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
             '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
             '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options">asd</i>'+        
-            '  </span>                                                                        ' +
-            '  </p>                                                                           ' +
+            '  </span>' +
+                '<button class="btn btn-primary" style="font-size: 15px;" onclick="AddSuricataModal(\''+uuid+'\')">Add Suricata</button>'+
+            '  </p>' +
             '  <p><img  src="img/bro.png" alt="" width="30">'+
             '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
-            '  <span style="font-size: 15px; color: grey;" >                                   ' +
+            '  <span style="font-size: 15px; color: grey;" >' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
             '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
             '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i>                  ' +
@@ -115,35 +119,6 @@ function loadPlugins(){
                 '</tr>'+                    
             '</table>'+
             '<div id="ports-table4"></div>'+
-
-            // '  <p><i class="fas fa-plug fa-lg"></i>'+
-            // '  <span id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                         ' +
-            // '  <span style="font-size: 15px; color: grey;">                                   ' +
-            // '    <i class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i>                         ' +
-            // '    <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+name+'\')"></i>                             ' +
-            // '  </span></p> '+
-
-            // '  <p><span style="font-size: 15px; color: grey;">                                   ' +
-            // '    <i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i id="stap-collector-'+uuid+'">[N/A]</i> | '+
-            // '    <i class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i>                         ' +
-            // '    <i class="fas fa-stop-circle" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i>                         ' +
-            // '    <i class="fas fa-info-circle" title="Collector information" id="show-collector-info"></i>  ' +
-            // '  </span></p> '+
-
-            // '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
-            // '  <span style="font-size: 15px; color: grey;">                                   ' +
-            // '    <img src="img/favicon.ico" height="25">Knownports | '+
-            // '    <span class="fas fa-play-circle" id="ports-status-'+uuid+'" title="Change status">[N/A]</span> <i style="padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> |                         ' +
-            // '    <i style="color: grey;" id="ports-mode-'+uuid+'">[N/A]</i> <i style="padding-left:2px; color: grey;"" class="fas fa-sync-alt" title="Change mode" onclick="ChangeMode(\''+uuid+'\')"></i>  <span style="color: grey;"">|</span>                            '+
-            // '    <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i>                              '+
-            // '  </span></p> '+
-
-            // '  <p style="color: Dodgerblue;"><span style="font-size: 15px; color: grey;"> '+
-            // '  <span style="font-size: 15px; color: grey;">                                   ' +
-            // '    <img src="img/favicon.ico" height="25">Analyzer | '+
-            // '    <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span> <i style="padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i>                         ' +
-            // '    <i class="fas fa-info-circle" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i>  ' +
-            // '  </span></p> '+
         '</span>'+
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -163,7 +138,6 @@ function loadPlugins(){
                 '<td style="word-wrap: break-word;">'+
                     '<div class="custom-control custom-radio">'+
                     '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'network\', \''+uuid+'\')" id="collect-network" name="network" value="network" class="custom-control-input">'+
-                        // '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="loadNetworkValues(\''+uuid+'\')" style="color:grey;" title="Collector information"></i>'+
                         '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="loadNetworkValues(\''+uuid+'\')" style="color:grey;" title="Collector information"></i>'+
                     '</div>'+
                     '<div class="custom-control custom-radio">'+
@@ -172,12 +146,10 @@ function loadPlugins(){
                     '</div>'+
                     '<div class="custom-control custom-radio">'+
                     '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-network\', \''+uuid+'\')" id="collect-socket-network" name="network" value="socket-network" class="custom-control-input">'+
-                        // '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-window" onclick="SocketToNetworkList(\''+uuid+'\')" style="color:grey;" title="Socket to Network information"></i>'+
                         '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="SocketToNetworkList(\''+uuid+'\')" style="color:grey;" title="Socket to Network information"></i>'+
                     '</div>'+
                     '<div class="custom-control custom-radio">'+
                     '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'pcap-network\', \''+uuid+'\')" id="collect-pcap-network" name="network" value="pcap-network" class="custom-control-input">'+
-                        // '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;"title="Collector information"></i>'+
                         '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;"title="Collector information"></i>'+
                     '</div>'+
                 '</td>'+
@@ -227,9 +199,6 @@ function loadPlugins(){
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid)
     .then(function (response) {
         if (response.data.ack){
-            document.getElementById('ports-table1').innerHTML = "No remote systems yet";
-            document.getElementById('ports-table2').innerHTML = "No remote systems yet";
-            document.getElementById('ports-table3').innerHTML = "No remote systems yet";
             document.getElementById('ports-table4').innerHTML = "No remote systems yet";
         }else if(response.data){
             var res = response.data.split("\n");
@@ -268,13 +237,9 @@ function loadPlugins(){
                 }                
                 html = html + '</tbody>'+
             '</table>';
-            document.getElementById('ports-table1').innerHTML = html;
-            document.getElementById('ports-table2').innerHTML = html;
-            document.getElementById('ports-table3').innerHTML = html;
             document.getElementById('ports-table4').innerHTML = html;
         }
     })
-
     PingSuricata(uuid);
     PingZeek(uuid);
     PingWazuh(uuid);
@@ -614,6 +579,99 @@ function StopSuricata(uuid) {
         });
 
 }
+
+function AddSuricataModal(uuid){
+  var modalWindow = document.getElementById('modal-window');
+  modalWindow.innerHTML =
+  '<div class="modal-dialog">'+
+    '<div class="modal-content">'+
+
+      '<div class="modal-header">'+
+        '<h4 class="modal-title" id="sync-node-header">Add Suricata</h4>'+
+        '<button type="button" class="close" id="add-suricata-modal-cross">&times;</button>'+
+      '</div>'+
+
+      '<div class="modal-body" id="sync-node-footer-table">'+
+        '<p>Insert new for the new Suricata service:</p>'+
+        '<input type="text" class="form-control" id="new-suricata-name">'+
+      '</div>'+
+
+      '<div class="modal-footer" id="sync-node-footer-btn">'+
+        '<button type="button" class="btn btn-secondary" id="add-suricata-modal-close">Cancel</button>'+
+        '<button type="button" class="btn btn-primary" id="add-suricata-modal">sync</button>'+
+      '</div>'+
+
+    '</div>'+
+  '</div>';
+  $('#modal-window').modal("show");
+  $('#add-suricata-modal').click(function(){ $('#modal-window').modal("hide"); AddSuricata(uuid, document.getElementById('new-suricata-name').value); });
+  $('#add-suricata-modal-close').click(function(){ $('#modal-window').modal("hide");});
+  $('#add-suricata-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function AddSuricata(uuid, name){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/add';
+    var newSuriData = {}
+    newSuriData["uuid"] = uuid;
+    newSuriData["name"] = name;
+    newSuriData["type"] = "suricata";
+    var dataMap = JSON.stringify(newSuriData);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataMap
+    })
+    .then(function (response) {
+        if (response.data.ack == "true") {
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Success!</strong> Suricata service added successfully!'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error adding Suricata service: </strong>'+response.data.error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }
+    })
+    .catch(function (error) {
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error adding Suricata service: </strong>'+error+''+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+// function GetSuricataServices(uuid){
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/get/'+uuid;
+//     axios({
+//         method: 'get',
+//         url: nodeurl,
+//         timeout: 30000
+//     })
+//     .then(function (response) {
+//         console.log(response.data);
+//     })
+//     .catch(function (error) {
+//     });
+// }
 
 function syncRulesetModal(node, name){
   var modalWindow = document.getElementById('modal-window');
@@ -1537,20 +1595,21 @@ function PingPorts(uuid) {
     })
         .then(function (response) {
             for(line in response.data){
-                if (response.data[line]["status"] == "Enabled"){
-                    document.getElementById('ports-status-'+uuid).innerHTML = "ON";
-                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
-                    document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-                }else if (response.data[line]["status"] == "Disabled"){
-                    document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
-                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
-                    document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                }
-                document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+                console.log(response.data[line]);
+                console.log(line);
+                if (line == "knownports"){
+                    if (response.data[line]["status"] == "Enabled"){
+                        document.getElementById('ports-status-'+uuid).innerHTML = "ON";
+                        document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
+                        document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+                    }else if (response.data[line]["status"] == "Disabled"){
+                        document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
+                        document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
+                        document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+                    }
+                    document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
 
-                // if (response.data[line]["status"] == "Enabled"){
-                // }else{
-                // }
+                }
             }
             return true;
         })

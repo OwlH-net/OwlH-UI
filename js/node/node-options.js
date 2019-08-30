@@ -57,39 +57,50 @@ function loadPlugins(){
             '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
             '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
             '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
-            '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options">asd</i>'+        
+            '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options"></i> | '+
+            '    <span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> -> Start/Stop Main Suricata: <i class="fas fa-stop-circle" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+        
             '  </span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSuricataModal(\''+uuid+'\')">Add Suricata</button>'+
             '</p>' +
-            //     '<div>'+
-            //         '<table width="100%">'+
-            //             '<thead>'+
-            //                 '<th width="16%">Name</th>'+
-            //                 '<th width="16%">Status</th>'+
-            //                 '<th width="16%">Play/Stop</th>'+
-            //                 '<th width="16%">Synchronize</th>'+
-            //                 '<th width="16%">BPF</th>'+
-            //                 '<th width="16%">Ruleset</th>'+
-            //             '</thead>'+
-            //             '<tbody id="suricata-table-services">'+    
-            //                 // '<td>qdwqwd<i class="fas fa-stop-circle"></td>'+                                                    
-            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
-            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
-            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
-            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
-            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
-            //             '</tbody>'+
-            //         '</table>'+
-            //     '</div><br><br>'+
+                '<div>'+
+                    '<table class="table table-hover" width="100%">'+
+                        '<thead>'+
+                            '<th width="16%">Name</th>'+
+                            '<th width="16%">Status</th>'+
+                            '<th width="16%">Play/Stop</th>'+
+                            '<th width="16%">Synchronize</th>'+
+                            '<th width="16%">BPF</th>'+
+                            '<th width="16%">Ruleset</th>'+
+                        '</thead>'+
+                        '<tbody id="suricata-table-services">'+                                                       
+                        '</tbody>'+
+                    '</table>'+
+                '</div><br><br>'+
             // //zeek    
             '<p><img  src="img/bro.png" alt="" width="30">'+
             '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
             '  <span style="font-size: 15px; color: grey;" >' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
             '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
-            '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i>                  ' +
+            '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i> | ' +
+            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> -> Start/Stop Main Zeek: <i class="fas fa-stop-circle" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+        
             '  </span>' +
+            '   <button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddZeekModal(\''+uuid+'\')">Add Zeek</button>'+
             '</p>'+
+            '<div>'+
+                    '<table class="table table-hover" width="100%">'+
+                        '<thead>'+
+                            '<th width="16%">Name</th>'+
+                            '<th width="16%">Status</th>'+
+                            '<th width="16%">Play/Stop</th>'+
+                            '<th width="16%">Synchronize</th>'+
+                            '<th width="16%">BPF</th>'+
+                            '<th width="16%">Ruleset</th>'+
+                        '</thead>'+
+                        '<tbody id="zeek-table-services">'+                                                       
+                        '</tbody>'+
+                    '</table>'+
+                '</div>'+
         '</span>'+
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -118,7 +129,7 @@ function loadPlugins(){
                 '<tr>'+
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
                     '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> &nbsp <i style="cursor: default; color: grey;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
                     '<td width="25%">ports: <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
                 '</tr>'+            
             '</table>'+
@@ -262,7 +273,6 @@ function loadPlugins(){
             document.getElementById('ports-table4').innerHTML = html;
         }
     })
-    PingPluginsNode(uuid);
     PingSuricata(uuid);
     PingZeek(uuid);
     PingWazuh(uuid);
@@ -272,10 +282,41 @@ function loadPlugins(){
     PingCollector(uuid);    
     PingMonitor(uuid);
     getCurrentRulesetName(uuid);
+    PingPluginsNode(uuid);     
+    GetMainconfData(uuid);
     var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
     
     $('#show-collector-info').click(function(){ showCollector(uuid);});    
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});    
+}
+
+function ChangeMainServiceStatus(uuid, param, service){
+    var currentStatus = document.getElementById(service+'-current-status').innerHTML;
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/mainconfStatus';
+
+    var jsonService = {}
+    jsonService["uuid"] = uuid;
+    jsonService["service"] = service;
+    jsonService["param"] = param;
+    if (currentStatus == "Enabled"){
+        jsonService["status"] = "disabled";
+    }else if (currentStatus == "Disabled"){
+        jsonService["status"] = "enabled";
+    }
+    var dataJSON = JSON.stringify(jsonService);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+    })
+    .catch(function (error) {        
+    });
+    loadPlugins();
 }
 
 function getCurrentRulesetName(uuid) {
@@ -465,6 +506,40 @@ function PingMonitor(uuid){
     });    
 }
 
+function GetMainconfData(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/getMainconfData/'+uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        for (service in response.data){
+            if(service == "suricata"){
+                if(response.data[service]["status"] == "disabled"){
+                    document.getElementById('suricata-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
+                    document.getElementById('suricata-current-status').innerHTML = 'Disabled';
+                }else if(response.data[service]["status"] == "enabled"){
+                    document.getElementById('suricata-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
+                    document.getElementById('suricata-current-status').innerHTML = 'Enabled';
+                }
+            }else if(service == "zeek"){
+                if(response.data[service]["status"] == "disabled"){
+                    document.getElementById('zeek-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
+                    document.getElementById('zeek-current-status').innerHTML = 'Disabled';
+                }else if(response.data[service]["status"] == "enabled"){
+                    document.getElementById('zeek-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
+                    document.getElementById('zeek-current-status').innerHTML = 'Enabled';
+                }
+            }
+        }
+    })
+    .catch(function (error) {
+    });
+}
+
 function PingDataflow(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -614,7 +689,7 @@ function AddSuricataModal(uuid){
       '</div>'+
 
       '<div class="modal-body" id="sync-node-footer-table">'+
-        '<p>Insert new for the new Suricata service:</p>'+
+        '<p>Insert name for the new Suricata service:</p>'+
         '<input type="text" class="form-control" id="new-suricata-name">'+
       '</div>'+
 
@@ -626,19 +701,48 @@ function AddSuricataModal(uuid){
     '</div>'+
   '</div>';
   $('#modal-window').modal("show");
-  $('#add-suricata-modal').click(function(){ $('#modal-window').modal("hide"); AddSuricata(uuid, document.getElementById('new-suricata-name').value); });
+  $('#add-suricata-modal').click(function(){ $('#modal-window').modal("hide"); AddPluginService(uuid, document.getElementById('new-suricata-name').value, 'suricata'); });
   $('#add-suricata-modal-close').click(function(){ $('#modal-window').modal("hide");});
   $('#add-suricata-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
 
-function AddSuricata(uuid, name){
+function AddZeekModal(uuid){
+  var modalWindow = document.getElementById('modal-window');
+  modalWindow.innerHTML =
+  '<div class="modal-dialog">'+
+    '<div class="modal-content">'+
+
+      '<div class="modal-header">'+
+        '<h4 class="modal-title" id="sync-node-header">Add Zeek</h4>'+
+        '<button type="button" class="close" id="add-zeek-modal-cross">&times;</button>'+
+      '</div>'+
+
+      '<div class="modal-body" id="sync-node-footer-table">'+
+        '<p>Insert name for the new Zeek service:</p>'+
+        '<input type="text" class="form-control" id="new-zeek-name">'+
+      '</div>'+
+
+      '<div class="modal-footer" id="sync-node-footer-btn">'+
+        '<button type="button" class="btn btn-secondary" id="add-zeek-modal-close">Cancel</button>'+
+        '<button type="button" class="btn btn-primary" id="add-zeek-modal">sync</button>'+
+      '</div>'+
+
+    '</div>'+
+  '</div>';
+  $('#modal-window').modal("show");
+  $('#add-zeek-modal').click(function(){ $('#modal-window').modal("hide"); AddPluginService(uuid, document.getElementById('new-zeek-name').value, 'zeek'); });
+  $('#add-zeek-modal-close').click(function(){ $('#modal-window').modal("hide");});
+  $('#add-zeek-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function AddPluginService(uuid, name, type){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/add';
     var newSuriData = {}
     newSuriData["uuid"] = uuid;
     newSuriData["name"] = name;
-    newSuriData["type"] = "suricata";
+    newSuriData["type"] = type;
     var dataMap = JSON.stringify(newSuriData);
     axios({
         method: 'put',
@@ -666,6 +770,7 @@ function AddSuricata(uuid, name){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }
+        loadPlugins();
     })
     .catch(function (error) {
         var alert = document.getElementById('floating-alert');
@@ -676,7 +781,7 @@ function AddSuricata(uuid, name){
             '</button>'+
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
-    });
+    });    
 }
 
 // function GetSuricataServices(uuid){
@@ -1610,13 +1715,15 @@ function PingPluginsNode(uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/' + uuid;
+    var tableSuricata = "";
+    var tableZeek = "";
     axios({
         method: 'get',
         url: nodeurl,
         timeout: 30000
     })
         .then(function (response) {
-            var table = "";
+            
             for(line in response.data){
                 if (line == "knownports"){
                     if (response.data[line]["status"] == "Enabled"){
@@ -1627,24 +1734,85 @@ function PingPluginsNode(uuid) {
                         document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
                         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
                         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                    }
+                    }                    
                     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
                 }else if (response.data[line]["type"] == "suricata"){
-                    table = table + '<tr>'+
+                    tableSuricata = tableSuricata + '<tr>'+
                         '<td>'+response.data[line]["name"]+'</td>'+                            
-                        '<td>'+response.data[line]["status"]+'</td>'+                            
-                        '<td><i class="fas fa-stop-circle"></td>'+                            
-                        '<td><i class="fas fa-sync-alt"></td>'+                            
+                        '<td id="status-suricata-'+line+'">';
+                            if(response.data[line]["status"]=="enable"){
+                                tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
+                            }else if (response.data[line]["status"]=="disable"){
+                                tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
+                            } 
+                            tableSuricata = tableSuricata + '</td>'+                            
+                        '<td>';
+                            if(response.data[line]["status"]=="enable"){
+                                tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disable\')"></i>';
+                            }else if (response.data[line]["status"]=="disable"){
+                                tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enable\')"></i>';
+                            }                        
+                            tableSuricata = tableSuricata + '</td>'+                            
+                        '<td><i class="fas fa-sync-alt" style="color: grey;"></td>'+                            
                         '<td>'+response.data[line]["bpf"]+'</td>'+                            
                         '<td>'+response.data[line]["ruleset"]+'</td>'+                            
-                    '</tr>';
+                    '</tr>';                    
+                }else if (response.data[line]["type"] == "zeek"){
+                    tableZeek = tableZeek + '<tr>'+
+                        '<td>'+response.data[line]["name"]+'</td>'+                            
+                        '<td id="status-zeek-'+line+'">';
+                            if(response.data[line]["status"]=="enable"){
+                                tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
+                            }else if (response.data[line]["status"]=="disable"){
+                                tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
+                            } 
+                            tableZeek = tableZeek + '</td>'+                            
+                        '<td>';
+                            if(response.data[line]["status"]=="enable"){
+                                tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disable\')"></i>';
+                            }else if (response.data[line]["status"]=="disable"){
+                                tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enable\')"></i>';
+                            }                        
+                            tableZeek = tableZeek + '</td>'+                            
+                        '<td><i class="fas fa-sync-alt" style="color: grey;"></td>'+                            
+                        '<td>'+response.data[line]["bpf"]+'</td>'+                            
+                        '<td>'+response.data[line]["ruleset"]+'</td>'+                            
+                    '</tr>';                    
                 }
+                
+                document.getElementById('suricata-table-services').innerHTML = tableSuricata;
+                document.getElementById('zeek-table-services').innerHTML = tableZeek;
             }
-            document.getElementById('suricata-table-services').innerHTML = table;
         })
         .catch(function (error) {
         });
-    return false;
+}
+
+function ChangeServiceStatus(uuid, server, param, status){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ChangeServiceStatus';
+    
+    var jsonChangeService = {}
+    jsonChangeService["uuid"] = uuid;
+    jsonChangeService["status"] = status;
+    jsonChangeService["param"] = param;
+    jsonChangeService["server"] = server;
+    var dataJSON = JSON.stringify(jsonChangeService);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        console.log(response.data);
+        loadPlugins();
+    })
+    .catch(function (error) {
+    });
+
 }
 
 function PingAnalyzer(uuid) {

@@ -50,6 +50,7 @@ function loadPlugins(){
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+            
+            //suricata  
             '<p><img src="img/suricata.png" alt="" width="30"> '      +
             '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
             '  <span style="font-size: 15px; color: grey;" >  ' +
@@ -58,9 +59,30 @@ function loadPlugins(){
             '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
             '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options">asd</i>'+        
             '  </span>' +
-                '<button class="btn btn-primary" style="font-size: 15px;" onclick="AddSuricataModal(\''+uuid+'\')">Add Suricata</button>'+
-            '  </p>' +
-            '  <p><img  src="img/bro.png" alt="" width="30">'+
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSuricataModal(\''+uuid+'\')">Add Suricata</button>'+
+            '</p>' +
+            //     '<div>'+
+            //         '<table width="100%">'+
+            //             '<thead>'+
+            //                 '<th width="16%">Name</th>'+
+            //                 '<th width="16%">Status</th>'+
+            //                 '<th width="16%">Play/Stop</th>'+
+            //                 '<th width="16%">Synchronize</th>'+
+            //                 '<th width="16%">BPF</th>'+
+            //                 '<th width="16%">Ruleset</th>'+
+            //             '</thead>'+
+            //             '<tbody id="suricata-table-services">'+    
+            //                 // '<td>qdwqwd<i class="fas fa-stop-circle"></td>'+                                                    
+            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
+            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
+            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
+            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
+            //                 // '<td><i class="fas fa-stop-circle"></td>'+                                                    
+            //             '</tbody>'+
+            //         '</table>'+
+            //     '</div><br><br>'+
+            // //zeek    
+            '<p><img  src="img/bro.png" alt="" width="30">'+
             '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
             '  <span style="font-size: 15px; color: grey;" >' +
             '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
@@ -240,11 +262,11 @@ function loadPlugins(){
             document.getElementById('ports-table4').innerHTML = html;
         }
     })
+    PingPluginsNode(uuid);
     PingSuricata(uuid);
     PingZeek(uuid);
     PingWazuh(uuid);
     PingStap(uuid);
-    PingPorts(uuid);
     PingAnalyzer(uuid);
     PingDataflow(uuid);
     PingCollector(uuid);    
@@ -1584,19 +1606,18 @@ function PingStap(uuid) {
     return false;
 }
 
-function PingPorts(uuid) {
+function PingPluginsNode(uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPorts/' + uuid;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/' + uuid;
     axios({
         method: 'get',
         url: nodeurl,
         timeout: 30000
     })
         .then(function (response) {
+            var table = "";
             for(line in response.data){
-                console.log(response.data[line]);
-                console.log(line);
                 if (line == "knownports"){
                     if (response.data[line]["status"] == "Enabled"){
                         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
@@ -1608,14 +1629,20 @@ function PingPorts(uuid) {
                         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
                     }
                     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-
+                }else if (response.data[line]["type"] == "suricata"){
+                    table = table + '<tr>'+
+                        '<td>'+response.data[line]["name"]+'</td>'+                            
+                        '<td>'+response.data[line]["status"]+'</td>'+                            
+                        '<td><i class="fas fa-stop-circle"></td>'+                            
+                        '<td><i class="fas fa-sync-alt"></td>'+                            
+                        '<td>'+response.data[line]["bpf"]+'</td>'+                            
+                        '<td>'+response.data[line]["ruleset"]+'</td>'+                            
+                    '</tr>';
                 }
             }
-            return true;
+            document.getElementById('suricata-table-services').innerHTML = table;
         })
         .catch(function (error) {
-
-            return false;
         });
     return false;
 }

@@ -52,25 +52,25 @@ function loadPlugins(){
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+            
             //suricata  
             '<p><img src="img/suricata.png" alt="" width="30"> '      +
-            '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
-            '  <span style="font-size: 15px; color: grey;" >  ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
-            '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
-            '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
-            '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options"></i> | '+
-            '    <span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> -> Start/Stop Main Suricata: <i class="fas fa-stop-circle" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+        
+            // '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
+            // '  <span style="font-size: 15px; color: grey;" >  ' +
+            // '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
+            // '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
+            // '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
+            // '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options"></i> | '+
+            '    <span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+        
             '  </span>' +
-                '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSuricataModal(\''+uuid+'\')">Add Suricata</button>'+
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
                 '<div>'+
                     '<table class="table table-hover" width="100%">'+
                         '<thead>'+
                             '<th width="16%">Name</th>'+
                             '<th width="16%">Status</th>'+
-                            '<th width="16%">Play/Stop</th>'+
-                            '<th width="16%">Synchronize</th>'+
                             '<th width="16%">BPF</th>'+
                             '<th width="16%">Ruleset</th>'+
+                            '<th width="16%">Interface</th>'+
+                            '<th width="16%">Actions</th>'+
                         '</thead>'+
                         '<tbody id="suricata-table-services">'+                                                       
                         '</tbody>'+
@@ -78,24 +78,23 @@ function loadPlugins(){
                 '</div><br><br>'+
             // //zeek    
             '<p><img  src="img/bro.png" alt="" width="30">'+
-            '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
-            '  <span style="font-size: 15px; color: grey;" >' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
-            '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
-            '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i> | ' +
-            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> -> Start/Stop Main Zeek: <i class="fas fa-stop-circle" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+        
+            // '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
+            // '  <span style="font-size: 15px; color: grey;" >' +
+            // '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
+            // '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
+            // '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i> | ' +
+            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+        
             '  </span>' +
-            '   <button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddZeekModal(\''+uuid+'\')">Add Zeek</button>'+
+            '   <button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
             '</p>'+
             '<div>'+
                     '<table class="table table-hover" width="100%">'+
                         '<thead>'+
                             '<th width="16%">Name</th>'+
                             '<th width="16%">Status</th>'+
-                            '<th width="16%">Play/Stop</th>'+
-                            '<th width="16%">Synchronize</th>'+
                             '<th width="16%">BPF</th>'+
                             '<th width="16%">Ruleset</th>'+
+                            '<th width="16%">Actions</th>'+
                         '</thead>'+
                         '<tbody id="zeek-table-services">'+                                                       
                         '</tbody>'+
@@ -273,8 +272,8 @@ function loadPlugins(){
             document.getElementById('ports-table4').innerHTML = html;
         }
     })
-    PingSuricata(uuid);
-    PingZeek(uuid);
+    // PingSuricata(uuid);
+    // PingZeek(uuid);
     PingWazuh(uuid);
     PingStap(uuid);
     PingAnalyzer(uuid);
@@ -521,15 +520,19 @@ function GetMainconfData(uuid){
                 if(response.data[service]["status"] == "disabled"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
                     document.getElementById('suricata-current-status').innerHTML = 'Disabled';
+                    document.getElementById('main-suricata-status-btn').className = 'fas fa-play-circle';
                 }else if(response.data[service]["status"] == "enabled"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
+                    document.getElementById('main-suricata-status-btn').className = 'fas fa-stop-circle';
                     document.getElementById('suricata-current-status').innerHTML = 'Enabled';
                 }
             }else if(service == "zeek"){
                 if(response.data[service]["status"] == "disabled"){
+                    document.getElementById('main-zeek-status-btn').className = 'fas fa-play-circle';
                     document.getElementById('zeek-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
                     document.getElementById('zeek-current-status').innerHTML = 'Disabled';
                 }else if(response.data[service]["status"] == "enabled"){
+                    document.getElementById('main-zeek-status-btn').className = 'fas fa-stop-circle';
                     document.getElementById('zeek-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
                     document.getElementById('zeek-current-status').innerHTML = 'Enabled';
                 }
@@ -677,68 +680,39 @@ function StopSuricata(uuid) {
 
 }
 
-function AddSuricataModal(uuid){
+function AddServiceModal(uuid, type){
   var modalWindow = document.getElementById('modal-window');
   modalWindow.innerHTML =
   '<div class="modal-dialog">'+
     '<div class="modal-content">'+
 
       '<div class="modal-header">'+
-        '<h4 class="modal-title" id="sync-node-header">Add Suricata</h4>'+
-        '<button type="button" class="close" id="add-suricata-modal-cross">&times;</button>'+
+        '<h4 class="modal-title">Add '+type+' service</h4>'+
+        '<button type="button" class="close" id="add-service-modal-cross">&times;</button>'+
       '</div>'+
 
-      '<div class="modal-body" id="sync-node-footer-table">'+
-        '<p>Insert name for the new Suricata service:</p>'+
-        '<input type="text" class="form-control" id="new-suricata-name">'+
+      '<div class="modal-body">'+
+        '<p>Insert name for the new '+type+' service:</p>'+
+        '<input type="text" class="form-control" id="new-service-name">'+
       '</div>'+
 
       '<div class="modal-footer" id="sync-node-footer-btn">'+
-        '<button type="button" class="btn btn-secondary" id="add-suricata-modal-close">Cancel</button>'+
-        '<button type="button" class="btn btn-primary" id="add-suricata-modal">sync</button>'+
+        '<button type="button" class="btn btn-secondary" id="add-service-modal-close">Cancel</button>'+
+        '<button type="button" class="btn btn-primary" id="add-service-modal">Add</button>'+
       '</div>'+
 
     '</div>'+
   '</div>';
   $('#modal-window').modal("show");
-  $('#add-suricata-modal').click(function(){ $('#modal-window').modal("hide"); AddPluginService(uuid, document.getElementById('new-suricata-name').value, 'suricata'); });
-  $('#add-suricata-modal-close').click(function(){ $('#modal-window').modal("hide");});
-  $('#add-suricata-modal-cross').click(function(){ $('#modal-window').modal("hide");});
-}
-
-function AddZeekModal(uuid){
-  var modalWindow = document.getElementById('modal-window');
-  modalWindow.innerHTML =
-  '<div class="modal-dialog">'+
-    '<div class="modal-content">'+
-
-      '<div class="modal-header">'+
-        '<h4 class="modal-title" id="sync-node-header">Add Zeek</h4>'+
-        '<button type="button" class="close" id="add-zeek-modal-cross">&times;</button>'+
-      '</div>'+
-
-      '<div class="modal-body" id="sync-node-footer-table">'+
-        '<p>Insert name for the new Zeek service:</p>'+
-        '<input type="text" class="form-control" id="new-zeek-name">'+
-      '</div>'+
-
-      '<div class="modal-footer" id="sync-node-footer-btn">'+
-        '<button type="button" class="btn btn-secondary" id="add-zeek-modal-close">Cancel</button>'+
-        '<button type="button" class="btn btn-primary" id="add-zeek-modal">sync</button>'+
-      '</div>'+
-
-    '</div>'+
-  '</div>';
-  $('#modal-window').modal("show");
-  $('#add-zeek-modal').click(function(){ $('#modal-window').modal("hide"); AddPluginService(uuid, document.getElementById('new-zeek-name').value, 'zeek'); });
-  $('#add-zeek-modal-close').click(function(){ $('#modal-window').modal("hide");});
-  $('#add-zeek-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+  $('#add-service-modal').click(function(){ $('#modal-window').modal("hide"); AddPluginService(uuid, document.getElementById('new-service-name').value, type); });
+  $('#add-service-modal-close').click(function(){ $('#modal-window').modal("hide");});
+  $('#add-service-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
 
 function AddPluginService(uuid, name, type){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/add';
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/add';
     var newSuriData = {}
     newSuriData["uuid"] = uuid;
     newSuriData["name"] = name;
@@ -824,14 +798,14 @@ function syncRulesetModal(node, name){
   '</div>';
 }
 
-function loadBPF(nid, name){
+function loadBPF(uuid, name){
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML = '<div class="modal-dialog">'+
                 '<div class="modal-content">'+
 
                  '<div class="modal-header">'+
-                        '<h4 class="modal-title" id="bpf-header">BPF</h4>'+
-                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                        '<h4 class="modal-title" id="bpf-header">'+name+' BPF</h4>'+
+                        '<button type="button" class="close" id="load-bpf-cross">&times;</button>'+
                     '</div>'+
 
                     '<div class="modal-body" id="modal-footer-inputtext">'+
@@ -839,45 +813,49 @@ function loadBPF(nid, name){
                     '</div>'+
 
                     '<div class="modal-footer" id="modal-footer-btn">'+
-                        '<!-- Buttons -->'+
+                        '<button type="button" class="btn btn-secondary" id="load-bpf-close">Close</button>'+
+                        '<button type="submit" class="btn btn-primary" id="load-bpf-save" onclick="saveBPF(\''+uuid+'\')">Save</button>'+
                     '</div>'+
 
                 '</div>'+
             '</div>';
-  var inputBPF = document.getElementById('recipient-name');
-  var headerBPF = document.getElementById('bpf-header');
-  var footerBPF = document.getElementById("modal-footer-btn");
-  headerBPF.innerHTML = "BPF - "+name;
-  footerBPF.innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveBPF(\''+nid+'\')" id="btn-save-changes">Save changes</button>';
-  var ipmaster = document.getElementById('ip-master').value;
-  var portmaster = document.getElementById('port-master').value;
-  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+nid+'/bpf';
-  axios({
-    method: 'get',
-    url: nodeurl,
-    timeout: 3000
-  })
-    .then(function (response) {
-        if('bpf' in response.data){
-            inputBPF.value=response.data.bpf;
-        }else{
-            inputBPF.value='';
-            headerBPF.innerHTML = headerBPF.innerHTML + '<br>Not defined';
-        }
+    
+    $('#modal-window').modal("show");
+    $('#load-bpf-cross').click(function(){ $('#modal-window').modal("hide"); });
+    $('#load-bpf-close').click(function(){ $('#modal-window').modal("hide"); });
+    $('#load-bpf-save').click(function(){ $('#modal-window').modal("hide"); saveBPF(uuid, document.getElementById('new-service-name').value, type); });
+
+    document.getElementById('bpf-header').innerHTML = name+" BPF";
+
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+uuid+'/bpf';
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 3000
     })
-    .catch(function (error) {
-      windowModalLog.innerHTML = error+"++<br>";
-    });
+        .then(function (response) {
+            if('bpf' in response.data){
+                document.getElementById('recipient-name').value=response.data.bpf;
+            }else{
+                document.getElementById('recipient-name').value='';
+                document.getElementById('bpf-header').innerHTML = document.getElementById('bpf-header').innerHTML + '<br>Not defined';
+            }
+        })
+        .catch(function (error) {
+        windowModalLog.innerHTML = error+"++<br>";
+        });
+
 }
 
-function saveBPF(nid){
+function saveBPF(uuid){
     var inputBPF = document.getElementById('recipient-name');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+nid+'/bpf';
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+uuid+'/bpf';
     var jsonbpfdata = {}
-    jsonbpfdata["nid"] = nid;
+    jsonbpfdata["nid"] = uuid;
     jsonbpfdata["bpf"] = inputBPF.value;
     var bpfjson = JSON.stringify(jsonbpfdata);
 
@@ -895,7 +873,7 @@ function saveBPF(nid){
       });
   }
 
-function loadRuleset(nid){
+function loadRuleset(uuid){
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML =
     '<div class="modal-dialog modal-lg">'+
@@ -923,7 +901,7 @@ function loadRuleset(nid){
           if (typeof response.data.error != "undefined"){
               resultElement.innerHTML = '<p>No rules available...</p>';
           }else{
-              resultElement.innerHTML = generateAllRulesModal(response, nid);
+              resultElement.innerHTML = generateAllRulesModal(response, uuid);
           }
     })
     .catch(function (error) {
@@ -1181,9 +1159,9 @@ function ChangeStatus(uuid){
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status';
 
     if(document.getElementById('ports-status-'+uuid).innerHTML == "ON"){
-        var status ="Disabled";
+        var status ="disabled";
     }else{
-        var status ="Enabled";
+        var status ="enabled";
     }
 
     var jsonPorts = {}
@@ -1722,70 +1700,127 @@ function PingPluginsNode(uuid) {
         url: nodeurl,
         timeout: 30000
     })
-        .then(function (response) {
-            
-            for(line in response.data){
-                if (line == "knownports"){
-                    if (response.data[line]["status"] == "Enabled"){
-                        document.getElementById('ports-status-'+uuid).innerHTML = "ON";
-                        document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
-                        document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-                    }else if (response.data[line]["status"] == "Disabled"){
-                        document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
-                        document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
-                        document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                    }                    
-                    document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-                }else if (response.data[line]["type"] == "suricata"){
-                    tableSuricata = tableSuricata + '<tr>'+
-                        '<td>'+response.data[line]["name"]+'</td>'+                            
-                        '<td id="status-suricata-'+line+'">';
-                            if(response.data[line]["status"]=="enable"){
-                                tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
-                            }else if (response.data[line]["status"]=="disable"){
-                                tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
-                            } 
-                            tableSuricata = tableSuricata + '</td>'+                            
-                        '<td>';
-                            if(response.data[line]["status"]=="enable"){
-                                tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disable\')"></i>';
-                            }else if (response.data[line]["status"]=="disable"){
-                                tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enable\')"></i>';
-                            }                        
-                            tableSuricata = tableSuricata + '</td>'+                            
-                        '<td><i class="fas fa-sync-alt" style="color: grey;"></td>'+                            
-                        '<td>'+response.data[line]["bpf"]+'</td>'+                            
-                        '<td>'+response.data[line]["ruleset"]+'</td>'+                            
-                    '</tr>';                    
-                }else if (response.data[line]["type"] == "zeek"){
-                    tableZeek = tableZeek + '<tr>'+
-                        '<td>'+response.data[line]["name"]+'</td>'+                            
-                        '<td id="status-zeek-'+line+'">';
-                            if(response.data[line]["status"]=="enable"){
-                                tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
-                            }else if (response.data[line]["status"]=="disable"){
-                                tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
-                            } 
-                            tableZeek = tableZeek + '</td>'+                            
-                        '<td>';
-                            if(response.data[line]["status"]=="enable"){
-                                tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disable\')"></i>';
-                            }else if (response.data[line]["status"]=="disable"){
-                                tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enable\')"></i>';
-                            }                        
-                            tableZeek = tableZeek + '</td>'+                            
-                        '<td><i class="fas fa-sync-alt" style="color: grey;"></td>'+                            
-                        '<td>'+response.data[line]["bpf"]+'</td>'+                            
-                        '<td>'+response.data[line]["ruleset"]+'</td>'+                            
-                    '</tr>';                    
-                }
-                
-                document.getElementById('suricata-table-services').innerHTML = tableSuricata;
-                document.getElementById('zeek-table-services').innerHTML = tableZeek;
+    .then(function (response) {
+        console.log(response.data);
+        for(line in response.data){
+            if (line == "knownports"){
+                if (response.data[line]["status"] == "enabled"){
+                    document.getElementById('ports-status-'+uuid).innerHTML = "ON";
+                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
+                    document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+                }else if (response.data[line]["status"] == "disabled"){
+                    document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
+                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
+                    document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+                }                    
+                document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+            }else if (response.data[line]["type"] == "suricata"){
+                tableSuricata = tableSuricata + '<tr>'+
+                    '<td>'+response.data[line]["name"]+'</td>'+                            
+                    '<td id="status-suricata-'+line+'">';
+                        if(response.data[line]["status"]=="enabled"){
+                            tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
+                        }else if (response.data[line]["status"]=="disabled"){
+                            tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
+                        } 
+                        tableSuricata = tableSuricata + '</td>'+                                                       
+                    '<td>'+response.data[line]["bpf"]+'</td>'+                            
+                    '<td>'+response.data[line]["ruleset"]+'</td>'+  
+                    '<td>'+response.data[line]["interface"]+'</td>'+  
+                    '<td>';
+                        if(response.data[line]["status"]=="enabled"){
+                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\')"></i> &nbsp';
+                        }else if (response.data[line]["status"]=="disabled"){
+                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\')"></i> &nbsp';
+                        }
+                        tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
+                        '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i> &nbsp'+
+                        '<i class="fas fa-file" style="color:grey;" title="Interface" style="cursor: default;" onclick="loadNetworkValues(\''+uuid+'\')"></i> &nbsp'+
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                    '</td>'+                                                      
+                '</tr>';                    
+            }else if (response.data[line]["type"] == "zeek"){
+                tableZeek = tableZeek + '<tr>'+
+                    '<td>'+response.data[line]["name"]+'</td>'+                            
+                    '<td id="status-zeek-'+line+'">';
+                        if(response.data[line]["status"]=="enabled"){
+                            tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
+                        }else if (response.data[line]["status"]=="disabled"){
+                            tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
+                        } 
+                        tableZeek = tableZeek + '</td>'+                                                        
+                    '<td>'+response.data[line]["bpf"]+'</td>'+                            
+                    '<td>'+response.data[line]["ruleset"]+'</td>'+                            
+                    '<td>';
+                        if(response.data[line]["status"]=="enabled"){
+                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\')"></i> &nbsp';
+                        }else if (response.data[line]["status"]=="disabled"){
+                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\')"></i> &nbsp';
+                        }   
+                        tableZeek = tableZeek + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
+                        '<i class="fas fa-trash-alt" style="color: red;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                    '</td>';
+                '</tr>';                    
             }
-        })
-        .catch(function (error) {
-        });
+            
+            document.getElementById('suricata-table-services').innerHTML = tableSuricata;
+            document.getElementById('zeek-table-services').innerHTML = tableZeek;
+
+        }
+    })
+    .catch(function (error) {
+    });
+}
+
+function ModalDeleteService(uuid, server, type, name){
+    var modalWindow = document.getElementById('modal-window');
+    modalWindow.innerHTML =
+    '<div class="modal-dialog modal-md">'+
+      '<div class="modal-content">'+
+
+        '<div class="modal-header">'+
+          '<h4 class="modal-title">Delete '+type+' service</h4>'+
+          '<button type="button" class="close" id="delete-service-cross">&times;</button>'+
+        '</div>'+
+
+        '<div class="modal-body">'+
+            '<p>Do you want to delete a '+type+' service with name <b>'+name+'</b></p>'+
+        '</div>'+
+
+        '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
+          '<button type="button" class="btn btn-secondary" id="delete-service-close">Close</button>'+
+          '<button type="button" class="btn btn-danger" id="delete-service-ok">Close</button>'+
+        '</div>'+
+
+      '</div>'+
+    '</div>';
+    $('#modal-window').modal("show");
+    $('#delete-service-ok').click(function(){ $('#modal-window').modal("hide"); deleteService(uuid, server); });
+    $('#delete-service-cross').click(function(){ $('#modal-window').modal("hide");});
+    $('#delete-service-close').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function deleteService(uuid, server){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deleteService';
+    
+    var jsonDeleteService = {}
+    jsonDeleteService["uuid"] = uuid;
+    jsonDeleteService["server"] = server;
+    var dataJSON = JSON.stringify(jsonDeleteService);
+
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        loadPlugins();
+    })
+    .catch(function (error) {
+    });
 }
 
 function ChangeServiceStatus(uuid, server, param, status){
@@ -1812,7 +1847,6 @@ function ChangeServiceStatus(uuid, server, param, status){
     })
     .catch(function (error) {
     });
-
 }
 
 function PingAnalyzer(uuid) {
@@ -1841,4 +1875,74 @@ function PingAnalyzer(uuid) {
             return false;
         });
     return false;
+}
+
+function loadNetworkValues(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid;
+
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        var html = '<div class="modal-dialog" id="network-modal-window">'+
+          '<div class="modal-content">'+
+
+            '<div class="modal-header">'+
+              '<h4 class="modal-title" id="delete-node-header">Network</h4>'+
+              '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+
+            '<div class="modal-body" id="delete-node-footer-table">';
+
+                if (response.data.ack == "false"){
+                    html = html + '<span><h6>Error loading interfaces</h6></span>';
+                } else {
+                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                    '<thead>              ' +
+                    '<tr>                 ' +
+                    '<th>Network</th>        ' +
+                    '<th>Select</th>     ' +
+                    '</tr>                ' +
+                    '</thead>             ' +
+                    '<tbody >             ' ;
+                    for (net in response.data){
+                        html = html +
+                        '<tr>'+
+                            '<td style="word-wrap: break-word;">' +
+                                response.data[net]+
+                            '</td><td style="word-wrap: break-word;">' +
+                                '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                            '</td>'+
+                        '</tr>';
+                    }
+                    html = html + '</tbody>'+
+                    '</table>';
+                }
+            html = html + '</div>'+
+
+            '<div class="modal-footer" id="delete-node-footer-btn">'+
+              '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
+              if (response.data.ack != "false"){
+                  html = html +
+                    '<button class="btn btn-success text-white" id="btn-load-all-new-local">New local</button>'+
+                    '<button class="btn btn-success text-white" id="btn-load-all-vxlan">New VxLAN</button>'+
+                    '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
+              }
+            html = html + '</div>'+
+
+          '</div>'+
+        '</div>';
+
+        document.getElementById('modal-window').innerHTML = html;
+
+        $('#btn-load-all-vxlan').click(function(){ $('#network-modal-window').modal("hide"); });
+        $('#btn-load-all-new-local').click(function(){ $('#network-modal-window').modal("hide"); });
+        $('#modal-window').modal("show");
+    })
+    .catch(function (error) {
+    });
 }

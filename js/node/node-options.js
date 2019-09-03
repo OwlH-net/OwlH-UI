@@ -798,7 +798,7 @@ function syncRulesetModal(node, name){
   '</div>';
 }
 
-function loadBPF(uuid, name){
+function loadBPF(uuid, bpf, service, name){
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML = '<div class="modal-dialog">'+
                 '<div class="modal-content">'+
@@ -809,12 +809,12 @@ function loadBPF(uuid, name){
                     '</div>'+
 
                     '<div class="modal-body" id="modal-footer-inputtext">'+
-                        '<input type="text" class="form-control" id="recipient-name">'+
+                        '<input type="text" class="form-control" id="recipient-name" value="'+bpf+'">'+
                     '</div>'+
 
                     '<div class="modal-footer" id="modal-footer-btn">'+
                         '<button type="button" class="btn btn-secondary" id="load-bpf-close">Close</button>'+
-                        '<button type="submit" class="btn btn-primary" id="load-bpf-save" onclick="saveBPF(\''+uuid+'\')">Save</button>'+
+                        '<button type="submit" class="btn btn-primary" id="load-bpf-save">Save</button>'+
                     '</div>'+
 
                 '</div>'+
@@ -823,40 +823,38 @@ function loadBPF(uuid, name){
     $('#modal-window').modal("show");
     $('#load-bpf-cross').click(function(){ $('#modal-window').modal("hide"); });
     $('#load-bpf-close').click(function(){ $('#modal-window').modal("hide"); });
-    $('#load-bpf-save').click(function(){ $('#modal-window').modal("hide"); saveBPF(uuid, document.getElementById('new-service-name').value, type); });
+    $('#load-bpf-save').click(function(){ $('#modal-window').modal("hide"); saveBPF(uuid, document.getElementById('recipient-name').value, service); });
 
-    document.getElementById('bpf-header').innerHTML = name+" BPF";
-
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+uuid+'/bpf';
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 3000
-    })
-        .then(function (response) {
-            if('bpf' in response.data){
-                document.getElementById('recipient-name').value=response.data.bpf;
-            }else{
-                document.getElementById('recipient-name').value='';
-                document.getElementById('bpf-header').innerHTML = document.getElementById('bpf-header').innerHTML + '<br>Not defined';
-            }
-        })
-        .catch(function (error) {
-        windowModalLog.innerHTML = error+"++<br>";
-        });
+    // var ipmaster = document.getElementById('ip-master').value;
+    // var portmaster = document.getElementById('port-master').value;
+    // var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+uuid+'/bpf';
+    // axios({
+    //     method: 'get',
+    //     url: nodeurl,
+    //     timeout: 3000
+    // })
+    // .then(function (response) {
+    //     if('bpf' in response.data){
+    //         document.getElementById('recipient-name').value=response.data.bpf;
+    //     }else{
+    //         document.getElementById('recipient-name').value='';
+    //         document.getElementById('bpf-header').innerHTML = document.getElementById('bpf-header').innerHTML + '<br>Not defined';
+    //     }
+    // })
+    // .catch(function (error) {
+    // });
 
 }
 
-function saveBPF(uuid){
-    var inputBPF = document.getElementById('recipient-name');
+function saveBPF(uuid, value, service){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+uuid+'/bpf';
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/bpf';
+
     var jsonbpfdata = {}
-    jsonbpfdata["nid"] = uuid;
-    jsonbpfdata["bpf"] = inputBPF.value;
+    jsonbpfdata["uuid"] = uuid;
+    jsonbpfdata["value"] = value;
+    jsonbpfdata["service"] = service;
     var bpfjson = JSON.stringify(jsonbpfdata);
 
     axios({
@@ -866,10 +864,9 @@ function saveBPF(uuid){
       data: bpfjson
     })
       .then(function (response) {
-        return true;
+          loadPlugins();
       })
       .catch(function (error) {
-        return false;
       });
   }
 
@@ -1701,7 +1698,6 @@ function PingPluginsNode(uuid) {
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
         for(line in response.data){
             if (line == "knownports"){
                 if (response.data[line]["status"] == "enabled"){
@@ -1734,8 +1730,8 @@ function PingPluginsNode(uuid) {
                             tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\')"></i> &nbsp';
                         }
                         tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
-                        '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i> &nbsp'+
-                        '<i class="fas fa-file" style="color:grey;" title="Interface" style="cursor: default;" onclick="loadNetworkValues(\''+uuid+'\')"></i> &nbsp'+
+                        '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+name+'\')">BPF</i> &nbsp'+
+                        '<i class="fas fa-file" style="color:grey;" title="Interface" style="cursor: default;" onclick="loadNetworkValuesSuricata(\''+uuid+'\', \''+name+'\', \''+line+'\')"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+                                                      
                 '</tr>';                    
@@ -1789,7 +1785,7 @@ function ModalDeleteService(uuid, server, type, name){
 
         '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
           '<button type="button" class="btn btn-secondary" id="delete-service-close">Close</button>'+
-          '<button type="button" class="btn btn-danger" id="delete-service-ok">Close</button>'+
+          '<button type="button" class="btn btn-danger" id="delete-service-ok">Delete</button>'+
         '</div>'+
 
       '</div>'+
@@ -1842,7 +1838,6 @@ function ChangeServiceStatus(uuid, server, param, status){
         data: dataJSON
     })
     .then(function (response) {
-        console.log(response.data);
         loadPlugins();
     })
     .catch(function (error) {
@@ -1877,7 +1872,7 @@ function PingAnalyzer(uuid) {
     return false;
 }
 
-function loadNetworkValues(uuid){
+function loadNetworkValuesSuricata(uuid, name, service){    
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid;
@@ -1892,8 +1887,8 @@ function loadNetworkValues(uuid){
           '<div class="modal-content">'+
 
             '<div class="modal-header">'+
-              '<h4 class="modal-title" id="delete-node-header">Network</h4>'+
-              '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+              '<h4 class="modal-title" id="delete-node-header">Suricata '+name+' interface</h4>'+
+              '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
             '</div>'+
 
             '<div class="modal-body" id="delete-node-footer-table">';
@@ -1915,7 +1910,7 @@ function loadNetworkValues(uuid){
                             '<td style="word-wrap: break-word;">' +
                                 response.data[net]+
                             '</td><td style="word-wrap: break-word;">' +
-                                '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                                '<input class="suricata-interface" type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
                             '</td>'+
                         '</tr>';
                     }
@@ -1925,23 +1920,50 @@ function loadNetworkValues(uuid){
             html = html + '</div>'+
 
             '<div class="modal-footer" id="delete-node-footer-btn">'+
-              '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
-              if (response.data.ack != "false"){
-                  html = html +
-                    '<button class="btn btn-success text-white" id="btn-load-all-new-local">New local</button>'+
-                    '<button class="btn btn-success text-white" id="btn-load-all-vxlan">New VxLAN</button>'+
-                    '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
-              }
-            html = html + '</div>'+
+                '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>'+
+                '<button type="button" class="btn btn-primary" id="btn-select-interface-save">Deploy</button>'+
+            '</div>'+
 
           '</div>'+
         '</div>';
 
         document.getElementById('modal-window').innerHTML = html;
-
-        $('#btn-load-all-vxlan').click(function(){ $('#network-modal-window').modal("hide"); });
-        $('#btn-load-all-new-local').click(function(){ $('#network-modal-window').modal("hide"); });
         $('#modal-window').modal("show");
+        $('#btn-select-interface-cross').click(function(){ $('#modal-window').modal("hide"); });
+        $('#btn-select-interface-close').click(function(){ $('#modal-window').modal("hide"); });
+        $('#btn-select-interface-save').click(function(){ $('#modal-window').modal("hide"); saveSuricataInterface(uuid, name, service)});
+
+    })
+    .catch(function (error) {
+    });
+}
+
+function saveSuricataInterface(uuid, name, service){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/saveSuricataInterface';
+
+    var valueSelected = "";
+    $('input:radio:checked').each(function() {            
+        if($(this).attr('class') == 'suricata-interface'){
+            valueSelected = $(this).prop("value");
+        }                        
+    });
+
+    var jsonSuricataInterface = {}
+    jsonSuricataInterface["uuid"] = uuid;
+    jsonSuricataInterface["service"] = service;
+    jsonSuricataInterface["interface"] = valueSelected;
+    jsonSuricataInterface["param"] = "interface";
+    var dataJSON = JSON.stringify(jsonSuricataInterface);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {   
+        loadPlugins();    
     })
     .catch(function (error) {
     });

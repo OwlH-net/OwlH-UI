@@ -211,7 +211,7 @@ function generateAllNodesHTMLOutput(response) {
                 '</td>' +
                 '<td class="align-middle">'+
                     '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
-                    '<span id="'+uuid+'-online" class="badge bg-primary align-text-bottom text-white node-option-'+uuid+'" style="cursor: pointer;">See details</span> <br>'+
+                    '<span id="details-'+uuid+'" class="badge bg-primary align-text-bottom text-white node-option-'+uuid+'" style="cursor: pointer;" onclick="ShowNodeDetails(\''+uuid+'\', \''+nodes[node]['name']+'\');">See details</span> <br>'+
                     '<span>'+
                         '<div><p></p></div>'+
                         '<div id="node-values-'+uuid+'">'+
@@ -220,15 +220,8 @@ function generateAllNodesHTMLOutput(response) {
                             '<div id="cpu-'+uuid+'"></div>'+                        
                         '</div>'+
                     '</span>'+
-                '</td>';
-        
-        $(document).on("click", ".node-option-"+uuid, function(){
-            var ipmaster = document.getElementById('ip-master').value;
-            var portmaster = document.getElementById('port-master').value;
-            document.location.href = 'https://' + ipmaster + '/node-options.html?uuid='+uuid+'&node='+nodes[node]['name'];
-        });
-
-            html = html + '<td class="align-middle">'+
+                '</td>'+            
+                '<td class="align-middle">'+
             // '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
             // '<span id="network-ids-form-'+uuid+'" style="display:None">'+
             //     '<p><img src="img/suricata.png" alt="" width="30"> '      +
@@ -370,6 +363,7 @@ function generateAllNodesHTMLOutput(response) {
             '</tr>';
     }
     html = html + '</tbody></table>';
+
     if (isEmpty){
         return '<div style="text-align:center"><h3>No nodes created. You can create a node now!</h3></div>';
     }else{
@@ -433,6 +427,11 @@ function deployNode(value,uuid,nodeName){
     })
     .catch(function (error) {
     });
+}
+
+function ShowNodeDetails(uuid, name){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/node-options.html?uuid='+uuid+'&node='+name;
 }
 
 function showMasterFile(file){

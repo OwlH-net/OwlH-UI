@@ -1820,6 +1820,7 @@ function deleteService(uuid, server){
 }
 
 function ChangeServiceStatus(uuid, server, param, status){
+    console.log(server+" - "+name);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ChangeServiceStatus';
@@ -1838,6 +1839,7 @@ function ChangeServiceStatus(uuid, server, param, status){
         data: dataJSON
     })
     .then(function (response) {
+        console.log(response);
         loadPlugins();
     })
     .catch(function (error) {

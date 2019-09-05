@@ -312,10 +312,10 @@ function ChangeMainServiceStatus(uuid, param, service){
         data: dataJSON
     })
     .then(function (response) {
+        loadPlugins();
     })
     .catch(function (error) {        
     });
-    loadPlugins();
 }
 
 function getCurrentRulesetName(uuid) {
@@ -636,6 +636,7 @@ function deployNode(value,uuid,nodeName){
     })
     .then(function (response) {
         if (response.data.ack == "true") {
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Success!</strong> '+value+' deployed successfully for node '+nodeName+'.'+
@@ -645,6 +646,7 @@ function deployNode(value,uuid,nodeName){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+value+' has not been deployed for node '+nodeName+'.'+
@@ -726,6 +728,7 @@ function AddPluginService(uuid, name, type){
     })
     .then(function (response) {
         if (response.data.ack == "true") {
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Success!</strong> Suricata service added successfully!'+
@@ -735,6 +738,7 @@ function AddPluginService(uuid, name, type){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error adding Suricata service: </strong>'+response.data.error+''+
@@ -747,6 +751,7 @@ function AddPluginService(uuid, name, type){
         loadPlugins();
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error adding Suricata service: </strong>'+error+''+
@@ -1339,6 +1344,7 @@ function sendRulesetToNode(uuid){
     })
     .then(function (response) {
         if (response.data.ack == "true") {
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Success!</strong> Suricata ruleset deployment complete.'+
@@ -1348,9 +1354,10 @@ function sendRulesetToNode(uuid){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Suricata deployment Error! </strong>'+response.data.error+''+
+                '<strong>Ruleset Error! </strong>'+response.data.error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1359,6 +1366,7 @@ function sendRulesetToNode(uuid){
         }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong>'+response.data.error+''+
@@ -1725,13 +1733,13 @@ function PingPluginsNode(uuid) {
                     '<td>'+response.data[line]["interface"]+'</td>'+  
                     '<td>';
                         if(response.data[line]["status"]=="enabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\')"></i> &nbsp';
+                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\')"></i> &nbsp';
+                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\')"></i> &nbsp';
                         }
                         tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
                         '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+name+'\')">BPF</i> &nbsp'+
-                        '<i class="fas fa-file" style="color:grey;" title="Interface" style="cursor: default;" onclick="loadNetworkValuesSuricata(\''+uuid+'\', \''+name+'\', \''+line+'\')"></i> &nbsp'+
+                        '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesSuricata(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+                                                      
                 '</tr>';                    
@@ -1749,9 +1757,9 @@ function PingPluginsNode(uuid) {
                     '<td>'+response.data[line]["ruleset"]+'</td>'+                            
                     '<td>';
                         if(response.data[line]["status"]=="enabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\')"></i> &nbsp';
+                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\')"></i> &nbsp';
+                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\')"></i> &nbsp';
                         }   
                         tableZeek = tableZeek + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" style="color: red;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
@@ -1819,31 +1827,43 @@ function deleteService(uuid, server){
     });
 }
 
-function ChangeServiceStatus(uuid, server, param, status){
-    console.log(server+" - "+name);
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ChangeServiceStatus';
-    
-    var jsonChangeService = {}
-    jsonChangeService["uuid"] = uuid;
-    jsonChangeService["status"] = status;
-    jsonChangeService["param"] = param;
-    jsonChangeService["server"] = server;
-    var dataJSON = JSON.stringify(jsonChangeService);
+function ChangeServiceStatus(uuid, server, param, status, interface){
+    if (interface == "none"){
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Suricata deployment Error! </strong> Please, select an interface for deploy a suricata service.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    }else{
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ChangeServiceStatus';
+        
+        var jsonChangeService = {}
+        jsonChangeService["uuid"] = uuid;
+        jsonChangeService["status"] = status;
+        jsonChangeService["param"] = param;
+        jsonChangeService["server"] = server;
+        jsonChangeService["interface"] = interface;
+        var dataJSON = JSON.stringify(jsonChangeService);
 
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        console.log(response);
-        loadPlugins();
-    })
-    .catch(function (error) {
-    });
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+
+            loadPlugins();
+        })
+        .catch(function (error) {
+        });
+    }
 }
 
 function PingAnalyzer(uuid) {
@@ -1923,7 +1943,7 @@ function loadNetworkValuesSuricata(uuid, name, service){
 
             '<div class="modal-footer" id="delete-node-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>'+
-                '<button type="button" class="btn btn-primary" id="btn-select-interface-save">Deploy</button>'+
+                '<button type="button" class="btn btn-primary" id="btn-select-interface-save">Select</button>'+
             '</div>'+
 
           '</div>'+

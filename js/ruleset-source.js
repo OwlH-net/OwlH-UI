@@ -82,6 +82,7 @@ function addRulesetSource() {
         })
         .then(function (response) {
             if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error! </strong>'+response.data.error+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -94,6 +95,7 @@ function addRulesetSource() {
             }            
         })
         .catch(function (error) {
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error! </strong>'+error+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -438,6 +440,7 @@ function downloadFile(name, path, url, sourceUUID){
             .then(function (response) {
                 if (response.data.ack == "true") {
                     var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
                     alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                         '<strong>Success!</strong> Download complete.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -452,6 +455,7 @@ function downloadFile(name, path, url, sourceUUID){
                     document.getElementById('progressBar-create-div').style.display = "none";
                 }else{
                     var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong>'+response.data.error+''+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -467,6 +471,7 @@ function downloadFile(name, path, url, sourceUUID){
         })
             .catch(function error() {
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
                     '<strong>Error!</strong> Can not complete the download...'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -532,6 +537,7 @@ function overwriteDownload(name, path, url, uuid){
     })
     .then(function (response) {
         if (response.data.ack == "true") {
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Success!</strong> Download complete.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -545,6 +551,7 @@ function overwriteDownload(name, path, url, uuid){
             document.getElementById('progressBar-create').style.display = "none";
             document.getElementById('progressBar-create-div').style.display = "none";
         }else{
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong>'+response.data.error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -560,6 +567,7 @@ function overwriteDownload(name, path, url, uuid){
         }
     })
     .catch(function error(error) {
+        $('html,body').scrollTop(0);
         alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
             '<strong>Error!</strong> Can not complete the download...'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+

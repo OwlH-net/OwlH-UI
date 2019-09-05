@@ -227,6 +227,7 @@ function modalAddNewRuleset(){
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none";
 
+        $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Name or description fields are null.'+
@@ -284,6 +285,7 @@ function modalAddNewRuleset(){
                 document.getElementById('progressBar-create-div').style.display="none";
                 document.getElementById('progressBar-create').style.display="none";
 
+                $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+

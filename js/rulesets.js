@@ -522,6 +522,7 @@ function synchronizeAllRulesets() {
     })
         .then(function (response) {
             if (response.data.ack == "true"){
+                $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                     '<strong>Success!</strong> All rulesets had been synchronized successfully.'+
@@ -532,6 +533,7 @@ function synchronizeAllRulesets() {
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -543,6 +545,7 @@ function synchronizeAllRulesets() {
         })
         .catch(function (error) {
             var alert = document.getElementById('floating-alert');
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -570,6 +573,7 @@ function deleteRuleset(name, uuid) {
         .then(function (response) {
             if (response.data.ack == "false"){
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -583,6 +587,7 @@ function deleteRuleset(name, uuid) {
         })
         .catch(function (error) {
             var alert = document.getElementById('floating-alert');
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -644,6 +649,7 @@ function syncRuleset(uuid){
         .then(function (response) {
             if (response.data.ack == "true"){
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                     '<strong>Success!</strong> Ruleset synchronization complete.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -653,6 +659,7 @@ function syncRuleset(uuid){
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> The ruleset could not be synchronized.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+

@@ -406,6 +406,7 @@ function deployNode(value,uuid,nodeName){
     })
     .then(function (response) {
         if (response.data.ack == "true") {
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Success!</strong> '+value+' deployed successfully for node '+nodeName+'.'+
@@ -415,6 +416,7 @@ function deployNode(value,uuid,nodeName){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+value+' has not been deployed for node '+nodeName+'.'+
@@ -931,6 +933,7 @@ function sendRulesetToNode(uuid){
     })
     .then(function (response) {
         if (response.data.ack == "true") {
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Success!</strong> Suricata ruleset deployment complete.'+
@@ -940,6 +943,7 @@ function sendRulesetToNode(uuid){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Suricata deployment Error! </strong>'+response.data.error+''+
@@ -951,6 +955,7 @@ function sendRulesetToNode(uuid){
         }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong>'+response.data.error+''+

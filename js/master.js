@@ -196,6 +196,7 @@ function deployMaster(value){
     })
     .then(function (response) {
         if (response.data.ack == "true") {
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Success!</strong> '+value+' deployed successfully.'+
@@ -205,6 +206,7 @@ function deployMaster(value){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+value+' has not been deployed.'+
@@ -486,6 +488,7 @@ function PingCollector(){
     })
     .then(function (response) {
         if (response.data.ack == "false"){
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Master STAP Collector is not available.'+
@@ -516,6 +519,7 @@ function playMasterCollector(){
     })
     .then(function (response) {
         if (response.data.ack == "false"){
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Can\'t start Master STAP Collector.'+
@@ -543,6 +547,7 @@ function stopMasterCollector(){
     })
     .then(function (response) {
         if (response.data.ack == "false"){
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Can\'t stop Master STAP Collector.'+
@@ -571,6 +576,7 @@ function showMasterCollector(){
     })
     .then(function (response) {
         if (response.data.ack == "false"){
+            $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Can\'t retrieve data from Master STAP Collector.'+

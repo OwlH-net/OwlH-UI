@@ -731,7 +731,7 @@ function AddPluginService(uuid, name, type){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> Suricata service added successfully!'+
+                '<strong>Success!</strong> '+type+' service added successfully!'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1733,9 +1733,9 @@ function PingPluginsNode(uuid) {
                     '<td>'+response.data[line]["interface"]+'</td>'+  
                     '<td>';
                         if(response.data[line]["status"]=="enabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\')"></i> &nbsp';
+                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\', \'suricata\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\')"></i> &nbsp';
+                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\', \'suricata\')"></i> &nbsp';
                         }
                         tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
                         '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+name+'\')">BPF</i> &nbsp'+
@@ -1757,9 +1757,9 @@ function PingPluginsNode(uuid) {
                     '<td>'+response.data[line]["ruleset"]+'</td>'+                            
                     '<td>';
                         if(response.data[line]["status"]=="enabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\')"></i> &nbsp';
+                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\', \'zeek\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\')"></i> &nbsp';
+                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\', \'zeek\')"></i> &nbsp';
                         }   
                         tableZeek = tableZeek + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" style="color: red;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
@@ -1827,7 +1827,7 @@ function deleteService(uuid, server){
     });
 }
 
-function ChangeServiceStatus(uuid, server, param, status, interface){
+function ChangeServiceStatus(uuid, server, param, status, interface, type){
     if (interface == "none"){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
@@ -1848,6 +1848,7 @@ function ChangeServiceStatus(uuid, server, param, status, interface){
         jsonChangeService["status"] = status;
         jsonChangeService["param"] = param;
         jsonChangeService["server"] = server;
+        jsonChangeService["type"] = type;
         jsonChangeService["interface"] = interface;
         var dataJSON = JSON.stringify(jsonChangeService);
 

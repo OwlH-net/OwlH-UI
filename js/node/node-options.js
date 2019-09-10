@@ -15,8 +15,8 @@ function loadPlugins(){
     var name = urlWeb.searchParams.get("node");
     var uuid = urlWeb.searchParams.get("uuid");
     document.getElementById('node-config-title').innerHTML = name;
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
+    // var ipmaster = document.getElementById('ip-master').value;
+    // var portmaster = document.getElementById('port-master').value;
 
     var html =
     //CHARTS
@@ -40,7 +40,7 @@ function loadPlugins(){
                             '<div>'+
                                 '<td valign="top" width="50%"><canvas id="myChartSto"></canvas></td>'+
                             '</div>'+
-                    '</tr>'+                   
+                    '</tr>'+
                 '</tbody>'+
             '</table>'+
         '</span>'+
@@ -49,8 +49,8 @@ function loadPlugins(){
     //SURICATA & ZEEK
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+            
-            //suricata  
+        '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
+            //suricata
             '<p><img src="img/suricata.png" alt="" width="30"> '      +
             // '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
             // '  <span style="font-size: 15px; color: grey;" >  ' +
@@ -58,7 +58,7 @@ function loadPlugins(){
             // '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
             // '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
             // '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options"></i> | '+
-            '    <span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+        
+            '    <span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
             '  </span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
@@ -72,18 +72,18 @@ function loadPlugins(){
                             '<th width="16%">Interface</th>'+
                             '<th width="16%">Actions</th>'+
                         '</thead>'+
-                        '<tbody id="suricata-table-services">'+                                                       
+                        '<tbody id="suricata-table-services">'+
                         '</tbody>'+
                     '</table>'+
                 '</div><br><br>'+
-            // //zeek    
+            // //zeek
             '<p><img  src="img/bro.png" alt="" width="30">'+
             // '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
             // '  <span style="font-size: 15px; color: grey;" >' +
             // '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
             // '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
             // '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i> | ' +
-            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+        
+            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+
             '  </span>' +
             '   <button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
             '</p>'+
@@ -96,7 +96,7 @@ function loadPlugins(){
                             '<th width="16%">Ruleset</th>'+
                             '<th width="16%">Actions</th>'+
                         '</thead>'+
-                        '<tbody id="zeek-table-services">'+                                                       
+                        '<tbody id="zeek-table-services">'+
                         '</tbody>'+
                     '</table>'+
                 '</div>'+
@@ -113,44 +113,97 @@ function loadPlugins(){
         '</span>'+
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Plugins</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Software TAP</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
         '<span id="plugins-form-'+uuid+'" style="display:block"><br>'+
-            '<table width="100%">'+
-                '<tr>'+
-                    '<td width="25%"><i class="fas fa-plug fa-lg"></i> STAP</th>'+
-                    '<td width="25%">Status: <i id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</i></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i></td>'+
-                    '<td width="25%">Configuration: <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+name+'\')"></i></td>'+
-                '</tr>'+       
-            '</table>'+
-            '<div id="ports-table1"></div>&nbsp &nbsp &nbsp'+
-            '<table width="100%">'+              
-                '<tr>'+
-                    '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
-                    '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> &nbsp <i style="cursor: default; color: grey;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
-                    '<td width="25%">ports: <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
-                '</tr>'+            
-            '</table>'+
-            '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
-            '<table width="100%">'+ 
-                '<tr>'+
-                    '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
-                    '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
-                    '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
-                '</tr>'+  
-            '</table>'+
-            '<div id="ports-table3"></div>&nbsp &nbsp &nbsp'+
-            '<table width="100%">'+     
-                '<tr>'+
-                    '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> STAP Collector </th>'+
-                    '<td width="25%">Status: <i id="stap-collector-'+uuid+'">[N/A]</i></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i> <i class="fas fa-stop-circle" style="color: grey;" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i></td>'+
-                    '<td width="25%">Info: <i class="fas fa-info-circle" style="color: grey;" title="Collector information" id="show-collector-info"></i></td>'+
-                '</tr>'+                    
-            '</table>'+
-            '<div id="ports-table4"></div>'+
+                    //socket->Network
+                    '<p> <i class="fas fa-plug fa-lg"></i> Traffic from socket to network interface '+
+                        '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'socket-network\')">Add Socket->Network</button>'+
+                    '</p>' +
+                    '<div>'+
+                        '<table class="table table-hover" width="100%">'+
+                            '<thead>'+
+                                '<th width="20%">Name</th>'+
+                                '<th width="20%">Port</th>'+
+                                '<th width="20%">Certificate</th>'+
+                                '<th width="20%">Interface</th>'+
+                                '<th width="20%">Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="socket-network-table">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div><br><br>'+
+                    //socket->PCAP
+                    '<p> <i class="fas fa-plug fa-lg"></i> Traffic from socket to PCAP'+
+                        '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'socket-pcap\')">Add Socket->PCAP</button>'+
+                    '</p>' +
+                    '<div>'+
+                        '<table class="table table-hover" width="100%">'+
+                            '<thead>'+
+                                '<th>Name</th>'+
+                                '<th>Port</th>'+
+                                '<th>Certificate</th>'+
+                                '<th>PCAP path</th>'+
+                                '<th>PCAP prefix</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="socket-pcap-table">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div><br><br>'+
+                    //Network->Socket
+                    '<p> <i class="fas fa-plug fa-lg"></i> Traffic from network interface to socket'+
+                        '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'network-socket\')">Add Network->Socket</button>'+
+                    '</p>' +
+                    '<div>'+
+                        '<table class="table table-hover" width="100%">'+
+                            '<thead>'+
+                                '<th>Name</th>'+
+                                '<th>Port</th>'+
+                                '<th>Certificate</th>'+
+                                '<th>Collector</th>'+
+                                '<th>BPF</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="network-socket-table">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div><br><br>'+
+            // '<table width="100%">'+
+            //     '<tr>'+
+            //         '<td width="25%"><i class="fas fa-plug fa-lg"></i> STAP</th>'+
+            //         '<td width="25%">Status: <i id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</i></td>'+
+            //         '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i></td>'+
+            //         '<td width="25%">Configuration: <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+name+'\')"></i></td>'+
+            //     '</tr>'+
+            // '</table>'+
+            // '<div id="ports-table1"></div>&nbsp &nbsp &nbsp'+
+            // '<table width="100%">'+
+            //     '<tr>'+
+            //         '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
+            //         '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
+            //         '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> &nbsp <i style="cursor: default; color: grey;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
+            //         '<td width="25%">ports: <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
+            //     '</tr>'+
+            // '</table>'+
+            // '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
+            // '<table width="100%">'+
+            //     '<tr>'+
+            //         '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
+            //         '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
+            //         '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
+            //         '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
+            //     '</tr>'+
+            // '</table>'+
+            // '<div id="ports-table3"></div>&nbsp &nbsp &nbsp'+
+            // '<table width="100%">'+
+            //     '<tr>'+
+            //         '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> STAP Collector </th>'+
+            //         '<td width="25%">Status: <i id="stap-collector-'+uuid+'">[N/A]</i></td>'+
+            //         '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i> <i class="fas fa-stop-circle" style="color: grey;" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i></td>'+
+            //         '<td width="25%">Info: <i class="fas fa-info-circle" style="color: grey;" title="Collector information" id="show-collector-info"></i></td>'+
+            //     '</tr>'+
+            // '</table>'+
+            // '<div id="ports-table4"></div>'+
         '</span>'+
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -228,65 +281,65 @@ function loadPlugins(){
     document.getElementById('master-table-plugins').innerHTML = html;
 
 
-    axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid)
-    .then(function (response) {
-        if (response.data.ack){
-            document.getElementById('ports-table4').innerHTML = "No remote systems yet";
-        }else if(response.data){
-            var res = response.data.split("\n");
-            var html =                         
-            '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
-                '<thead>                                                      ' +
-                    '<th>Proto</th>                                             ' +
-                    '<th>RECV</th>                                             ' +
-                    '<th>SEND</th>                                             ' +
-                    '<th style="width: 25%">LOCAL IP</th>                                             ' +
-                    '<th style="width: 25%">REMOTE IP</th>                                             ' +
-                    '<th style="width: 15%">STATUS</th>                                             ' +
-                    '<th></th>                                             ' +
-                '</thead>                                                     ' +
-                '<tbody>                                                     '
-                for(line in res) {
-                    if (res[line] != ""){
-                        var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
-                        var lineSplited = vregex.exec(res[line]);
-                        html = html + '<tr><td>' +
-                        lineSplited[1]+
-                        '</td><td>     ' +
-                        lineSplited[2]+
-                        '</td><td>     ' +
-                        lineSplited[3]+
-                        '</td><td>     ' +
-                        lineSplited[4]+
-                        '</td><td>     ' +
-                        lineSplited[5]+
-                        '</td><td>     ' +
-                        lineSplited[6]+
-                        '</td><td>     ' +
-                        lineSplited[7]+
-                        '</td></tr>';
-                    }
-                }                
-                html = html + '</tbody>'+
-            '</table>';
-            document.getElementById('ports-table4').innerHTML = html;
-        }
-    })
+    // axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid)
+    // .then(function (response) {
+    //     if (response.data.ack){
+    //         document.getElementById('ports-table4').innerHTML = "No remote systems yet";
+    //     }else if(response.data){
+    //         var res = response.data.split("\n");
+    //         var html =
+    //         '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
+    //             '<thead>                                                      ' +
+    //                 '<th>Proto</th>                                             ' +
+    //                 '<th>RECV</th>                                             ' +
+    //                 '<th>SEND</th>                                             ' +
+    //                 '<th style="width: 25%">LOCAL IP</th>                                             ' +
+    //                 '<th style="width: 25%">REMOTE IP</th>                                             ' +
+    //                 '<th style="width: 15%">STATUS</th>                                             ' +
+    //                 '<th></th>                                             ' +
+    //             '</thead>                                                     ' +
+    //             '<tbody>                                                     '
+    //             for(line in res) {
+    //                 if (res[line] != ""){
+    //                     var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
+    //                     var lineSplited = vregex.exec(res[line]);
+    //                     html = html + '<tr><td>' +
+    //                     lineSplited[1]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[2]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[3]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[4]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[5]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[6]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[7]+
+    //                     '</td></tr>';
+    //                 }
+    //             }
+    //             html = html + '</tbody>'+
+    //         '</table>';
+    //         document.getElementById('ports-table4').innerHTML = html;
+    //     }
+    // })
     // PingSuricata(uuid);
     // PingZeek(uuid);
     PingWazuh(uuid);
-    PingStap(uuid);
-    PingAnalyzer(uuid);
+    // PingStap(uuid);
+    // PingAnalyzer(uuid);
     PingDataflow(uuid);
-    PingCollector(uuid);    
+    // PingCollector(uuid);
     PingMonitor(uuid);
     getCurrentRulesetName(uuid);
-    PingPluginsNode(uuid);     
+    PingPluginsNode(uuid);
     GetMainconfData(uuid);
     var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
-    
-    $('#show-collector-info').click(function(){ showCollector(uuid);});    
-    $('#show-ports-plugin').click(function(){ showPorts(uuid);});    
+
+    $('#show-collector-info').click(function(){ showCollector(uuid);});
+    $('#show-ports-plugin').click(function(){ showPorts(uuid);});
 }
 
 function ChangeMainServiceStatus(uuid, param, service){
@@ -314,7 +367,7 @@ function ChangeMainServiceStatus(uuid, param, service){
     .then(function (response) {
         loadPlugins();
     })
-    .catch(function (error) {        
+    .catch(function (error) {
     });
 }
 
@@ -330,23 +383,23 @@ function getCurrentRulesetName(uuid) {
     .then(function (response) {
         axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
         })
-        .then(function (response2) { 
+        .then(function (response2) {
             if(response2.data.ack){
                 document.getElementById('current-ruleset-options').innerHTML = "No ruleset selected...";
                 document.getElementById('current-ruleset-options').style.color = "red";
             }else{
-                document.getElementById('current-ruleset-options').innerHTML = response2.data;                
+                document.getElementById('current-ruleset-options').innerHTML = response2.data;
             }
         })
         .catch(function (error) {
         });
     })
     .catch(function (error) {
-        
+
     });
 }
 
-function PingMonitor(uuid){            
+function PingMonitor(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/pingmonitor/' + uuid;
@@ -368,7 +421,7 @@ function PingMonitor(uuid){
         var ctx_cpu = document.getElementById('myChartPercentage').getContext('2d');
         var chart = new Chart(ctx_cpu, {
             type: 'bar',
-            
+
             data: {
                 scaleOverride : true,
                 labels: CPUvalues,
@@ -395,12 +448,12 @@ function PingMonitor(uuid){
                             labelString: 'Percentage'
                         },
                         ticks: {
-                            beginAtZero: true, 
+                            beginAtZero: true,
                             min: 0,
                             max: 100,
                         }
                     }],
-                    xAxes: [{                        
+                    xAxes: [{
                         barPercentage: 0.3
                     }]
                 }
@@ -438,7 +491,7 @@ function PingMonitor(uuid){
                             labelString: 'Memory in MiB'
                         },
                         ticks: {
-                            beginAtZero: true, 
+                            beginAtZero: true,
                             // min: 0,
                             // max: 5000,
                             // maxTicksLimit: 5
@@ -502,7 +555,7 @@ function PingMonitor(uuid){
         ctx_sto.render();
     })
     .catch(function (error) {
-    });    
+    });
 }
 
 function GetMainconfData(uuid){
@@ -711,6 +764,227 @@ function AddServiceModal(uuid, type){
   $('#add-service-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
 
+function AddSTAPModal(uuid, type){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var html =
+    '<div class="modal-dialog">'+
+    '<div class="modal-content">'+
+
+      '<div class="modal-header">'+
+        '<h4 class="modal-title">Add '+type+' service</h4>'+
+        '<button type="button" class="close" id="add-stap-modal-cross">&times;</button>'+
+      '</div>'+
+
+      '<div class="modal-body">'+
+        '<p>Insert name:</p>'+
+        '<input type="text" class="form-control" id="soft-tap-name"><br>'+
+        '<p>Insert port:</p>'+
+        '<input type="text" class="form-control" id="soft-tap-port" value="50010"><br>'+
+        '<p>Insert certificate:</p>'+
+        '<input type="text" class="form-control" id="soft-tap-cert" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
+        if (type == "socket-network"){
+            html = html + '<p>Select an interface:</p>'+
+            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                '<tbody id="socket-network-modal-table">' +
+                '</tbody>'+
+            '</table>';   
+            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
+            .then(function (response) {
+                var isChecked = false;
+                var inner = "";
+                for (net in response.data){
+                    inner = inner + '<tr>'+
+                        '<td style="word-wrap: break-word;">' +
+                            '<p class="ml-4">'+response.data[net]+'</p>'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (!isChecked){
+                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                                isChecked = true;
+                            }else{
+                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                            }
+                        inner = inner + '</td>'+
+                    '</tr>';
+                }
+                document.getElementById('socket-network-modal-table').innerHTML = inner;
+            });         
+        }else if (type == "socket-pcap"){
+            html = html + '<p>Insert PCAP path:</p>'+
+            '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps"><br>'+
+            '<p>Insert PCAP prefix:</p>'+
+            '<input type="text" class="form-control" id="soft-tap-pcap-prefix" value="remote-"><br>'+
+            '<p>Insert BPF path:</p>'+
+            '<input type="text" class="form-control" id="soft-tap-bpf" value="/usr/local/owlh/src/owlhnode/conf/filter.bpf"><br>';
+        }else if (type == "network-socket"){
+            html = html + '<p>Select collector:</p>'+
+            '<input type="text" class="form-control" id="soft-tap-collector" value="192.168.1.100"><br>'+
+            '<p>Insert BPF path:</p>'+
+            '<input type="text" class="form-control" id="soft-tap-bpf-socket" value="/usr/local/owlh/src/owlhnode/conf/filter.bpf"><br>';
+        }
+        html = html + '<div class="modal-footer" id="sync-node-footer-btn">'+
+        '<button type="button" class="btn btn-secondary" id="add-stap-modal-close">Cancel</button>'+
+        '<button type="button" class="btn btn-primary" id="add-stap-modal">Add</button>'+
+      '</div>'+
+
+    '</div>'+
+  '</div>';
+
+  
+
+  //   $('#add-stap-modal').click(function(){ $('#modal-window').modal("hide"); saveSoftwareTAP(uuid, type); });
+  document.getElementById('modal-window').innerHTML = html;
+  
+  $('#modal-window').modal("show");
+  $('#add-stap-modal').click(function(){ saveSoftwareTAP(uuid, type); });
+  $('#add-stap-modal-close').click(function(){ $('#modal-window').modal("hide");});
+  $('#add-stap-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function saveSoftwareTAP(uuid, type){  
+    if( type == "socket-network" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "") ||  
+    type == "socket-pcap" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value) || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ) ||  
+    type == "network-socket" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value) || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == "")){
+        if(type == "socket-network"){
+            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "") {
+                if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){
+                    if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){                
+                        document.getElementById('soft-tap-name').placeholder = "Please insert a name";
+                        document.getElementById('soft-tap-name').required = "true";
+                    }
+                }
+                if (document.getElementById('soft-tap-port').value == ""){
+                    document.getElementById('soft-tap-port').placeholder = "Please insert a port";
+                    document.getElementById('soft-tap-port').required = "true";
+                }
+                if (document.getElementById('soft-tap-cert').value == ""){
+                    document.getElementById('soft-tap-cert').placeholder = "Please insert a certificate";
+                    document.getElementById('soft-tap-cert').required = "true";
+                }
+            }
+        }else if(type == "socket-pcap"){
+            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value) || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ){
+                if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){
+                    if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){                
+                        document.getElementById('soft-tap-name').placeholder = "Please insert a name";
+                        document.getElementById('soft-tap-name').required = "true";
+                    }
+                }
+                if (document.getElementById('soft-tap-port').value == ""){
+                    document.getElementById('soft-tap-port').placeholder = "Please insert a port";
+                    document.getElementById('soft-tap-port').required = "true";
+                }
+                if (document.getElementById('soft-tap-cert').value == ""){
+                    document.getElementById('soft-tap-cert').placeholder = "Please insert a certificate";
+                    document.getElementById('soft-tap-cert').required = "true";
+                }
+                if (document.getElementById('soft-tap-pcap-path').value == ""){
+                    document.getElementById('soft-tap-pcap-path').placeholder = "Please insert a pcap path:";
+                    document.getElementById('soft-tap-pcap-path').required = "true";
+                }
+                if (document.getElementById('soft-tap-pcap-prefix').value == ""){
+                    document.getElementById('soft-tap-pcap-prefix').placeholder = "Please insert a pcap prefix:";
+                    document.getElementById('soft-tap-pcap-prefix').required = "true";            
+                }
+                if (document.getElementById('soft-tap-bpf').value == "" || document.getElementById('soft-tap-bpf-socket').value == ""){
+                    document.getElementById('soft-tap-bpf').placeholder = "Please insert a BPF path:";
+                    document.getElementById('soft-tap-bpf').required = "true";
+                }
+                
+            }
+        }else if(type == "network-socket"){
+            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value) || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == ""){
+                if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){
+                    if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){                
+                        document.getElementById('soft-tap-name').placeholder = "Please insert a name";
+                        document.getElementById('soft-tap-name').required = "true";
+                    }
+                }
+                if (document.getElementById('soft-tap-port').value == ""){
+                    document.getElementById('soft-tap-port').placeholder = "Please insert a port";
+                    document.getElementById('soft-tap-port').required = "true";
+                }
+                if (document.getElementById('soft-tap-cert').value == ""){
+                    document.getElementById('soft-tap-cert').placeholder = "Please insert a certificate";
+                    document.getElementById('soft-tap-cert').required = "true";
+                }
+                if (document.getElementById('soft-tap-collector').value == ""){
+                    document.getElementById('soft-tap-collector').placeholder = "Please insert a collector IP:";
+                    document.getElementById('soft-tap-collector').required = "true";
+                }else if (document.getElementById('soft-tap-bpf-socket').value == ""){
+                    document.getElementById('soft-tap-bpf-socket').placeholder = "Please insert a BPF path:";
+                    document.getElementById('soft-tap-bpf-socket').required = "true";
+                }
+            }
+        }
+    }else{     
+        $('#modal-window').modal("hide");
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/add';
+
+        var valueSelected = "";
+        $('input:radio:checked').each(function() {            
+            if($(this).attr('class') == 'socket-network-radio-stap'){
+                valueSelected = $(this).prop("value");
+            }                        
+        });
+
+        var jsonSave = {}
+        jsonSave["uuid"] = uuid;
+        jsonSave["name"] = document.getElementById('soft-tap-name').value;
+        jsonSave["type"] = type;
+        jsonSave["cert"] = document.getElementById('soft-tap-cert').value;
+        jsonSave["port"] = document.getElementById('soft-tap-port').value;
+        if (type == "socket-network"){ jsonSave["interface"] = valueSelected}
+        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf').value;}
+        if (type == "network-socket"){ jsonSave["collector"] = document.getElementById('soft-tap-collector').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-socket').value;}
+        var dataJSON = JSON.stringify(jsonSave);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> '+type+' service added successfully!'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error adding service: </strong>'+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
+            loadPlugins();
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error adding service: </strong>'+error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+    }
+}
+
 function AddPluginService(uuid, name, type){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -760,7 +1034,7 @@ function AddPluginService(uuid, name, type){
             '</button>'+
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
-    });    
+    });
 }
 
 // function GetSuricataServices(uuid){
@@ -824,7 +1098,7 @@ function loadBPF(uuid, bpf, service, name){
 
                 '</div>'+
             '</div>';
-    
+
     $('#modal-window').modal("show");
     $('#load-bpf-cross').click(function(){ $('#modal-window').modal("hide"); });
     $('#load-bpf-close').click(function(){ $('#modal-window').modal("hide"); });
@@ -909,7 +1183,7 @@ function loadRuleset(uuid){
     .catch(function (error) {
         resultElement.innerHTML = '<p>Error retrieving rules</p>';
     });
-    
+
   }
 
   function deployZeekModal(uuid){
@@ -1063,7 +1337,7 @@ function showCollector(uuid){
     })
     .then(function (response) {
         showModalCollector(response);
-        
+
     })
     .catch(function (error) {
         return false;
@@ -1574,7 +1848,7 @@ function StopWazuh(uuid) {
         timeout: 30000,
     })
     .then(function (response) {
-        
+
             setTimeout(function (){
                 loadPlugins();
             }, 1500);
@@ -1700,6 +1974,9 @@ function PingPluginsNode(uuid) {
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/' + uuid;
     var tableSuricata = "";
     var tableZeek = "";
+    var tableSocketNetwork = "";
+    var tableSocketPcap = "";
+    var tableNetworkSocket = "";
     axios({
         method: 'get',
         url: nodeurl,
@@ -1707,6 +1984,7 @@ function PingPluginsNode(uuid) {
     })
     .then(function (response) {
         for(line in response.data){
+            console.log(response.data);
             if (line == "knownports"){
                 if (response.data[line]["status"] == "enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
@@ -1716,59 +1994,102 @@ function PingPluginsNode(uuid) {
                     document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
                     document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                }                    
+                }
                 document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
             }else if (response.data[line]["type"] == "suricata"){
                 tableSuricata = tableSuricata + '<tr>'+
-                    '<td>'+response.data[line]["name"]+'</td>'+                            
-                    '<td id="status-suricata-'+line+'">';
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                    '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
                         if(response.data[line]["status"]=="enabled"){
                             tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
                         }else if (response.data[line]["status"]=="disabled"){
                             tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
-                        } 
-                        tableSuricata = tableSuricata + '</td>'+                                                       
-                    '<td>'+response.data[line]["bpf"]+'</td>'+                            
-                    '<td>'+response.data[line]["ruleset"]+'</td>'+  
-                    '<td>'+response.data[line]["interface"]+'</td>'+  
-                    '<td>';
+                        }
+                        tableSuricata = tableSuricata + '</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["ruleset"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
+                    '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
                             tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\', \'suricata\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
                             tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\', \'suricata\')"></i> &nbsp';
                         }
                         tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
-                        '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+name+'\')">BPF</i> &nbsp'+
+                        '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
                         '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesSuricata(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
-                    '</td>'+                                                      
-                '</tr>';                    
-            }else if (response.data[line]["type"] == "zeek"){
+                    '</td>'+
+                '</tr>';
+            }else if (response.data[line]["type"] == "zeek"){                
                 tableZeek = tableZeek + '<tr>'+
-                    '<td>'+response.data[line]["name"]+'</td>'+                            
-                    '<td id="status-zeek-'+line+'">';
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                    '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
                         if(response.data[line]["status"]=="enabled"){
                             tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
                         }else if (response.data[line]["status"]=="disabled"){
                             tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
-                        } 
-                        tableZeek = tableZeek + '</td>'+                                                        
-                    '<td>'+response.data[line]["bpf"]+'</td>'+                            
-                    '<td>'+response.data[line]["ruleset"]+'</td>'+                            
-                    '<td>';
+                        }
+                        tableZeek = tableZeek + '</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["ruleset"]+'</td>'+
+                    '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
                             tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\', \'zeek\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
                             tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\', \'zeek\')"></i> &nbsp';
-                        }   
+                        }
                         tableZeek = tableZeek + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" style="color: red;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                     '</td>';
-                '</tr>';                    
+                '</tr>';
+            }else if (response.data[line]["type"] == "socket-network"){                
+                tableSocketNetwork = tableSocketNetwork + '<tr>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+
+                        '<i class="fas fa-play" style="color: grey;"></i> &nbsp'+
+                        // '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesSuricata(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
+                        '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;"></i> &nbsp'+
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                    '</td>'+
+                '</tr>';
+            }else if (response.data[line]["type"] == "socket-pcap"){
+                tableSocketPcap = tableSocketPcap + '<tr>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+
+                        '<i class="fas fa-play" style="color: grey;"></i> &nbsp'+
+                        '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                    '</td>'+
+                '</tr>';
+            }else if (response.data[line]["type"] == "network-socket"){
+                tableNetworkSocket = tableNetworkSocket + '<tr>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+
+                        '<i class="fas fa-play" style="color: grey;"></i> &nbsp'+
+                        '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                    '</td>'+
+                '</tr>';
             }
-            
+
             document.getElementById('suricata-table-services').innerHTML = tableSuricata;
             document.getElementById('zeek-table-services').innerHTML = tableZeek;
+            document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
+            document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
+            document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
 
         }
     })
@@ -1808,7 +2129,7 @@ function deleteService(uuid, server){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deleteService';
-    
+
     var jsonDeleteService = {}
     jsonDeleteService["uuid"] = uuid;
     jsonDeleteService["server"] = server;
@@ -1842,7 +2163,7 @@ function ChangeServiceStatus(uuid, server, param, status, interface, type){
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ChangeServiceStatus';
-        
+
         var jsonChangeService = {}
         jsonChangeService["uuid"] = uuid;
         jsonChangeService["status"] = status;
@@ -1895,7 +2216,7 @@ function PingAnalyzer(uuid) {
     return false;
 }
 
-function loadNetworkValuesSuricata(uuid, name, service){    
+function loadNetworkValuesSuricata(uuid, name, service){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid;
@@ -1967,10 +2288,10 @@ function saveSuricataInterface(uuid, name, service){
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/saveSuricataInterface';
 
     var valueSelected = "";
-    $('input:radio:checked').each(function() {            
+    $('input:radio:checked').each(function() {
         if($(this).attr('class') == 'suricata-interface'){
             valueSelected = $(this).prop("value");
-        }                        
+        }
     });
 
     var jsonSuricataInterface = {}
@@ -1985,8 +2306,8 @@ function saveSuricataInterface(uuid, name, service){
         timeout: 30000,
         data: dataJSON
     })
-    .then(function (response) {   
-        loadPlugins();    
+    .then(function (response) {
+        loadPlugins();
     })
     .catch(function (error) {
     });

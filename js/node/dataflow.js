@@ -700,9 +700,9 @@ function createSocketToNetwork(uuid){
                     '<div class="form-group row">'+
                         '<label for="interface" class="ml-4 col-form-label"><b>Interface: </b></label>'+
                         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                                '<tbody id="body-create-socket-network">' +
-                                '</tbody>'+
-                            '</table>'+
+                            '<tbody id="body-create-socket-network">' +
+                            '</tbody>'+
+                        '</table>'+
                     '</div>'+
             '</div>'+
 

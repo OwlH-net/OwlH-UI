@@ -51,14 +51,15 @@ function loadPlugins(){
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             //suricata
-            '<p><img src="img/suricata.png" alt="" width="30"> '      +
+            '<p><img src="img/suricata.png" alt="" width="30">'      +
             // '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
             // '  <span style="font-size: 15px; color: grey;" >  ' +
             // '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
             // '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
             // '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
             // '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options"></i> | '+
-            '    <span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
+                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
+                '<b> |  Current ruleset: </b><i id="current-ruleset-options"></i> <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>'+
             '  </span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
@@ -333,9 +334,9 @@ function loadPlugins(){
     PingDataflow(uuid);
     // PingCollector(uuid);
     PingMonitor(uuid);
-    getCurrentRulesetName(uuid);
     PingPluginsNode(uuid);
     GetMainconfData(uuid);
+    getCurrentRulesetName(uuid);
     var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
@@ -389,6 +390,7 @@ function getCurrentRulesetName(uuid) {
                 document.getElementById('current-ruleset-options').style.color = "red";
             }else{
                 document.getElementById('current-ruleset-options').innerHTML = response2.data;
+                
             }
         })
         .catch(function (error) {
@@ -887,7 +889,7 @@ function saveSoftwareTAP(uuid, type){
                     document.getElementById('soft-tap-pcap-prefix').placeholder = "Please insert a pcap prefix:";
                     document.getElementById('soft-tap-pcap-prefix').required = "true";            
                 }
-                if (document.getElementById('soft-tap-bpf').value == "" || document.getElementById('soft-tap-bpf-socket').value == ""){
+                if (document.getElementById('soft-tap-bpf').value == ""){
                     document.getElementById('soft-tap-bpf').placeholder = "Please insert a BPF path:";
                     document.getElementById('soft-tap-bpf').required = "true";
                 }
@@ -1984,7 +1986,6 @@ function PingPluginsNode(uuid) {
     })
     .then(function (response) {
         for(line in response.data){
-            console.log(response.data);
             if (line == "knownports"){
                 if (response.data[line]["status"] == "enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
@@ -2007,17 +2008,17 @@ function PingPluginsNode(uuid) {
                         }
                         tableSuricata = tableSuricata + '</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["ruleset"]+'</td>'+
+                    '<td style="word-wrap: break-word;" id="current-ruleset-suricata-service"></td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\', \'suricata\')"></i> &nbsp';
+                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\', \'suricata\')"></i> &nbsp';
+                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
                         }
                         tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
                         '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
-                        '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesSuricata(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
+                        '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
                 '</tr>';
@@ -2035,9 +2036,9 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["ruleset"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\', \'zeek\')"></i> &nbsp';
+                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\', \'zeek\')"></i> &nbsp';
+                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
                         }
                         tableZeek = tableZeek + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" style="color: red;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
@@ -2050,10 +2051,20 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+
-                        '<i class="fas fa-play" style="color: grey;"></i> &nbsp'+
-                        // '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesSuricata(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
-                        '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;"></i> &nbsp'+
+                        '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp'+
+                        '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
+                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                    '</td>'+
+                '</tr>'+
+                '<tr id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                    '<td><input id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'"></td>'+
+                    '<td><input id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'"></td>'+
+                    '<td><input id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'"></td>'+
+                    '<td><input id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'"></td>'+                    
+                    '<td>'+
+                        '<button class="btn btn-seconday" id="modify-stap-cancel-'+line+'">Cancel</button>'+
+                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+
                     '</td>'+
                 '</tr>';
             }else if (response.data[line]["type"] == "socket-pcap"){
@@ -2065,9 +2076,22 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+
-                        '<i class="fas fa-play" style="color: grey;"></i> &nbsp'+
+                        '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp'+
                         '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
+                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                    '</td>'+
+                '</tr>'+
+                '<tr id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                    '<td><input id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'"></td>'+
+                    '<td><input id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'"></td>'+
+                    '<td><input id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'"></td>'+
+                    '<td><input id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'"></td>'+
+                    '<td><input id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'"></td>'+
+                    '<td><input id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'"></td>'+                    
+                    '<td>'+
+                        '<button class="btn btn-seconday" id="modify-stap-cancel-'+line+'">Cancel</button>'+
+                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+
                     '</td>'+
                 '</tr>';
             }else if (response.data[line]["type"] == "network-socket"){
@@ -2078,9 +2102,21 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+
-                        '<i class="fas fa-play" style="color: grey;"></i> &nbsp'+
+                        '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp'+
                         '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
+                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                    '</td>'+
+                '</tr>'+
+                '<tr id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                    '<td><input id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'"></td>'+
+                    '<td><input id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'"></td>'+
+                    '<td><input id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'" rows="3"></td>'+
+                    '<td><input id="network-socket-collector-'+line+'" value="'+response.data[line]["collector"]+'"></td>'+
+                    '<td><input id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'"></td>'+                    
+                    '<td>'+
+                        '<button class="btn btn-seconday" id="modify-stap-cancel-'+line+'">Cancel</button>'+
+                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+
                     '</td>'+
                 '</tr>';
             }
@@ -2090,8 +2126,63 @@ function PingPluginsNode(uuid) {
             document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
             document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
             document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
-
+            
+            $('#modify-stap-cancel-'+line).click(function(){ $('#edit-row-'+line).hide();});
+            // $('#modify-stap-'+line).click(function(){ $('#edit-row-'+line).show();});
         }
+    })
+    .catch(function (error) {
+    });
+}
+
+function showModifyStap(uuid){
+    $('#edit-row-'+uuid).show();
+}
+
+function saveStapChanges(uuid, type, service){
+    console.log(uuid+"  ---  "+type+"  ---  "+service);
+    $('#edit-row-'+service).hide();
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/modifyStapValues';
+
+    var jsonDeployService = {}
+    jsonDeployService["uuid"] = uuid;
+    jsonDeployService["service"] = service;
+    jsonDeployService["type"] = type;
+    if (type == "socket-network"){
+        console.log(type);
+        jsonDeployService["name"] = document.getElementById('socket-network-name-'+service).value;
+        jsonDeployService["port"] = document.getElementById('socket-network-port-'+service).value;
+        jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+service).value;
+        jsonDeployService["interface"] = document.getElementById('socket-network-interface-'+uuid).value;
+    }else if (type == "socket-pcap"){        
+        console.log(type);
+        jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+service).value;
+        jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+service).value;
+        jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+service).value;
+        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-collector-'+service).value;
+        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-collector-'+service).value;
+        jsonDeployService["bpf"] = document.getElementById('socket-pcap-bpf-'+service).value;
+    }else if (type == "network-socket"){
+        console.log(type);
+        console.log(document.getElementById('network-socket-name-'+service).value);
+        jsonDeployService["name"] = document.getElementById('network-socket-name-'+service).value;
+        jsonDeployService["port"] = document.getElementById('network-socket-port-'+service).value;
+        jsonDeployService["cert"] = document.getElementById('network-socket-cert-'+service).value;
+        jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value;
+        jsonDeployService["bpf"] = document.getElementById('network-socket-bpf-'+service).value;
+    }
+    var dataJSON = JSON.stringify(jsonDeployService);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        loadPlugins();
     })
     .catch(function (error) {
     });
@@ -2125,6 +2216,30 @@ function ModalDeleteService(uuid, server, type, name){
     $('#delete-service-close').click(function(){ $('#modal-window').modal("hide");});
 }
 
+function deployStapService(uuid, service, type){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deployStapService';
+
+    var jsonDeployService = {}
+    jsonDeployService["uuid"] = uuid;
+    jsonDeployService["service"] = service;
+    jsonDeployService["type"] = type;
+    var dataJSON = JSON.stringify(jsonDeployService);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        loadPlugins();
+    })
+    .catch(function (error) {
+    });
+}
+
 function deleteService(uuid, server){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -2148,12 +2263,12 @@ function deleteService(uuid, server){
     });
 }
 
-function ChangeServiceStatus(uuid, server, param, status, interface, type){
-    if (interface == "none"){
+function ChangeServiceStatus(uuid, server, param, status, interface, bpf, type){
+    if (type == "suricata" && (interface == "" || bpf == "")){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Suricata deployment Error! </strong> Please, select an interface for deploy a suricata service.'+
+            '<strong>Suricata deployment Error! </strong> Please, assign an interface and a BPF for deploy a suricata service.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -2216,7 +2331,7 @@ function PingAnalyzer(uuid) {
     return false;
 }
 
-function loadNetworkValuesSuricata(uuid, name, service){
+function loadNetworkValuesService(uuid, name, service){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid;

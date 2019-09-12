@@ -23,22 +23,22 @@ function loadPlugins(){
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'monitor\', \''+uuid+'\')"><b>Node monitor</b> <i class="fas fa-sort-down" id="monitor-form-icon-'+uuid+'"></i></h6>'+
         '<span id="monitor-form-'+uuid+'" style="display:block"><br>'+
-            '<table width="100%">'+
+            '<table width="100%" style="table-layout: fixed">'+
                 '<tbody>'+
                     '<tr>'+
                             '<div>'+
-                                '<td valign="top" width="50%"><canvas id="myChartPercentage"></canvas></td>'+
+                                '<td style="word-wrap: break-word;" valign="top" width="50%"><canvas id="myChartPercentage"></canvas></td>'+
                             '</div>'+
                             '<div>'+
-                                '<td valign="top" width="50%"><canvas id="myChartOwlh"></canvas></td>'+
+                                '<td style="word-wrap: break-word;" valign="top" width="50%"><canvas id="myChartOwlh"></canvas></td>'+
                             '</div>'+
                     '</tr>'+
                     '<tr>'+
                             '<div>'+
-                                '<td valign="top" width="50%"><canvas id="myChartMem"></canvas></td>'+
+                                '<td style="word-wrap: break-word;" valign="top" width="50%"><canvas id="myChartMem"></canvas></td>'+
                             '</div>'+
                             '<div>'+
-                                '<td valign="top" width="50%"><canvas id="myChartSto"></canvas></td>'+
+                                '<td style="word-wrap: break-word;" valign="top" width="50%"><canvas id="myChartSto"></canvas></td>'+
                             '</div>'+
                     '</tr>'+
                 '</tbody>'+
@@ -64,7 +64,7 @@ function loadPlugins(){
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
                 '<div>'+
-                    '<table class="table table-hover" width="100%">'+
+                    '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                         '<thead>'+
                             '<th width="16%">Name</th>'+
                             '<th width="16%">Status</th>'+
@@ -89,7 +89,7 @@ function loadPlugins(){
             '   <button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
             '</p>'+
             '<div>'+
-                    '<table class="table table-hover" width="100%">'+
+                    '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                         '<thead>'+
                             '<th width="16%">Name</th>'+
                             '<th width="16%">Status</th>'+
@@ -121,7 +121,7 @@ function loadPlugins(){
                         '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'socket-network\')">Add Socket->Network</button>'+
                     '</p>' +
                     '<div>'+
-                        '<table class="table table-hover" width="100%">'+
+                        '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                             '<thead>'+
                                 '<th width="20%">Name</th>'+
                                 '<th width="20%">Port</th>'+
@@ -138,13 +138,14 @@ function loadPlugins(){
                         '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'socket-pcap\')">Add Socket->PCAP</button>'+
                     '</p>' +
                     '<div>'+
-                        '<table class="table table-hover" width="100%">'+
+                        '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                             '<thead>'+
                                 '<th>Name</th>'+
                                 '<th>Port</th>'+
                                 '<th>Certificate</th>'+
                                 '<th>PCAP path</th>'+
                                 '<th>PCAP prefix</th>'+
+                                '<th>BPF</th>'+
                                 '<th>Actions</th>'+
                             '</thead>'+
                             '<tbody id="socket-pcap-table">'+
@@ -156,11 +157,12 @@ function loadPlugins(){
                         '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'network-socket\')">Add Network->Socket</button>'+
                     '</p>' +
                     '<div>'+
-                        '<table class="table table-hover" width="100%">'+
+                        '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                             '<thead>'+
                                 '<th>Name</th>'+
                                 '<th>Port</th>'+
                                 '<th>Certificate</th>'+
+                                '<th>Interface</th>'+
                                 '<th>Collector</th>'+
                                 '<th>BPF</th>'+
                                 '<th>Actions</th>'+
@@ -210,7 +212,7 @@ function loadPlugins(){
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
         '<span id="flow-form-'+uuid+'" style="display:block"><br>'+
-            '<table style="width:100%">'+
+            '<table style="width:100%" style="table-layout: fixed">'+
             '<thead>'+
             '<tr>                                                         ' +
                 '<th width="25%">Collect from</th>                                                  ' +
@@ -780,55 +782,57 @@ function AddSTAPModal(uuid, type){
 
       '<div class="modal-body">'+
         '<p>Insert name:</p>'+
-        '<input type="text" class="form-control" id="soft-tap-name"><br>'+
+            '<input type="text" class="form-control" id="soft-tap-name"><br>'+
         '<p>Insert port:</p>'+
-        '<input type="text" class="form-control" id="soft-tap-port" value="50010"><br>'+
+            '<input type="text" class="form-control" id="soft-tap-port" value="50010"><br>'+
         '<p>Insert certificate:</p>'+
-        '<input type="text" class="form-control" id="soft-tap-cert" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
-        if (type == "socket-network"){
-            html = html + '<p>Select an interface:</p>'+
-            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                '<tbody id="socket-network-modal-table">' +
-                '</tbody>'+
-            '</table>';   
-            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
-            .then(function (response) {
-                var isChecked = false;
-                var inner = "";
-                for (net in response.data){
-                    inner = inner + '<tr>'+
-                        '<td style="word-wrap: break-word;">' +
-                            '<p class="ml-4">'+response.data[net]+'</p>'+
-                        '</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            if (!isChecked){
-                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
-                                isChecked = true;
-                            }else{
-                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
-                            }
-                        inner = inner + '</td>'+
-                    '</tr>';
-                }
-                document.getElementById('socket-network-modal-table').innerHTML = inner;
-            });         
-        }else if (type == "socket-pcap"){
+            '<input type="text" class="form-control" id="soft-tap-cert" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
+        // if (type == "socket-network"){                  
+        // }else 
+        if (type == "socket-pcap"){
             html = html + '<p>Insert PCAP path:</p>'+
-            '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps"><br>'+
+                '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps"><br>'+
             '<p>Insert PCAP prefix:</p>'+
-            '<input type="text" class="form-control" id="soft-tap-pcap-prefix" value="remote-"><br>'+
+                '<input type="text" class="form-control" id="soft-tap-pcap-prefix" value="remote-"><br>'+
             '<p>Insert BPF path:</p>'+
-            '<input type="text" class="form-control" id="soft-tap-bpf" value="/usr/local/owlh/src/owlhnode/conf/filter.bpf"><br>';
+                '<input type="text" class="form-control" id="soft-tap-bpf"><br>';
         }else if (type == "network-socket"){
             html = html + '<p>Select collector:</p>'+
-            '<input type="text" class="form-control" id="soft-tap-collector" value="192.168.1.100"><br>'+
+                '<input type="text" class="form-control" id="soft-tap-collector" value="192.168.1.100"><br>'+
             '<p>Insert BPF path:</p>'+
-            '<input type="text" class="form-control" id="soft-tap-bpf-socket" value="/usr/local/owlh/src/owlhnode/conf/filter.bpf"><br>';
+                '<input type="text" class="form-control" id="soft-tap-bpf-socket"><br>';
         }
-        html = html + '<div class="modal-footer" id="sync-node-footer-btn">'+
+        html = html + '<p>Select an interface:</p>'+
+        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+            '<tbody id="socket-network-modal-table">' +
+            '</tbody>'+
+        '</table>';   
+        axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
+        .then(function (response) {
+            var isChecked = false;
+            var inner = "";
+            for (net in response.data){
+                inner = inner + '<tr>'+
+                    '<td style="word-wrap: break-word;">' +
+                        '<p class="ml-4">'+response.data[net]+'</p>'+
+                    '</td>'+
+                    '<td style="word-wrap: break-word;">';
+                        if (!isChecked){
+                            inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                            isChecked = true;
+                        }else{
+                            inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                        }
+                    inner = inner + '</td>'+
+                '</tr>';
+            }
+            document.getElementById('socket-network-modal-table').innerHTML = inner;
+        });   
+    html = html + '</div>'+
+    '<div class="modal-footer" id="sync-node-footer-btn">'+
         '<button type="button" class="btn btn-secondary" id="add-stap-modal-close">Cancel</button>'+
         '<button type="button" class="btn btn-primary" id="add-stap-modal">Add</button>'+
-      '</div>'+
+    '</div>'+
 
     '</div>'+
   '</div>';
@@ -939,7 +943,7 @@ function saveSoftwareTAP(uuid, type){
         jsonSave["type"] = type;
         jsonSave["cert"] = document.getElementById('soft-tap-cert').value;
         jsonSave["port"] = document.getElementById('soft-tap-port').value;
-        if (type == "socket-network"){ jsonSave["interface"] = valueSelected}
+        jsonSave["interface"] = valueSelected;
         if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf').value;}
         if (type == "network-socket"){ jsonSave["collector"] = document.getElementById('soft-tap-collector').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-socket').value;}
         var dataJSON = JSON.stringify(jsonSave);
@@ -1082,9 +1086,9 @@ function syncRulesetModal(node, name){
 function loadBPF(uuid, bpf, service, name){
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML = '<div class="modal-dialog">'+
-                '<div class="modal-content">'+
+                '<div class="modal-content" >'+
 
-                 '<div class="modal-header">'+
+                    '<div class="modal-header" style="word-break: break-all;">'+
                         '<h4 class="modal-title" id="bpf-header">'+name+' BPF</h4>'+
                         '<button type="button" class="close" id="load-bpf-cross">&times;</button>'+
                     '</div>'+
@@ -1379,19 +1383,19 @@ function showModalCollector(response){
                                         if (res[line] != ""){
                                             var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
                                             var lineSplited = vregex.exec(res[line]);
-                                            html = html + '<tr><td>' +
+                                            html = html + '<tr><td style="word-wrap: break-word;" >' +
                                             lineSplited[1]+
-                                            '</td><td>     ' +
+                                            '</td><td style="word-wrap: break-word;" >     ' +
                                             lineSplited[2]+
-                                            '</td><td>     ' +
+                                            '</td><td style="word-wrap: break-word;" >     ' +
                                             lineSplited[3]+
-                                            '</td><td>     ' +
+                                            '</td><td style="word-wrap: break-word;" >     ' +
                                             lineSplited[4]+
-                                            '</td><td>     ' +
+                                            '</td><td style="word-wrap: break-word;" >     ' +
                                             lineSplited[5]+
-                                            '</td><td>     ' +
+                                            '</td><td style="word-wrap: break-word;" >     ' +
                                             lineSplited[6]+
-                                            '</td><td>     ' +
+                                            '</td><td style="word-wrap: break-word;" >     ' +
                                             lineSplited[7]+
                                             '</td></tr>'
                                         }
@@ -1537,13 +1541,13 @@ function showModalPorts(response, uuid){
                                 var first = new Date(response.data[line]["first"]*1000);
                                 var last = new Date(response.data[line]["last"]*1000);
 
-                                html = html + '<tr><td id="">                            ' +
+                                html = html + '<tr><td style="word-wrap: break-word;">                            ' +
                                 response.data[line]["portprot"]+'<br>'                    +
-                                '</td><td>'+
+                                '</td><td style="word-wrap: break-word;" >'+
                                 first+
-                                '</td><td>'+
+                                '</td><td style="word-wrap: break-word;" >'+
                                 last+
-                                '</td><td align="center">'+
+                                '</td><td  style="word-wrap: break-word;" align="center">'+
                                 '<input class="form-check-input" type="checkbox" id="'+line+'"></input>'+
                                 '</td></tr>'
                             }
@@ -2057,14 +2061,36 @@ function PingPluginsNode(uuid) {
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
                 '</tr>'+
-                '<tr id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td><input id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'"></td>'+
-                    '<td><input id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'"></td>'+
-                    '<td><input id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'"></td>'+
-                    '<td><input id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'"></td>'+                    
-                    '<td>'+
-                        '<button class="btn btn-seconday" id="modify-stap-cancel-'+line+'">Cancel</button>'+
-                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+
+                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                    '<td style="word-wrap: break-word;" colspan="4">'+
+                        '<div class="form-row">'+
+                            '<div class="col">'+
+                                'Name: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                            '</div>'+
+                            '<div class="col">'+
+                                'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="form-row">'+
+                            '<div class="col">'+
+                                'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                            '</div>'+
+                            '<div class="col">'+
+                            '</div>'+
+                        '</div>'+
+                    '</td>'+
+                    '<td style="word-wrap: break-word;" >'+
+                        '<div class="form-row text-center">'+
+                            '<div class="col">'+
+                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                            '</div>'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-row text-center">'+
+                            '<div class="col">'+
+                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+    
+                            '</div>'+
+                        '</div>'+
                     '</td>'+
                 '</tr>';
             }else if (response.data[line]["type"] == "socket-pcap"){
@@ -2082,16 +2108,44 @@ function PingPluginsNode(uuid) {
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
                 '</tr>'+
-                '<tr id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td><input id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'"></td>'+
-                    '<td><input id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'"></td>'+
-                    '<td><input id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'"></td>'+
-                    '<td><input id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'"></td>'+
-                    '<td><input id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'"></td>'+
-                    '<td><input id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'"></td>'+                    
-                    '<td>'+
-                        '<button class="btn btn-seconday" id="modify-stap-cancel-'+line+'">Cancel</button>'+
-                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+
+                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                    '<td style="word-wrap: break-word;" colspan="7">'+
+                        '<div class="form-row">'+
+                            '<div class="col">'+
+                                'Name: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                            '</div>'+
+                            '<div class="col">'+
+                                'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="form-row">'+
+                            '<div class="col">'+
+                                'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
+                            '</div>'+
+                            '<div class="col">'+
+                                'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="form-row">'+
+                            '<div class="col">'+
+                                'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                            '</div>'+
+                            '<div class="col">'+
+                            '</div>'+
+                        '</div>'+
+                    '</td>'+
+                    '<td style="word-wrap: break-word;" >'+
+                        '<div class="form-row text-center">'+
+                            '<div class="col">'+
+                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                            '</div>'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-row text-center">'+
+                            '<div class="col">'+
+                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+    
+                            '</div>'+
+                        '</div>'+
                     '</td>'+
                 '</tr>';
             }else if (response.data[line]["type"] == "network-socket"){
@@ -2099,6 +2153,7 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+
@@ -2108,15 +2163,39 @@ function PingPluginsNode(uuid) {
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
                 '</tr>'+
-                '<tr id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td><input id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'"></td>'+
-                    '<td><input id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'"></td>'+
-                    '<td><input id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'" rows="3"></td>'+
-                    '<td><input id="network-socket-collector-'+line+'" value="'+response.data[line]["collector"]+'"></td>'+
-                    '<td><input id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'"></td>'+                    
-                    '<td>'+
-                        '<button class="btn btn-seconday" id="modify-stap-cancel-'+line+'">Cancel</button>'+
-                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+
+                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                    '<td style="word-wrap: break-word;" colspan="6">'+
+                        '<div class="form-row">'+
+                            '<div class="col">'+
+                                'Name: <input class="form-control" id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                            '</div>'+
+                            '<div class="col">'+
+                                'Port: <input class="form-control" id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="form-row">'+                            
+                        '</div>'+
+                        '<div class="form-row">'+
+                            '<div class="col">'+
+                                'Collector: <input class="form-control" id="network-socket-collector-'+line+'" value="'+response.data[line]["collector"]+'">'+
+                            '</div>'+
+                            '<div class="col">'+
+                                'Certificate: <input class="form-control" id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                            '</div>'+
+                        '</div>'+
+                    '</td>'+
+                    '<td style="word-wrap: break-word;" >'+
+                        '<div class="form-row text-center">'+
+                            '<div class="col">'+
+                                '<button class="btn btn-seconday" id="modify-stap-cancel-network-socket-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                            '</div>'+
+                        '</div>'+
+                        '<br>'+
+                        '<div class="form-row text-center">'+
+                            '<div class="col">'+
+                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+    
+                            '</div>'+
+                        '</div>'+
                     '</td>'+
                 '</tr>';
             }
@@ -2126,21 +2205,21 @@ function PingPluginsNode(uuid) {
             document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
             document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
             document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
-            
-            $('#modify-stap-cancel-'+line).click(function(){ $('#edit-row-'+line).hide();});
-            // $('#modify-stap-'+line).click(function(){ $('#edit-row-'+line).show();});
         }
     })
     .catch(function (error) {
     });
 }
 
-function showModifyStap(uuid){
-    $('#edit-row-'+uuid).show();
+function hideEditStap(line){
+    document.getElementById('edit-row-'+line).style.display = "none";
 }
 
-function saveStapChanges(uuid, type, service){
-    console.log(uuid+"  ---  "+type+"  ---  "+service);
+function showModifyStap(service){
+    $('#edit-row-'+service).show();
+}
+
+function saveStapChanges(uuid, type, service){    
     $('#edit-row-'+service).hide();
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -2151,27 +2230,20 @@ function saveStapChanges(uuid, type, service){
     jsonDeployService["service"] = service;
     jsonDeployService["type"] = type;
     if (type == "socket-network"){
-        console.log(type);
         jsonDeployService["name"] = document.getElementById('socket-network-name-'+service).value;
         jsonDeployService["port"] = document.getElementById('socket-network-port-'+service).value;
         jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+service).value;
-        jsonDeployService["interface"] = document.getElementById('socket-network-interface-'+uuid).value;
     }else if (type == "socket-pcap"){        
-        console.log(type);
         jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+service).value;
         jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+service).value;
         jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+service).value;
-        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-collector-'+service).value;
-        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-collector-'+service).value;
-        jsonDeployService["bpf"] = document.getElementById('socket-pcap-bpf-'+service).value;
+        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+service).value;
+        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+service).value;
     }else if (type == "network-socket"){
-        console.log(type);
-        console.log(document.getElementById('network-socket-name-'+service).value);
         jsonDeployService["name"] = document.getElementById('network-socket-name-'+service).value;
         jsonDeployService["port"] = document.getElementById('network-socket-port-'+service).value;
         jsonDeployService["cert"] = document.getElementById('network-socket-cert-'+service).value;
         jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value;
-        jsonDeployService["bpf"] = document.getElementById('network-socket-bpf-'+service).value;
     }
     var dataJSON = JSON.stringify(jsonDeployService);
 
@@ -2194,12 +2266,12 @@ function ModalDeleteService(uuid, server, type, name){
     '<div class="modal-dialog modal-md">'+
       '<div class="modal-content">'+
 
-        '<div class="modal-header">'+
+        '<div class="modal-header" style="word-break: break-all;">'+
           '<h4 class="modal-title">Delete '+type+' service</h4>'+
           '<button type="button" class="close" id="delete-service-cross">&times;</button>'+
         '</div>'+
 
-        '<div class="modal-body">'+
+        '<div class="modal-body" style="word-break: break-all;">'+
             '<p>Do you want to delete a '+type+' service with name <b>'+name+'</b></p>'+
         '</div>'+
 
@@ -2345,7 +2417,7 @@ function loadNetworkValuesService(uuid, name, service){
         var html = '<div class="modal-dialog" id="network-modal-window">'+
           '<div class="modal-content">'+
 
-            '<div class="modal-header">'+
+            '<div class="modal-header" style="word-break: break-all;">'+
               '<h4 class="modal-title" id="delete-node-header">Suricata '+name+' interface</h4>'+
               '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
             '</div>'+

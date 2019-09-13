@@ -85,7 +85,7 @@ function modalShowLog(uuid, name){
             '<div class="modal-dialog modal-lg">'+
                 '<div class="modal-content">'+
             
-                    '<div class="modal-header">'+
+                    '<div class="modal-header" style="word-break: break-all;">'+
                         '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Log for ruleset '+name+'</h4>'+
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
                     '</div>'+
@@ -124,7 +124,7 @@ function modalTimeSchedule(uuid, name, status){
             '<div class="modal-dialog">'+
                 '<div class="modal-content">'+
             
-                    '<div class="modal-header">'+
+                    '<div class="modal-header" style="word-break: break-all;">'+
                         '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">'+name+' time schedule</h4>'+
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
                     '</div>';
@@ -421,7 +421,7 @@ function syncRulesetModal(uuid, name){
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
     
-            '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
+            '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table" style="word-break: break-all;">'+ 
                 '<p>Do you want to synchronize <b>'+name+'</b> ruleset?</p>'+
             '</div>'+
     
@@ -444,7 +444,7 @@ function deleteRulesetModal(name, uuid){
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
     
-            '<div class="modal-body" id="delete-ruleset-footer-table">'+ 
+            '<div class="modal-body" id="delete-ruleset-footer-table" style="word-break: break-all;">'+ 
                 '<p>Do you want to delete <b>'+name+'</b> ruleset?</p>'+
             '</div>'+
     

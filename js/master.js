@@ -48,6 +48,48 @@ function loadPlugins(){
         '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
     '</div>'+
 
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" ><b>Software TAP</b> <i class="fas fa-sort-down" ></i></h6>'+
+        '<span style="display:block"><br>'+
+            //socket->Network
+            '<p> <i class="fas fa-plug fa-lg"></i> Traffic from socket to network interface '+
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\'\', \'socket-network\')">Add Socket->Network</button>'+
+            '</p>' +
+            '<div>'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th width="20%">Name</th>'+
+                        '<th width="20%">Port</th>'+
+                        '<th width="20%">Certificate</th>'+
+                        '<th width="20%">Interface</th>'+
+                        '<th width="20%">Actions</th>'+
+                    '</thead>'+
+                    '<tbody id="socket-network-table">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div><br><br>'+
+            //socket->PCAP
+            '<p> <i class="fas fa-plug fa-lg"></i> Traffic from socket to PCAP'+
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\'\', \'socket-pcap\')">Add Socket->PCAP</button>'+
+            '</p>' +
+            '<div>'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th>Name</th>'+
+                        '<th>Port</th>'+
+                        '<th>Certificate</th>'+
+                        '<th>PCAP path</th>'+
+                        '<th>PCAP prefix</th>'+
+                        '<th>BPF</th>'+
+                        '<th>Actions</th>'+
+                    '</thead>'+
+                    '<tbody id="socket-pcap-table">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div><br><br>'+            
+        '</span>'+
+    '</div>'+
+
     '<div class="my-3 p-3 bg-white rounded shadow-sm" id="flow-form-master">'+
     '<h6 class="border-bottom border-gray pb-2 mb-0">Flow</h6>'+
     '<br>'+
@@ -654,6 +696,85 @@ function showMasterModalCollector(response){
     document.getElementById('modal-master').innerHTML = html;
     // $('#modal-master').modal('show');
     $('#modal-master').modal().hide();
+}
+
+function AddSTAPModal(type){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var html =
+    '<div class="modal-dialog">'+
+    '<div class="modal-content">'+
+
+      '<div class="modal-header">'+
+        '<h4 class="modal-title">Add '+type+' service</h4>'+
+        '<button type="button" class="close" id="add-stap-modal-cross">&times;</button>'+
+      '</div>'+
+
+      '<div class="modal-body">'+
+        '<p>Insert name:</p>'+
+            '<input type="text" class="form-control" id="soft-tap-name"><br>'+
+        '<p>Insert port:</p>'+
+            '<input type="text" class="form-control" id="soft-tap-port" value="50010"><br>'+
+        '<p>Insert certificate:</p>'+
+            '<input type="text" class="form-control" id="soft-tap-cert" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
+        // if (type == "socket-network"){                  
+        // }else 
+        if (type == "socket-pcap"){
+            html = html + '<p>Insert PCAP path:</p>'+
+                '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps"><br>'+
+            '<p>Insert PCAP prefix:</p>'+
+                '<input type="text" class="form-control" id="soft-tap-pcap-prefix" value="remote-"><br>'+
+            '<p>Insert BPF:</p>'+
+                '<input type="text" class="form-control" id="soft-tap-bpf"><br>';
+        }else if (type == "network-socket"){
+            html = html + '<p>Select collector:</p>'+
+                '<input type="text" class="form-control" id="soft-tap-collector" value="192.168.1.100"><br>'+
+            '<p>Insert BPF:</p>'+
+                '<input type="text" class="form-control" id="soft-tap-bpf-socket"><br>';
+        }
+        html = html + '<p>Select an interface:</p>'+
+        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+            '<tbody id="socket-network-modal-table">' +
+            '</tbody>'+
+        '</table>';   
+        axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface')
+        .then(function (response) {
+            var isChecked = false;
+            var inner = "";
+            for (net in response.data){
+                inner = inner + '<tr>'+
+                    '<td style="word-wrap: break-word;">' +
+                        '<p class="ml-4">'+response.data[net]+'</p>'+
+                    '</td>'+
+                    '<td style="word-wrap: break-word;">';
+                        if (!isChecked){
+                            inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                            isChecked = true;
+                        }else{
+                            inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                        }
+                    inner = inner + '</td>'+
+                '</tr>';
+            }
+            document.getElementById('socket-network-modal-table').innerHTML = inner;
+        });   
+    html = html + '</div>'+
+    '<div class="modal-footer" id="sync-node-footer-btn">'+
+        '<button type="button" class="btn btn-secondary" id="add-stap-modal-close">Cancel</button>'+
+        '<button type="button" class="btn btn-primary" id="add-stap-modal">Add</button>'+
+    '</div>'+
+
+    '</div>'+
+  '</div>';
+
+  
+
+  document.getElementById('modal-master').innerHTML = html;
+  
+  $('#modal-master').modal("show");
+//   $('#add-stap-modal').click(function(){ saveSoftwareTAP(uuid, type); });
+  $('#add-stap-modal-close').click(function(){ $('#modal-master').modal("hide");});
+  $('#add-stap-modal-cross').click(function(){ $('#modal-master').modal("hide");});
 }
 
 function loadJSONdata(){

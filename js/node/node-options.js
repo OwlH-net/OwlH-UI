@@ -794,12 +794,12 @@ function AddSTAPModal(uuid, type){
                 '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps"><br>'+
             '<p>Insert PCAP prefix:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-pcap-prefix" value="remote-"><br>'+
-            '<p>Insert BPF path:</p>'+
+            '<p>Insert BPF:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-bpf"><br>';
         }else if (type == "network-socket"){
             html = html + '<p>Select collector:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-collector" value="192.168.1.100"><br>'+
-            '<p>Insert BPF path:</p>'+
+            '<p>Insert BPF:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-bpf-socket"><br>';
         }
         html = html + '<p>Select an interface:</p>'+
@@ -2050,7 +2050,7 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }else if (response.data[line]["type"] == "socket-network"){                
                 tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'-'+response.data[line]["pid"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
@@ -2095,7 +2095,7 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }else if (response.data[line]["type"] == "socket-pcap"){
                 tableSocketPcap = tableSocketPcap + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'-'+response.data[line]["pid"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
@@ -2150,7 +2150,7 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }else if (response.data[line]["type"] == "network-socket"){
                 tableNetworkSocket = tableNetworkSocket + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'-'+response.data[line]["pid"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
@@ -2160,6 +2160,7 @@ function PingPluginsNode(uuid) {
                         '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp'+
                         '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
                         '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
                 '</tr>'+

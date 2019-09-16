@@ -843,7 +843,7 @@ function AddSTAPModal(uuid, type){
   document.getElementById('modal-window').innerHTML = html;
   
   $('#modal-window').modal("show");
-  $('#add-stap-modal').click(function(){ saveSoftwareTAP(uuid, type); });
+  $('#add-stap-modal').click(function(){ console.log(uuid); saveSoftwareTAP(uuid, type); });
   $('#add-stap-modal-close').click(function(){ $('#modal-window').modal("hide");});
   $('#add-stap-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
@@ -947,6 +947,7 @@ function saveSoftwareTAP(uuid, type){
         if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf').value;}
         if (type == "network-socket"){ jsonSave["collector"] = document.getElementById('soft-tap-collector').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-socket').value;}
         var dataJSON = JSON.stringify(jsonSave);
+        console.log(jsonSave);
         axios({
             method: 'put',
             url: nodeurl,
@@ -1109,26 +1110,6 @@ function loadBPF(uuid, bpf, service, name){
     $('#load-bpf-cross').click(function(){ $('#modal-window').modal("hide"); });
     $('#load-bpf-close').click(function(){ $('#modal-window').modal("hide"); });
     $('#load-bpf-save').click(function(){ $('#modal-window').modal("hide"); saveBPF(uuid, document.getElementById('recipient-name').value, service); });
-
-    // var ipmaster = document.getElementById('ip-master').value;
-    // var portmaster = document.getElementById('port-master').value;
-    // var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+uuid+'/bpf';
-    // axios({
-    //     method: 'get',
-    //     url: nodeurl,
-    //     timeout: 3000
-    // })
-    // .then(function (response) {
-    //     if('bpf' in response.data){
-    //         document.getElementById('recipient-name').value=response.data.bpf;
-    //     }else{
-    //         document.getElementById('recipient-name').value='';
-    //         document.getElementById('bpf-header').innerHTML = document.getElementById('bpf-header').innerHTML + '<br>Not defined';
-    //     }
-    // })
-    // .catch(function (error) {
-    // });
-
 }
 
 function saveBPF(uuid, value, service){
@@ -1153,7 +1134,7 @@ function saveBPF(uuid, value, service){
       })
       .catch(function (error) {
       });
-  }
+}
 
 function loadRuleset(uuid){
     var modalWindow = document.getElementById('modal-window');
@@ -2054,9 +2035,13 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+
-                        '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp'+
-                        '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
+                    '<td style="word-wrap: break-word;">';
+                        if (response.data[line]["pid"] == "none"){
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
+                        }else if (response.data[line]["pid"] != "none"){
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
+                        }                        
+                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
                         '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
@@ -2101,9 +2086,13 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+
-                        '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp'+
-                        '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
+                    '<td style="word-wrap: break-word;">';
+                        if (response.data[line]["pid"] == "none"){
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \'none\',\'socket-pcap\')"></i> &nbsp';
+                        }else if (response.data[line]["pid"] != "none"){
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                        }
+                        tableSocketPcap = tableSocketPcap + '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
                         '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
@@ -2156,9 +2145,13 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+
-                        '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp'+
-                        '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
+                    '<td style="word-wrap: break-word;">';
+                        if (response.data[line]["pid"] == "none"){
+                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \''+response.data[line]["collector"]+'\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'network-socket\')"></i> &nbsp';
+                        }else if (response.data[line]["pid"] != "none"){
+                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
+                        }
+                        tableNetworkSocket = tableNetworkSocket + '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
                         '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
@@ -2289,10 +2282,39 @@ function ModalDeleteService(uuid, server, type, name){
     $('#delete-service-close').click(function(){ $('#modal-window').modal("hide");});
 }
 
-function deployStapService(uuid, service, type){
+function deployStapService(uuid, service, collector,port,interface, type){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deployStapService';
+
+    var jsonDeployService = {}
+    jsonDeployService["uuid"] = uuid;
+    jsonDeployService["service"] = service;
+    jsonDeployService["type"] = type;
+    if (type == "network-socket"){
+        jsonDeployService["collector"] = collector;
+        jsonDeployService["port"] = port;
+        jsonDeployService["interface"] = interface;
+    }
+    var dataJSON = JSON.stringify(jsonDeployService);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        loadPlugins();
+    })
+    .catch(function (error) {
+    });
+}
+
+function stopStapService(uuid, service, type){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/stopStapService';
 
     var jsonDeployService = {}
     jsonDeployService["uuid"] = uuid;

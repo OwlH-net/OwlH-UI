@@ -15,52 +15,17 @@ function loadPlugins(){
     var name = urlWeb.searchParams.get("node");
     var uuid = urlWeb.searchParams.get("uuid");
     document.getElementById('node-config-title').innerHTML = name;
-    // var ipmaster = document.getElementById('ip-master').value;
-    // var portmaster = document.getElementById('port-master').value;
 
     var html =
-    //CHARTS
-    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'monitor\', \''+uuid+'\')"><b>Node monitor</b> <i class="fas fa-sort-down" id="monitor-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="monitor-form-'+uuid+'" style="display:block"><br>'+
-            '<table width="100%" style="table-layout: fixed">'+
-                '<tbody>'+
-                    '<tr>'+
-                            '<div>'+
-                                '<td style="word-wrap: break-word;" valign="top" width="50%"><canvas id="myChartPercentage"></canvas></td>'+
-                            '</div>'+
-                            '<div>'+
-                                '<td style="word-wrap: break-word;" valign="top" width="50%"><canvas id="myChartOwlh"></canvas></td>'+
-                            '</div>'+
-                    '</tr>'+
-                    '<tr>'+
-                            '<div>'+
-                                '<td style="word-wrap: break-word;" valign="top" width="50%"><canvas id="myChartMem"></canvas></td>'+
-                            '</div>'+
-                            '<div>'+
-                                '<td style="word-wrap: break-word;" valign="top" width="50%"><canvas id="myChartSto"></canvas></td>'+
-                            '</div>'+
-                    '</tr>'+
-                '</tbody>'+
-            '</table>'+
-        '</span>'+
-    '</div>'+
-
     //SURICATA & ZEEK
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             //suricata
-            '<p><img src="img/suricata.png" alt="" width="30">'      +
-            // '  <span id="'+uuid+'-suricata" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |' +
-            // '  <span style="font-size: 15px; color: grey;" >  ' +
-            // '    <i class="fas fa-stop-circle" id="'+uuid+'-suricata-icon" title="Stop Suricata" onclick="StopSuricata(\''+uuid+'\')"></i>                     ' +
-            // '    <i class="fas fa-sync-alt" title="Deploy ruleset" data-toggle="modal" data-target="#modal-window" onclick="syncRulesetModal(\''+uuid+'\',\''+name+'\')"></i>                                 ' +
-            // '    <i title="Configuration" style="cursor: default;" data-toggle="modal" data-target="#modal-window" onclick="loadBPF(\''+uuid+'\',\''+name+'\')">BPF</i>'+
-            // '    <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>  <b>|  Current ruleset: </b><i id="current-ruleset-options"></i> | '+
+            '<p><img src="img/suricata.png" alt="" width="30">'      +           
                 '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
-                '<b> |  Current ruleset: </b><i id="current-ruleset-options"></i> <i class="fas fa-code" title="Ruleset Management" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>'+
-            '  </span>' +
+                '<b>&nbsp<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp |  Current ruleset: </b><i id="current-ruleset-options"></i>'+
+                '</span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
                 '<div>'+
@@ -79,11 +44,6 @@ function loadPlugins(){
                 '</div><br><br>'+
             // //zeek
             '<p><img  src="img/bro.png" alt="" width="30">'+
-            // '  <span id="'+uuid+'-zeek" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                       ' +
-            // '  <span style="font-size: 15px; color: grey;" >' +
-            // '    <i class="fas fa-stop-circle" id="'+uuid+'-zeek-icon"></i>                         ' +
-            // '    <i class="fab fa-wpforms" title="Zeek: Deploy policy" data-toggle="modal" data-target="#modal-window" onclick="deployZeekModal(\''+uuid+'\')"></i>                  ' +
-            // '    <i class="fas fa-crown" style="color: darkkhaki;" title="Zeek: Is Master"></i> | ' +
             '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+
             '  </span>' +
             '   <button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
@@ -93,8 +53,6 @@ function loadPlugins(){
                         '<thead>'+
                             '<th width="16%">Name</th>'+
                             '<th width="16%">Status</th>'+
-                            '<th width="16%">BPF</th>'+
-                            '<th width="16%">Ruleset</th>'+
                             '<th width="16%">Actions</th>'+
                         '</thead>'+
                         '<tbody id="zeek-table-services">'+
@@ -116,230 +74,144 @@ function loadPlugins(){
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Software TAP</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
         '<span id="plugins-form-'+uuid+'" style="display:block"><br>'+
-                    //socket->Network
-                    '<p> <i class="fas fa-plug fa-lg"></i> Traffic from socket to network interface '+
-                        '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'socket-network\')">Add Socket->Network</button>'+
-                    '</p>' +
-                    '<div>'+
-                        '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                            '<thead>'+
-                                '<th width="20%">Name</th>'+
-                                '<th width="20%">Port</th>'+
-                                '<th width="20%">Certificate</th>'+
-                                '<th width="20%">Interface</th>'+
-                                '<th width="20%">Actions</th>'+
-                            '</thead>'+
-                            '<tbody id="socket-network-table">'+
-                            '</tbody>'+
-                        '</table>'+
-                    '</div><br><br>'+
-                    //socket->PCAP
-                    '<p> <i class="fas fa-plug fa-lg"></i> Traffic from socket to PCAP'+
-                        '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'socket-pcap\')">Add Socket->PCAP</button>'+
-                    '</p>' +
-                    '<div>'+
-                        '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                            '<thead>'+
-                                '<th>Name</th>'+
-                                '<th>Port</th>'+
-                                '<th>Certificate</th>'+
-                                '<th>PCAP path</th>'+
-                                '<th>PCAP prefix</th>'+
-                                '<th>BPF</th>'+
-                                '<th>Actions</th>'+
-                            '</thead>'+
-                            '<tbody id="socket-pcap-table">'+
-                            '</tbody>'+
-                        '</table>'+
-                    '</div><br><br>'+
-                    //Network->Socket
-                    '<p> <i class="fas fa-plug fa-lg"></i> Traffic from network interface to socket'+
-                        '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'network-socket\')">Add Network->Socket</button>'+
-                    '</p>' +
-                    '<div>'+
-                        '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                            '<thead>'+
-                                '<th>Name</th>'+
-                                '<th>Port</th>'+
-                                '<th>Certificate</th>'+
-                                '<th>Interface</th>'+
-                                '<th>Collector</th>'+
-                                '<th>BPF</th>'+
-                                '<th>Actions</th>'+
-                            '</thead>'+
-                            '<tbody id="network-socket-table">'+
-                            '</tbody>'+
-                        '</table>'+
-                    '</div><br><br>'+
-            // '<table width="100%">'+
-            //     '<tr>'+
-            //         '<td width="25%"><i class="fas fa-plug fa-lg"></i> STAP</th>'+
-            //         '<td width="25%">Status: <i id="'+uuid+'-stap" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</i></td>'+
-            //         '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-stop-circle" id="'+uuid+'-stap-icon"></i></td>'+
-            //         '<td width="25%">Configuration: <i class="fas fa-cog" title="Configuration" style="color: grey;" onclick="loadStapURL(\''+uuid+'\', \''+name+'\')"></i></td>'+
-            //     '</tr>'+
-            // '</table>'+
-            // '<div id="ports-table1"></div>&nbsp &nbsp &nbsp'+
-            // '<table width="100%">'+
-            //     '<tr>'+
-            //         '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
-            //         '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
-            //         '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i> &nbsp <i style="cursor: default; color: grey;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
-            //         '<td width="25%">ports: <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
-            //     '</tr>'+
-            // '</table>'+
-            // '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
-            // '<table width="100%">'+
-            //     '<tr>'+
-            //         '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
-            //         '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
-            //         '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
-            //         '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
-            //     '</tr>'+
-            // '</table>'+
-            // '<div id="ports-table3"></div>&nbsp &nbsp &nbsp'+
-            // '<table width="100%">'+
-            //     '<tr>'+
-            //         '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> STAP Collector </th>'+
-            //         '<td width="25%">Status: <i id="stap-collector-'+uuid+'">[N/A]</i></td>'+
-            //         '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-play-circle" title="Play collector" onclick="playCollector(\''+uuid+'\')"></i> <i class="fas fa-stop-circle" style="color: grey;" title="Stop collector" onclick="stopCollector(\''+uuid+'\')"></i></td>'+
-            //         '<td width="25%">Info: <i class="fas fa-info-circle" style="color: grey;" title="Collector information" id="show-collector-info"></i></td>'+
-            //     '</tr>'+
-            // '</table>'+
-            // '<div id="ports-table4"></div>'+
+            //socket->Network
+            '<p> <i class="fas fa-plug fa-lg"></i> Traffic from socket to network interface '+
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'socket-network\')">Add Socket->Network</button>'+
+            '</p>' +
+            '<div>'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th width="20%">Name</th>'+
+                        '<th width="20%">Port</th>'+
+                        '<th width="20%">Certificate</th>'+
+                        '<th width="20%">Interface</th>'+
+                        '<th width="20%">Actions</th>'+
+                    '</thead>'+
+                    '<tbody id="socket-network-table">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div><br><br>'+
+            //socket->PCAP
+            '<p> <i class="fas fa-plug fa-lg"></i> Traffic from socket to PCAP'+
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'socket-pcap\')">Add Socket->PCAP</button>'+
+            '</p>' +
+            '<div>'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th>Name</th>'+
+                        '<th>Port</th>'+
+                        '<th>Certificate</th>'+
+                        '<th>PCAP path</th>'+
+                        '<th>PCAP prefix</th>'+
+                        '<th>BPF</th>'+
+                        '<th>Actions</th>'+
+                    '</thead>'+
+                    '<tbody id="socket-pcap-table">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div><br><br>'+
+            //Network->Socket
+            '<p> <i class="fas fa-plug fa-lg"></i> Traffic from network interface to socket'+
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddSTAPModal(\''+uuid+'\', \'network-socket\')">Add Network->Socket</button>'+
+            '</p>' +
+            '<div>'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th>Name</th>'+
+                        '<th>Port</th>'+
+                        '<th>Certificate</th>'+
+                        '<th>Interface</th>'+
+                        '<th>Collector</th>'+
+                        '<th>BPF</th>'+
+                        '<th>Actions</th>'+
+                    '</thead>'+
+                    '<tbody id="network-socket-table">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div><br><br>'+
         '</span>'+
-    '</div>'+
-    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="flow-form-'+uuid+'" style="display:block"><br>'+
-            '<table style="width:100%" style="table-layout: fixed">'+
-            '<thead>'+
-            '<tr>                                                         ' +
-                '<th width="25%">Collect from</th>                                                  ' +
-                '<th width="25%">Analysis</th>                                          ' +
-                '<th width="25%">Transport</th>                                ' +
-                '<th width="25%">Info</th>                                ' +
-            '</tr>                                                        ' +
-            '</thead>                                                     ' +
-            '<tbody>                                                      ' +
-                '<tr>'+
-                '<td style="word-wrap: break-word;">'+
-                    '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'network\', \''+uuid+'\')" id="collect-network" name="network" value="network" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="loadNetworkValues(\''+uuid+'\')" style="color:grey;" title="Collector information"></i>'+
-                    '</div>'+
-                    '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-pcap\', \''+uuid+'\')" id="collect-socket-pcap" name="network" value="socket-pcap" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="collect-socket-pcap">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;" title="Collector information"></i>'+
-                    '</div>'+
-                    '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-network\', \''+uuid+'\')" id="collect-socket-network" name="network" value="socket-network" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="SocketToNetworkList(\''+uuid+'\')" style="color:grey;" title="Socket to Network information"></i>'+
-                    '</div>'+
-                    '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'pcap-network\', \''+uuid+'\')" id="collect-pcap-network" name="network" value="pcap-network" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;"title="Collector information"></i>'+
-                    '</div>'+
-                '</td>'+
-                '<td style="word-wrap: break-word;">'+
-                    '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changeDataflowValues(\'analysis\', \'value\', \'network\', \''+uuid+'\')" id="analysis-network" name="analysis" value="network" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="analysis-network">Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;"title="Collector information"></i>'+
-                    '</div>'+
-                    '<div class="custom-control custom-radio">'+
-                    '<input type="radio" onclick="changeDataflowValues(\'analysis\', \'value\', \'pcap\', \''+uuid+'\')" id="analysis-pcap" name="analysis" value="pcap" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="analysis-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;" title="Collector information"></i>'+
-                    '</div>'+
-                '</td>'+
-                '<td style="word-wrap: break-word;">'+
-                    '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowValues(\'transport\', \'value\', \'wazuh\', \''+uuid+'\')" id="transport-wazuh" name="transport" value="wazuh" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;" title="Collector information"></i>'+
-                    '</div>'+
-                '</td>'+
-                '<td style="word-wrap: break-word;"></td>'+
-                '</tr>'+
-            '</tbody>' +
-
-            '</table>'+
-        '</span>'+
-    '</div>'+
-    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'deploy\',\''+uuid+'\')"><b>Deploy</b> <i class="fas fa-sort-down" id="deploy-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="deploy-form-'+uuid+'" style="display:block"><br>'+
-            '<span style="font-size: 15px; color: Dodgerblue;">'+
-                '<p id="deploy-node-suricata"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Suricata &nbsp; | '+
-                '    <i class="fas fa-play-circle" title="Deploy Suricata" id="suricata-deploy-button" onclick="deployNode(\'suricata\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
-                '<p id="deploy-node-zeek"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Zeek &nbsp; | '+
-                '    <i class="fas fa-play-circle" title="Deploy Zeek" onclick="deployNode(\'zeek\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
-                '<p id="deploy-node-moloch"><i style="color: Dodgerblue;" class="fas fa-search"></i> &nbsp; Moloch &nbsp; | '+
-                '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deployNode(\'moloch\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
-                '<p id="deploy-node-interface"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; OwlH interface &nbsp; | '+
-                '    <i class="fas fa-play-circle" title="Deploy OwlH interface" onclick="deployNode(\'interface\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
-                '<p id="deploy-node-firewall"><i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> &nbsp; OwlH firewall &nbsp; | '+
-                '    <i class="fas fa-play-circle" title="Deploy OwlH firewall" onclick="deployNode(\'firewall\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
-            '</span>'+
-        '</span>' +
     '</div>';
+    // //traffic flow
+    // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+    //     '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
+    //     '<span id="flow-form-'+uuid+'" style="display:block"><br>'+
+    //         '<table style="width:100%" style="table-layout: fixed">'+
+    //         '<thead>'+
+    //         '<tr>                                                         ' +
+    //             '<th width="25%">Collect from</th>                                                  ' +
+    //             '<th width="25%">Analysis</th>                                          ' +
+    //             '<th width="25%">Transport</th>                                ' +
+    //             '<th width="25%">Info</th>                                ' +
+    //         '</tr>                                                        ' +
+    //         '</thead>                                                     ' +
+    //         '<tbody>                                                      ' +
+    //             '<tr>'+
+    //             '<td style="word-wrap: break-word;">'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                 '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'network\', \''+uuid+'\')" id="collect-network" name="network" value="network" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="loadNetworkValues(\''+uuid+'\')" style="color:grey;" title="Collector information"></i>'+
+    //                 '</div>'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                 '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-pcap\', \''+uuid+'\')" id="collect-socket-pcap" name="network" value="socket-pcap" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="collect-socket-pcap">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;" title="Collector information"></i>'+
+    //                 '</div>'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                 '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'socket-network\', \''+uuid+'\')" id="collect-socket-network" name="network" value="socket-network" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="SocketToNetworkList(\''+uuid+'\')" style="color:grey;" title="Socket to Network information"></i>'+
+    //                 '</div>'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                 '<input type="radio" onclick="changeDataflowValues(\'collect\', \'value\', \'pcap-network\', \''+uuid+'\')" id="collect-pcap-network" name="network" value="pcap-network" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;"title="Collector information"></i>'+
+    //                 '</div>'+
+    //             '</td>'+
+    //             '<td style="word-wrap: break-word;">'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                 '<input type="radio" onclick="changeDataflowValues(\'analysis\', \'value\', \'network\', \''+uuid+'\')" id="analysis-network" name="analysis" value="network" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="analysis-network">Network</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;"title="Collector information"></i>'+
+    //                 '</div>'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                 '<input type="radio" onclick="changeDataflowValues(\'analysis\', \'value\', \'pcap\', \''+uuid+'\')" id="analysis-pcap" name="analysis" value="pcap" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="analysis-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;" title="Collector information"></i>'+
+    //                 '</div>'+
+    //             '</td>'+
+    //             '<td style="word-wrap: break-word;">'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                     '<input type="radio" onclick="changeDataflowValues(\'transport\', \'value\', \'wazuh\', \''+uuid+'\')" id="transport-wazuh" name="transport" value="wazuh" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="loadEditURL(\''+uuid+'\', \'main.conf\', \''+name+'\')" style="color:grey;" title="Collector information"></i>'+
+    //                 '</div>'+
+    //             '</td>'+
+    //             '<td style="word-wrap: break-word;"></td>'+
+    //             '</tr>'+
+    //         '</tbody>' +
+
+    //         '</table>'+
+    //     '</span>'+
+    // '</div>'+
+    // //deploy
+    // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+    //     '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'deploy\',\''+uuid+'\')"><b>Deploy</b> <i class="fas fa-sort-down" id="deploy-form-icon-'+uuid+'"></i></h6>'+
+    //     '<span id="deploy-form-'+uuid+'" style="display:block"><br>'+
+    //         '<span style="font-size: 15px; color: Dodgerblue;">'+
+    //             '<p id="deploy-node-suricata"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Suricata &nbsp; | '+
+    //             '    <i class="fas fa-play-circle" title="Deploy Suricata" id="suricata-deploy-button" onclick="deployNode(\'suricata\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
+    //             '<p id="deploy-node-zeek"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; Zeek &nbsp; | '+
+    //             '    <i class="fas fa-play-circle" title="Deploy Zeek" onclick="deployNode(\'zeek\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
+    //             '<p id="deploy-node-moloch"><i style="color: Dodgerblue;" class="fas fa-search"></i> &nbsp; Moloch &nbsp; | '+
+    //             '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deployNode(\'moloch\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
+    //             '<p id="deploy-node-interface"><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> &nbsp; OwlH interface &nbsp; | '+
+    //             '    <i class="fas fa-play-circle" title="Deploy OwlH interface" onclick="deployNode(\'interface\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
+    //             '<p id="deploy-node-firewall"><i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> &nbsp; OwlH firewall &nbsp; | '+
+    //             '    <i class="fas fa-play-circle" title="Deploy OwlH firewall" onclick="deployNode(\'firewall\', \''+uuid+'\', \''+name+'\')"></i></p>                         ' +
+    //         '</span>'+
+    //     '</span>' +
+    // '</div>';
     document.getElementById('master-table-plugins').innerHTML = html;
 
-
-    // axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid)
-    // .then(function (response) {
-    //     if (response.data.ack){
-    //         document.getElementById('ports-table4').innerHTML = "No remote systems yet";
-    //     }else if(response.data){
-    //         var res = response.data.split("\n");
-    //         var html =
-    //         '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
-    //             '<thead>                                                      ' +
-    //                 '<th>Proto</th>                                             ' +
-    //                 '<th>RECV</th>                                             ' +
-    //                 '<th>SEND</th>                                             ' +
-    //                 '<th style="width: 25%">LOCAL IP</th>                                             ' +
-    //                 '<th style="width: 25%">REMOTE IP</th>                                             ' +
-    //                 '<th style="width: 15%">STATUS</th>                                             ' +
-    //                 '<th></th>                                             ' +
-    //             '</thead>                                                     ' +
-    //             '<tbody>                                                     '
-    //             for(line in res) {
-    //                 if (res[line] != ""){
-    //                     var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
-    //                     var lineSplited = vregex.exec(res[line]);
-    //                     html = html + '<tr><td>' +
-    //                     lineSplited[1]+
-    //                     '</td><td>     ' +
-    //                     lineSplited[2]+
-    //                     '</td><td>     ' +
-    //                     lineSplited[3]+
-    //                     '</td><td>     ' +
-    //                     lineSplited[4]+
-    //                     '</td><td>     ' +
-    //                     lineSplited[5]+
-    //                     '</td><td>     ' +
-    //                     lineSplited[6]+
-    //                     '</td><td>     ' +
-    //                     lineSplited[7]+
-    //                     '</td></tr>';
-    //                 }
-    //             }
-    //             html = html + '</tbody>'+
-    //         '</table>';
-    //         document.getElementById('ports-table4').innerHTML = html;
-    //     }
-    // })
-    // PingSuricata(uuid);
-    // PingZeek(uuid);
     PingWazuh(uuid);
-    // PingStap(uuid);
-    // PingAnalyzer(uuid);
     PingDataflow(uuid);
-    // PingCollector(uuid);
-    PingMonitor(uuid);
     PingPluginsNode(uuid);
     GetMainconfData(uuid);
     getCurrentRulesetName(uuid);
-    var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
@@ -384,181 +256,26 @@ function getCurrentRulesetName(uuid) {
         timeout: 30000
     })
     .then(function (response) {
+        console.log(response);
         axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
         })
         .then(function (response2) {
-            if(response2.data.ack){
+            if(response2.data.ack){                
                 document.getElementById('current-ruleset-options').innerHTML = "No ruleset selected...";
                 document.getElementById('current-ruleset-options').style.color = "red";
+                document.getElementById('current-ruleset').innerHTML = "No ruleset selected...";
+                document.getElementById('current-ruleset').style.color = "red";
             }else{
                 document.getElementById('current-ruleset-options').innerHTML = response2.data;
-                
+                document.getElementById('current-ruleset').innerHTML = response2.data;
             }
+            return response2;
         })
         .catch(function (error) {
         });
     })
     .catch(function (error) {
 
-    });
-}
-
-function PingMonitor(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/pingmonitor/' + uuid;
-    var html = "";
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-    .then(function (response) {
-        var CPUvalues = [];
-        var CPUpercentage = [];
-        for(x in response.data.cpus){
-            CPUvalues.push("CPU: "+x);
-            CPUpercentage.push(parseFloat(response.data.cpus[x].percentage).toFixed(2));
-        }
-
-        //CPU USE PERCENTAGE
-        var ctx_cpu = document.getElementById('myChartPercentage').getContext('2d');
-        var chart = new Chart(ctx_cpu, {
-            type: 'bar',
-
-            data: {
-                scaleOverride : true,
-                labels: CPUvalues,
-                datasets: [{
-                    label: 'CPU percentage usage',
-                    backgroundColor: 'rgb(36, 138, 216)',
-                    borderColor: 'rgb(208, 91, 91)',
-                    data: CPUpercentage
-                }]
-            },
-            options: {
-                animation: false,
-                layout: {padding: {left: 0,right: 50,top: 0,bottom: 0}},
-                responsive: true,
-                maintainAspectRatio: true,
-                // title: {
-                // 	display: true,
-                // 	text: 'Min and Max Settings'
-                // },
-                scales: {
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Percentage'
-                        },
-                        ticks: {
-                            beginAtZero: true,
-                            min: 0,
-                            max: 100,
-                        }
-                    }],
-                    xAxes: [{
-                        barPercentage: 0.3
-                    }]
-                }
-            }
-        });
-
-        //MEMORY STATS
-        var ctx_owlh = document.getElementById('myChartOwlh').getContext('2d');
-        var chart = new Chart(ctx_owlh, {
-            type: 'bar',
-            data: {
-                labels: ['Total alloc', 'alloc', 'gc', 'sys'],
-                datasets: [{
-                    label: 'MEMORY OwlH stats',
-                    backgroundColor: ['rgb(48,216,36)','rgb(216,150,36)','rgb(36,168,216)','rgb(216,36,54)'],
-                    borderColor: 'rgb(255, 255, 255)',
-                    data: [
-                            parseFloat(response.data.mem.totalalloc).toFixed(2),
-                            parseFloat(response.data.mem.alloc).toFixed(2),
-                            parseFloat(response.data.mem.gc).toFixed(2),
-                            parseFloat(response.data.mem.sys).toFixed(2)
-                        ],
-                    }
-                ],
-            },
-            options: {
-                animation: false,
-                responsive: true,
-                maintainAspectRatio: true,
-                layout: {padding: {left: 50,right: 0,top: 0,bottom: 0}},
-                scales: {
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Memory in MiB'
-                        },
-                        ticks: {
-                            beginAtZero: true,
-                            // min: 0,
-                            // max: 5000,
-                            // maxTicksLimit: 5
-                        }
-                    }]
-                }
-            }
-        });
-        //MEMORY STATS
-        var ctx_mem = document.getElementById('myChartMem').getContext('2d');
-        var chart = new Chart(ctx_mem, {
-            type: 'doughnut',
-            data: {
-                labels: ['MEMORY used', 'MEMORY free'],
-                datasets: [{
-                    label: 'MEMORY stats',
-                    backgroundColor: ['rgb(216,36,54)','rgb(48,216,36)'],
-                    borderColor: 'rgb(255, 255, 255)',
-                    data: [
-                        parseFloat(response.data.mem.usedmem).toFixed(2),
-                        parseFloat(response.data.mem.freemem).toFixed(2)
-                    ]
-                }]
-            },
-            options: {
-                animation: false,
-                layout: {padding: {left: 0,right: 50,top: 50,bottom: 0}},
-                responsive: true,
-                maintainAspectRatio: true,
-            }
-        });
-        //STORAGE STATS
-        var ctx_sto = document.getElementById('myChartSto').getContext('2d');
-        var chart = new Chart(ctx_sto, {
-            type: 'doughnut',
-            data: {
-                labels: ['STORAGE used','STORAGE free'],
-                datasets: [{
-                    label: 'STORAGE stats',
-                    backgroundColor: ['rgb(216,36,54)','rgb(48,216,36)'],
-                    borderColor: 'rgb(255, 255, 255)',
-                    data: [
-                        parseFloat(response.data.disk.useddisk).toFixed(2),
-                        parseFloat(response.data.disk.freedisk).toFixed(2)
-                    ]
-                }]
-            },
-            options: {
-                layout: {
-                    padding: {left: 50,right: 0,top: 50,bottom: 0}
-                },
-                animation: false,
-                responsive: true,
-                maintainAspectRatio: true,
-            }
-        });
-
-        ctx_cpu.render();
-        ctx_owlh.render();
-        ctx_mem.render();
-        ctx_sto.render();
-    })
-    .catch(function (error) {
     });
 }
 
@@ -1993,7 +1710,7 @@ function PingPluginsNode(uuid) {
                         }
                         tableSuricata = tableSuricata + '</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="current-ruleset-suricata-service"></td>'+
+                    '<td style="word-wrap: break-word;"></td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
@@ -2002,6 +1719,7 @@ function PingPluginsNode(uuid) {
                             tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
                         }
                         tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
+                        '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
                         '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
                         '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
@@ -2017,8 +1735,6 @@ function PingPluginsNode(uuid) {
                             tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
                         }
                         tableZeek = tableZeek + '</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["ruleset"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
                             tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
@@ -2026,8 +1742,27 @@ function PingPluginsNode(uuid) {
                             tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
                         }
                         tableZeek = tableZeek + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
+                        // '<i class="fas fa-file" style="color: grey;" onclick="loadNetworkValues(\''+uuid+'\')" id="collect-network" name="network" value="network"> &nbsp'+
+                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" style="color: red;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
-                    '</td>';
+                    '</td>'+
+                '</tr>'+
+                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                    '<td style="word-wrap: break-word;" colspan="3">'+
+                        '<div class="form-row">'+
+                            '<div class="col">'+
+                                'Name: <input class="form-control" id="zeek-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                            '</div>'+
+                            '<div class="col">'+
+                            '</div>'+
+                            '<div class="col">'+
+                                'Edit Interface: <i class="fas fa-file" style="color: grey;" onclick="loadNetworkValues(\''+uuid+'\')" id="collect-network" name="network" value="network"></i>  &nbsp'+
+                            '</div>'+
+                            '<div class="col">'+
+                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+    
+                            '</div>'+
+                        '</div>'+
+                    '</td>'+
                 '</tr>';
             }else if (response.data[line]["type"] == "socket-network"){                
                 tableSocketNetwork = tableSocketNetwork + '<tr>'+
@@ -2198,7 +1933,7 @@ function PingPluginsNode(uuid) {
             document.getElementById('zeek-table-services').innerHTML = tableZeek;
             document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
             document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
-            document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
+            document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;           
         }
     })
     .catch(function (error) {
@@ -2227,6 +1962,8 @@ function saveStapChanges(uuid, type, service){
         jsonDeployService["name"] = document.getElementById('socket-network-name-'+service).value;
         jsonDeployService["port"] = document.getElementById('socket-network-port-'+service).value;
         jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+service).value;
+    }else if (type == "zeek"){
+        jsonDeployService["name"] = document.getElementById('zeek-name-'+service).value;      
     }else if (type == "socket-pcap"){        
         jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+service).value;
         jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+service).value;
@@ -2239,6 +1976,7 @@ function saveStapChanges(uuid, type, service){
         jsonDeployService["cert"] = document.getElementById('network-socket-cert-'+service).value;
         jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value;
     }
+    console.log(jsonDeployService);
     var dataJSON = JSON.stringify(jsonDeployService);
 
     axios({

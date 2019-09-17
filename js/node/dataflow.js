@@ -50,8 +50,8 @@ function loadNetworkValues(uuid){
               '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
               if (response.data.ack != "false"){
                   html = html +
-                    '<button class="btn btn-success text-white" id="btn-load-all-new-local">New local</button>'+
-                    '<button class="btn btn-success text-white" id="btn-load-all-vxlan">New VxLAN</button>'+
+                    // '<button class="btn btn-success text-white" id="btn-load-all-new-local">New local</button>'+
+                    // '<button class="btn btn-success text-white" id="btn-load-all-vxlan">New VxLAN</button>'+
                     '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
               }
             html = html + '</div>'+
@@ -647,8 +647,6 @@ function SocketToNetworkList(uuid){
                 html = html + '</div>'+
 
                 '<div class="modal-footer">'+
-                    // '<button class="btn btn-secondary" type="button" data-dismiss="modal" id="btn-close-socket-network">Close</button>'+
-                    // '<button type="submit" class="btn btn-success" data-dismiss="modal" onclick="createSocketToNetwork(\''+uuid+'\')">Create</button>'+
                     '<button class="btn btn-secondary" type="button" id="btn-close-socket-network">Close</button>'+
                     '<button type="button" class="btn btn-success" id="btn-create-socket-network">Create</button>'+
                 '</div>'+
@@ -656,7 +654,6 @@ function SocketToNetworkList(uuid){
             '</div>'+
         '</div>';
                 
-        // $('#btn-close-socket-network').click(function(){ $('#socket-to-network-list').modal("toggle"); });
         document.getElementById('modal-window').innerHTML = html;
         $('#btn-close-socket-network').click(function(){ $('#modal-window').modal("hide");});
         $('#btn-create-socket-network').click(function(){ $('#socket-to-network-list').modal("hide"); createSocketToNetwork(uuid);});

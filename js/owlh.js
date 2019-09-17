@@ -212,7 +212,7 @@ function generateAllNodesHTMLOutput(response) {
             '</td>' +
             '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
                 '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
-                '<span id="details-'+uuid+'" class="badge bg-primary align-text-bottom text-white node-option-'+uuid+'" style="cursor: pointer;" onclick="ShowNodeDetails(\''+uuid+'\', \''+nodes[node]['name']+'\');">See details</span> <br>'+
+                // '<span id="details-'+uuid+'" class="badge bg-primary align-text-bottom text-white node-option-'+uuid+'" style="cursor: pointer;" onclick="ShowNodeDetails(\''+uuid+'\', \''+nodes[node]['name']+'\');">See details</span> <br>'+
                 '<span>'+
                     '<div><p></p></div>'+
                     '<div id="node-values-'+uuid+'">'+
@@ -225,10 +225,12 @@ function generateAllNodesHTMLOutput(response) {
             '<td></td>'+        
             '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+
                 '<span style="font-size: 15px; color: Dodgerblue;" >                            ' +
-                    '<i class="fas fa-arrow-alt-circle-down" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
-                    '<br><i class="fas fa-cogs" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node                            ' +
-                    '<br><i class="fas fa-cog" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
-                    '<br><i class="fas fa-trash-alt" style="color: red;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
+                    '<i class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring                            ' +
+                    '<br><i class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration                            ' +
+                    '<br><i class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node                            ' +
+                    '<br><i class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
+                    '<br><i class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
+                    '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
                 '</span>'+
             '</td> ' +
         '</tr>';
@@ -302,7 +304,12 @@ function deployNode(value,uuid,nodeName){
     });
 }
 
-function ShowNodeDetails(uuid, name){
+function ShowMonitoring(uuid, name){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/node-monitor.html?uuid='+uuid+'&node='+name;
+}
+
+function showServicesConfig(uuid, name){
     var ipmaster = document.getElementById('ip-master').value;
     document.location.href = 'https://' + ipmaster + '/node-options.html?uuid='+uuid+'&node='+name;
 }

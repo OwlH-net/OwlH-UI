@@ -52,7 +52,7 @@ function loadNetworkValues(uuid){
                   html = html +
                     // '<button class="btn btn-success text-white" id="btn-load-all-new-local">New local</button>'+
                     // '<button class="btn btn-success text-white" id="btn-load-all-vxlan">New VxLAN</button>'+
-                    '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
+                    '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
               }
             html = html + '</div>'+
 

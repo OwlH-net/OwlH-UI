@@ -31,7 +31,7 @@ function loadPlugins(){
                 '<div>'+
                     '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                         '<thead>'+
-                            '<th width="16%">Name</th>'+
+                            '<th width="16%">Description</th>'+
                             '<th width="16%">Status</th>'+
                             '<th width="16%">BPF</th>'+
                             '<th width="16%">Ruleset</th>'+
@@ -51,9 +51,10 @@ function loadPlugins(){
             '<div>'+
                     '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                         '<thead>'+
-                            '<th width="16%">Name</th>'+
-                            '<th width="16%">Status</th>'+
-                            '<th width="16%">Actions</th>'+
+                            '<th>Description</th>'+
+                            '<th>Status</th>'+
+                            '<th>Interface</th>'+
+                            '<th>Actions</th>'+
                         '</thead>'+
                         '<tbody id="zeek-table-services">'+
                         '</tbody>'+
@@ -81,7 +82,7 @@ function loadPlugins(){
             '<div>'+
                 '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                     '<thead>'+
-                        '<th width="20%">Name</th>'+
+                        '<th width="20%">Description</th>'+
                         '<th width="20%">Port</th>'+
                         '<th width="20%">Certificate</th>'+
                         '<th width="20%">Interface</th>'+
@@ -98,7 +99,7 @@ function loadPlugins(){
             '<div>'+
                 '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                     '<thead>'+
-                        '<th>Name</th>'+
+                        '<th>Description</th>'+
                         '<th>Port</th>'+
                         '<th>Certificate</th>'+
                         '<th>PCAP path</th>'+
@@ -117,7 +118,7 @@ function loadPlugins(){
             '<div>'+
                 '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                     '<thead>'+
-                        '<th>Name</th>'+
+                        '<th>Description</th>'+
                         '<th>Port</th>'+
                         '<th>Certificate</th>'+
                         '<th>Interface</th>'+
@@ -240,9 +241,30 @@ function ChangeMainServiceStatus(uuid, param, service){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -256,7 +278,6 @@ function getCurrentRulesetName(uuid) {
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response);
         axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
         })
         .then(function (response2) {
@@ -267,9 +288,19 @@ function getCurrentRulesetName(uuid) {
                 document.getElementById('current-ruleset').style.color = "red";
             }else{
                 document.getElementById('current-ruleset-options').innerHTML = response2.data;
-                document.getElementById('current-ruleset').innerHTML = response2.data;
+                // document.getElementById('current-ruleset').innerHTML = response2.data;
+                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid)
+                .then(function (response) {
+                    for (line in response.data){
+                        if (response.data[line]["type"] == "suricata"){
+                            document.getElementById('suricata-ruleset-'+line).innerHTML = response2.data;                            
+
+                        }
+                    }
+                })
+                .catch(function (error) {
+                });
             }
-            return response2;
         })
         .catch(function (error) {
         });
@@ -314,6 +345,15 @@ function GetMainconfData(uuid){
         }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -373,9 +413,30 @@ function ChangeAnalyzerStatus(uuid){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins()
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+response.data.error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -409,21 +470,11 @@ function deployNode(value,uuid,nodeName){
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> '+value+' deployed successfully for node '+nodeName+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
+        if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+value+' has not been deployed for node '+nodeName+'.'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -432,6 +483,15 @@ function deployNode(value,uuid,nodeName){
         }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -446,12 +506,32 @@ function StopSuricata(uuid) {
         timeout: 30000,
     })
         .then(function (response) {
-            // loadPlugins();
-            setTimeout(function (){
-                loadPlugins();
-            }, 1500);
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                setTimeout(function (){
+                    loadPlugins();
+                }, 1500);
+            }
         })
-        .catch(function error() {
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 
 }
@@ -560,7 +640,7 @@ function AddSTAPModal(uuid, type){
   document.getElementById('modal-window').innerHTML = html;
   
   $('#modal-window').modal("show");
-  $('#add-stap-modal').click(function(){ console.log(uuid); saveSoftwareTAP(uuid, type); });
+  $('#add-stap-modal').click(function(){ saveSoftwareTAP(uuid, type); });
   $('#add-stap-modal-close').click(function(){ $('#modal-window').modal("hide");});
   $('#add-stap-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
@@ -664,7 +744,6 @@ function saveSoftwareTAP(uuid, type){
         if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf').value;}
         if (type == "network-socket"){ jsonSave["collector"] = document.getElementById('soft-tap-collector').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-socket').value;}
         var dataJSON = JSON.stringify(jsonSave);
-        console.log(jsonSave);
         axios({
             method: 'put',
             url: nodeurl,
@@ -794,34 +873,36 @@ function syncRulesetModal(node, name){
 
       '<div class="modal-footer" id="sync-node-footer-btn">'+
         '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
-        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-sync-node" onclick="sendRulesetToNode(\''+node+'\')">sync</button>'+
+        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-sync-node">sync</button>'+
       '</div>'+
 
     '</div>'+
   '</div>';
+  $('#modal-window').modal("show");
+  $('#btn-sync-node').click(function(){ $('#modal-window').modal("hide"); sendRulesetToNode(node); });
 }
 
 function loadBPF(uuid, bpf, service, name){
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML = '<div class="modal-dialog">'+
-                '<div class="modal-content" >'+
+        '<div class="modal-content" >'+
 
-                    '<div class="modal-header" style="word-break: break-all;">'+
-                        '<h4 class="modal-title" id="bpf-header">'+name+' BPF</h4>'+
-                        '<button type="button" class="close" id="load-bpf-cross">&times;</button>'+
-                    '</div>'+
+            '<div class="modal-header" style="word-break: break-all;">'+
+                '<h4 class="modal-title" id="bpf-header">'+name+' BPF</h4>'+
+                '<button type="button" class="close" id="load-bpf-cross">&times;</button>'+
+            '</div>'+
 
-                    '<div class="modal-body" id="modal-footer-inputtext">'+
-                        '<input type="text" class="form-control" id="recipient-name" value="'+bpf+'">'+
-                    '</div>'+
+            '<div class="modal-body" id="modal-footer-inputtext">'+
+                '<input type="text" class="form-control" id="recipient-name" value="'+bpf+'">'+
+            '</div>'+
 
-                    '<div class="modal-footer" id="modal-footer-btn">'+
-                        '<button type="button" class="btn btn-secondary" id="load-bpf-close">Close</button>'+
-                        '<button type="submit" class="btn btn-primary" id="load-bpf-save">Save</button>'+
-                    '</div>'+
+            '<div class="modal-footer" id="modal-footer-btn">'+
+                '<button type="button" class="btn btn-secondary" id="load-bpf-close">Close</button>'+
+                '<button type="submit" class="btn btn-primary" id="load-bpf-save">Save</button>'+
+            '</div>'+
 
-                '</div>'+
-            '</div>';
+        '</div>'+
+    '</div>';
 
     $('#modal-window').modal("show");
     $('#load-bpf-cross').click(function(){ $('#modal-window').modal("hide"); });
@@ -847,10 +928,31 @@ function saveBPF(uuid, value, service){
       data: bpfjson
     })
       .then(function (response) {
-          loadPlugins();
-      })
-      .catch(function (error) {
-      });
+        if (response.data.error == "false"){
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+response.data.error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
 }
 
 function loadRuleset(uuid){
@@ -924,10 +1026,30 @@ function deployZeek(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        return true;
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Error deploying Zeek: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }
     })
     .catch(function (error) {
-        return false;
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Error deploying Zeek: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }
     });
 }
 
@@ -979,11 +1101,30 @@ function saveRuleSelected(rule, nid){
         data: uidJSON
     })
         .then(function (response) {
-            loadPlugins();
-            return true;
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         })
-            .catch(function (error) {
-            return false;
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 
@@ -1156,9 +1297,30 @@ function ChangeStatus(uuid){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins()
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -1185,9 +1347,30 @@ function ChangeMode(uuid){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins()
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -1367,14 +1550,34 @@ function RunSuricata(uuid) {
         //httpsAgent: agent,
         timeout: 30000
     })
-        .then(function (response) {
-            // loadPlugins();
+    .then(function (response) {
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
             setTimeout(function (){
                 loadPlugins();
             }, 1500);
-        })
-        .catch(function error() {
-        });
+        }
+    })
+    .catch(function error(error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);        
+    });
 
 }
 
@@ -1389,12 +1592,32 @@ function StopSuricata(uuid) {
         timeout: 30000,
     })
         .then(function (response) {
-            // loadPlugins();
-            setTimeout(function (){
-                loadPlugins();
-            }, 1500);
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                setTimeout(function (){
+                    loadPlugins();
+                }, 1500);
+            }
         })
-        .catch(function error() {
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);   
         });
 
 }
@@ -1452,11 +1675,31 @@ function RunZeek(uuid) {
         timeout: 30000
     })
     .then(function (response) {
-        setTimeout(function (){
-            loadPlugins();
-        }, 1500);
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            setTimeout(function (){
+                loadPlugins();
+            }, 1500);
+        }
     })
-    .catch(function error() {
+    .catch(function error(error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
     });
 
 }
@@ -1472,11 +1715,33 @@ function StopZeek(uuid) {
         timeout: 30000,
     })
     .then(function (response) {
-        setTimeout(function (){
-            loadPlugins();
-        }, 1500);
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            setTimeout(function (){
+                loadPlugins();
+            }, 1500);
+        }
     })
-    .catch(function error() {
+    .catch(function error(error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        
     });
 
 }
@@ -1534,8 +1799,32 @@ function RunWazuh(uuid) {
         timeout: 30000
     })
         .then(function (response) {
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                setTimeout(function (){
+                    loadPlugins();
+                }, 1500);
+            }
         })
-        .catch(function error() {
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 
     loadPlugins();
@@ -1552,12 +1841,32 @@ function StopWazuh(uuid) {
         timeout: 30000,
     })
     .then(function (response) {
-
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
             setTimeout(function (){
                 loadPlugins();
             }, 1500);
+        }
     })
-    .catch(function error() {
+    .catch(function error(error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -1613,11 +1922,32 @@ function RunStap(uuid) {
         timeout: 30000
     })
     .then(function (response) {
-        setTimeout(function (){
-            loadPlugins();
-        }, 1500);
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            // setTimeout(function (){
+                loadPlugins();
+            // }, 1500);
+        }
     })
-    .catch(function error() {
+    .catch(function error(error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -1632,11 +1962,32 @@ function StopStap(uuid) {
         timeout: 30000,
     })
     .then(function (response) {
-        setTimeout(function (){
-            loadPlugins();
-        }, 1500);
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            // setTimeout(function (){
+                loadPlugins();
+            // }, 1500);
+        }
     })
-    .catch(function error() {
+    .catch(function error(error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -1710,15 +2061,15 @@ function PingPluginsNode(uuid) {
                         }
                         tableSuricata = tableSuricata + '</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;"></td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
+                    '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'"></td>';
+                    tableSuricata = tableSuricata + '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
                             tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
                             tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
                         }
-                        tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
+                        tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                         '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
                         '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
                         '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
@@ -1735,6 +2086,7 @@ function PingPluginsNode(uuid) {
                             tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
                         }
                         tableZeek = tableZeek + '</td>'+
+                    '<td style="word-wrap: break-word;" id="zeek-interface-col"></td>'+
                     '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
                             tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
@@ -1742,32 +2094,46 @@ function PingPluginsNode(uuid) {
                             tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
                         }
                         tableZeek = tableZeek + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
-                        // '<i class="fas fa-file" style="color: grey;" onclick="loadNetworkValues(\''+uuid+'\')" id="collect-network" name="network" value="network"> &nbsp'+
                         '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" style="color: red;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                     '</td>'+
                 '</tr>'+
                 '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="3">'+
+                    '<td style="word-wrap: break-word;" colspan="4">'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Name: <input class="form-control" id="zeek-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                'Description: <input class="form-control" id="zeek-name-'+line+'" value="'+response.data[line]["name"]+'">'+
                             '</div>'+
                             '<div class="col">'+
                             '</div>'+
                             '<div class="col">'+
-                                'Edit Interface: <i class="fas fa-file" style="color: grey;" onclick="loadNetworkValues(\''+uuid+'\')" id="collect-network" name="network" value="network"></i>  &nbsp'+
+                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\')" name="network" value="network"></i>  &nbsp'+
+                                '<input class="form-control" type="text" id="zeek-interface" value="" disabled>'+
                             '</div>'+
                             '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+    
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+    
+                                    '</div>'+
+                                '</div>'+
+                                '<br>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+
                 '</tr>';
+                
             }else if (response.data[line]["type"] == "socket-network"){                
                 tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'-'+response.data[line]["pid"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    '<td style="word-wrap: break-word;">';
+                        if (response.data[line]["pid"] == "none"){
+                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                        }else{
+                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                        }
+                    tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
@@ -1776,8 +2142,7 @@ function PingPluginsNode(uuid) {
                         }else if (response.data[line]["pid"] != "none"){
                             tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
                         }                        
-                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
-                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
                 '</tr>'+
@@ -1785,7 +2150,7 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;" colspan="4">'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Name: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
                             '</div>'+
                             '<div class="col">'+
                                 'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
@@ -1796,6 +2161,7 @@ function PingPluginsNode(uuid) {
                                 'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                             '</div>'+
                             '<div class="col">'+
+                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+
@@ -1815,8 +2181,13 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }else if (response.data[line]["type"] == "socket-pcap"){
                 tableSocketPcap = tableSocketPcap + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'-'+response.data[line]["pid"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    '<td style="word-wrap: break-word;">';
+                    if (response.data[line]["pid"] == "none"){
+                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                    }else{
+                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                    }
+                    tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
@@ -1827,16 +2198,15 @@ function PingPluginsNode(uuid) {
                         }else if (response.data[line]["pid"] != "none"){
                             tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
                         }
-                        tableSocketPcap = tableSocketPcap + '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
-                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
                 '</tr>'+
                 '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="7">'+
+                    '<td style="word-wrap: break-word;" colspan="6">'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Name: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
                             '</div>'+
                             '<div class="col">'+
                                 'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
@@ -1855,6 +2225,7 @@ function PingPluginsNode(uuid) {
                                 'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                             '</div>'+
                             '<div class="col">'+
+                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+
@@ -1874,8 +2245,13 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }else if (response.data[line]["type"] == "network-socket"){
                 tableNetworkSocket = tableNetworkSocket + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'-'+response.data[line]["pid"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    '<td style="word-wrap: break-word;">';
+                    if (response.data[line]["pid"] == "none"){
+                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                    }else{
+                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                    }
+                    tableNetworkSocket = tableNetworkSocket + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
@@ -1886,9 +2262,7 @@ function PingPluginsNode(uuid) {
                         }else if (response.data[line]["pid"] != "none"){
                             tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
                         }
-                        tableNetworkSocket = tableNetworkSocket + '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+                        
-                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> &nbsp'+
+                        tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
                 '</tr>'+
@@ -1896,7 +2270,7 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;" colspan="6">'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Name: <input class="form-control" id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                'Description: <input class="form-control" id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'">'+
                             '</div>'+
                             '<div class="col">'+
                                 'Port: <input class="form-control" id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'">'+
@@ -1910,6 +2284,14 @@ function PingPluginsNode(uuid) {
                             '</div>'+
                             '<div class="col">'+
                                 'Certificate: <input class="form-control" id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="form-row">'+
+                            '<div class="col">'+
+                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\')"></i> <input class="form-control" id="network-socket-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                            '</div>'+
+                            '<div class="col">'+
+                                'BPF: <i class="fas fa-edit" title="BPF" style="cursor: default; color: Dodgerblue;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> <input class="form-control" id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+
@@ -1933,10 +2315,52 @@ function PingPluginsNode(uuid) {
             document.getElementById('zeek-table-services').innerHTML = tableZeek;
             document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
             document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
-            document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;           
+            document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
+            
         }
+
+        axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid)
+        .then(function (response) {
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                for (net in response.data){    
+                    document.getElementById('zeek-interface-col').innerHTML = response.data[net]["interface"];                                            
+                    document.getElementById('zeek-interface').value = response.data[net]["interface"];                            
+                }
+            }
+        })
+        .catch(function (error){
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+    
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -1975,8 +2399,7 @@ function saveStapChanges(uuid, type, service){
         jsonDeployService["port"] = document.getElementById('network-socket-port-'+service).value;
         jsonDeployService["cert"] = document.getElementById('network-socket-cert-'+service).value;
         jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value;
-    }
-    console.log(jsonDeployService);
+    }    
     var dataJSON = JSON.stringify(jsonDeployService);
 
     axios({
@@ -1986,9 +2409,30 @@ function saveStapChanges(uuid, type, service){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -2043,9 +2487,30 @@ function deployStapService(uuid, service, collector,port,interface, type){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -2067,9 +2532,30 @@ function stopStapService(uuid, service, type){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -2090,9 +2576,30 @@ function deleteService(uuid, server){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -2128,10 +2635,30 @@ function ChangeServiceStatus(uuid, server, param, status, interface, bpf, type){
             data: dataJSON
         })
         .then(function (response) {
-
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         })
         .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
     }
 }
@@ -2145,23 +2672,22 @@ function PingAnalyzer(uuid) {
         url: nodeurl,
         timeout: 30000
     })
-        .then(function (response) {
-            if (response.data["status"] == "Enabled"){
-                document.getElementById('analyzer-status-'+uuid).innerHTML = "ON";
-                document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-stop-circle";
-                document.getElementById('analyzer-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-            }else{
-                document.getElementById('analyzer-status-'+uuid).innerHTML = "OFF";
-                document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-play-circle";
-                document.getElementById('analyzer-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-            }
-            return true;
-        })
-        .catch(function (error) {
+    .then(function (response) {
+        if (response.data["status"] == "Enabled"){
+            document.getElementById('analyzer-status-'+uuid).innerHTML = "ON";
+            document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-stop-circle";
+            document.getElementById('analyzer-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+        }else{
+            document.getElementById('analyzer-status-'+uuid).innerHTML = "OFF";
+            document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-play-circle";
+            document.getElementById('analyzer-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+        }
+        return true;
+    })
+    .catch(function (error) {
 
-            return false;
-        });
-    return false;
+        return false;
+    });
 }
 
 function loadNetworkValuesService(uuid, name, service){
@@ -2179,7 +2705,7 @@ function loadNetworkValuesService(uuid, name, service){
           '<div class="modal-content">'+
 
             '<div class="modal-header" style="word-break: break-all;">'+
-              '<h4 class="modal-title" id="delete-node-header">Suricata '+name+' interface</h4>'+
+              '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
               '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
             '</div>'+
 
@@ -2212,42 +2738,43 @@ function loadNetworkValuesService(uuid, name, service){
             html = html + '</div>'+
 
             '<div class="modal-footer" id="delete-node-footer-btn">'+
-                '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>'+
-                '<button type="button" class="btn btn-primary" id="btn-select-interface-save">Select</button>'+
+                '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
+                    if (response.data.ack != "false"){
+                        html = html +
+                        '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
+                    }
+                html = html + '</div>'+
             '</div>'+
 
           '</div>'+
         '</div>';
 
         document.getElementById('modal-window').innerHTML = html;
+        LoadNetworkValuesSelected(uuid);
+
         $('#modal-window').modal("show");
         $('#btn-select-interface-cross').click(function(){ $('#modal-window').modal("hide"); });
-        $('#btn-select-interface-close').click(function(){ $('#modal-window').modal("hide"); });
-        $('#btn-select-interface-save').click(function(){ $('#modal-window').modal("hide"); saveSuricataInterface(uuid, name, service)});
-
+        $('#btn-select-interface-close').click(function(){ $('#modal-window').modal("hide"); });        
     })
     .catch(function (error) {
     });
 }
-
-function saveSuricataInterface(uuid, name, service){
+function updateNetworkInterface(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/saveSuricataInterface';
-
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/updateNetworkInterface';
     var valueSelected = "";
     $('input:radio:checked').each(function() {
-        if($(this).attr('class') == 'suricata-interface'){
+        idRadio = $(this).prop("id");
+        if (idRadio == "net-value-"+$(this).prop("value")){
             valueSelected = $(this).prop("value");
         }
     });
-
-    var jsonSuricataInterface = {}
-    jsonSuricataInterface["uuid"] = uuid;
-    jsonSuricataInterface["service"] = service;
-    jsonSuricataInterface["interface"] = valueSelected;
-    jsonSuricataInterface["param"] = "interface";
-    var dataJSON = JSON.stringify(jsonSuricataInterface);
+    var jsonDeploy = {}
+    jsonDeploy["value"] = valueSelected;
+    jsonDeploy["param"] = "interface";
+    jsonDeploy["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonDeploy);
     axios({
         method: 'put',
         url: nodeurl,

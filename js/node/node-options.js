@@ -259,7 +259,7 @@ function ChangeMainServiceStatus(uuid, param, service){
         $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+error+'.'+
+                '<strong>Error!</strong> Change main service status: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -349,7 +349,7 @@ function GetMainconfData(uuid){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Get main conf data'+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -418,7 +418,7 @@ function ChangeAnalyzerStatus(uuid){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Change analyzer status: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -432,7 +432,7 @@ function ChangeAnalyzerStatus(uuid){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+response.data.error+'.'+
+            '<strong>Error!</strong>  Change analyzer status: '+response.data.error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -475,7 +475,7 @@ function deployNode(value,uuid,nodeName){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Deploy node: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -487,7 +487,7 @@ function deployNode(value,uuid,nodeName){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Deploy node: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -511,7 +511,7 @@ function StopSuricata(uuid) {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<strong>Error!</strong> Stop Suricata: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -527,7 +527,7 @@ function StopSuricata(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+error+'.'+
+                '<strong>Error!</strong> Stop Suricata: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -756,7 +756,7 @@ function saveSoftwareTAP(uuid, type){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> '+type+' service added successfully!'+
+                    '<strong>Success!</strong> Save STAP: '+type+' service added successfully!'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -766,7 +766,7 @@ function saveSoftwareTAP(uuid, type){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error adding service: </strong>'+response.data.error+''+
+                    '<strong>Error adding service: Save STAP: </strong>'+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -779,7 +779,7 @@ function saveSoftwareTAP(uuid, type){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error adding service: </strong>'+error+''+
+                '<strong>Error adding service: Save STAP: </strong>'+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -809,7 +809,7 @@ function AddPluginService(uuid, name, type){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> '+type+' service added successfully!'+
+                '<strong>Success!</strong> Add plugin service: '+type+' service added successfully!'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -819,7 +819,7 @@ function AddPluginService(uuid, name, type){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error adding Suricata service: </strong>'+response.data.error+''+
+                '<strong>Error!</strong> Add plugin service: '+response.data.error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -832,7 +832,7 @@ function AddPluginService(uuid, name, type){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error adding Suricata service: </strong>'+error+''+
+            '<strong>Error!</strong> Add plugin service: '+error+''+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -884,7 +884,6 @@ function syncRulesetModal(node, name){
 }
 
 function loadBPF(uuid, bpf, service, name, type){
-    console.log(bpf);
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML = '<div class="modal-dialog">'+
         '<div class="modal-content" >'+
@@ -945,7 +944,7 @@ function saveBPF(uuid, value, service, type){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+response.data.error+'.'+
+            '<strong>Error!</strong> Save BPF: '+response.data.error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -959,7 +958,7 @@ function saveBPF(uuid, value, service, type){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Save BPF: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -1118,21 +1117,22 @@ function saveRuleSelected(rule, nid){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<strong>Error!</strong> Save Ruleset: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
-                loadPlugins();
+                // loadPlugins();
+                // document.getElementById('floating-alert'). value = 
             }
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+error+'.'+
+                '<strong>Error!</strong> Save Ruleset: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1314,7 +1314,7 @@ function ChangeStatus(uuid){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Change status: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1328,7 +1328,7 @@ function ChangeStatus(uuid){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Change status: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -1364,7 +1364,7 @@ function ChangeMode(uuid){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Change mode: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1378,7 +1378,7 @@ function ChangeMode(uuid){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Change mode: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -1531,7 +1531,7 @@ function sendRulesetToNode(uuid){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Ruleset Error! </strong>'+response.data.error+''+
+                '<strong>Ruleset Error!</strong> Deploy ruleset: '+response.data.error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1543,7 +1543,7 @@ function sendRulesetToNode(uuid){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong>'+response.data.error+''+
+                '<strong>Error!</strong> Deploy ruleset: '+response.data.error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1568,7 +1568,7 @@ function RunSuricata(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Run suricata: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1584,7 +1584,7 @@ function RunSuricata(uuid) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Run suricata'+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -1609,7 +1609,7 @@ function StopSuricata(uuid) {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<strong>Error!</strong> Stop Suricata: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -1625,7 +1625,7 @@ function StopSuricata(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+error+'.'+
+                '<strong>Error!</strong> Stop Suricata: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1692,7 +1692,7 @@ function RunZeek(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Run Zeek: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1708,7 +1708,7 @@ function RunZeek(uuid) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Run Zeek: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -1732,7 +1732,7 @@ function StopZeek(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Stop Zeek: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1748,7 +1748,7 @@ function StopZeek(uuid) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Stop Zeek: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -1816,7 +1816,7 @@ function RunWazuh(uuid) {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<strong>Error!</strong> Run Wazuh: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -1832,7 +1832,7 @@ function RunWazuh(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+error+'.'+
+                '<strong>Error!</strong> Run Wazuh: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1858,7 +1858,7 @@ function StopWazuh(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Stop Wazuh: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1874,7 +1874,7 @@ function StopWazuh(uuid) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Stop Wazuh: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -1939,7 +1939,7 @@ function RunStap(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Run STAP: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1955,7 +1955,7 @@ function RunStap(uuid) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Run STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -1979,7 +1979,7 @@ function StopStap(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Stop STAP: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -1995,7 +1995,7 @@ function StopStap(uuid) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Stop STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -2068,9 +2068,9 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
                     '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
                         if(response.data[line]["status"]=="enabled"){
-                            tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
+                            tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
+                            tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                         }
                         tableSuricata = tableSuricata + '</td>'+
                     '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
@@ -2384,7 +2384,7 @@ function PingPluginsNode(uuid) {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<strong>Error!</strong> Load interfaces: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -2392,16 +2392,17 @@ function PingPluginsNode(uuid) {
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 for (net in response.data){    
-                    document.getElementById('zeek-interface-col').innerHTML = response.data[net]["interface"];                                            
+                    // document.getElementById('zeek-interface-col').innerHTML = response.data[net]["interface"];                                            
                     document.getElementById('zeek-interface').value = response.data[net]["interface"];                            
                 }
             }
         })
         .catch(function (error){
+            console.log(error);
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+error+'.'+
+                '<strong>Error!</strong> Load interfaces: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -2414,7 +2415,7 @@ function PingPluginsNode(uuid) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Ping Plugins: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -2474,7 +2475,7 @@ function saveStapChanges(uuid, type, service){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Save STAP Changes: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -2488,7 +2489,7 @@ function saveStapChanges(uuid, type, service){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Save STAP Changes: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -2553,7 +2554,7 @@ function deployStapService(uuid, service, collector,port,interface, type){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -2567,7 +2568,7 @@ function deployStapService(uuid, service, collector,port,interface, type){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Deploy STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -2598,7 +2599,7 @@ function stopStapService(uuid, service, type){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Stop STAP: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -2612,7 +2613,7 @@ function stopStapService(uuid, service, type){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Stop STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -2642,7 +2643,7 @@ function deleteService(uuid, server){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
+                '<strong>Error!</strong> Delete service: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -2656,7 +2657,7 @@ function deleteService(uuid, server){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+error+'.'+
+            '<strong>Error!</strong> Delete service: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -2670,7 +2671,7 @@ function ChangeServiceStatus(uuid, server, param, status, interface, bpf, type){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Suricata deployment Error! </strong> Please, assign an interface and a BPF for deploy a suricata service.'+
+            '<strong>Error!</strong> Please, assign an interface and a BPF for deploy a suricata service.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -2701,7 +2702,7 @@ function ChangeServiceStatus(uuid, server, param, status, interface, bpf, type){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<strong>Error!</strong> Change Service Status: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -2715,7 +2716,7 @@ function ChangeServiceStatus(uuid, server, param, status, interface, bpf, type){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+error+'.'+
+                '<strong>Error!</strong> Change Service Status: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+

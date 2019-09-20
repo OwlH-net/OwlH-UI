@@ -48,7 +48,6 @@ function loadPlugins(){
     document.getElementById('master-table-plugins').innerHTML = html;
 
     PingMonitor(uuid);
-    GetMainconfData(uuid);
     var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});

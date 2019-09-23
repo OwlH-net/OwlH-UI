@@ -2763,7 +2763,7 @@ function PingAnalyzer(uuid) {
         return true;
     })
     .catch(function (error) {
-
+        console.log(error);
         return false;
     });
 }

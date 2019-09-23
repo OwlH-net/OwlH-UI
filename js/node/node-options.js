@@ -131,6 +131,19 @@ function loadPlugins(){
                 '</table>'+
             '</div><br><br>'+
         '</span>'+
+    '</div>'+
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'analyzer\',\''+uuid+'\')"><b>Analyzer</b> <i class="fas fa-sort-down" id="analyzer-form-icon-'+uuid+'"></i></h6>'+
+        '<span id="analyzer-form-'+uuid+'" style="display:block"><br>'+
+            '<table width="100%">'+
+                '<tr>'+
+                    '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
+                    '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
+                    '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
+                '</tr>'+
+            '</table>'+
+        '</span>'+
     '</div>';
     // //traffic flow
     // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -209,6 +222,7 @@ function loadPlugins(){
     document.getElementById('master-table-plugins').innerHTML = html;
 
     PingWazuh(uuid);
+    PingAnalyzer(uuid);
     PingDataflow(uuid);
     PingPluginsNode(uuid);
     GetMainconfData(uuid);
@@ -2391,9 +2405,10 @@ function PingPluginsNode(uuid) {
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
-                for (net in response.data){    
-                    // document.getElementById('zeek-interface-col').innerHTML = response.data[net]["interface"];                                            
-                    document.getElementById('zeek-interface').value = response.data[net]["interface"];                            
+                if (document.getElementById('zeek-interface') != null){
+                    for (net in response.data){                                                        
+                        document.getElementById('zeek-interface').value = response.data[net]["interface"];                            
+                    }
                 }
             }
         })
@@ -2837,8 +2852,8 @@ function updateNetworkInterface(uuid, type){
         }
     });
 
-    document.getElementById('zeek-interface-'+service).value = value;
-    document.getElementById('zeek-interface-default'+service).innerHTML = value;
+    // document.getElementById('zeek-interface-'+service).value = value;
+    document.getElementById('zeek-interface-default').innerHTML = value;
 
 
     var jsonDeploy = {}

@@ -24,7 +24,7 @@ function loadPlugins(){
             //suricata
             '<p><img src="img/suricata.png" alt="" width="30">'      +           
                 '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
-                '<b>&nbsp | <span style="cursor: default;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
+                '<b>&nbsp | <span style="cursor: default;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
                 '</span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
@@ -981,7 +981,7 @@ function saveBPF(uuid, value, service, type){
     });
 }
 
-function loadRuleset(uuid){
+function loadRuleset(uuid, source, service){
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML =
     '<div class="modal-dialog modal-lg">'+
@@ -1009,7 +1009,7 @@ function loadRuleset(uuid){
           if (typeof response.data.error != "undefined"){
               resultElement.innerHTML = '<p>No rules available...</p>';
           }else{
-              resultElement.innerHTML = generateAllRulesModal(response, uuid);
+              resultElement.innerHTML = generateAllRulesModal(response, uuid, source, service);
           }
     })
     .catch(function (error) {
@@ -1079,7 +1079,7 @@ function deployZeek(uuid){
     });
 }
 
-function generateAllRulesModal(response, nid) {
+function generateAllRulesModal(response, nid, source, service) {
     var rules = response.data;
     var isEmpty = true;
     var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -1098,7 +1098,7 @@ function generateAllRulesModal(response, nid) {
         '</td><td style="word-wrap: break-word;">                                                            ' +
         rules[rule]["desc"]                                                     +
         '</td><td style="word-wrap: break-word;" width="15%">                                                ' +
-        '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
+        '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\', \''+source+'\', \''+rules[rule]["name"]+'\', \''+service+'\' )">Select</button>        ' +
         '</td></tr>                                                           '
     }
     html = html + '</tbody></table>';
@@ -1111,7 +1111,7 @@ function generateAllRulesModal(response, nid) {
 }
 
 
-function saveRuleSelected(rule, nid){
+function saveRuleSelected(rule, nid, source, name, service){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
@@ -1137,12 +1137,16 @@ function saveRuleSelected(rule, nid){
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                // loadPlugins();
-                // document.getElementById('floating-alert'). value = 
+            }
+            if (source == "main"){
+                loadPlugins();
+            }else if (source == "service"){
+                console.log('suricata-ruleset-edit-'+service);
+                document.getElementById('suricata-ruleset-edit-'+service).value = name;
             }
         })
         .catch(function (error) {
+            console.log(error);
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -2118,7 +2122,7 @@ function PingPluginsNode(uuid) {
                         '</div>'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')"></i>'+
+                                'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
                                 '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="" disabled>'+
                             '</div>'+
                             '<div class="col">'+
@@ -2763,7 +2767,6 @@ function PingAnalyzer(uuid) {
         return true;
     })
     .catch(function (error) {
-        console.log(error);
         return false;
     });
 }

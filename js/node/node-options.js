@@ -563,8 +563,8 @@ function AddServiceModal(uuid, type){
       '</div>'+
 
       '<div class="modal-body">'+
-        '<p>Insert name for the new '+type+' service:</p>'+
-        '<input type="text" class="form-control" id="new-service-name">'+
+        '<p>Insert a description for the new '+type+' service:</p>'+
+        '<input type="text" class="form-control" id="new-service-name" value="" required>'+
       '</div>'+
 
       '<div class="modal-footer" id="sync-node-footer-btn">'+
@@ -575,7 +575,7 @@ function AddServiceModal(uuid, type){
     '</div>'+
   '</div>';
   $('#modal-window').modal("show");
-  $('#add-service-modal').click(function(){ $('#modal-window').modal("hide"); AddPluginService(uuid, document.getElementById('new-service-name').value, type); });
+  $('#add-service-modal').click(function(){ AddPluginService(uuid, document.getElementById('new-service-name').value, type); });
   $('#add-service-modal-close').click(function(){ $('#modal-window').modal("hide");});
   $('#add-service-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
@@ -799,55 +799,61 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
 }
 
 function AddPluginService(uuid, name, type){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/add';
-    var newSuriData = {}
-    newSuriData["uuid"] = uuid;
-    newSuriData["name"] = name;
-    newSuriData["type"] = type;
-    var dataMap = JSON.stringify(newSuriData);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataMap
-    })
-    .then(function (response) {
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> Add plugin service: '+type+' service added successfully!'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
+    if (name == ""){        
+        document.getElementById('new-service-name').placeholder = "Please, inserta a description";
+        document.getElementById('new-service-name').required = "true";
+    }else{
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/add';
+        var newSuriData = {}
+        newSuriData["uuid"] = uuid;
+        newSuriData["name"] = name;
+        newSuriData["type"] = type;
+        var dataMap = JSON.stringify(newSuriData);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataMap
+        })
+        .then(function (response) {            
+            $('#modal-window').modal("hide");
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Add plugin service: '+type+' service added successfully!'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Add plugin service: '+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
+            loadPlugins();
+        })
+        .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Add plugin service: '+response.data.error+''+
+                '<strong>Error!</strong> Add plugin service: '+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }
-        loadPlugins();
-    })
-    .catch(function (error) {
-        $('html,body').scrollTop(0);
-        var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> Add plugin service: '+error+''+
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                '<span aria-hidden="true">&times;</span>'+
-            '</button>'+
-        '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
-    });
+        });
+    }
 }
 
 // function GetSuricataServices(uuid){

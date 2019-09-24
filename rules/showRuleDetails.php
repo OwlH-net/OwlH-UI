@@ -24,10 +24,10 @@
         <img class="mr-3" src="../img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
                 href="../nodes.html"><small>Master </small><i class="text-warning" id="menu-title"
                 ></i> | </a>    
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
                 aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-            </button>
+            </button> -->
         
         
             <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">

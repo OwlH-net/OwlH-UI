@@ -2155,7 +2155,7 @@ function PingPluginsNode(uuid) {
                             tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
                         }
                         tableZeek = tableZeek + '</td>'+
-                    '<td style="word-wrap: break-word;" id="zeek-interface-default"></td>'+
+                    '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
                             tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
@@ -2176,8 +2176,8 @@ function PingPluginsNode(uuid) {
                             '<div class="col">'+
                             '</div>'+
                             '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \'-\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
-                                '<input class="form-control" type="text" id="zeek-interface" value="" disabled>'+
+                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
+                                '<input class="form-control" type="text" id="zeek-interface-config" value="" disabled>'+
                             '</div>'+
                             '<div class="col">'+
                                 '<div class="form-row text-center">'+
@@ -2822,7 +2822,7 @@ function loadNetworkValuesService(uuid, name, service, type){
                 '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
                     if (response.data.ack != "false"){
                         if(type == "zeek"){
-                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\')">Deploy</button>';
+                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\', \''+service+'\')">Deploy</button>';
                         }else {
                             html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="saveSuricataInterface(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Deploy</button>';
                         }                        
@@ -2843,7 +2843,7 @@ function loadNetworkValuesService(uuid, name, service, type){
     .catch(function (error) {
     });
 }
-function updateNetworkInterface(uuid, type){
+function updateNetworkInterface(uuid, type, service){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/updateNetworkInterface';
@@ -2856,13 +2856,14 @@ function updateNetworkInterface(uuid, type){
     });
 
     // document.getElementById('zeek-interface-'+service).value = value;
-    document.getElementById('zeek-interface-default').innerHTML = value;
+    document.getElementById('zeek-interface-config').value = valueSelected;
+    document.getElementById('zeek-interface-default').innerHTML = valueSelected;
 
 
     var jsonDeploy = {}
     jsonDeploy["value"] = valueSelected;
-    jsonDeploy["param"] = "interface";
     jsonDeploy["uuid"] = uuid;
+    jsonDeploy["service"] = service;
     var dataJSON = JSON.stringify(jsonDeploy);
     axios({
         method: 'put',

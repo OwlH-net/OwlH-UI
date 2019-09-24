@@ -2150,9 +2150,9 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
                     '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
                         if(response.data[line]["status"]=="enabled"){
-                            tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">Enabled</span>';
+                            tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">Disabled</span>';
+                            tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                         }
                         tableZeek = tableZeek + '</td>'+
                     '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
@@ -2162,8 +2162,7 @@ function PingPluginsNode(uuid) {
                         }else if (response.data[line]["status"]=="disabled"){
                             tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
                         }
-                        tableZeek = tableZeek + '<i class="fas fa-sync-alt" style="color: grey;"></i> &nbsp'+
-                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" style="color: red;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                     '</td>'+
                 '</tr>'+
@@ -2822,9 +2821,9 @@ function loadNetworkValuesService(uuid, name, service, type){
                 '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
                     if (response.data.ack != "false"){
                         if(type == "zeek"){
-                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\', \''+service+'\')">Deploy</button>';
+                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\', \''+service+'\')">Save</button>';
                         }else {
-                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="saveSuricataInterface(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Deploy</button>';
+                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="saveSuricataInterface(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Save</button>';
                         }                        
                     }
                 html = html + '</div>'+

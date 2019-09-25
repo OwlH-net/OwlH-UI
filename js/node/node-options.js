@@ -2523,7 +2523,7 @@ function saveStapChanges(uuid, type, service){
     });
 }
 
-function ModalDeleteService(uuid, server, type, name){
+function ModalDeleteService(uuid, service, type, name){
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML =
     '<div class="modal-dialog modal-md">'+
@@ -2546,7 +2546,7 @@ function ModalDeleteService(uuid, server, type, name){
       '</div>'+
     '</div>';
     $('#modal-window').modal("show");
-    $('#delete-service-ok').click(function(){ $('#modal-window').modal("hide"); deleteService(uuid, server); });
+    $('#delete-service-ok').click(function(){ $('#modal-window').modal("hide"); deleteService(uuid, service); });
     $('#delete-service-cross').click(function(){ $('#modal-window').modal("hide");});
     $('#delete-service-close').click(function(){ $('#modal-window').modal("hide");});
 }
@@ -2647,14 +2647,14 @@ function stopStapService(uuid, service, type){
     });
 }
 
-function deleteService(uuid, server){
+function deleteService(uuid, service){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deleteService';
 
     var jsonDeleteService = {}
     jsonDeleteService["uuid"] = uuid;
-    jsonDeleteService["server"] = server;
+    jsonDeleteService["service"] = service;
     var dataJSON = JSON.stringify(jsonDeleteService);
 
     axios({
@@ -2691,7 +2691,7 @@ function deleteService(uuid, server){
     });
 }
 
-function ChangeServiceStatus(uuid, server, param, status, interface, bpf, type){
+function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type){
     if (type == "suricata" && (interface == "" || bpf == "")){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
@@ -2711,7 +2711,7 @@ function ChangeServiceStatus(uuid, server, param, status, interface, bpf, type){
         jsonChangeService["uuid"] = uuid;
         jsonChangeService["status"] = status;
         jsonChangeService["param"] = param;
-        jsonChangeService["server"] = server;
+        jsonChangeService["service"] = service;
         jsonChangeService["type"] = type;
         jsonChangeService["interface"] = interface;
         var dataJSON = JSON.stringify(jsonChangeService);

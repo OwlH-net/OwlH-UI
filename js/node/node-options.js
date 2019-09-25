@@ -2465,6 +2465,7 @@ function saveStapChanges(uuid, type, service){
         jsonDeployService["name"] = document.getElementById('socket-network-name-'+service).value;
         jsonDeployService["port"] = document.getElementById('socket-network-port-'+service).value;
         jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+service).value;
+        jsonDeployService["interface"] = document.getElementById('socket-network-interface-'+service).value;
     }else if (type == "suricata"){
         jsonDeployService["name"] = document.getElementById('suricata-name-'+service).value;      
     }else if (type == "zeek"){
@@ -2475,11 +2476,14 @@ function saveStapChanges(uuid, type, service){
         jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+service).value;
         jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+service).value;
         jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+service).value;
+        jsonDeployService["bpf"] = document.getElementById('socket-pcap-bpf-'+service).value;
     }else if (type == "network-socket"){
         jsonDeployService["name"] = document.getElementById('network-socket-name-'+service).value;
         jsonDeployService["port"] = document.getElementById('network-socket-port-'+service).value;
         jsonDeployService["cert"] = document.getElementById('network-socket-cert-'+service).value;
         jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value;
+        jsonDeployService["interface"] = document.getElementById('network-socket-interface-'+service).value;
+        jsonDeployService["bpf"] = document.getElementById('network-socket-bpf-'+service).value;
     }    
     var dataJSON = JSON.stringify(jsonDeployService);
 
@@ -2500,6 +2504,8 @@ function saveStapChanges(uuid, type, service){
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
+            
+            loadPlugins();
         }else{
             loadPlugins();
         }

@@ -144,6 +144,20 @@ function loadPlugins(){
                 '</tr>'+
             '</table>'+
         '</span>'+
+    '</div>'+
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'knownports\',\''+uuid+'\')"><b>Knownports</b> <i class="fas fa-sort-down" id="knownports-form-icon-'+uuid+'"></i></h6>'+
+        '<span id="knownports-form-'+uuid+'" style="display:block"><br>'+
+            '<table width="100%">'+
+                '<tr>'+
+                    '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
+                    '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')">status</i></td>'+
+                    '<td width="25%">Mode: <i style="cursor: default; color: grey;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
+                    '<td width="25%">Ports: <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
+                '</tr>'+
+            '</table>'+
+        '</span>'+
     '</div>';
     // //traffic flow
     // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -223,6 +237,7 @@ function loadPlugins(){
 
     PingWazuh(uuid);
     PingAnalyzer(uuid);
+    PingPorts(uuid);
     PingDataflow(uuid);
     PingPluginsNode(uuid);
     GetMainconfData(uuid);
@@ -1304,6 +1319,38 @@ function PingCollector(uuid){
     .catch(function (error) {
         return false;
     });
+}
+
+function PingPorts(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPorts/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+        .then(function (response) {
+            for(line in response.data){
+                console.log(response.data)
+                if (response.data[line]["status"] == "Enabled"){
+                    document.getElementById('ports-status-'+uuid).innerHTML = "ON";
+                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
+                    document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+                }else if (response.data[line]["status"] == "Disabled"){
+                    document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
+                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
+                    document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+                }
+                document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+            }
+            return true;
+        })
+        .catch(function (error) {
+            
+            return false;            
+        });
+    return false;
 }
 
 function ChangeStatus(uuid){

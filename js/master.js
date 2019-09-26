@@ -93,85 +93,85 @@ function loadPlugins(){
                 '</div><br><br>'+            
             '</span>'+
         '</span>'+
-    '</div>'+
-
-    '<div class="my-3 p-3 bg-white rounded shadow-sm" id="flow-form-master">'+
-    '<h6 class="border-bottom border-gray pb-2 mb-0" onclick="showActions(\'flow\')"><b>Flow <i class="fas fa-sort-down" id="flow-form-icon"></i></b></h6>'+
-    '<span style="display:block" id="flow-form-span"><br>'+
-        '<br>'+
-            '<table style=" width: 100%;height: 100%;">'+
-            '<thead>'+
-            '<tr>                                                         ' +
-                '<th>Collect from</th>                                                  ' +
-                '<th>Analysis</th>                                          ' +
-                '<th>Transport</th>                                ' +
-                '<th>Info</th>                                ' +
-            '</tr>                                                        ' +
-            '</thead>                                                     ' +
-            '<tbody>                                                      ' +
-                '<tr>'+
-                '<td style="word-wrap: break-word;">'+
-                    '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'network\')" id="collect-network" name="collect-type" value="network" class="custom-control-input">'+
-                        // '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-master" onclick="loadNetworkValues()" style="color:grey;" title="Interface information"></i>'+
-                        '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="loadNetworkValues()" style="color:grey;" title="Interface information"></i>'+
-                    '</div>'+
-                    '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'socket-pcap\')" id="collect-socket-pcap" name="collect-type" value="socket-pcap" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="collect-socket-pcap">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Interface information"></i>'+
-                    '</div>'+
-                    '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'socket-network\')" id="collect-socket-network" name="collect-type" value="socket-network" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Interface information"></i>'+
-                    '</div>'+
-                    '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'pcap-network\')" id="collect-pcap-network" name="collect-type" value="pcap-network" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Interface information"></i>'+
-                    '</div>'+
-                '</td>'+
-                '<td style="word-wrap: break-word;">'+
-                    '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowStatus(\'analysis\', \'value\', \'network\')" id="analysis-network" name="analysis-type" value="network" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="analysis-network">Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Analysis information"></i>'+
-                    '</div>'+
-                    '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowStatus(\'analysis\', \'value\', \'pcap\')" id="analysis-pcap" name="analysis-type" value="pcap" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="analysis-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Analysis information"></i>'+
-                    '</div>'+
-                '</td>'+
-                '<td style="word-wrap: break-word;">'+
-                    '<div class="custom-control custom-radio">'+
-                        '<input type="radio" onclick="changeDataflowStatus(\'transport\', \'value\', \'wazuh\')" id="transport-wazuh" name="transport-type" value="wazuh" class="custom-control-input">'+
-                        '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Transport information"></i>'+
-                    '</div>'+                    
-                '</td>'+
-                '<td style="word-wrap: break-word;"></td>'+
-                '</tr>'+
-            '</tbody>' +
-                
-            '</table>'+
-        '</span>'+
-    '</div>'+
-
-
-    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" onclick="showActions(\'deploy\')"><b>Deploy <i class="fas fa-sort-down" id="deploy-form-icon"></i></b></h6>'+
-        '<span style="display:block" id="deploy-form-span"><br>'+
-            '<br>'+
-            '<p><i style="color: Dodgerblue;" class="fas fa-search"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Moloch &nbsp; | '+
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deployMaster(\'moloch\')"></i>                         ' +
-            '  </span></p> '+
-            '<p><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> <span style="font-size: 15px; color: Grey;">&nbsp; OwlH interface &nbsp; | '+
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <i class="fas fa-play-circle" title="Deploy interface" onclick="deployMaster(\'interface\')"></i>                         ' +
-            '  </span></p> '+
-            '<p><i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> <span style="font-size: 15px; color: Grey;">&nbsp; OwlH firewall &nbsp; | '+
-            '  <span style="font-size: 15px; color: grey;">                                   ' +
-            '    <i class="fas fa-play-circle" title="Deploy firewall" onclick="deployMaster(\'firewall\')"></i>                         ' +
-            '</span></p> '+
-        '</span>'+
     '</div>';
+
+    // '<div class="my-3 p-3 bg-white rounded shadow-sm" id="flow-form-master">'+
+    // '<h6 class="border-bottom border-gray pb-2 mb-0" onclick="showActions(\'flow\')"><b>Flow <i class="fas fa-sort-down" id="flow-form-icon"></i></b></h6>'+
+    // '<span style="display:block" id="flow-form-span"><br>'+
+    //     '<br>'+
+    //         '<table style=" width: 100%;height: 100%;">'+
+    //         '<thead>'+
+    //         '<tr>                                                         ' +
+    //             '<th>Collect from</th>                                                  ' +
+    //             '<th>Analysis</th>                                          ' +
+    //             '<th>Transport</th>                                ' +
+    //             '<th>Info</th>                                ' +
+    //         '</tr>                                                        ' +
+    //         '</thead>                                                     ' +
+    //         '<tbody>                                                      ' +
+    //             '<tr>'+
+    //             '<td style="word-wrap: break-word;">'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                     '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'network\')" id="collect-network" name="collect-type" value="network" class="custom-control-input">'+
+    //                     // '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" data-toggle="modal" data-target="#modal-master" onclick="loadNetworkValues()" style="color:grey;" title="Interface information"></i>'+
+    //                     '<label class="custom-control-label" for="collect-network">Network</label> <i class="fas fa-info-circle" onclick="loadNetworkValues()" style="color:grey;" title="Interface information"></i>'+
+    //                 '</div>'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                     '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'socket-pcap\')" id="collect-socket-pcap" name="collect-type" value="socket-pcap" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="collect-socket-pcap">Socket -> PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Interface information"></i>'+
+    //                 '</div>'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                     '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'socket-network\')" id="collect-socket-network" name="collect-type" value="socket-network" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="collect-socket-network">Socket -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Interface information"></i>'+
+    //                 '</div>'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                     '<input type="radio" onclick="changeDataflowStatus(\'collect\', \'value\', \'pcap-network\')" id="collect-pcap-network" name="collect-type" value="pcap-network" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="collect-pcap-network">PCAP -> Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Interface information"></i>'+
+    //                 '</div>'+
+    //             '</td>'+
+    //             '<td style="word-wrap: break-word;">'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                     '<input type="radio" onclick="changeDataflowStatus(\'analysis\', \'value\', \'network\')" id="analysis-network" name="analysis-type" value="network" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="analysis-network">Network</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Analysis information"></i>'+
+    //                 '</div>'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                     '<input type="radio" onclick="changeDataflowStatus(\'analysis\', \'value\', \'pcap\')" id="analysis-pcap" name="analysis-type" value="pcap" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="analysis-pcap">PCAP</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Analysis information"></i>'+
+    //                 '</div>'+
+    //             '</td>'+
+    //             '<td style="word-wrap: break-word;">'+
+    //                 '<div class="custom-control custom-radio">'+
+    //                     '<input type="radio" onclick="changeDataflowStatus(\'transport\', \'value\', \'wazuh\')" id="transport-wazuh" name="transport-type" value="wazuh" class="custom-control-input">'+
+    //                     '<label class="custom-control-label" for="transport-wazuh">Wazuh</label> <i class="fas fa-info-circle" onclick="showMasterFile(\'main\')" style="color:grey;" title="Transport information"></i>'+
+    //                 '</div>'+                    
+    //             '</td>'+
+    //             '<td style="word-wrap: break-word;"></td>'+
+    //             '</tr>'+
+    //         '</tbody>' +
+                
+    //         '</table>'+
+    //     '</span>'+
+    // '</div>'+
+
+
+    // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+    //     '<h6 class="border-bottom border-gray pb-2 mb-0" onclick="showActions(\'deploy\')"><b>Deploy <i class="fas fa-sort-down" id="deploy-form-icon"></i></b></h6>'+
+    //     '<span style="display:block" id="deploy-form-span"><br>'+
+    //         '<br>'+
+    //         '<p><i style="color: Dodgerblue;" class="fas fa-search"></i> <span style="font-size: 15px; color: Grey;">&nbsp; Moloch &nbsp; | '+
+    //         '  <span style="font-size: 15px; color: grey;">                                   ' +
+    //         '    <i class="fas fa-play-circle" title="Deploy Moloch" onclick="deployMaster(\'moloch\')"></i>                         ' +
+    //         '  </span></p> '+
+    //         '<p><i style="color: Dodgerblue;" class="fas fa-project-diagram"></i> <span style="font-size: 15px; color: Grey;">&nbsp; OwlH interface &nbsp; | '+
+    //         '  <span style="font-size: 15px; color: grey;">                                   ' +
+    //         '    <i class="fas fa-play-circle" title="Deploy interface" onclick="deployMaster(\'interface\')"></i>                         ' +
+    //         '  </span></p> '+
+    //         '<p><i style="color: Dodgerblue;" class="fas fa-traffic-light"></i> <span style="font-size: 15px; color: Grey;">&nbsp; OwlH firewall &nbsp; | '+
+    //         '  <span style="font-size: 15px; color: grey;">                                   ' +
+    //         '    <i class="fas fa-play-circle" title="Deploy firewall" onclick="deployMaster(\'firewall\')"></i>                         ' +
+    //         '</span></p> '+
+    //     '</span>'+
+    // '</div>';
 
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/showMasterCollector')
     .then(function (response) {

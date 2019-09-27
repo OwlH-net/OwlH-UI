@@ -44,7 +44,7 @@ function loadPlugins(){
             '<table width="100%">'+
                 '<tr>'+
                     '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-random"></i> Dispatcher</td>'+
-                    '<td width="25%">Status: <i style="color: grey;" class="fas fa-angle-double-down" id="dispatcher-status"></i></td>'+
+                    '<td width="25%">Status: <span id="dispatcher-status"></span></td>'+
                     '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i> </td>'+
                     '<td width="25%">Dispatcher nodes: <i style="color: grey;" class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i></td>'+
                 '</tr>'+       
@@ -549,13 +549,17 @@ function PingPlugins(){
                 if (response.data[line]["status"] == "enabled"){
                     document.getElementById(line+'-status').style.color = "green";
                     document.getElementById(line+'-status').value = "disabled";
-                    document.getElementById(line+'-button').className = "fas fa-stop-circle";
+                    document.getElementById(line+'-status').className = "badge bg-success align-text-bottom text-white";
+                    document.getElementById(line+'-status').innerHTML = "ON";
                     document.getElementById(line+'-button').title = "Stop "+line;
+                    document.getElementById(line+'-button').className = "fas fa-stop-circle";
                 }else if (response.data[line]["status"] == "disabled"){
                     document.getElementById(line+'-status').style.color = "red";
-                    document.getElementById(line+'-button').className = "fas fa-play-circle";
+                    document.getElementById(line+'-status').className = "badge bg-danger align-text-bottom text-white";
+                    document.getElementById(line+'-status').innerHTML = "OFF";
                     document.getElementById(line+'-status').value = "enabled";
                     document.getElementById(line+'-button').title = "Play "+line;
+                    document.getElementById(line+'-button').className = "fas fa-play-circle";
                 }
             }else if (response.data[line]["type"] == "socket-network"){                
                 tableSocketNetwork = tableSocketNetwork + '<tr>'+

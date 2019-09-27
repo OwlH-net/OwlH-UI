@@ -1332,7 +1332,6 @@ function PingPorts(uuid) {
     })
         .then(function (response) {
             for(line in response.data){
-                console.log(response.data)
                 if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
@@ -2464,7 +2463,6 @@ function PingPluginsNode(uuid) {
             }
         })
         .catch(function (error){
-            console.log(error);
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -2896,6 +2894,7 @@ function loadNetworkValuesService(uuid, name, service, type){
     .catch(function (error) {
     });
 }
+
 function updateNetworkInterface(uuid, type, service){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;

@@ -17,8 +17,8 @@ function loadPlugins(){
     '</div>'+
 
     '<div class="my-3 p-3 bg-white rounded shadow-sm" >'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" onclick="showActions(\'plugins\')"><b> Plugins <i class="fas fa-sort-down" id="plugins-form-icon"></i></b></h6>'+
-        '<span id="plugins-form-span">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0" onclick="showActions(\'dispatcher\')"><b> Dispatcher <i class="fas fa-sort-down" id="dispatcher-form-icon"></i></b></h6>'+
+        '<span id="dispatcher-form-span">'+
             '<br>'+
         //     '<p><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> <span style="font-size: 15px; color: Grey;">&nbsp; STAP Collector &nbsp; | </span> <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i> | '+
         //     '  <span style="font-size: 15px; color: grey;">                                   ' +
@@ -32,15 +32,15 @@ function loadPlugins(){
         //     '    <i class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i>                         ' +
         //     '    <i class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i>  ' +
         //     '  </span></p> '+
-            '<table width="100%">'+
-                '<tr>'+
-                    '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> STAP Collector</td>'+
-                    '<td width="25%">Status: <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i></td>'+
-                    '<td width="25%">Start/Stop: <i class="fas fa-play-circle" style="color: grey;"  title="Play collector" onclick="playMasterCollector()"></i> <i class="fas fa-stop-circle" style="color: grey;" title="Stop collector" onclick="stopMasterCollector()"></i></td>'+
-                    '<td width="25%">Information: <i class="fas fa-info-circle" style="color: grey;" title="Collector information" onclick="showMasterCollector()"></i></td>'+
-                '</tr>'+       
-            '</table>'+
-            '<div id="ports-table1"></div>&nbsp &nbsp &nbsp'+
+            // '<table width="100%">'+
+            //     '<tr>'+
+            //         '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-plug fa-lg"></i> STAP Collector</td>'+
+            //         '<td width="25%">Status: <i class="fas fa-compress-arrows-alt" id="master-collector-status"></i></td>'+
+            //         '<td width="25%">Start/Stop: <i class="fas fa-play-circle" style="color: grey;"  title="Play collector" onclick="playMasterCollector()"></i> <i class="fas fa-stop-circle" style="color: grey;" title="Stop collector" onclick="stopMasterCollector()"></i></td>'+
+            //         '<td width="25%">Information: <i class="fas fa-info-circle" style="color: grey;" title="Collector information" onclick="showMasterCollector()"></i></td>'+
+            //     '</tr>'+       
+            // '</table>'+
+            // '<div id="ports-table1"></div>&nbsp &nbsp &nbsp'+
             '<table width="100%">'+
                 '<tr>'+
                     '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-random"></i> Dispatcher</td>'+
@@ -49,7 +49,7 @@ function loadPlugins(){
                     '<td width="25%">Dispatcher nodes: <i style="color: grey;" class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i></td>'+
                 '</tr>'+       
             '</table>'+
-            '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
+            // '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
         '</div>'+
 
         '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -62,7 +62,7 @@ function loadPlugins(){
                 '<div>'+
                     '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                         '<thead>'+
-                            '<th width="20%">Name</th>'+
+                            '<th width="20%">Description</th>'+
                             '<th width="20%">Port</th>'+
                             '<th width="20%">Certificate</th>'+
                             '<th width="20%">Interface</th>'+
@@ -79,7 +79,7 @@ function loadPlugins(){
                 '<div>'+
                     '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                         '<thead>'+
-                            '<th>Name</th>'+
+                            '<th>Description</th>'+
                             '<th>Port</th>'+
                             '<th>Certificate</th>'+
                             '<th>PCAP path</th>'+
@@ -173,54 +173,54 @@ function loadPlugins(){
     //     '</span>'+
     // '</div>';
 
-    axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/showMasterCollector')
-    .then(function (response) {
-        if (response.data.ack){
-            document.getElementById('ports-table').innerHTML = "No remote systems yet";
-        }else if(response.data){
-            var res = response.data.split("\n");
-            var html =                         
-            '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
-                '<thead>                                                      ' +
-                    '<th>Proto</th>                                             ' +
-                    '<th>RECV</th>                                             ' +
-                    '<th>SEND</th>                                             ' +
-                    '<th style="width: 25%">LOCAL IP</th>                                             ' +
-                    '<th style="width: 25%">REMOTE IP</th>                                             ' +
-                    '<th style="width: 15%">STATUS</th>                                             ' +
-                    '<th></th>                                             ' +
-                '</thead>                                                     ' +
-                '<tbody>                                                     '
-                for(line in res) {
-                    if (res[line] != ""){
-                        var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
-                        var lineSplited = vregex.exec(res[line]);
-                        html = html + '<tr><td>' +
-                        lineSplited[1]+
-                        '</td><td>     ' +
-                        lineSplited[2]+
-                        '</td><td>     ' +
-                        lineSplited[3]+
-                        '</td><td>     ' +
-                        lineSplited[4]+
-                        '</td><td>     ' +
-                        lineSplited[5]+
-                        '</td><td>     ' +
-                        lineSplited[6]+
-                        '</td><td>     ' +
-                        lineSplited[7]+
-                        '</td></tr>';
-                    }
-                }                
-                html = html + '</tbody>'+
-            '</table>';
-            document.getElementById('ports-table1').innerHTML = html;
-            document.getElementById('ports-table2').innerHTML = html;
-        }
-    });
+    // axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/showMasterCollector')
+    // .then(function (response) {
+    //     if (response.data.ack){
+    //         document.getElementById('ports-table').innerHTML = "No remote systems yet";
+    //     }else if(response.data){
+    //         var res = response.data.split("\n");
+    //         var html =                         
+    //         '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
+    //             '<thead>                                                      ' +
+    //                 '<th>Proto</th>                                             ' +
+    //                 '<th>RECV</th>                                             ' +
+    //                 '<th>SEND</th>                                             ' +
+    //                 '<th style="width: 25%">LOCAL IP</th>                                             ' +
+    //                 '<th style="width: 25%">REMOTE IP</th>                                             ' +
+    //                 '<th style="width: 15%">STATUS</th>                                             ' +
+    //                 '<th></th>                                             ' +
+    //             '</thead>                                                     ' +
+    //             '<tbody>                                                     '
+    //             for(line in res) {
+    //                 if (res[line] != ""){
+    //                     var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
+    //                     var lineSplited = vregex.exec(res[line]);
+    //                     html = html + '<tr><td>' +
+    //                     lineSplited[1]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[2]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[3]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[4]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[5]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[6]+
+    //                     '</td><td>     ' +
+    //                     lineSplited[7]+
+    //                     '</td></tr>';
+    //                 }
+    //             }                
+    //             html = html + '</tbody>'+
+    //         '</table>';
+    //         document.getElementById('ports-table1').innerHTML = html;
+    //         document.getElementById('ports-table2').innerHTML = html;
+    //     }
+    // });
 
-    PingCollector();
-    PingDataflow();
+    // PingCollector();
+    // PingDataflow();
     PingPlugins();
     PingServiceMaster();
 }
@@ -486,8 +486,7 @@ function PingServiceMaster(){
         url: nodeurl,
         timeout: 30000
     })
-    .then(function (response) {
-        console.log(response.data.ack);
+    .then(function (response) {        
         if (response.data.ack == "true"){
             document.getElementById('owlhMasterService').style.display = "none";
         }else {
@@ -544,131 +543,140 @@ function PingPlugins(){
         url: nodeurl,
         timeout: 30000
     })
-    .then(function (response) {        
-        var plugins = response.data;
-        for (plugin in plugins){
-            
-            if (plugin == "dispatcher"){
-                if (plugins[plugin]["status"] == "enabled"){
-                    document.getElementById(plugin+'-status').style.color = "green";
-                    document.getElementById(plugin+'-status').value = "disabled";
-                    document.getElementById(plugin+'-button').className = "fas fa-stop-circle";
-                    document.getElementById(plugin+'-button').title = "Stop "+plugin;
-                }else if (plugins[plugin]["status"] == "disabled"){
-                    document.getElementById(plugin+'-status').style.color = "red";
-                    document.getElementById(plugin+'-button').className = "fas fa-play-circle";
-                    document.getElementById(plugin+'-status').value = "enabled";
-                    document.getElementById(plugin+'-button').title = "Play "+plugin;
+    .then(function (response) {   
+        for (line in response.data){
+            if (line == "dispatcher"){
+                if (response.data[line]["status"] == "enabled"){
+                    document.getElementById(line+'-status').style.color = "green";
+                    document.getElementById(line+'-status').value = "disabled";
+                    document.getElementById(line+'-button').className = "fas fa-stop-circle";
+                    document.getElementById(line+'-button').title = "Stop "+line;
+                }else if (response.data[line]["status"] == "disabled"){
+                    document.getElementById(line+'-status').style.color = "red";
+                    document.getElementById(line+'-button').className = "fas fa-play-circle";
+                    document.getElementById(line+'-status').value = "enabled";
+                    document.getElementById(line+'-button').title = "Play "+line;
                 }
-            }else if (plugins[plugin]["type"] == "socket-network"){                
-            tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["name"]+'-'+response.data[plugin]["pid"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["port"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["cert"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["interface"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';                
-                        if (response.data[plugin]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey;" onclick="DeployStapServiceMaster(\''+plugin+'\',\'socket-network\')"></i> &nbsp';
-                        }else if (response.data[plugin]["pid"] != "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey;" onclick="StopStapServiceMaster(\''+plugin+'\', \'socket-network\')"></i> &nbsp';
+            }else if (response.data[line]["type"] == "socket-network"){                
+                tableSocketNetwork = tableSocketNetwork + '<tr>'+
+                    '<td style="word-wrap: break-word;">';
+                        if (response.data[line]["pid"] == "none"){
+                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                        }else{
+                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                        }                    
+                    tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                    '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                    '<td style="word-wrap: break-word;">';
+                        if (response.data[line]["pid"] == "none"){
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
+                        }else if (response.data[line]["pid"] != "none"){
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey;" onclick="StopStapServiceMaster(\''+line+'\', \'socket-network\')"></i> &nbsp';
                         }                        
-                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-file" style="color:grey;" title="Socket to network '+response.data[plugin]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkStapValues(\''+plugin+'\')"></i> &nbsp'+
-                        '<i class="fas fa-edit" id="modify-stap-'+plugin+'" style="color:grey;" onclick="showModifyStap(\''+plugin+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+plugin+'\', \'socket-network\', \''+response.data[plugin]["name"]+'\')" style="color: red;"></i>'+
+
+                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+                        
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
                 '</tr>'+
-                '<tr width="100%" id="edit-row-'+plugin+'" style="display:none;" bgcolor="peachpuff">'+
+                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
                     '<td style="word-wrap: break-word;" colspan="4">'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Name: <input class="form-control" id="socket-network-name-'+plugin+'" value="'+response.data[plugin]["name"]+'">'+
+                                'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
                             '</div>'+
                             '<div class="col">'+
-                                'Port: <input class="form-control" id="socket-network-port-'+plugin+'" value="'+response.data[plugin]["port"]+'">'+
+                                'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
                             '</div>'+
                         '</div>'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Certificate: <input class="form-control" id="socket-network-cert-'+plugin+'" value="'+response.data[plugin]["cert"]+'">'+
+                                'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                             '</div>'+
                             '<div class="col">'+
+                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+response.data[line]["name"]+'\', \''+line+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+
                     '<td style="word-wrap: break-word;" >'+
                         '<div class="form-row text-center">'+
                             '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+plugin+'" onclick="hideEditStap(\''+plugin+'\')">Cancel</button>'+
+                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
                             '</div>'+
                         '</div>'+
                         '<br>'+
                         '<div class="form-row text-center">'+
                             '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+plugin+'" onclick="saveStapChanges( \'socket-network\', \''+plugin+'\')">Save</button>'+    
+                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-network\', \''+line+'\')">Save</button>'+    
                             '</div>'+
                         '</div>'+
                     '</td>'+
                 '</tr>';
-            
-            }else if (plugins[plugin]["type"] == "socket-pcap"){                
+
+            }else if (response.data[line]["type"] == "socket-pcap"){                
                 tableSocketPcap = tableSocketPcap + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["name"]+'-'+response.data[plugin]["pid"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["port"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["cert"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["pcap-path"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["pcap-prefix"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[plugin]["bpf"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
-                        if (response.data[plugin]["pid"] == "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;" onclick="DeployStapServiceMaster( \''+plugin+'\',\'socket-pcap\')"></i> &nbsp';
-                        }else if (response.data[plugin]["pid"] != "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey;" onclick="StopStapServiceMaster( \''+plugin+'\', \'socket-pcap\')"></i> &nbsp';
-                        }                        
-                        tableSocketPcap = tableSocketPcap + '<i title="BPF" style="cursor: default;" onclick="loadBPF( \''+response.data[plugin]["bpf"]+'\', \''+plugin+'\', \''+response.data[plugin]["name"]+'\')">BPF</i> &nbsp'+                        
-                        '<i class="fas fa-edit" id="modify-stap-'+plugin+'" style="color:grey;" onclick="showModifyStap(\''+plugin+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+plugin+'\', \'socket-pcap\', \''+response.data[plugin]["name"]+'\')" style="color: red;"></i>'+
+                    if (response.data[line]["pid"] == "none"){
+                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                    }else{
+                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                    }
+                    tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
+                    '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                    '<td style="word-wrap: break-word;">';
+                        if (response.data[line]["pid"] == "none"){
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
+                        }else if (response.data[line]["pid"] != "none"){
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey;" onclick="StopStapServiceMaster( \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                        }
+                        tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
                     '</td>'+
-                '</tr>'+                
-                '<tr width="100%" id="edit-row-'+plugin+'" style="display:none;" bgcolor="peachpuff">'+
+                '</tr>'+
+                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
                     '<td style="word-wrap: break-word;" colspan="6">'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Name: <input class="form-control" id="socket-pcap-name-'+plugin+'" value="'+response.data[plugin]["name"]+'">'+
+                                'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
                             '</div>'+
                             '<div class="col">'+
-                                'Port: <input class="form-control" id="socket-pcap-port-'+plugin+'" value="'+response.data[plugin]["port"]+'">'+
+                                'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
                             '</div>'+
                         '</div>'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+plugin+'" value="'+response.data[plugin]["pcap-path"]+'">'+
+                                'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
                             '</div>'+
                             '<div class="col">'+
-                                'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+plugin+'" value="'+response.data[plugin]["pcap-prefix"]+'">'+
+                                'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
                             '</div>'+
                         '</div>'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Certificate: <input class="form-control" id="socket-pcap-cert-'+plugin+'" value="'+response.data[plugin]["cert"]+'">'+
+                                'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                             '</div>'+
                             '<div class="col">'+
+                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" onclick="loadBPF(\''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
-                    '</td>'+                    
+                    '</td>'+
                     '<td style="word-wrap: break-word;" >'+
                         '<div class="form-row text-center">'+
                             '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+plugin+'" onclick="hideEditStap(\''+plugin+'\')">Cancel</button>'+
+                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
                             '</div>'+
                         '</div>'+
                         '<br>'+
                         '<div class="form-row text-center">'+
                             '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+plugin+'" onclick="saveStapChanges(\'socket-pcap\', \''+plugin+'\')">Save</button>'+    
+                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-pcap\', \''+line+'\')">Save</button>'+    
                             '</div>'+
                         '</div>'+
                     '</td>'+
-                '</tr>';   
+                '</tr>'; 
             }
             
             document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
@@ -769,7 +777,9 @@ function saveBPF(uuid, value){
       data: bpfjson
     })
       .then(function (response) {
-          loadPlugins();
+        document.getElementById('socket-pcap-bpf-'+uuid).value = value;
+        document.getElementById('socket-pcap-bpf-default-'+uuid).innerHTML = value;
+        //   loadPlugins();
       })
       .catch(function (error) {
       });
@@ -1068,7 +1078,7 @@ function AddSTAPModal(type){
         '</div>'+
 
         '<div class="modal-body">'+
-            '<p>Insert name:</p>'+
+            '<p>Insert Description:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-name"><br>'+
             '<p>Insert port:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-port" value="50010"><br>'+
@@ -1134,15 +1144,13 @@ function AddSTAPModal(type){
 
 function saveSoftwareTAP(type){  
     if( type == "socket-network" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "") ||  
-    type == "socket-pcap" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value) || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ) ||  
-    type == "network-socket" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value) || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == "")){
+    type == "socket-pcap" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ) ||  
+    type == "network-socket" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == "")){
         if(type == "socket-network"){
             if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "") {
-                if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){
-                    if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){                
-                        document.getElementById('soft-tap-name').placeholder = "Please insert a name";
-                        document.getElementById('soft-tap-name').required = "true";
-                    }
+                if (document.getElementById('soft-tap-name').value == ""){                
+                    document.getElementById('soft-tap-name').placeholder = "Please insert a name";
+                    document.getElementById('soft-tap-name').required = "true";
                 }
                 if (document.getElementById('soft-tap-port').value == ""){
                     document.getElementById('soft-tap-port').placeholder = "Please insert a port";
@@ -1154,12 +1162,10 @@ function saveSoftwareTAP(type){
                 }
             }
         }else if(type == "socket-pcap"){
-            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value) || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ){
-                if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){
-                    if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){                
-                        document.getElementById('soft-tap-name').placeholder = "Please insert a name";
-                        document.getElementById('soft-tap-name').required = "true";
-                    }
+            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ){
+                if (document.getElementById('soft-tap-name').value == ""){                
+                    document.getElementById('soft-tap-name').placeholder = "Please insert a name";
+                    document.getElementById('soft-tap-name').required = "true";
                 }
                 if (document.getElementById('soft-tap-port').value == ""){
                     document.getElementById('soft-tap-port').placeholder = "Please insert a port";
@@ -1184,12 +1190,10 @@ function saveSoftwareTAP(type){
                 
             }
         }else if(type == "network-socket"){
-            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value) || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == ""){
-                if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){
-                    if (document.getElementById('soft-tap-name').value == "" || /\s/g.test(document.getElementById('soft-tap-name').value)){                
-                        document.getElementById('soft-tap-name').placeholder = "Please insert a name";
-                        document.getElementById('soft-tap-name').required = "true";
-                    }
+            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == ""){
+                if (document.getElementById('soft-tap-name').value == ""){                
+                    document.getElementById('soft-tap-name').placeholder = "Please insert a name";
+                    document.getElementById('soft-tap-name').required = "true";
                 }
                 if (document.getElementById('soft-tap-port').value == ""){
                     document.getElementById('soft-tap-port').placeholder = "Please insert a port";
@@ -1274,7 +1278,7 @@ function saveSoftwareTAP(type){
     $('#modal-master').modal("hide");
 }
 
-function DeployStapServiceMaster(uuid, type){
+function DeployStapServiceMaster(uuid, collector,port,interface, type){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deployStapServiceMaster';
@@ -1282,6 +1286,9 @@ function DeployStapServiceMaster(uuid, type){
     var jsonDeployService = {}
     jsonDeployService["uuid"] = uuid;
     jsonDeployService["type"] = type;
+    jsonDeployService["collector"] = collector;
+    jsonDeployService["port"] = port;
+    jsonDeployService["interface"] = interface;
 
     var dataJSON = JSON.stringify(jsonDeployService);
 
@@ -1292,9 +1299,30 @@ function DeployStapServiceMaster(uuid, type){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Deploy STAP: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -1333,6 +1361,111 @@ function showActions(action){
         icon.classList.add("fa-sort-down");
         icon.classList.remove("fa-sort-up");
     }
+}
+
+
+function loadNetworkValuesService(name, service){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/interface';
+
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {        
+        var html = '<div class="modal-dialog" id="network-modal-master">'+
+          '<div class="modal-content">'+
+
+            '<div class="modal-header" style="word-break: break-all;">'+
+              '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
+              '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
+            '</div>'+
+
+            '<div class="modal-body" id="delete-node-footer-table">';
+
+                if (response.data.ack == "false"){
+                    html = html + '<span><h6>Error loading interfaces</h6></span>';
+                } else {
+                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                    '<thead>              ' +
+                    '<tr>                 ' +
+                    '<th>Network</th>        ' +
+                    '<th>Select</th>     ' +
+                    '</tr>                ' +
+                    '</thead>             ' +
+                    '<tbody >             ' ;
+                    for (net in response.data){
+                        html = html +
+                        '<tr>'+
+                            '<td style="word-wrap: break-word;">' +
+                                response.data[net]+
+                            '</td><td style="word-wrap: break-word;">' +
+                                '<input class="suricata-interface" type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                            '</td>'+
+                        '</tr>';
+                    }
+                    html = html + '</tbody>'+
+                    '</table>';
+                }
+            html = html + '</div>'+
+
+            '<div class="modal-footer" id="delete-node-footer-btn">'+
+                '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
+                    if (response.data.ack != "false"){
+                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="SaveStapInterface(\''+service+'\')">Save</button>';
+                    }
+                html = html + '</div>'+
+            '</div>'+
+
+          '</div>'+
+        '</div>';
+        console.log(response);
+        document.getElementById('modal-master').innerHTML = html;
+        console.log(document.getElementById('modal-master').innerHTML);
+        // LoadNetworkValuesSelected(uuid);
+
+        $('#modal-master').modal("show");
+        $('#btn-select-interface-cross').click(function(){ $('#modal-master').modal("hide"); });
+        $('#btn-select-interface-close').click(function(){ $('#modal-master').modal("hide"); });        
+    })
+    .catch(function (error) {
+    });
+}
+
+function SaveStapInterface(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/saveStapInterface';
+    var valueSelected = "";
+    $('input:radio:checked').each(function() {
+        idRadio = $(this).prop("id");
+        if (idRadio == "net-value-"+$(this).prop("value")){
+            valueSelected = $(this).prop("value");
+        }
+    });
+    //suricata-interface
+
+    var jsonUpdateIface = {}
+    jsonUpdateIface["value"] = valueSelected;
+    jsonUpdateIface["uuid"] = uuid;
+    jsonUpdateIface["param"] = "interface";
+    var dataJSON = JSON.stringify(jsonUpdateIface);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        // loadPlugins();
+        document.getElementById('socket-network-interface-default-'+uuid).innerHTML = valueSelected;
+        document.getElementById('socket-network-interface-'+uuid).value = valueSelected;
+    })
+    .catch(function (error) {
+    });
 }
 
 function loadJSONdata(){

@@ -25,10 +25,10 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
         <img class="mr-3" src="img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
             href="nodes.html"><small>Master </small><i id="menu-title" class="text-warning"></i> | </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+        <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-        </button>
+        </button> -->
     
     
         <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
@@ -52,6 +52,7 @@
                     <a class="nav-link" href="config.html">Config</a>
                 </li>
             </ul>
+            <p class="text-justify text-white mr-4">Current version: </p><p class="text-justify text-white mr-4" id="current-version-show"></p>
         </div>
     </nav>
 
@@ -68,6 +69,12 @@
                 <small>Summary</small>
             </div>
         </div>
+
+        <!-- ProgressBar -->            
+        <div id="progressBar-create-div"class="progress">
+            <div id="progressBar-create" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width: 100%"> &nbsp </div>
+        </div>
+        <br>
 
         <div class="text-decoration-none text-primary" style="width:20%; float:right;">
                 <a class="text-white btn btn-primary float-right" onclick="formAddRulesetSource()" id="ruleset-source-text-top" style="display: block; cursor: default; float:right;">Add new ruleset source</a> 
@@ -86,21 +93,21 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                            <input type="text" class="form-control" id="ruleset-source-name" placeholder="Name" required>
+                            <input type="text" class="form-control" id="ruleset-source-name" placeholder="Name">
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                            <input type="text" class="form-control" id="ruleset-source-desc" placeholder="Description" required>
+                            <input type="text" class="form-control" id="ruleset-source-desc" placeholder="Description">
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                            <input type="text" class="form-control" id="ruleset-source-url" placeholder="url" required>
+                            <input type="text" class="form-control" id="ruleset-source-url" placeholder="url">
                         </div>
                     </div>
                 </div>
@@ -108,7 +115,7 @@
                 <h5>Select Ruleset type:</h5>
                 <div class="radio">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="create-url" name="create-new-source-radiobuttons" value="url" class="custom-control-input" checked>
+                        <input type="radio" id="create-url" name="create-new-source-radiobuttons" value="url" class="custom-control-input">
                         <label class="custom-control-label" for="create-url">URL</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
@@ -116,8 +123,8 @@
                         <label class="custom-control-label" for="create-path-custom">Custom</label>
                     </div>  
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="create-thread" name="create-new-source-radiobuttons" value="thread" class="custom-control-input">
-                        <label class="custom-control-label" for="create-thread">Threat Intelligence</label>
+                        <input type="radio" id="create-threat" name="create-new-source-radiobuttons" value="threat" class="custom-control-input">
+                        <label class="custom-control-label" for="create-threat">Threat Intelligence</label>
                     </div>  
                 </div>
 
@@ -135,14 +142,14 @@
                     <div class="form-row" >
                         <div class="form-group col-md-6">
                             <div class="input-group mb-4 mr-sm-4 mb-sm-0">
-                                <input type="text" class="form-control" id="ruleset-source-name-edit" placeholder="New ruleset name" required>
+                                <input type="text" class="form-control" id="ruleset-source-name-edit" placeholder="New ruleset name">
                             </div>
                         </div>
                     </div>
                     <div class="form-row" >
                         <div class="form-group col-md-6">
                             <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                <input type="text" class="form-control" id="ruleset-source-edit-desc" placeholder="New ruleset description" required>
+                                <input type="text" class="form-control" id="ruleset-source-edit-desc" placeholder="New ruleset description">
                                 <input type="hidden" class="form-control" id="ruleset-source-uuid">
                             </div>
                         </div>
@@ -150,7 +157,7 @@
                     <div class="form-row" >
                         <div class="form-group col-md-6">
                             <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                <input type="text" class="form-control" id="ruleset-source-edit-url" placeholder="New url" required>
+                                <input type="text" class="form-control" id="ruleset-source-edit-url" placeholder="New url">
                             </div>
                         </div>
                     </div>

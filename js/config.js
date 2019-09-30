@@ -1,7 +1,8 @@
 function loadFileIntoTextarea(){
     var fileContent = document.getElementById('inputTextUI');  
     $.getJSON('../conf/ui.conf', function (data) {
-        fileContent.value = JSON.stringify(data, null, "\t");
+        // fileContent.value = JSON.stringify(data, null, "\t");
+        fileContent.value = JSON.stringify(data, null, "    ");
     });
 }
 
@@ -24,6 +25,7 @@ function saveFileChanged() {
         //             '<span aria-hidden="true">&times;</span>'+
         //         '</button>'+
         //     '</div>';
+                //setTimeout(function() {$(".alert").alert('close')}, 5000);
         // }else{
         //     var alert = document.getElementById('floating-alert');
         //     alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
@@ -32,10 +34,12 @@ function saveFileChanged() {
         //             '<span aria-hidden="true">&times;</span>'+
         //         '</button>'+
         //     '</div>';
+                //setTimeout(function() {$(".alert").alert('close')}, 5000);
         // }
         
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+error+'.'+
@@ -43,6 +47,7 @@ function saveFileChanged() {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 

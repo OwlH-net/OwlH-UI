@@ -139,12 +139,14 @@ function addToCustomRuleset(rulesetuuid){
 
     if (allRulesSelected == ""){
         var alert = document.getElementById('floating-alert');
+        $('html,body').scrollTop(0);
         alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
             '<strong>Error!</strong> There are no rules selected.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     }else{
         axios({
             method: 'get',
@@ -230,12 +232,14 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
         .catch(function (error) {
             $('#modal-window-ruleset').modal('hide')
             var alert = document.getElementById('floating-alert');
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 

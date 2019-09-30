@@ -22,6 +22,7 @@ function addRulesetSource() {
     var fileName = formUrl.split(/[\s/]+/);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
+    
     var sourceType;
     var sourceURL;
     var alert = document.getElementById('floating-alert');
@@ -29,68 +30,104 @@ function addRulesetSource() {
     $('input:radio:checked').each(function() {
         sourceType = $(this).prop("value");
     });
-
-    if (sourceType == "url" || sourceType == "thread"){
-        if(formUrl == ""){
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error! </strong> For URL source type, please inserta a valid URL.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-        }
-        sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
-    }else{
-        sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/custom';
-    }
-
-    formAddRulesetSource();//close add ruleset source form
-    var nodejson = {}
-    nodejson["name"] = formName;
-    nodejson["desc"] = formDesc;
-    if (sourceType == "url" || sourceType == "thread"){ //only for source, not for custom
-        nodejson["fileName"] = fileName[fileName.length-1];
-        nodejson["url"] = formUrl;
-    }else if (sourceType == "path"){
-        nodejson["url"] = formUrl;
-    }
-    nodejson["type"] = "source";
-    nodejson["sourceType"] = sourceType;
-    if (sourceType == "url" || sourceType == "thread"){nodejson["isDownloaded"] = "false";} //only for source, not for custom
-    var nodeJSON = JSON.stringify(nodejson);
     
-    axios({
-        method: 'post',
-        url: sourceURL,
-        timeout: 30000,
-        data: nodeJSON
-    })
-    .then(function (response) {
-        if (response.data.ack == "false") {
+    if ((sourceType == "url" || sourceType == "threat") && (formName == "" || formDesc == "" || formUrl == "")){
+        if(formName == ""){
+            document.getElementById('ruleset-source-name').placeholder = "Please, insert a valid name.";
+            document.getElementById('ruleset-source-name').required = "true";
+        }
+        if(formDesc == ""){
+            document.getElementById('ruleset-source-desc').placeholder = "Please, insert a valid description.";
+            document.getElementById('ruleset-source-desc').required = "true";
+        }
+        if(formUrl == ""){
+            document.getElementById('ruleset-source-url').placeholder = "Please, insert a valid url.";
+            document.getElementById('ruleset-source-url').required = "true";
+        }
+    }else if ((sourceType == "custom") && (formName == "" || formDesc == "")){
+        document.getElementById('ruleset-source-url').required = "";
+        if(formName == ""){
+            document.getElementById('ruleset-source-name').placeholder = "Please, insert a valid name.";
+            document.getElementById('ruleset-source-name').required = "true";
+        }
+        if(formDesc == ""){
+            document.getElementById('ruleset-source-desc').placeholder = "Please, insert a valid description.";
+            document.getElementById('ruleset-source-desc').required = "true";
+        }
+    }else{
+        if (sourceType == "url" || sourceType == "threat"){
+            sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';        
+        }else  if (sourceType == "custom"){
+            sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/custom';
+        }
+        formAddRulesetSource();//close add ruleset source form
+
+        var nodejson = {}
+        nodejson["name"] = formName;
+        nodejson["desc"] = formDesc;
+        nodejson["url"] = formUrl;
+        nodejson["fileName"] = fileName[fileName.length-1];
+        nodejson["type"] = "source";
+        nodejson["sourceType"] = sourceType;
+        if (sourceType != "custom"){nodejson["isDownloaded"] = "false";} //only for source and threat, not for custom ruleset source
+        var nodeJSON = JSON.stringify(nodejson);
+
+        console.log(nodejson);
+
+        axios({
+            method: 'post',
+            url: sourceURL,
+            timeout: 30000,
+            data: nodeJSON
+        })
+        .then(function (response) {
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error! </strong>'+response.data.error+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllRulesetSource();
+            }            
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error! </strong>'+response.data.error+
+                '<strong>Error! </strong>'+error+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-        }else{
-            GetAllRulesetSource();
-        }
-        return true;
-    })
-    .catch(function (error) {
-        return false;
-    });   
-    GetAllRulesetSource(); 
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });   
+        GetAllRulesetSource(); 
+    }
 }
 
-function GetAllRulesetSource(){
+function GetAllRulesetSource(){    
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var result = document.getElementById('list-ruleset-source');
     var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/';
+    var portmaster = document.getElementById('create-url').checked = "true";
+    document.getElementById('progressBar-create-div').style.display = "none";
+    document.getElementById('progressBar-create').style.display = "none";
     document.getElementById('ruleset-source-text-top').style.display ="none";
     document.getElementById('ruleset-source-text-bot').style.display ="none";
+
+    document.getElementById('ruleset-source-name').value = "";
+    document.getElementById('ruleset-source-desc').value = "";
+    document.getElementById('ruleset-source-url').value = "";
+    document.getElementById('ruleset-source-name').required = "";
+    document.getElementById('ruleset-source-desc').required = "";
+    document.getElementById('ruleset-source-url').required =  "";
+    document.getElementById('ruleset-source-name').placeholder = "Name";
+    document.getElementById('ruleset-source-desc').placeholder = "Description";
+    document.getElementById('ruleset-source-url').placeholder =  "url";
 
     axios({
         method: 'get',
@@ -115,9 +152,10 @@ function RadioButtonListener(){
     $('input:radio').on('click', function(e) {
         var inputRadioClicked = $(e.currentTarget);
         if (inputRadioClicked.attr('value') == "custom"){
-            document.getElementById("ruleset-source-url").style.display = "none";            
+            document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
         }else if (inputRadioClicked.attr('value') == "url"){
-            document.getElementById("ruleset-source-url").style.display = "block";            
+            document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
+        }else if (inputRadioClicked.attr('value') == "thread"){
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
         }
     });
@@ -126,7 +164,7 @@ function RadioButtonListener(){
 function changeIconAttributes(sources){
     for (source in sources) {
         var icon = document.getElementById('SourceDetails-'+source);
-        if (sources[source]['isDownloaded'] == "false" && sources[source]['sourceType'] == "url"){
+        if (sources[source]['isDownloaded'] == "false" && sources[source]['sourceType'] != "custom"){
             icon.style.color = "grey";
             document.getElementById('download-status-'+source).value = "false";
         }else if (sources[source]['sourceType'] == "url"){
@@ -154,7 +192,6 @@ function generateAllRulesetSourceHTMLOutput(response) {
         '</thead>                                                     ' +
         '<tbody>                                                      ' 
     for (source in sources) {
-        console.log(sources[source]);
         isEmpty = false;
         html = html + '<tr><td style="word-wrap: break-word;">'+
             sources[source]['name']+
@@ -163,11 +200,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
             '</td><td style="word-wrap: break-word;">'+
             sources[source]['path']+
             '</td><td style="word-wrap: break-word;">';
-            if (sources[source]['sourceType'] == "custom"){
-                html = html + sources[source]['path'];
-            }else {
-                html = html + sources[source]['url'];
-            }
+            if (sources[source]['sourceType'] != "custom"){html = html + sources[source]['url'];}
             html = html + '</td><td align="right" style="word-wrap: break-word;">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">';
@@ -380,12 +413,14 @@ function deleteRulesetSource(sourceUUID,sourceType){
         });
 }
 
-function downloadFile(name, path, url, sourceUUID){
+function downloadFile(name, path, url, sourceUUID){    
     var downloadStatus = document.getElementById('download-status-'+sourceUUID);
     var icon = document.getElementById('SourceDetails-'+sourceUUID);
     if (downloadStatus.value == "true"){
         modalOverwriteDownload(name,path, url, sourceUUID);
     }else{
+        document.getElementById('progressBar-create-div').style.display = "block";
+        document.getElementById('progressBar-create').style.display = "block";
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/downloadFile';
@@ -405,6 +440,7 @@ function downloadFile(name, path, url, sourceUUID){
             .then(function (response) {
                 if (response.data.ack == "true") {
                     var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
                     alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                         '<strong>Success!</strong> Download complete.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -412,9 +448,14 @@ function downloadFile(name, path, url, sourceUUID){
                         '</button>'+
                     '</div>';
                     icon.style.color="Dodgerblue";
-                    downloadStatus.value = "true";
+                    downloadStatus.value = "true";  
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);        
+                    
+                    document.getElementById('progressBar-create').style.display = "none";
+                    document.getElementById('progressBar-create-div').style.display = "none";
                 }else{
                     var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong>'+response.data.error+''+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -422,10 +463,15 @@ function downloadFile(name, path, url, sourceUUID){
                         '</button>'+
                     '</div>';
                     downloadStatus.value = "false";
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    
+                    document.getElementById('progressBar-create').style.display = "none";
+                    document.getElementById('progressBar-create-div').style.display = "none";
                 }
         })
             .catch(function error() {
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
                     '<strong>Error!</strong> Can not complete the download...'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -433,6 +479,10 @@ function downloadFile(name, path, url, sourceUUID){
                     '</button>'+
                 '</div>';
                 downloadStatus.value = "false";
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                
+                document.getElementById('progressBar-create').style.display = "none";
+                document.getElementById('progressBar-create-div').style.display = "none";
         });
     }
 }
@@ -460,10 +510,12 @@ function modalOverwriteDownload(name,path, url, sourceUUID){
         '</div>'+
     '</div>';
 
-    $('#modal-delete-source').modal('show')     
+    $('#modal-delete-source').modal('show');     
 }
 
 function overwriteDownload(name, path, url, uuid){
+    document.getElementById('progressBar-create-div').style.display = "block";
+    document.getElementById('progressBar-create').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var downloadStatus = document.getElementById('download-status-'+source);
@@ -485,6 +537,7 @@ function overwriteDownload(name, path, url, uuid){
     })
     .then(function (response) {
         if (response.data.ack == "true") {
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                 '<strong>Success!</strong> Download complete.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
@@ -493,26 +546,40 @@ function overwriteDownload(name, path, url, uuid){
             '</div>';
             icon.style.color="Dodgerblue";
             downloadStatus.value = "true";
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            
+            document.getElementById('progressBar-create').style.display = "none";
+            document.getElementById('progressBar-create-div').style.display = "none";
         }else{
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong>'+response.data.error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            icon.style.color="Grey";
-            downloadStatus.value = "false";
+            // icon.style.color="Grey";
+            // downloadStatus.value = "false";
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            
+            document.getElementById('progressBar-create').style.display = "none";
+            document.getElementById('progressBar-create-div').style.display = "none";
         }
     })
     .catch(function error(error) {
+        $('html,body').scrollTop(0);
         alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
             '<strong>Error!</strong> Can not complete the download...'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        icon.style.color="Grey";
-        downloadStatus.value = "false";
+        // icon.style.color="Grey";
+        // downloadStatus.value = "false";
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        
+        document.getElementById('progressBar-create').style.display = "none";
+        document.getElementById('progressBar-create-div').style.display = "none";
     });
 }
 

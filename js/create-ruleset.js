@@ -3,6 +3,8 @@ function loadRulesData(){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/getAllRuleData';
+    document.getElementById('progressBar-create').style.display = "none";
+    document.getElementById('progressBar-create-div').style.display = "none";
     axios({
         method: 'get',
         url: sourceurl,
@@ -10,6 +12,7 @@ function loadRulesData(){
     })
     .then(function (response) {
         result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
+        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
         for (source in response.data){
             if (response.data[source]["type"]){
                 document.getElementById('checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
@@ -19,7 +22,6 @@ function loadRulesData(){
         }         
     })
     .catch(function (error) {
-        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
@@ -81,7 +83,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         '</div>'+
     '</div>'+
 
-    '<a class="btn btn-primary float-right" style="color: white;" onclick="modalAddNewRuleset()">Add</a>'+
+    '<button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
@@ -121,7 +123,8 @@ function generateAllRuleDataHTMLOutput(sources) {
         }
     }
     html = html + '</tbody></table>'+
-    '<br><a class="btn btn-primary float-right" style="color: white;" onclick="modalAddNewRuleset()">Add</a><br><br>';    
+    '<br><button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
+
     if (isEmpty){
         return '<h3 style="text-align:center">No sources created</h3>';
     }else{
@@ -189,12 +192,12 @@ function searchRuleset(){
     }
 }
 
-function modalAddNewRuleset(){    
+function modalAddNewRuleset(){   
+    $(".createNewRulesetLocal").unbind("click");
 
     //show progress-bar
-    document.getElementById('progressBar-create-ruleset-div').style.display="block";
-    console.log(document.getElementById('progressBar-create-ruleset-div'));
-    // document.getElementById('progressBar-create-ruleset').style.display="block";
+    document.getElementById('progressBar-create-div').style.display="block";
+    document.getElementById('progressBar-create').style.display="block";    
 
     var newRuleset = new Map();
     $('input:checkbox:checked').each(function() {
@@ -221,9 +224,10 @@ function modalAddNewRuleset(){
     }
 
     if(document.getElementById('new-ruleset-name-input').value == "" || document.getElementById('new-ruleset-description-input').value == "") {
-        document.getElementById('progressBar-create-ruleset-div').style.display="none";
-        // document.getElementById('progressBar-create-ruleset').style.display="none";
+        document.getElementById('progressBar-create-div').style.display="none";
+        document.getElementById('progressBar-create').style.display="none";
 
+        $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Name or description fields are null.'+
@@ -231,9 +235,11 @@ function modalAddNewRuleset(){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
     }else if (isDuplicated){      
-        document.getElementById('progressBar-create-ruleset-div').style.display="none";
-        // document.getElementById('progressBar-create-ruleset').style.display="none";
+        document.getElementById('progressBar-create-div').style.display="none";
+        document.getElementById('progressBar-create').style.display="none";
         
         document.getElementById('modal-window').innerHTML = 
         '<div class="modal-dialog">'+
@@ -255,9 +261,10 @@ function modalAddNewRuleset(){
             '</div>'+
         '</div>';
 
-        $('#modal-window').modal('show')     
-    } else {
-        $('#modal-window').modal('dispose')
+        $('#modal-window').modal('show');
+        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});     
+    } else {        
+        $('#modal-window').modal('dispose');        
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
@@ -269,13 +276,16 @@ function modalAddNewRuleset(){
             data: nodeJSON
         })
         .then(function (response) {
-            if (response.data.ack == "true"){
-                document.getElementById('progressBar-create-ruleset-div').style.display="none";
-                // document.getElementById('progressBar-create-ruleset').style.display="none";
+            if (response.data.ack == "true"){                
+                document.getElementById('progressBar-create-div').style.display="none";
+                document.getElementById('progressBar-create').style.display="none";
                 document.location.href = 'https://' + ipmaster + '/rulesets.html';
             }else if (response.data.ack == "false"){
-                document.getElementById('progressBar-create-ruleset-div').style.display="none";
-                // document.getElementById('progressBar-create-ruleset').style.display="none";
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                document.getElementById('progressBar-create-div').style.display="none";
+                document.getElementById('progressBar-create').style.display="none";
+
+                $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+
@@ -283,9 +293,11 @@ function modalAddNewRuleset(){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
-                document.getElementById('progressBar-create-ruleset-div').style.display="none";
-                // document.getElementById('progressBar-create-ruleset').style.display="none";
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                document.getElementById('progressBar-create-div').style.display="none";
+                document.getElementById('progressBar-create').style.display="none";
 
                 lines = JSON.parse(response.data)
                 var html =

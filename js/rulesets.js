@@ -85,7 +85,7 @@ function modalShowLog(uuid, name){
             '<div class="modal-dialog modal-lg">'+
                 '<div class="modal-content">'+
             
-                    '<div class="modal-header">'+
+                    '<div class="modal-header" style="word-break: break-all;">'+
                         '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Log for ruleset '+name+'</h4>'+
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
                     '</div>'+
@@ -124,7 +124,7 @@ function modalTimeSchedule(uuid, name, status){
             '<div class="modal-dialog">'+
                 '<div class="modal-content">'+
             
-                    '<div class="modal-header">'+
+                    '<div class="modal-header" style="word-break: break-all;">'+
                         '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">'+name+' time schedule</h4>'+
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
                     '</div>';
@@ -421,7 +421,7 @@ function syncRulesetModal(uuid, name){
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
     
-            '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
+            '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table" style="word-break: break-all;">'+ 
                 '<p>Do you want to synchronize <b>'+name+'</b> ruleset?</p>'+
             '</div>'+
     
@@ -444,7 +444,7 @@ function deleteRulesetModal(name, uuid){
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
     
-            '<div class="modal-body" id="delete-ruleset-footer-table">'+ 
+            '<div class="modal-body" id="delete-ruleset-footer-table" style="word-break: break-all;">'+ 
                 '<p>Do you want to delete <b>'+name+'</b> ruleset?</p>'+
             '</div>'+
     
@@ -522,6 +522,7 @@ function synchronizeAllRulesets() {
     })
         .then(function (response) {
             if (response.data.ack == "true"){
+                $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                     '<strong>Success!</strong> All rulesets had been synchronized successfully.'+
@@ -529,24 +530,29 @@ function synchronizeAllRulesets() {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }
         })
         .catch(function (error) {
             var alert = document.getElementById('floating-alert');
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 
@@ -567,24 +573,28 @@ function deleteRuleset(name, uuid) {
         .then(function (response) {
             if (response.data.ack == "false"){
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 GetAllRulesets();
             }
         })
         .catch(function (error) {
             var alert = document.getElementById('floating-alert');
+            $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 
@@ -639,20 +649,24 @@ function syncRuleset(uuid){
         .then(function (response) {
             if (response.data.ack == "true"){
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                     '<strong>Success!</strong> Ruleset synchronization complete.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> The ruleset could not be synchronized.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }
 
         })

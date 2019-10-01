@@ -139,8 +139,8 @@ function loadPlugins(){
                 '<tr>'+
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
                     '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
-                    '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
+                    '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey; cursor: pointer;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
                 '</tr>'+
             '</table>'+
         '</span>'+
@@ -152,9 +152,9 @@ function loadPlugins(){
                 '<tr>'+
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
                     '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')">status</i></td>'+
-                    '<td width="25%">Mode: <i style="cursor: default; color: grey;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
-                    '<td width="25%">Ports: <i style="cursor: default; color: grey;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i></td>'+
+                    '<td width="25%">Mode: <i style="cursor: default; color: grey; cursor: pointer;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
+                    '<td width="25%">Ports: <i style="cursor: default; color: grey; cursor: pointer;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
                 '</tr>'+
             '</table>'+
         '</span>'+
@@ -237,7 +237,7 @@ function loadPlugins(){
 
     PingWazuh(uuid);
     PingAnalyzer(uuid);
-    PingPorts(uuid);
+    // PingPorts(uuid);
     PingDataflow(uuid);
     PingPluginsNode(uuid);
     GetMainconfData(uuid);
@@ -1332,6 +1332,7 @@ function PingPorts(uuid) {
     })
         .then(function (response) {
             for(line in response.data){
+                console.log(response.data);
                 if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
@@ -1358,9 +1359,9 @@ function ChangeStatus(uuid){
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/status';
 
     if(document.getElementById('ports-status-'+uuid).innerHTML == "ON"){
-        var status ="disabled";
+        var status ="Disabled";
     }else{
-        var status ="enabled";
+        var status ="Enabled";
     }
 
     var jsonPorts = {}
@@ -2095,7 +2096,7 @@ function PingStap(uuid) {
         })
         .catch(function (error) {
             document.getElementById(uuid + '-stap').className = "badge bg-dark align-text-bottom text-white";
-            document.getElementById(uuid + '-stap').innerHTML = "N/A";
+            document.DetElementById(uuid + '-stap').innerHTML = "N/A";
             return false;
         });
     return false;
@@ -2118,11 +2119,11 @@ function PingPluginsNode(uuid) {
     .then(function (response) {
         for(line in response.data){
             if (line == "knownports"){
-                if (response.data[line]["status"] == "enabled"){
+                if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
                     document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-                }else if (response.data[line]["status"] == "disabled"){
+                }else if (response.data[line]["status"] == "Disabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
                     document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
@@ -2143,16 +2144,16 @@ function PingPluginsNode(uuid) {
                     tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
+                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
                         }
-                        tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                        tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                         // '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
                         // '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
                         // '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> &nbsp'+
-                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
                     '</td>'+
                 '</tr>'+
                 '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
@@ -2163,17 +2164,17 @@ function PingPluginsNode(uuid) {
                             '</div>'+
                             '<div class="col">'+
                                 // 'BPF: <i class="fas fa-edit" id="suricata-bpf-icon-'+line+'" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF"></i>'+
-                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"></i>'+
+                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"></i>'+
                                 '<input class="form-control" id="suricata-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
+                                'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
                                 '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="" disabled>'+
                             '</div>'+
                             '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
+                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
                                 '<input class="form-control" id="suricata-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
@@ -2205,12 +2206,12 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if(response.data[line]["status"]=="enabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
                         }else if (response.data[line]["status"]=="disabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
                         }
-                        tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" style="color: red;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                        tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        '<i class="fas fa-trash-alt" style="color: red; cursor: pointer;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                     '</td>'+
                 '</tr>'+
                 '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
@@ -2222,7 +2223,7 @@ function PingPluginsNode(uuid) {
                             '<div class="col">'+
                             '</div>'+
                             '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
+                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
                                 '<input class="form-control" type="text" id="zeek-interface-config" value="" disabled>'+
                             '</div>'+
                             '<div class="col">'+
@@ -2253,12 +2254,12 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
                         }else if (response.data[line]["pid"] != "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
                         }                        
-                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
                     '</td>'+
                 '</tr>'+
                 '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
@@ -2276,7 +2277,7 @@ function PingPluginsNode(uuid) {
                                 'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                             '</div>'+
                             '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+
@@ -2309,12 +2310,12 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if (response.data[line]["pid"] == "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \'none\',\'socket-pcap\')"></i> &nbsp';
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;cursor: pointer; " onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \'none\',\'socket-pcap\')"></i> &nbsp';
                         }else if (response.data[line]["pid"] != "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
                         }
-                        tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                        tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
                     '</td>'+
                 '</tr>'+
                 '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
@@ -2340,7 +2341,7 @@ function PingPluginsNode(uuid) {
                                 'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                             '</div>'+
                             '<div class="col">'+
-                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+
@@ -2373,12 +2374,12 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;" id="network-socket-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if (response.data[line]["pid"] == "none"){
-                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-play" style="color: grey;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \''+response.data[line]["collector"]+'\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'network-socket\')"></i> &nbsp';
+                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \''+response.data[line]["collector"]+'\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'network-socket\')"></i> &nbsp';
                         }else if (response.data[line]["pid"] != "none"){
-                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
+                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
                         }
-                        tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                        tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
                     '</td>'+
                 '</tr>'+
                 '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
@@ -2403,10 +2404,10 @@ function PingPluginsNode(uuid) {
                         '</div>'+
                         '<div class="form-row">'+
                             '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
                             '</div>'+
                             '<div class="col">'+
-                                'BPF: <i class="fas fa-edit" title="BPF" style="cursor: default; color: Dodgerblue;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                'BPF: <i class="fas fa-edit" title="BPF" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+

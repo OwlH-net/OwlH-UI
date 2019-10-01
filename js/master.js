@@ -1481,5 +1481,5 @@ function loadJSONdata(){
         loadPlugins();        
         loadTitleJSONdata();
     });
-  }
-  loadJSONdata();
+}
+loadJSONdata();

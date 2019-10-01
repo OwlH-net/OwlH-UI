@@ -87,7 +87,7 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
             rules[rule]["ip"] +
             '</td><td style="word-wrap: break-word;" align="left">                                                           ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>&nbsp';
+                    '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\')"></i>&nbsp';
                     if(type != "source"){
                         html = html +'<i class="fas fa-exchange-alt low-blue" id="' + rules[rule]["sid"] + '-change-status" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\', \''+ruleStatus+'\')"></i>&nbsp' +
                         '<i class="fas fa-sticky-note low-blue" data-toggle="modal" data-target="#modal-window-ruleset" onclick="modalNotes(\''+rules[rule]["msg"]+'\', \''+rules[rule]["sid"]+'\', \''+fileuuid+'\')"></i>&nbsp';
@@ -123,7 +123,7 @@ function editRuleset(fileuuid, nodeName){
 
 function loadRulesetDetails(sid, fileuuid, ipmaster, portmaster){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/rules/showRuleDetails.php?sid='+sid+'&fileuuid='+fileuuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster;
+    document.location.href = 'https://' + ipmaster + '/showRuleDetails.html?sid='+sid+'&fileuuid='+fileuuid;
 }
 
 function addToCustomRuleset(rulesetuuid){

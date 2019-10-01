@@ -10,19 +10,20 @@
         <title>OwlH Master</title>
 
         <!-- Bootstrap core CSS -->
-        <link href="css/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- fontawesome -->
         <link rel="stylesheet" href="css/fontawesome/css/all.css">
 
+
         <!-- Custom styles for this template -->
-        <link href="css/offcanvas.css" rel="stylesheet">
-        
+        <link href="../css/offcanvas.css" rel="stylesheet">
     </head>
     <body class="bg-light">
         <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-                <img class="mr-3" src="img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
-                href="nodes.html"><small>Master </small><i id="menu-title" class="text-warning"></i> | </a>
+        <img class="mr-3" src="../img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
+                href="../nodes.html"><small>Master </small><i class="text-warning" id="menu-title"
+                ></i> | </a>    
             <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
                 aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -32,22 +33,19 @@
             <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="nodes.html">Nodes</a>
+                        <a class="nav-link" href="../nodes.html">Nodes</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="rulesets.html">Open Rules</span></a>
+                        <a class="nav-link" href="../rulesets.html">Open Rules</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="response.html">Adapt & Response</a>
+                        <a class="nav-link" href="../response.html">Adapt & Response</a>
                     </li>
                     <!-- <li class="nav-item">
-                        <a class="nav-link" href="kibana.html">Kibana</a>
+                        <a class="nav-link" href="../kibana.html">Kibana</a>
                     </li> -->
                     <li class="nav-item">
-                        <a class="nav-link" href="master.html">Master</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="config.html">Config</a>
+                        <a class="nav-link" href="../config.html">Config</a>
                     </li>
                 </ul>
                 <p class="text-justify text-white mr-4">Current version: </p><p class="text-justify text-white mr-4" id="current-version-show"></p>
@@ -57,55 +55,46 @@
         <main role="main" class="container">
 
             <!--Alert-->
-            <div id="floating-alert" style="top: 5px;">
+        <div id="floating-alert" style="top: 5px;">
             </div>
-
+    
             <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
                 <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
                 <div class="lh-100">
-                    <h3 class="mb-0 text-white lh-100">Rulesets</h3>
-                    <small>Rules</small>
+                    <h3 class="mb-0 text-white lh-100" id="rule-title">Rule description: </h3>
+                    <small id="rule-subtitle">Rule sid: </small>
                 </div>
             </div>
-
-            <div class="float-right" style="width:100%;">
-                <a class="text-white btn btn-danger float-right" data-toggle="modal" data-target="#modal-ruleset" onclick="modalSynchronizeAllRulesets()">Synchronize all</a>
-                <a class="text-white btn btn-primary float-right" style="margin-right: 10px;" href="ruleset-source.html">Edit ruleset source</a>
-                <a class="text-white btn btn-success float-right" style="margin-right: 10px;" href="create-ruleset.html" >Create new ruleset</a>
-            </div>
-            <br><br><br><br>
-                
+    
             <!-- Modal -->
-            <div class="modal fade" id="modal-ruleset">
+            <div class="fade modal" id="modal-rule">
             </div>
 
-            <!--Every rule row-->
-            <div class="container" id="rulesets-table">
+            <!-- main content -->
+            <div id="rule-content">
             </div>
-
-            <br><br>
-            <div class="float-right" style="width:100%;">
-                <a class="text-white btn btn-danger float-right" data-toggle="modal" data-target="#modal-ruleset" onclick="modalSynchronizeAllRulesets()">Synchronize all</a>
-                <a class="text-white btn btn-primary float-right" style="margin-right: 10px;" href="ruleset-source.html">Edit ruleset source</a>
-                <a class="text-white btn btn-success float-right" style="margin-right: 10px;" href="create-ruleset.html" >Create new ruleset</a>
-            </div>
-            <br><br>
 
             <!-- Load master ip/port -->
             <div id="load-json-data" style="display: none;">
                 <input id="ip-master" type="text" class="form-control">
                 <input id="port-master" type="text" class="form-control">
+                <input id="number-of-elements" type="text" class="form-control">
             </div>
         </main>
+
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="js/axios/dist/axios.js"></script>
-        <script src="js/jquery-3.3.1.js"></script>
-        <script src="css/popper/popper.min.js"></script>
+        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="../css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script> -->
+        <!-- <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha26-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script> -->
+        <!-- <script src="../css/site/docs/4.1/assets/js/vendor/popper.min.js"></script> -->
         <script src="css/dist/js/bootstrap.min.js"></script>
+        <script src="js/jquery-3.3.1.js"></script>
+        <!-- <script src="../css/site/docs/4.1/assets/js/vendor/holder.min.js"></script> -->
         <script src="js/offcanvas.js"></script>
-        <script src="js/rulesets.js"></script>
+        <script src="js/showRuleDetails.js"></script>
         <script src="js/loadTitle.js"></script>
     </body>
 </html>

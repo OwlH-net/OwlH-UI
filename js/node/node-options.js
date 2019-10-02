@@ -23,8 +23,8 @@ function loadPlugins(){
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             //suricata
             '<p><img src="img/suricata.png" alt="" width="30">'      +           
-                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
-                '<b>&nbsp | <span style="cursor: default;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
+                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
+                '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
                 '</span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
@@ -62,14 +62,28 @@ function loadPlugins(){
                 '</div>'+
         '</span>'+
     '</div>'+
+    
+    //wazuh
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'transport\',\''+uuid+'\')"><b>Transport</b> <i class="fas fa-sort-down" id="transport-form-icon-'+uuid+'"></i></h6>'+
         '<span id="transport-form-'+uuid+'" style="display:block"><br>'+
-            '  <p><img src="img/wazuh.png" alt="" width="30"> '+
-            '  <span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
-            '  <span style="font-size: 15px; color: grey;" >                                  ' +
-            '    <i class="fas fa-stop-circle" id="'+uuid+'-wazuh-icon"></i>                         ' +
-            '  </span></p> '+
+            '<p><img src="img/wazuh.png" alt="" width="30"> '+
+            '<span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
+            '<span style="font-size: 15px; color: grey;" >                                  ' +
+                '<i class="fas fa-stop-circle" style="cursor: pointer;" id="'+uuid+'-wazuh-icon"></i> &nbsp' +
+                '<i class="fas fa-sync-alt" style="cursor: pointer;"></i>' +
+            '</span></p> '+
+            '<div>'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th width="70%">Path</th>'+
+                        '<th width="10%">Status</th>'+
+                        '<th width="20%">Actions</th>'+
+                    '</thead>'+
+                    '<tbody id="wazuh-table">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div>'+
         '</span>'+
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -236,6 +250,7 @@ function loadPlugins(){
     document.getElementById('master-table-plugins').innerHTML = html;
 
     PingWazuh(uuid);
+    PingWazuhFiles(uuid);
     PingAnalyzer(uuid);
     // PingPorts(uuid);
     PingDataflow(uuid);
@@ -1941,6 +1956,81 @@ function StopWazuh(uuid) {
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Stop Wazuh: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+function DeleteWazuhFile(uuid, count){
+    var path = document.getElementById(count+'-wazuh-files').innerHTML;
+
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deleteWazuhFile';
+    
+    var jsonWazuhFilePath = {}
+    jsonWazuhFilePath["uuid"] = uuid;
+    jsonWazuhFilePath["path"] = path;
+    var dataJSON = JSON.stringify(jsonWazuhFilePath);
+    
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+    })
+    .catch(function (error) {
+    });
+
+}
+
+function PingWazuhFiles(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/pingWazuhFiles/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000,
+    })
+    .then(function (response) {
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong>Get Wazuh files: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            var html = "";
+            var count = 1;
+            for (path in response.data){
+                html= html + '<tr>'+
+                    '<td id="'+count+'-wazuh-files">'+response.data[path]+'</td>'+
+                    '<td><span class="badge badge-pill bg-success align-text-bottom text-white">ON</span></td>'+
+                    '<td style="color:grey;">'+
+                        '<i class="fas fa-play-circle" style="cursor: pointer;"></i> &nbsp'+
+                        '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="DeleteWazuhFile(\''+uuid+'\', \''+count+'\')"></i>'+
+                    '</td>'+
+                '<tr>';
+                count++;
+            }
+            document.getElementById('wazuh-table').innerHTML = html;
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong>Get Wazuh files: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+

@@ -123,7 +123,7 @@ function editRuleset(fileuuid, nodeName){
 
 function loadRulesetDetails(sid, fileuuid, ipmaster, portmaster){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/showRuleDetails.html?sid='+sid+'&fileuuid='+fileuuid;
+    document.location.href = 'https://' + ipmaster + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
 }
 
 function addToCustomRuleset(rulesetuuid){

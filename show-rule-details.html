@@ -55,7 +55,7 @@
         <main role="main" class="container">
 
             <!--Alert-->
-        <div id="floating-alert" style="top: 5px;">
+            <div id="floating-alert" style="top: 5px;">
             </div>
     
             <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
@@ -63,6 +63,17 @@
                 <div class="lh-100">
                     <h3 class="mb-0 text-white lh-100" id="rule-title">Rule description: </h3>
                     <small id="rule-subtitle">Rule sid: </small>
+                </div>
+            </div>
+
+            <!-- DISCLAIMER FOR VERIFY RULES BEFORE UPDATE -->
+            <div class="d-flex p-3 my-3 text-white-50 bg-red rounded shadow-sm">
+                <div class="lh-100">
+                    <h2 class="mb-0 text-white lh-100" style="float:right;">ONLY FOR EXPERTS. USE AT YOUR OWN RISK</h2>
+                    <!-- <br>
+                    <h4 class="text-justify mb-0 text-white lh-100">We don't make any warranties about the completness, reliability and accuracy of the information after any change.
+                        Any action you take is strictly at your own risk, and we will no't liable for any losses or bad behaviuor of the system.
+                    </h4> -->
                 </div>
             </div>
     
@@ -86,15 +97,15 @@
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="js/axios/dist/axios.js"></script>
+        <script src="js/jquery-3.3.1.js"></script>
         <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script>window.jQuery || document.write('<script src="../css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script> -->
         <!-- <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha26-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script> -->
         <!-- <script src="../css/site/docs/4.1/assets/js/vendor/popper.min.js"></script> -->
         <script src="css/dist/js/bootstrap.min.js"></script>
-        <script src="js/jquery-3.3.1.js"></script>
         <!-- <script src="../css/site/docs/4.1/assets/js/vendor/holder.min.js"></script> -->
         <script src="js/offcanvas.js"></script>
-        <script src="js/showRuleDetails.js"></script>
+        <script src="js/show-rule-details.js"></script>
         <script src="js/loadTitle.js"></script>
     </body>
 </html>

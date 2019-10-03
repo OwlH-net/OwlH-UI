@@ -1511,7 +1511,12 @@ function showModalPorts(response, uuid){
                                 '<th width="10%">Select</th>                                 ' +
                             '</tr>                                                        ' +
                         '</thead>                                                     ' +
-                        '<tbody>                                                     '
+                        '<tbody>                                                     '+
+                            '<div class="modal-footer" id="ruleset-note-footer-btn">'+
+                                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                                '<button type="button" class="btn btn-dark" data-dismiss="modal" onclick="deleteAllPorts(\''+uuid+'\')">Delete all</button>' +
+                                '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePorts(\''+uuid+'\')">Delete</button>' +
+                            '</div>';
                             for(line in response.data){
                                 var first = new Date(response.data[line]["first"]*1000);
                                 var last = new Date(response.data[line]["last"]*1000);

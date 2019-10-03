@@ -1966,14 +1966,24 @@ function StopWazuh(uuid) {
 
 function DeleteWazuhFile(uuid, count){
     var path = document.getElementById(count+'-wazuh-files').innerHTML;
-
+    var totalCount = document.getElementById('wazuh-count-table-value').value
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deleteWazuhFile';
     
+    var array = []
+    for (x = 1; x <= totalCount; x++) {
+        if (x != count){
+            array.push(document.getElementById(x+'-wazuh-files').innerHTML);
+            // console.log(document.getElementById(x+'-wazuh-files').innerHTML);
+        }
+        // var path = document.getElementById(count+'-wazuh-files').innerHTML;
+    }
+
+
     var jsonWazuhFilePath = {}
     jsonWazuhFilePath["uuid"] = uuid;
-    jsonWazuhFilePath["path"] = path;
+    jsonWazuhFilePath["paths"] = array;
     var dataJSON = JSON.stringify(jsonWazuhFilePath);
     
     axios({
@@ -2023,6 +2033,7 @@ function PingWazuhFiles(uuid) {
                 '<tr>';
                 count++;
             }
+            document.getElementById('wazuh-count-table-value').value = count-1;
             document.getElementById('wazuh-table').innerHTML = html;
         }
     })

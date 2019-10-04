@@ -23,8 +23,9 @@ function loadPlugins(){
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             //suricata
             '<p><img src="img/suricata.png" alt="" width="30">'      +           
-                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
+                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | &nbsp<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
                 '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
+
                 '</span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
@@ -44,7 +45,7 @@ function loadPlugins(){
                 '</div><br><br>'+
             // //zeek
             '<p><img  src="img/bro.png" alt="" width="30">'+
-            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+
+            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |&nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+
             '  </span>' +
             '   <button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
             '</p>'+
@@ -69,9 +70,10 @@ function loadPlugins(){
         '<span id="transport-form-'+uuid+'" style="display:block"><br>'+
             '<p><img src="img/wazuh.png" alt="" width="30"> '+
             '<span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | ' +
-            '<span style="font-size: 15px; color: grey;" >                                  ' +
+            '<span style="font-size: 15px; color: grey;">                                  ' +
                 '<i class="fas fa-stop-circle" style="cursor: pointer;" id="'+uuid+'-wazuh-icon"></i> &nbsp' +
                 '<i class="fas fa-sync-alt" style="cursor: pointer;" title="Reload Wazuh information" id="reload-wazuh"></i>' +
+                ' <a style="color:black;">|</a> <span style="cursor: pointer;" title="Edit main Wazuh config file" class="badge bg-primary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\',\'none\',\'/var/ossec/etc/ossec.conf\')">Edit main config file</span>'+
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" id="show-wazuh-add-file">Add file</button>'+ 
             '</span></p>'+
             '<div>'+
@@ -2142,14 +2144,14 @@ function PingWazuhFiles(uuid) {
                     if(response.data[pos]["size"] < 0){
                         html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
                     }else{
-                        if(response.data[pos]["size"]<1000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]+' Bytes</span>';}
-                        if(response.data[pos]["size"]>1000 && response.data[pos]["size"]<1000000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]/1000+' kB</span>';}
-                        if(response.data[pos]["size"]>1000000 && response.data[pos]["size"]<1000000000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]/1000000+' MB</span>';}
-                        if(response.data[pos]["size"]>1000000000 && response.data[pos]["size"]<1000000000000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]/1000000000+' GB</span>';}
+                        if(response.data[pos]["size"]<1024){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"].toFixed(2)+' Bytes</span>';}
+                        if(response.data[pos]["size"]>=1024 && response.data[pos]["size"]<1048576){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[pos]["size"]/1024).toFixed(2)+' kB</span>';}
+                        if(response.data[pos]["size"]>=1048576 && response.data[pos]["size"]<1073741824){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[pos]["size"]/1048576).toFixed(2)+' MB</span>';}
+                        if(response.data[pos]["size"]>=1073741824){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[pos]["size"]/1073741824).toFixed(2)+' GB</span>';}
                     }
                     html = html + '</td>'+
                     '<td style="color:grey; word-wrap: break-word;">';
-                        if(response.data[pos]["size"] >0){
+                        if(response.data[pos]["size"] >=0){
                             html = html + '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data[pos]["path"]+'\')">10</span> &nbsp'+
                             '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[pos]["path"]+'\')">50</span> &nbsp'+
                             '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[pos]["path"]+'\')">100</span> &nbsp';
@@ -2179,7 +2181,7 @@ function PingWazuhFiles(uuid) {
 
 function LoadPageLastLines(uuid, line, path) {
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/load-last-lines.html?uuid='+uuid+'&line='+line+'&path='+path;
+    document.location.href = 'https://' + ipmaster + '/load-content.html?uuid='+uuid+'&line='+line+'&path='+path;
 }
 
 function PingWazuh(uuid) {

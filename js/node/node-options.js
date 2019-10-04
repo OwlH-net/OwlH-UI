@@ -44,7 +44,7 @@ function loadPlugins(){
                 '</div><br><br>'+
             // //zeek
             '<p><img  src="img/bro.png" alt="" width="30">'+
-            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+
+            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+
             '  </span>' +
             '   <button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
             '</p>'+
@@ -68,11 +68,12 @@ function loadPlugins(){
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'transport\',\''+uuid+'\')"><b>Transport</b> <i class="fas fa-sort-down" id="transport-form-icon-'+uuid+'"></i></h6>'+
         '<span id="transport-form-'+uuid+'" style="display:block"><br>'+
             '<p><img src="img/wazuh.png" alt="" width="30"> '+
-            '<span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |                                        ' +
+            '<span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | ' +
             '<span style="font-size: 15px; color: grey;" >                                  ' +
                 '<i class="fas fa-stop-circle" style="cursor: pointer;" id="'+uuid+'-wazuh-icon"></i> &nbsp' +
-                '<i class="fas fa-sync-alt" style="cursor: pointer;"></i>' +
-            '</span></p> '+
+                '<i class="fas fa-sync-alt" style="cursor: pointer;" title="Reload Wazuh information" id="reload-wazuh"></i>' +
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" id="show-wazuh-add-file">Add file</button>'+ 
+            '</span></p>'+
             '<div>'+
                 '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                     '<thead>'+
@@ -81,6 +82,19 @@ function loadPlugins(){
                         '<th width="20%">Actions</th>'+
                     '</thead>'+
                     '<tbody id="wazuh-table">'+
+                        '<tr id="wazuh-insert" style="display:none" bgcolor="palegreen">'+
+                            '<td colspan="2">'+
+                                '<div class="col">'+
+                                    'Path: <input class="form-control" id="wazuh-add-line">'+
+                                '</div>'+
+                            '</td>'+
+                            '<td>'+
+                                '<div class="col">'+
+                                    '<button type="button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="addNewWazuhPath(\''+uuid+'\')">Save</button> &nbsp'+
+                                    '<button type="button" class="btn btn-danger float-right" style="font-size: 15px;" id="wazuh-close-button" onclick="hideInputAreaValue(\'wazuh-insert\')">Cancel</button>'+ //onoclick="hideInputAreaValue(\'wazuh-insert\')"
+                                '</div>'+
+                            '</td>'+
+                        '</tr>'+
                     '</tbody>'+
                 '</table>'+
             '</div>'+
@@ -149,7 +163,7 @@ function loadPlugins(){
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'analyzer\',\''+uuid+'\')"><b>Analyzer</b> <i class="fas fa-sort-down" id="analyzer-form-icon-'+uuid+'"></i></h6>'+
         '<span id="analyzer-form-'+uuid+'" style="display:block"><br>'+
-            '<table width="100%">'+
+            '<table width="100%" tyle="table-layout: fixed">'+
                 '<tr>'+
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
                     '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
@@ -162,7 +176,7 @@ function loadPlugins(){
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'knownports\',\''+uuid+'\')"><b>Knownports</b> <i class="fas fa-sort-down" id="knownports-form-icon-'+uuid+'"></i></h6>'+
         '<span id="knownports-form-'+uuid+'" style="display:block"><br>'+
-            '<table width="100%">'+
+            '<table width="100%" tyle="table-layout: fixed">'+
                 '<tr>'+
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
                     '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
@@ -260,9 +274,44 @@ function loadPlugins(){
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
+    $('#reload-wazuh').click(function(){ loadPlugins();});
+    $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
 }
 
+function hideInputAreaValue(key){
+    document.getElementById(key).style.display = "none";
+}
+
+function addNewWazuhPath(uuid){      
+    if (document.getElementById("wazuh-add-line").value == ""){
+        $("#wazuh-add-line").prop('required',true);
+        $("#wazuh-add-line").prop('placeholder',"Please, insert a valid path");
+    }else{
+        $("#wazuh-insert").hide();
+        var html = ""
+        document.getElementById("wazuh-count-table-value").value++;
+        var count = document.getElementById("wazuh-count-table-value").value;
+        var contentInput = document.getElementById("wazuh-add-line").value;
+        html = html + '<tr>'+
+            '<td id="'+count+'-wazuh-files">'+contentInput+'</td>'+
+            '<td><span class="badge badge-pill bg-success align-text-bottom text-white">ON</span></td>'+
+            '<td style="color:grey;">'+
+                '<i class="fas fa-play-circle" style="cursor: pointer;"></i> &nbsp'+
+                '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteWazuhFile(\''+uuid+'\', \''+contentInput+'\', \''+count+'\')"></i>'+
+            '</td>'+
+        '<tr>';
+        document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;  
+
+        addWazuhFile(uuid);
+    }
+}
+
+
 function ChangeMainServiceStatus(uuid, param, service){
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
     var currentStatus = document.getElementById(service+'-current-status').innerHTML;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -296,10 +345,14 @@ function ChangeMainServiceStatus(uuid, param, service){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
             loadPlugins();
         }
     })
     .catch(function (error) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
         $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -1501,7 +1554,7 @@ function showModalPorts(response, uuid){
                     '<h5 class="modal-title" style="color:red;">Error retrieving ports...</h5>'+
                 '</div>';
             }else{
-                html = html + '<div class="modal-body">  '+
+                html = html + '<div class="modal-body">'+
                     '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
                         '<thead>                                                      ' +
                             '<tr>                                                         ' +
@@ -1969,6 +2022,63 @@ function StopWazuh(uuid) {
     });
 }
 
+function addWazuhFile(uuid){
+    var totalCount = document.getElementById('wazuh-count-table-value').value
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/addWazuhFile';
+    
+    var array = []
+    for (x = 1; x <= totalCount; x++) {
+        array.push(document.getElementById(x+'-wazuh-files').innerHTML);
+    }
+
+    var jsonWazuhFilePath = {}
+    jsonWazuhFilePath["uuid"] = uuid;
+    jsonWazuhFilePath["paths"] = array;
+    var dataJSON = JSON.stringify(jsonWazuhFilePath);
+    
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        loadPlugins();
+    })
+    .catch(function (error) {
+    });
+}
+
+function ModalDeleteWazuhFile(uuid, name, count){
+    var modalWindow = document.getElementById('modal-window');
+    modalWindow.innerHTML =
+    '<div class="modal-dialog modal-md">'+
+      '<div class="modal-content">'+
+
+        '<div class="modal-header" style="word-break: break-all;">'+
+          '<h4 class="modal-title">Delete Wazuh path</h4>'+
+          '<button type="button" class="close" id="delete-wazuh-cross">&times;</button>'+
+        '</div>'+
+
+        '<div class="modal-body" style="word-break: break-all;">'+
+            '<p>Do you want to delete this Wazuh path: <b>'+name+'</b></p>'+
+        '</div>'+
+
+        '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
+          '<button type="button" class="btn btn-secondary" id="delete-wazuh-close">Close</button>'+
+          '<button type="button" class="btn btn-danger" id="delete-wazuh-ok">Delete</button>'+
+        '</div>'+
+
+      '</div>'+
+    '</div>';
+    $('#modal-window').modal("show");
+    $('#delete-wazuh-ok').click(function(){ $('#modal-window').modal("hide"); DeleteWazuhFile(uuid, count); });
+    $('#delete-wazuh-cross').click(function(){ $('#modal-window').modal("hide");});
+    $('#delete-wazuh-close').click(function(){ $('#modal-window').modal("hide");});
+}
+
 function DeleteWazuhFile(uuid, count){
     var path = document.getElementById(count+'-wazuh-files').innerHTML;
     var totalCount = document.getElementById('wazuh-count-table-value').value
@@ -1980,11 +2090,8 @@ function DeleteWazuhFile(uuid, count){
     for (x = 1; x <= totalCount; x++) {
         if (x != count){
             array.push(document.getElementById(x+'-wazuh-files').innerHTML);
-            // console.log(document.getElementById(x+'-wazuh-files').innerHTML);
         }
-        // var path = document.getElementById(count+'-wazuh-files').innerHTML;
     }
-
 
     var jsonWazuhFilePath = {}
     jsonWazuhFilePath["uuid"] = uuid;
@@ -1998,10 +2105,10 @@ function DeleteWazuhFile(uuid, count){
         data: dataJSON
     })
     .then(function (response) {
+        loadPlugins();
     })
     .catch(function (error) {
     });
-
 }
 
 function PingWazuhFiles(uuid) {
@@ -2027,19 +2134,34 @@ function PingWazuhFiles(uuid) {
         }else{
             var html = "";
             var count = 1;
-            for (path in response.data){
-                html= html + '<tr>'+
-                    '<td id="'+count+'-wazuh-files">'+response.data[path]+'</td>'+
-                    '<td><span class="badge badge-pill bg-success align-text-bottom text-white">ON</span></td>'+
-                    '<td style="color:grey;">'+
-                        '<i class="fas fa-play-circle" style="cursor: pointer;"></i> &nbsp'+
-                        '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="DeleteWazuhFile(\''+uuid+'\', \''+count+'\')"></i>'+
+            var sufixSize = "";
+            for (pos in response.data){
+                html = html + '<tr>'+
+                    '<td style="word-wrap: break-word;" id="'+count+'-wazuh-files">'+response.data[pos]["path"]+'</td>'+
+                    '<td style="word-wrap: break-word;">';
+                    if(response.data[pos]["size"] == 0){
+                        html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-danger align-text-bottom text-white">'+response.data[pos]["size"]+' Bytes</span>';
+                    }else{
+                        if(response.data[pos]["size"]<1000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]+' Bytes</span>';}
+                        if(response.data[pos]["size"]>1000 && response.data[pos]["size"]<1000000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]/1000+' kB</span>';}
+                        if(response.data[pos]["size"]>1000000 && response.data[pos]["size"]<1000000000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]/1000000+' MB</span>';}
+                        if(response.data[pos]["size"]>1000000000 && response.data[pos]["size"]<1000000000000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]/1000000000+' GB</span>';}
+                    }
+                    html = html + '</td>'+
+                    '<td style="color:grey; word-wrap: break-word;">';
+                        if(response.data[pos]["size"] != 0){
+                            html = html + '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data[pos]["path"]+'\')">10</span> &nbsp'+
+                            '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[pos]["path"]+'\')">50</span> &nbsp'+
+                            '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[pos]["path"]+'\')">100</span> &nbsp';
+                        }
+                        html = html + '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteWazuhFile(\''+uuid+'\', \''+response.data[pos]["path"]+'\', \''+count+'\')"></i>'+
                     '</td>'+
                 '<tr>';
                 count++;
             }
             document.getElementById('wazuh-count-table-value').value = count-1;
-            document.getElementById('wazuh-table').innerHTML = html;
+            document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;
+               
         }
     })
     .catch(function (error) {
@@ -2053,6 +2175,11 @@ function PingWazuhFiles(uuid) {
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
+}
+
+function LoadPageLastLines(uuid, line, path) {
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/load-last-lines.html?uuid='+uuid+'&line='+line+'&path='+path;
 }
 
 function PingWazuh(uuid) {
@@ -2855,6 +2982,11 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     }else{
+        //desplegar load bar
+        var progressBar = document.getElementById('progressBar-options');
+        var progressBarDiv = document.getElementById('progressBar-options-div');
+        progressBar.style.display = "block";
+        progressBarDiv.style.display = "block";
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ChangeServiceStatus';
@@ -2888,6 +3020,8 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
             }else{
                 loadPlugins();
             }
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -2899,6 +3033,8 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
         });
     }
 }
@@ -2953,7 +3089,7 @@ function loadNetworkValuesService(uuid, name, service, type){
                 if (response.data.ack == "false"){
                     html = html + '<span><h6>Error loading interfaces</h6></span>';
                 } else {
-                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                    html = html + '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" style="width:1px">' +
                     '<thead>              ' +
                     '<tr>                 ' +
                     '<th>Network</th>        ' +

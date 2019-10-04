@@ -10,7 +10,6 @@ function loadJSONdata(){
 }
 loadJSONdata();
 
-
 function loadRule(){
     var urlWeb = new URL(window.location.href);
     var fileuuid = urlWeb.searchParams.get("fileuuid");
@@ -302,7 +301,6 @@ function getRule(sid, fileuuid){
                     '<a class="btn btn-primary float-right text-decoration-none text-white" onclick="saveCurrentRule()">Save</a> &nbsp'+
                     '<a class="btn btn-danger float-right text-decoration-none text-white" style=" margin-right: 10px;" onclick="cancelRuleEdit()">Cancel</a>'+
                 '</div>';
-            // content.innerHTML = content.innerHTML + "<b>RAW rule</b><br>"+response.data.raw + "<br><br><br><br>";
             content.innerHTML = content.innerHTML + '<b>RAW rule</b><br><p style="word-wrap: break-word;">'+response.data.raw + '</p><br><br><br><br>';
             content.innerHTML = content.innerHTML + html + "<br><br>";
             $('#add-new-key-value-line').click(function(){ $('#add-new-value-row').show(); });

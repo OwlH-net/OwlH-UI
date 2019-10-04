@@ -2139,8 +2139,8 @@ function PingWazuhFiles(uuid) {
                 html = html + '<tr>'+
                     '<td style="word-wrap: break-word;" id="'+count+'-wazuh-files">'+response.data[pos]["path"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
-                    if(response.data[pos]["size"] == 0){
-                        html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-danger align-text-bottom text-white">'+response.data[pos]["size"]+' Bytes</span>';
+                    if(response.data[pos]["size"] < 0){
+                        html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
                     }else{
                         if(response.data[pos]["size"]<1000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]+' Bytes</span>';}
                         if(response.data[pos]["size"]>1000 && response.data[pos]["size"]<1000000){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]/1000+' kB</span>';}
@@ -2149,7 +2149,7 @@ function PingWazuhFiles(uuid) {
                     }
                     html = html + '</td>'+
                     '<td style="color:grey; word-wrap: break-word;">';
-                        if(response.data[pos]["size"] != 0){
+                        if(response.data[pos]["size"] >0){
                             html = html + '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data[pos]["path"]+'\')">10</span> &nbsp'+
                             '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[pos]["path"]+'\')">50</span> &nbsp'+
                             '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[pos]["path"]+'\')">100</span> &nbsp';

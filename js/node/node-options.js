@@ -72,7 +72,7 @@ function loadPlugins(){
             '<span id="'+uuid+'-wazuh" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | ' +
             '<span style="font-size: 15px; color: grey;">                                  ' +
                 '<i class="fas fa-stop-circle" style="cursor: pointer;" id="'+uuid+'-wazuh-icon"></i> &nbsp' +
-                '<i class="fas fa-sync-alt" style="cursor: pointer;" title="Reload Wazuh information" id="reload-wazuh"></i>' +
+                '<i class="fas fa-sync-alt" style="cursor: pointer;" title="Reload Wazuh information" id="reload-wazuh" onclick="ReloadFilesData(\''+uuid+'\')"></i>' +
                 ' <a style="color:black;">|</a> <span style="cursor: pointer;" title="Edit main Wazuh config file" class="badge bg-primary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\',\'none\',\'/var/ossec/etc/ossec.conf\')">Edit main config file</span>'+
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" id="show-wazuh-add-file">Add file</button>'+ 
             '</span></p>'+
@@ -162,6 +162,7 @@ function loadPlugins(){
             '</div><br><br>'+
         '</span>'+
     '</div>'+
+    //analyzer
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'analyzer\',\''+uuid+'\')"><b>Analyzer</b> <i class="fas fa-sort-down" id="analyzer-form-icon-'+uuid+'"></i></h6>'+
         '<span id="analyzer-form-'+uuid+'" style="display:block"><br>'+
@@ -172,9 +173,22 @@ function loadPlugins(){
                     '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
                     '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey; cursor: pointer;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
                 '</tr>'+
+                '<tr>'+
+                    '<table class="table table-hover" width="100%" style="table-layout: fixed">'+
+                        '<thead>'+
+                            '<th width="60%">File</th>'+
+                            '<th width="25%">Status</th>'+
+                            '<th width="15%">Actions</th>'+
+                        '</thead>'+
+                        '<tbody id="analyzer-file-content">'+
+                        '</tbody>'+
+                    '</table>'+
+                '</tr>'+
+
             '</table>'+
         '</span>'+
     '</div>'+
+    //knownports
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'knownports\',\''+uuid+'\')"><b>Knownports</b> <i class="fas fa-sort-down" id="knownports-form-icon-'+uuid+'"></i></h6>'+
         '<span id="knownports-form-'+uuid+'" style="display:block"><br>'+
@@ -276,7 +290,8 @@ function loadPlugins(){
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
-    $('#reload-wazuh').click(function(){ loadPlugins();});
+    // $('#reload-analyzer').click(function(){ ReloadFilesData(uuid);});
+    // $('#reload-wazuh').click(function(){ ReloadFilesData(uuid);});
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
 }
 
@@ -2140,7 +2155,7 @@ function PingWazuhFiles(uuid) {
             for (pos in response.data){
                 html = html + '<tr>'+
                     '<td style="word-wrap: break-word;" id="'+count+'-wazuh-files">'+response.data[pos]["path"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
+                    '<td style="word-wrap: break-word;" id="wazuh-file-column-'+count+'">';
                     if(response.data[pos]["size"] < 0){
                         html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
                     }else{
@@ -3060,12 +3075,109 @@ function PingAnalyzer(uuid) {
             document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-play-circle";
             document.getElementById('analyzer-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
         }
-        return true;
+        var html = '<td>'+response.data["path"]+'</td>'+
+            '<td id="analyzer-file-path">';
+                if(response.data["size"] < 0){
+                    html = html +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
+                }else{
+                    if(response.data["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data["size"].toFixed(2)+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data["size"]>=1024 && response.data["size"]<1048576){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1024).toFixed(2)+' kB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data["size"]>=1048576 && response.data["size"]<1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1048576).toFixed(2)+' MB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data["size"]>=1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1073741824).toFixed(2)+' GB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                }
+                html = html +'</td>'+
+            '<td>'+
+                '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data["path"]+'\')">10</span> &nbsp'+
+                '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data["path"]+'\')">50</span> &nbsp'+
+                '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data["path"]+'\')">100</span> &nbsp';
+            '</td>';
+        document.getElementById('analyzer-file-content').innerHTML = html;
+
+        // $('#reload-analyzer').click(function(){ ReloadFilesData(uuid);});
     })
     .catch(function (error) {
-        return false;
+
     });
 }
+
+function ReloadFilesData(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    document.getElementById('analyzer-file-size').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/reloadFilesData/'+uuid;
+
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        var wazuhCount = document.getElementById('wazuh-count-table-value').value;
+        for (file in response.data){
+            console.log(response.data);
+            if (file == "analyzer"){
+                var html = ""
+                if(response.data[file]["size"] < 0){
+                    html = html +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
+                }else{
+                    if(response.data[file]["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["size"].toFixed(2)+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1024).toFixed(2)+' kB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1048576).toFixed(2)+' MB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data[file]["size"]>=1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1073741824).toFixed(2)+' GB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                }
+                document.getElementById('analyzer-file-path').innerHTML = html;
+                document.getElementById('analyzer-file-size').value = response.data[file]["size"];
+            }else if (file == "wazuh"){
+                for (value in response.data[file]){
+                    console.log("Value: "+response.data[file][value]);
+                    console.log("Path: "+value);
+
+                    for (x = 1; x <= wazuhCount; x++){
+                        var htmlWazuh = "";
+                        if (value == document.getElementById(x+'-wazuh-files').innerHTML){
+                            if(response.data[file][value] < 0){
+                                htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
+                            }else{
+                                if(response.data[file][value]<1024){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file][value].toFixed(2)+' Bytes</span>';}
+                                if(response.data[file][value]>=1024 && response.data[file][value]<1048576){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1024).toFixed(2)+' kB</span>';}
+                                if(response.data[file][value]>=1048576 && response.data[file][value]<1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1048576).toFixed(2)+' MB</span>';}
+                                if(response.data[file][value]>=1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1073741824).toFixed(2)+' GB</span>';}
+                            }
+                            document.getElementById('wazuh-file-column-'+x).innerHTML = htmlWazuh; 
+                        }
+                    }
+                }
+
+
+
+
+
+
+            }
+        }
+        $('#reload-analyzer').click(function(){ ReloadFilesData(uuid);});
+        $('#reload-wazuh').click(function(){ ReloadFilesData(uuid);});
+    })
+    .catch(function (error) {
+    });
+    
+    
+    
+    
+    
+    // //wazuh
+    // //analyzer
+    // if (fileSize > response.data["size"]) {
+    //     document.getElementById('analyzer-comparative').className = "fas fa-greater-than";
+    // }else if (fileSize < response.data["size"]) {
+    //     document.getElementById('analyzer-comparative').className = "fas fa-less-than";
+    // }else if (fileSize == response.data["size"]) {
+    //     document.getElementById('analyzer-comparative').className = "fas fa-equals";
+    // }
+    // fileSize = response.data["size"];
+    // console.log("After: "+fileSize);
+}
+
 
 function loadNetworkValuesService(uuid, name, service, type){
     var ipmaster = document.getElementById('ip-master').value;

@@ -33,10 +33,10 @@
     
         <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="nodes.html">Nodes</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="rulesets.html">Open Rules</span></a>
                 </li>
                 <li class="nav-item">
@@ -58,40 +58,28 @@
 
 
     <main role="main" class="container">
+        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
+            <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
+            <div class="lh-100">
+                <h3 class="mb-0 text-white lh-100" id="ruleset-search-title">Ruleset details</h3>
+            </div>
+        </div>
+
+        <div id="list-ruleset-details">
+        </div>
+    
+        <!-- Modal delete ruleset details -->
+        <div class="modal fade" id="modal-detail">
+        </div>
 
         <!--Alert-->
         <div id="floating-alert" style="top: 5px;">
         </div>
 
-        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
-            <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
-            <div class="lh-100">
-                <h3 class="mb-0 text-white lh-100" id="node-config-title">Master</h3>
-                <small>Node configuration panel</small>
-            </div>
-        </div>
-
-        <!-- ProgressBar -->            
-        <div id="progressBar-options-div" class="progress" style="display:none;">
-            <div id="progressBar-options" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width: 100%"> &nbsp </div>
-        </div>
-        <br>
-        
-        <!-- Modal -->
-        <div class="modal fade" id="modal-window">
-        </div>
-
-        <!--Every rule row-->
-        <div class="container" id="master-table-plugins">
-        </div>
-        
-        <!-- Load master ip/port and values -->
+        <!-- Load master ip/port -->
         <div id="load-json-data" style="display: none;">
             <input id="ip-master" type="text" class="form-control">
             <input id="port-master" type="text" class="form-control">
-            <input id="current-ruleset" type="text" class="form-control">
-            <input id="analyzer-file-size" type="number" class="form-control" value="1234">
-            <input id="wazuh-count-table-value" type="text" class="form-control">
         </div>
     </main>
 
@@ -102,10 +90,8 @@
     <script src="js/axios/dist/axios.js"></script> 
     <script src="js/jquery-3.3.1.js"></script>
     <script src="css/dist/js/bootstrap.min.js"></script>
-    <script src="css/chart/chart.js"></script>
     <script src="js/offcanvas.js"></script>
-    <!-- <script src="js/node/dataflow.js"></script> -->
-    <script src="js/node/node-options.js"></script>
+    <script src="js/ruleset-search.js"></script>
     <script src="js/loadTitle.js"></script>
   </body>
 </html>

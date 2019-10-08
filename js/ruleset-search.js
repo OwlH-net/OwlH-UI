@@ -1,17 +1,14 @@
 function loadJSONdata(){
-    $.getJSON('../conf/ui.conf', function(data) {
-      var ipLoad = document.getElementById('ip-master'); 
-      ipLoad.value = data.master.ip;
-      var portLoad = document.getElementById('port-master');
-      portLoad.value = data.master.port;
-      loadTitleJSONdata();
-      getRulesetsBySearch();
-    });
-  }
-  loadJSONdata();
-
-
-
+	$.getJSON('../conf/ui.conf', function(data) {
+	var ipLoad = document.getElementById('ip-master'); 
+	ipLoad.value = data.master.ip;
+	var portLoad = document.getElementById('port-master');
+	portLoad.value = data.master.port;
+	loadTitleJSONdata();
+	getRulesetsBySearch();
+	});
+}
+loadJSONdata();
 
 function getRulesetsBySearch(){
     var urlWeb = new URL(window.location.href);
@@ -23,10 +20,11 @@ function getRulesetsBySearch(){
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/getRulesetsBySearch';
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/search/getRulesetsBySearch';
 
     var jsondata = {}
     jsondata["search"] = search;
+    jsondata["rulesetName"] = rulesetName;
     jsondata["uuid"] = uuid
     var searchJSON = JSON.stringify(jsondata);
     axios({

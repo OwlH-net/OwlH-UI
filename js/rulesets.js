@@ -77,12 +77,19 @@ function generateAllRulesetsHTMLOutput(response) {
     }
     html = html + '</tbody></table>';
 
+    document.getElementById('search-input-ruesets').innerHTML = '<input class="form-control w-25 my-3" type="text" placeholder="Search" aria-label="Search" id="search-ruleset-details"><button type="button" class="btn btn-primary" onclick="loadRulesetBySearch()"><i class="fas fa-search"></i></button>'
 
     if (isEmptyRulesets) {
         return '<div style="text-align:center"><h3>No Rules available...</h3></div>';
     } else {
         return html;
     }
+}
+
+function loadRulesetBySearch(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var search = document.getElementById('search-ruleset-details').value;
+    document.location.href = 'https://' + ipmaster + '/ruleset-search.html?&search='+search;
 }
 
 function modalShowLog(uuid, name){

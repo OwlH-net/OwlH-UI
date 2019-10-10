@@ -114,7 +114,7 @@ function modalAddNewLines(uuid, name){
 function loadRulesetBySearch(uuid, rulesetName){
     var ipmaster = document.getElementById('ip-master').value;
     var search = document.getElementById('search-ruleset-details').value;
-    document.location.href = 'https://' + ipmaster + '/ruleset-search.html?uuid='+uuid+'&rulesetName='+rulesetName+'&search='+search;
+    document.location.href = 'https://' + ipmaster + '/ruleset-search.html?rulesetName='+rulesetName+'&search='+search;
 }
 
 function addNewLines(uuid){

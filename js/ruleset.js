@@ -32,7 +32,6 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
     var html = "";
     var isCustomSourceType;
     for (rule in rules) {
-        console.log(rules[rule]["sourceType"]);
         if (rules[rule]["sourceType"] == "custom"){
             isCustomSourceType = true;
             continue;

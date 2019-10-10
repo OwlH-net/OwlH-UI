@@ -120,7 +120,7 @@ function editRuleset(fileuuid, nodeName){
     document.location.href = 'https://' + ipmaster + '/edit-ruleset.html?fileuuid='+fileuuid+'&file='+nodeName;
 }
 
-function loadRulesetDetails(sid, fileuuid, ipmaster, portmaster){
+function loadRulesetDetails(sid, fileuuid){
     var ipmaster = document.getElementById('ip-master').value;
     document.location.href = 'https://' + ipmaster + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
 }
@@ -174,15 +174,15 @@ function addToCustomRuleset(rulesetuuid){
                                 '<th style="width: 20%">Actions</th>                                ' +
                                 '</tr>                                                        ' +
                             '</thead>                                                     ' +
-                                '<tbody>                                                      ' ;
-                                    for (source in customRulesets) {
-                                        html = html + '<tr><td style="word-wrap: break-word;">'+
-                                            customRulesets[source]['name']+
-                                        '</td><td style="word-wrap: break-word;">'+
-                                            '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\',\''+rulesetuuid+'\')">Add</button>' +
-                                        '</td></tr>';
-                                    }
-                                html = html + '</tbody></table>'+
+                            '<tbody>                                                      ' ;
+                                for (source in customRulesets) {
+                                    html = html + '<tr><td style="word-wrap: break-word;">'+
+                                        customRulesets[source]['name']+
+                                    '</td><td style="word-wrap: break-word;">'+
+                                        '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\',\''+rulesetuuid+'\')">Add</button>' +
+                                    '</td></tr>';
+                                }
+                            html = html + '</tbody></table>'+
                         '</table>'+
                     '</div>'+
     

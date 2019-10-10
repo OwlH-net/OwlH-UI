@@ -37,50 +37,64 @@ function getRulesetsBySearch(){
         timeout: 30000,
         data: searchJSON
     })
-        .then(function (response) {
-            if (response.data.ack == "false") {
-                progressBar.style.display = "none";
-                progressBarDiv.style.display = "none";
-                html = html + '<div style="text-align:center"><h3 style="color:red;">Error retrieving search results...</h3></div>';
-            }else{
-                var html = "";
-                html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+    .then(function (response) {
+        if (response.data.ack == "false") {
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            html = html + '<div style="text-align:center"><h3 style="color:red;">Error retrieving search results...</h3></div>';
+        }else{
+            var html = "";
+            for (rule in response.data){    
+                html = html + '<table class="table table-hover" style="table-layout: fixed">' +
                 '<thead>' +
                     '<tr>' +
-                        '<th align="center" style="width: 7%">Status</th>' +
-                        '<th style="width: 10%">Sid</th>' +
-                        '<th>Description</th>' +
-                        '<th>Ruleset</th>' +
-                        '<th style="width: 8%">Actions</th>' +                
+                        '<th style="width: 20%">Sid</th>' +
+                        '<th colspan="3">Description</th>' +                     
                     '</tr>' +
                 '</thead>' +
                 '<tbody>';
-                for (rule in response.data){
-                    console.log(response.data);
                     html = html + '<tr>'+
-                        '<td>';
-                            if(response.data[rule]["Rulesets"][0]["status"] == "Enabled"){
-                                html = html + '<i class="fas fa-check-circle" style="color:green;"></i>';
-                            }else{
-                                html = html + '<i class="fas fa-times-circle" style="color:red;"></i>';
-                            }
-                        html = html + '</td>'+
                         '<td>'+response.data[rule]["sid"]+'</td>'+
-                        '<td>'+response.data[rule]["msg"]+'</td>'+
-                        '<td>'+response.data[rule]["Rulesets"][0]["name"]+'</td>'+
-                        '<td><i class="fas fa-play-circle"></i></td>'+
+                        '<td colspan="3">'+response.data[rule]["msg"]+'</td>'+
+                    '</tr>'+
+                    '<tr>'+
+                        '<thead>' +
+                            '<th width="10%">Status</th>' +
+                            '<th width="55%">File</th>' +            
+                            '<th width="25%">Ruleset</th>' +
+                            '<th width="10%">Actions</th>' +
+                        '</thead>' +
                     '</tr>';
-                }
-
+                    var rulesets = response.data[rule]["Rulesets"];
+                    for(element in rulesets){          
+                        html = html + '<tr>' +
+                            '<td width="10%">';
+                                if(rulesets[element]["status"] == "Enabled"){
+                                    html = html + '<i class="fas fa-check-circle" style="color:green;"></i>';
+                                }else{
+                                    html = html + '<i class="fas fa-times-circle" style="color:red;"></i>';
+                                }
+                            html = html + '</td>'+
+                            '<td width="55%">'+rulesets[element]["file"]+'</td>'+
+                            '<td width="25%">'+rulesets[element]["name"]+'</td>'+
+                            '<td width="10%"><i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+response.data[rule]["sid"]+'\', \''+rulesets[element]["uuid"]+'\')"></i></td>';
+                        '</tr>';
+                    }
                 html = html + '</tbody>'+
-                '</table>';
+                '</table><br><br>';
             }
+        }
+        console.log("OUTSIDE!!!");
+        document.getElementById('list-ruleset-search').innerHTML = html;
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        console.log(response.data);
+    })
+    .catch(function error() {
+    });
+}
 
-            document.getElementById('list-ruleset-search').innerHTML = html;
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
-
-        })
-        .catch(function error() {
-        });
+function loadRulesetDetails(sid, fileuuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
 }

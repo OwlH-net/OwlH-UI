@@ -54,7 +54,7 @@ function getRulesetsBySearch(){
                 '<thead>' +
                     '<tr>' +
                         '<th style="width: 20%">Sid</th>' +
-                        '<th colspan="4">Description</th>' +                     
+                        '<th colspan="5">Description</th>' +                     
                     '</tr>' +
                 '</thead>' +
                 '<tbody>';

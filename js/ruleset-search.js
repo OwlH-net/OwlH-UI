@@ -21,7 +21,11 @@ function getRulesetsBySearch(){
     var rulesetName = urlWeb.searchParams.get("rulesetName");
     var search = urlWeb.searchParams.get("search");
 
-    document.getElementById('ruleset-search-title').innerHTML = "Search result for ruleset: "+rulesetName;
+    if(rulesetName != null){
+        document.getElementById('ruleset-search-title').innerHTML = "Search result for ruleset: "+rulesetName;
+    }else{
+        document.getElementById('ruleset-search-title').innerHTML = "Ruleset search results";
+    }
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -38,6 +42,7 @@ function getRulesetsBySearch(){
         data: searchJSON
     })
     .then(function (response) {
+        console.log(response.data);
         if (response.data.ack == "false") {
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
@@ -49,19 +54,20 @@ function getRulesetsBySearch(){
                 '<thead>' +
                     '<tr>' +
                         '<th style="width: 20%">Sid</th>' +
-                        '<th colspan="3">Description</th>' +                     
+                        '<th colspan="4">Description</th>' +                     
                     '</tr>' +
                 '</thead>' +
                 '<tbody>';
                     html = html + '<tr>'+
                         '<td>'+response.data[rule]["sid"]+'</td>'+
-                        '<td colspan="3">'+response.data[rule]["msg"]+'</td>'+
+                        '<td colspan="4">'+response.data[rule]["msg"]+'</td>'+
                     '</tr>'+
                     '<tr>'+
                         '<thead>' +
                             '<th width="10%">Status</th>' +
                             '<th width="55%">File</th>' +            
                             '<th width="25%">Ruleset</th>' +
+                            '<th width="25%">Node</th>' +
                             '<th width="10%">Actions</th>' +
                         '</thead>' +
                     '</tr>';
@@ -77,6 +83,7 @@ function getRulesetsBySearch(){
                             html = html + '</td>'+
                             '<td width="55%">'+rulesets[element]["file"]+'</td>'+
                             '<td width="25%">'+rulesets[element]["name"]+'</td>'+
+                            '<td width="25%">'+rulesets[element]["node"]+'</td>'+
                             '<td width="10%"><i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+response.data[rule]["sid"]+'\', \''+rulesets[element]["uuid"]+'\')"></i></td>';
                         '</tr>';
                     }
@@ -84,11 +91,9 @@ function getRulesetsBySearch(){
                 '</table><br><br>';
             }
         }
-        console.log("OUTSIDE!!!");
         document.getElementById('list-ruleset-search').innerHTML = html;
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
-        console.log(response.data);
     })
     .catch(function error() {
     });

@@ -22,7 +22,7 @@ function loadPlugins(){
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             //suricata
-            '<p><img src="img/suricata.png" alt="" width="30">'      +           
+            '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+           
                 '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | &nbsp<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
                 '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
 
@@ -44,23 +44,24 @@ function loadPlugins(){
                     '</table>'+
                 '</div><br><br>'+
             // //zeek
-            '<p><img  src="img/bro.png" alt="" width="30">'+
-            '    <span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |&nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i>'+
-            '  </span>' +
-            '   <button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
-            '</p>'+
-            '<div>'+
-                    '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                        '<thead>'+
-                            '<th>Description</th>'+
-                            '<th>Status</th>'+
-                            '<th>Interface</th>'+
-                            '<th>Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="zeek-table-services">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div>'+
+            '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
+                '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |&nbsp '+
+                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp<b>|</b> &nbsp'+
+                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalon</span> &nbsp <span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span>'+
+            '<button id="add-zeek-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
+            '</div>'+
+            '<div id="add-zeek-table">'+
+                // '<table id="add-zeek-table" class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                //     '<thead id="">'+
+                //         '<th>Description</th>'+
+                //         '<th>Status</th>'+
+                //         '<th>Interface</th>'+
+                //         '<th>Actions</th>'+
+                //     '</thead>'+
+                //     '<tbody id="zeek-table-services">'+
+                //     '</tbody>'+
+                // '</table>'+
+            '</div>'+
         '</span>'+
     '</div>'+
     
@@ -284,8 +285,8 @@ function loadPlugins(){
     PingAnalyzer(uuid);
     // PingPorts(uuid);
     PingDataflow(uuid);
-    PingPluginsNode(uuid);
     GetMainconfData(uuid);
+    PingPluginsNode(uuid);
     getCurrentRulesetName(uuid);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
@@ -323,6 +324,60 @@ function addNewWazuhPath(uuid){
     }
 }
 
+function ChangeZeekMode(uuid, mode){
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/changeZeekMode';
+
+    var jsonService = {}
+    jsonService["uuid"] = uuid;
+    jsonService["mode"] = mode;
+    var dataJSON = JSON.stringify(jsonService);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Change Zeek mode error: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            loadPlugins();
+        }
+    })
+    .catch(function (error) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Change Zeek mode error: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+    });
+}
 
 function ChangeMainServiceStatus(uuid, param, service){
     var progressBar = document.getElementById('progressBar-options');
@@ -456,6 +511,84 @@ function GetMainconfData(uuid){
                     document.getElementById('zeek-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
                     document.getElementById('zeek-current-status').innerHTML = 'Enabled';
                 }
+                if(response.data[service]["mode"] == "standalone"){
+                    document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white standalone';
+                    document.getElementById('zeek-mode-standalone').disabled = true; 
+                    document.getElementById('add-zeek-button').style.display = "block"; 
+                    document.getElementById('zeek-mode-cluster').onclick = function(){ChangeZeekMode(uuid, "cluster");}; 
+                    html = '<table id="add-zeek-table" class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                        '<thead id="">'+
+                            '<th>Description</th>'+
+                            '<th>Status</th>'+
+                            '<th>Interface</th>'+
+                            '<th>Actions</th>'+
+                        '</thead>'+
+                        '<tbody id="zeek-table-services">'+
+                        '</tbody>'+
+                    '</table>';
+                    document.getElementById('add-zeek-table').innerHTML = html
+
+                }else if(response.data[service]["mode"] == "cluster"){
+                    document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white cluster';
+                    document.getElementById('zeek-mode-cluster').disabled = true; 
+                    document.getElementById('add-zeek-button').style.display = "none";
+                    document.getElementById('zeek-mode-standalone').onclick = function(){ChangeZeekMode(uuid, "standalone");}; 
+                    html = '<div class="cluster"><br>'+
+                        '<div>'+
+                            '<div><b style="display:inline;">Manager</b></div>'+
+                            '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                                '<thead>'+
+                                    '<th>Host</th>'+
+                                '</thead>'+
+                                '<tbody id="zeek-table-manager">'+
+                                    '<tr>'+
+                                        '<td>aa</td>'+
+                                    '</tr>'+
+                                '</tbody>'+
+                            '</table>'+
+                        '</div><br>'+
+                        '<div style="display:inline;">'+
+                            '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                                '<thead>'+
+                                    '<th>Host</th>'+
+                                '</thead>'+
+                                '<tbody id="zeek-table-host">'+
+                                    '<tr>'+
+                                        '<td>owlh host</td>'+
+                                    '</tr>'+
+                                '</tbody>'+
+                            '</table>'+
+                        '</div><br>'+
+                        '<div>'+
+                            '<div><b style="display:inline;">Proxy</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'proxy\')">Add worker</button></div>'+
+                            '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                                '<thead>'+
+                                    '<th>Host</th>'+
+                                '</thead>'+
+                                '<tbody id="zeek-table-proxy">'+
+                                    '<tr>'+
+                                        '<td>aa</td>'+
+                                    '</tr>'+
+                                '</tbody>'+
+                            '</table>'+
+                        '</div><br>'+
+                        '<div>'+
+                            '<div><b style="display:inline;">Worker</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'worker\')">Add proxy</button></div>'+
+                            '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                                '<thead>'+
+                                    '<th>Host</th>'+
+                                    '<th>Interface</th>'+
+                                '</thead>'+
+                                '<tbody id="zeek-table-worker">'+
+                                    '<tr>'+
+                                        '<td>aa</td>'+
+                                        '<td>aa</td>'+
+                                    '</tr>'+
+                                '</tbody>'+
+                            '</table>'+
+                        '</div><br>';
+                    document.getElementById('add-zeek-table').innerHTML = html
+                }
             }
         }
     })
@@ -470,6 +603,68 @@ function GetMainconfData(uuid){
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
+}
+
+function ModalAddClusterValue(uuid, type){
+    var html = '<div class="modal-dialog">'+
+      '<div class="modal-content">'+
+  
+        '<div class="modal-header">'+
+          '<h4 class="modal-title">Add '+type+'</h4>'+
+          '<button type="button" class="close" id="add-cluster-modal-cross">&times;</button>'+
+        '</div>'+
+  
+        '<div class="modal-body">'+
+          '<p>Insert the host:</p>'+
+          '<input type="text" class="form-control" id="new-cluster-host" value="" required><br>';
+          if (type == "worker"){
+            html = html + '<p>Insert the interface:</p>'+
+              '<input type="text" class="form-control" id="new-cluster-interface" value="" required>';
+          }else{
+            html = html + '<div id="new-cluster-interface"></div>';
+          }
+          html = html + '</div>'+
+  
+        '<div class="modal-footer" id="sync-node-footer-btn">'+
+          '<button type="button" class="btn btn-secondary" id="add-cluster-modal-close">Cancel</button>'+
+          '<button type="button" class="btn btn-primary" id="add-cluster-modal">Add</button>'+
+        '</div>'+
+  
+      '</div>'+
+    '</div>';
+    
+    document.getElementById('modal-window').innerHTML = html;
+    $('#modal-window').modal("show");
+    $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value, document.getElementById('new-cluster-interface').value); });
+    $('#add-cluster-modal-close').click(function(){ $('#modal-window').modal("hide");});
+    $('#add-cluster-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function AddClusterValue(uuid, type, host, interface){
+    if (type != "" || host != "" || (type == "worker" && interface != "")){
+        $('#modal-window').modal("hide");
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/addClusterValue';
+    
+        var jsonCluster = {}
+        jsonCluster["uuid"] = uuid;
+        jsonCluster["type"] = type;
+        jsonCluster["host"] = host;
+        if(type=="worker"){ jsonCluster["interface"] = interface;}
+        var dataJSON = JSON.stringify(jsonCluster);
+        axios({
+            method: 'post',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+            loadPlugins();
+        })
+        .catch(function (error) {
+        });
+    }
 }
 
 function PingDataflow(uuid){
@@ -2677,7 +2872,7 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }
             
-            document.getElementById('zeek-table-services').innerHTML = tableZeek;
+            if(($(".cluster")[0]) == undefined){ document.getElementById('zeek-table-services').innerHTML = tableZeek;}
             document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
             document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
             document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
@@ -2727,6 +2922,7 @@ function PingPluginsNode(uuid) {
     
     })
     .catch(function (error) {
+        console.log(error)
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

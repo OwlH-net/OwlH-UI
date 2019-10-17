@@ -33,7 +33,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="nodes.html">Nodes</a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="rulesets.html">Open Rules</span></a>
                     </li>
                     <li class="nav-item">
@@ -42,14 +42,14 @@
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="kibana.html">Kibana</a>
                     </li> -->
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="master.html">Master</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="config.html">Config</a>
                     </li>
                 </ul>
-                <p id="version-link"><p class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p></p>
+                <p id="current-version-text" class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
             </div>
         </nav>
 
@@ -62,19 +62,19 @@
             <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
                 <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
                 <div class="lh-100">
-                    <h3 class="mb-0 text-white lh-100">Create new ruleset</h3>
-                    <small>Summary</small>
+                    <h3 class="mb-0 text-white lh-100">Change control</h3>
+                    <small id="change-control-data"></small>
                 </div>
             </div>
 
             <!-- ProgressBar -->            
-            <div id="progressBar-create-div"class="progress">
-                <div id="progressBar-create" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width: 100%"> &nbsp </div>
+            <div id="progressBar-control-div"class="progress">
+                <div id="progressBar-control" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width: 100%"> &nbsp </div>
             </div>
             <br>
 
             <!-- rulesets list -->
-            <div id="new-ruleset-table"></div>
+            <div id="control-data-content"></div>
 
             <!-- Modal -->
             <div class="modal fade" id="modal-window"></div>
@@ -92,7 +92,7 @@
         <script src="js/jquery-3.3.1.js"></script>
         <script src="css/dist/js/bootstrap.min.js"></script>
         <script src="js/offcanvas.js"></script>
-        <script src="js/create-ruleset.js"></script>
+        <script src="js/control-data.js"></script>
         <script src="js/loadTitle.js"></script>
     </body>
 </html>

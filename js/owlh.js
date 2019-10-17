@@ -230,6 +230,7 @@ function generateAllNodesHTMLOutput(response) {
                     '<br><i class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node                            ' +
                     '<br><i class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
                     '<br><i class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
+                    '<br><i class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\')"></i> | Change control             ' +
                     '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
                 '</span>'+
             '</td> ' +
@@ -302,6 +303,11 @@ function deployNode(value,uuid,nodeName){
     })
     .catch(function (error) {
     });
+}
+
+function loadChangeControl(uuid, type){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/control-data.html?type='+type+'&uuid='+uuid;
 }
 
 function ShowMonitoring(uuid, name){

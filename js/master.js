@@ -9,7 +9,7 @@ function loadPlugins(){
             '<br>'+
             '<p><img src="img/favicon.ico" height="25"><span style="font-size: 15px; color: Grey;">&nbsp; Edit master configuration | </span>'+
             '<span style="font-size: 15px; color: grey;"> ' +
-            '<i class="fas fa-info-circle" style="cursor:pointer;" title="Edit Master configuration file" onclick="showMasterFile(\'main\')"></i>  &nbsp <i class="fas fa-clipboard-list" style="cursor:pointer;" onclick="loadControlDataMaster(\'master\')"></i>' +
+            '<i class="fas fa-info-circle" style="cursor:pointer;" title="Edit Master configuration file" onclick="showMasterFile(\'main\')"></i>  &nbsp <i class="fas fa-clipboard-list" style="cursor:pointer;" onclick="loadControlDataMaster(\'master\')"></i>  &nbsp <i class="fas fa-archive" style="cursor:pointer;" onclick="loadIncidentMaster(\'master\')"></i>' +
             '</span>'+
             '</p> '+
             '<span id="owlhMasterService" style="display:none; font-size: 15px; cursor: default;" class="col-md-2 badge bg-warning align-text-bottom text-white" onclick="DeployServiceMaster()">Install service</span>'+
@@ -233,6 +233,11 @@ function showMasterFile(file){
 function loadControlDataMaster(type){
     var ipmaster = document.getElementById('ip-master').value;
     document.location.href = 'https://' + ipmaster + '/control-data.html?type='+type;
+}
+
+function loadIncidentMaster(type){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/incident-data.html?type='+type;
 }
 
 function deployMaster(value){

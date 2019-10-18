@@ -231,6 +231,7 @@ function generateAllNodesHTMLOutput(response) {
                     '<br><i class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
                     '<br><i class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
                     '<br><i class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\')"></i> | Change control             ' +
+                    '<br><i class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\')"></i> | Incident data             ' +
                     '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
                 '</span>'+
             '</td> ' +
@@ -305,9 +306,9 @@ function deployNode(value,uuid,nodeName){
     });
 }
 
-function loadChangeControl(uuid, type){
+function loadIncidentMaster(uuid, type){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/control-data.html?type='+type+'&uuid='+uuid;
+    document.location.href = 'https://' + ipmaster + '/incident-data.html?type='+type+'&uuid='+uuid;
 }
 
 function ShowMonitoring(uuid, name){
@@ -328,6 +329,11 @@ function showMasterFile(file){
 function editAnalyzer(uuid, file, nodeName){
     var ipmaster = document.getElementById('ip-master').value;
     document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+}
+
+function loadChangeControl(uuid, type){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/control-data.html?type='+type+'&uuid='+uuid;
 }
 
 function showActions(action,uuid){

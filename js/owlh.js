@@ -117,7 +117,6 @@ function GetAllNodes() {
     var resultElement = document.getElementById('nodes-table');
     document.getElementById('addnids').style.display = "none";
 
-
     //    var instance = axios.create({
     //     baseURL: 'https://' + ipmaster + ':' + portmaster + '/v1/node',
     //     httpsAgent: new https.Agent({

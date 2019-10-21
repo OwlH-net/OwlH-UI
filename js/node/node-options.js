@@ -23,13 +23,13 @@ function loadPlugins(){
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             //suricata
             '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+           
-                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | &nbsp<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i>'+
+                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | &nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp <i class="fas fa-terminal" style="color:grey; cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')"></i>'+
                 '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
 
                 '</span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
-                '<div>'+
+                '<div id="table-suricata" style="display:block;">'+
                     '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                         '<thead>'+
                             '<th width="16%">Description</th>'+
@@ -42,7 +42,18 @@ function loadPlugins(){
                         '<tbody id="suricata-table-services">'+
                         '</tbody>'+
                     '</table>'+
-                '</div><br><br>'+
+                '</div>'+
+                '<div id="table-suricata-command" style="display:none;">'+
+                    '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                        '<thead>'+
+                            '<th width="20%">PID</th>'+
+                            '<th>Command</th>'+
+                        '</thead>'+
+                        '<tbody id="suricata-table-services-command">'+
+                        '</tbody>'+
+                    '</table>'+
+                '</div>'+
+                '<br><br>'+
             // //zeek
             '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |&nbsp '+
@@ -344,9 +355,80 @@ function loadPlugins(){
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
-    // $('#reload-analyzer').click(function(){ ReloadFilesData(uuid);});
+    // $('#reload-analyzer').click(function(){ ReloadFilesData(uuid)    ;});
     // $('#reload-wazuh').click(function(){ ReloadFilesData(uuid);});
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
+}
+
+function changeSuricataTable(uuid){
+    var suricata = document.getElementById('table-suricata');
+    var command = document.getElementById('table-suricata-command');
+    if(suricata.style.display == "block"){
+        suricata.style.display = "none";
+        command.style.display = "block";
+    }else{
+        suricata.style.display = "block";
+        command.style.display = "none";
+    }
+
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/plugin/changeSuricataTable';
+
+    var suricataStatus = document.getElementById('table-suricata');
+    var jsonService = {}
+    jsonService["uuid"] = uuid;
+    if (suricataStatus.style.display == "none"){
+        jsonService["status"] = "expert";
+    }else if (suricataStatus.style.display == "block"){
+        jsonService["status"] = "none";
+    }
+    var dataJSON = JSON.stringify(jsonService);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Change plugin status error: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            loadPlugins();
+        }
+    })
+    .catch(function (error) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Change plugin status error: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+    });
+
 }
 
 function hideInputAreaValue(key){
@@ -549,10 +631,20 @@ function GetMainconfData(uuid){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
                     document.getElementById('suricata-current-status').innerHTML = 'Disabled';
                     document.getElementById('main-suricata-status-btn').className = 'fas fa-play-circle';
+                    document.getElementById('table-suricata').style.display = 'block';
+                    document.getElementById('table-suricata-command').style.display = 'none';
                 }else if(response.data[service]["status"] == "enabled"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
                     document.getElementById('main-suricata-status-btn').className = 'fas fa-stop-circle';
                     document.getElementById('suricata-current-status').innerHTML = 'Enabled';
+                    document.getElementById('table-suricata').style.display = 'block';
+                    document.getElementById('table-suricata-command').style.display = 'none';
+                }else if(response.data[service]["status"] == "expert"){
+                    document.getElementById('suricata-current-status').className = 'badge badge-pill bg-warning align-text-bottom text-white';
+                    document.getElementById('table-suricata').style.display = 'none';
+                    document.getElementById('table-suricata-command').style.display = 'block';
+                    document.getElementById('suricata-current-status').innerHTML = 'Expert';
+                    document.getElementById('main-suricata-status-btn').style.display = 'none';
                 }
             }else if(service == "zeek"){
                 if(response.data[service]["status"] == "disabled"){
@@ -2856,6 +2948,7 @@ function PingPluginsNode(uuid) {
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/' + uuid;
     var tableSuricata = "";
+    var tableSuricataCommand = "";
     var tableZeek = "";
     var tableSocketNetwork = "";
     var tableSocketPcap = "";
@@ -2879,69 +2972,76 @@ function PingPluginsNode(uuid) {
                 }
                 document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
             }else if (response.data[line]["type"] == "suricata"){
-                tableSuricata = tableSuricata + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
-                        if(response.data[line]["status"]=="enabled"){
-                            tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                        }else if (response.data[line]["status"]=="disabled"){
-                            tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                        }
-                        tableSuricata = tableSuricata + '</td>'+
-                    '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'"></td>';
-                    tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
-                        if(response.data[line]["status"]=="enabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
-                        }else if (response.data[line]["status"]=="disabled"){
-                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
-                        }
-                        tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
-                        // '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
-                        // '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
-                        // '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> &nbsp'+
-                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                    '</td>'+
-                '</tr>'+
-                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="5">'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Description: <input class="form-control" id="suricata-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                if (response.data[line]["command"]){
+                    tableSuricataCommand = tableSuricataCommand + '<tr>'+                    
+                        '<td>'+response.data[line]["pid"]+'</td>'+
+                        '<td>'+response.data[line]["command"]+'</td>'+
+                    '<tr>';
+                }else{
+                    tableSuricata = tableSuricata + '<tr>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
+                            if(response.data[line]["status"]=="enabled"){
+                                tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                            }else if (response.data[line]["status"]=="disabled"){
+                                tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                            }
+                            tableSuricata = tableSuricata + '</td>'+
+                        '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'"></td>';
+                        tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if(response.data[line]["status"]=="enabled"){
+                                tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                            }else if (response.data[line]["status"]=="disabled"){
+                                tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
+                            }
+                            tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                            // '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
+                            // '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
+                            // '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> &nbsp'+
+                            '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                        '<td style="word-wrap: break-word;" colspan="5">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Description: <input class="form-control" id="suricata-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    // 'BPF: <i class="fas fa-edit" id="suricata-bpf-icon-'+line+'" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF"></i>'+
+                                    'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"></i>'+
+                                    '<input class="form-control" id="suricata-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                '</div>'+
                             '</div>'+
-                            '<div class="col">'+
-                                // 'BPF: <i class="fas fa-edit" id="suricata-bpf-icon-'+line+'" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF"></i>'+
-                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"></i>'+
-                                '<input class="form-control" id="suricata-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
+                                    '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="" disabled>'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
+                                    '<input class="form-control" id="suricata-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
-                                '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="" disabled>'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;" >'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-seconday" id="modify-stap-cancel-suricata-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                '</div>'+
                             '</div>'+
-                            '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
-                                '<input class="form-control" id="suricata-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                            '<br>'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+    
+                                '</div>'+
                             '</div>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;" >'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-suricata-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                            '</div>'+
-                        '</div>'+
-                        '<br>'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+    
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                '</tr>';
+                        '</td>'+
+                    '</tr>';
+                }
             }else if (response.data[line]["type"] == "zeek"){                
                 tableZeek = tableZeek + '<tr>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
@@ -3182,6 +3282,7 @@ function PingPluginsNode(uuid) {
             document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
             document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
             document.getElementById('suricata-table-services').innerHTML = tableSuricata;
+            document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;
             // onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"
             // if (response.data[line]["type"] == "suricata"){
             //     console.log('suricata-bpf-icon-'+line);

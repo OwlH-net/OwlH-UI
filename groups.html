@@ -33,8 +33,11 @@
     
         <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="nodes.html">Nodes</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="groups.html">Groups</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="rulesets.html">Open Rules</span></a>
@@ -66,61 +69,18 @@
             </div>
         </div>
 
-        <div id="list-groups">
-            
-        </div>
-
         <div class="text-decoration-none text-primary" style="width:20%; float:right;">
-            <a onclick="formAddGroup()" id="group-text" style="display: block; cursor: default; float:right;">Add new group</a> 
+            <a class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddGroup()" id="group-text" style="cursor: default;">Add new group</a> 
         </div>
-    
-        <!-- Form for add new groups -->
-        <div class="container" style="display: none" id="add-group">
-            <form id="group-details">
-                <div class="form-row" id="">
-                    <div class="form-group col-md-6">
-                        <div class="input-group mb-4 mr-sm-4 mb-sm-0">
-                            <input type="text" class="form-control" id="groupname" placeholder="Name" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row" id="">
-                    <div class="form-group col-md-6">
-                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                            <input type="text" class="form-control" id="groupdesc" placeholder="Description" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <button type="button" class="btn btn-primary" style="float: right;" onclick="addGroup()">Add</button>
-                </div>
-            </form>
-        </div>
+        <br><br><br>
 
-        <!-- Form edit group -->
-        <div class="container" style="display: none" id="edit-group">
-                <form id="group-edit-details">
-                    <div class="form-row" >
-                        <div class="form-group col-md-6">
-                            <div class="input-group mb-4 mr-sm-4 mb-sm-0">
-                                <input type="text" class="form-control" id="groupnameedit" placeholder="New group name" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row" >
-                        <div class="form-group col-md-6">
-                            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                <input type="text" class="form-control" id="groupdescedit" placeholder="New description" required>
-                                <input type="hidden" class="form-control" id="groupuuid">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-primary form-group col-md-6" id="groupEditButtons">
-                        <a href="#" onclick="editGroupData()">Modify</a>
-                        <a href="#" onclick="modifyGroupClose()">Close</a>
-                    </div>
-                </form>
-            </div>
+        <!-- Group contents -->
+        <div id="list-groups"></div>
+
+        <br>
+        <div class="text-decoration-none text-primary" style="width:20%; float:right;">
+            <a class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddGroup()" id="group-text" style="cursor: default;">Add new group</a> 
+        </div>
     
         <!-- Modal delete group -->
         <div class="modal fade" id="modal-groups">

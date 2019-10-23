@@ -72,60 +72,171 @@ function GetAllGroups(){
     })
     .then(function (response) {
         document.getElementById('group-text').style.display ="block";
-        result.innerHTML = generateAllGroupsHTMLOutput(response);
-        // $('#add-group-modal').click(function(){ addGroup(); });
+        if (response.data.ack == "false") {
+            result.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving groups data</h3></div>';
+        }
+        var isEmpty = true;
+        var html = "";
+        html = html + '<div>'+
+        '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
+            '<thead>' +
+                '<tr>' +
+                    '<th width="20%">Name</th>' +
+                    '<th>Description</th>' +
+                    '<th width="15%">Actions</th>' +
+                '</tr>' +
+            '</thead>' +
+            '<tbody>'; 
+                for(x=0; x<response.data.length; x++){
+                    var groups = response.data[x];
+                    isEmpty = false;
+                    html = html + '<tr bgcolor="powderblue">'+
+                        '<td style="word-wrap: break-word;">'+
+                            groups['gname']+
+                        '</td><td style="word-wrap: break-word;">'+
+                            groups['gdesc']+
+                        '</td><td style="word-wrap: break-word;">'+
+                            '<i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Edit group" onclick="showEditGroup(\''+groups['guuid']+'\')"></i> &nbsp;'+
+                            '<i class="fas fa-plus" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Add nodes to group" onclick="modalSelectNodeGroup(\''+groups['guuid']+'\')"></i>  &nbsp'+
+                            '<i class="fas fa-chevron-circle-down" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Show nodes values" id="show-nodes-details-'+groups['guuid']+'" onclick="ShowNodesValue(\''+groups['guuid']+'\')"></i>  &nbsp'+
+                            '<i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete group" onclick="modalDeleteGroup(\''+groups['gname']+'\',\''+groups['guuid']+'\')"></i>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr>'+
+                        '<td colspan="3">'+
+                            '<table class="table" id="edit-group-row-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+
+                                '<tr>'+
+                                    '<td>Name: <input class="form-control" id="edit-group-name-'+groups['guuid']+'"></td>'+
+                                    '<td>Description: <input class="form-control" id="edit-group-desc-'+groups['guuid']+'"></td>'+
+                                    '<td>'+
+                                        '<a class="btn btn-secondary float-right text-decoration-none text-white" onclick="hideEditGroup(\''+groups['guuid']+'\')">Cancel</a>'+
+                                        '<a class="btn btn-primary float-right text-decoration-none text-white" id="edit-group-save" onclick="EditGroupData(\''+groups['guuid']+'\')">Modify</a>'+
+                                    '</td>'+
+                                '</tr>'+
+                            '</table>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr id="nodes-for-group-'+groups['guuid']+'">'+
+                        '<td colspan="3">'+
+                            '<b>Nodes</b>'+
+                            '<table class="table" id="nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+
+                                '<thead>'+                           
+                                    '<tr>'+                           
+                                        '<th>Node name:</th>'+
+                                        '<th>Node ip:</th>'+
+                                    '</tr>'+
+                                '</thead>';   
+                                for(r in groups["Nodes"]){
+                                    console.log(groups["Nodes"][r]);
+                                    html = html + '<tr>'+                           
+                                            // '<td>Node UUID: '+groups["Nodes"][r]["nuuid"]+'</td>'+
+                                            '<td>'+groups["Nodes"][r]["nname"]+'</td>'+
+                                            '<td>'+groups["Nodes"][r]["nip"]+'</td>'+
+                                    '</tr>';
+                                }
+                            html = html + '</table>';
+                            html = html + '<b>Suricata</b>'+
+                            '<table class="table" id="nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                                
+                                '<thead>'+                           
+                                    '<tr>'+                           
+                                        '<th>Configuration/Ruleset</th>'+
+                                        '<th>Ruleset</th>'+
+                                        '<th></th>'+
+                                    '</tr>'+
+                                '</thead>'+                           
+                                '<tbody>'+                           
+                                    '<tr>'+                           
+                                        '<td>Configuration</td>'+
+                                        '<td>From fodler</td>'+
+                                        '<td>/usr/local/owlh/suricata/confs</td>'+
+                                    '</tr>'+
+                                    '<tr>'+                           
+                                        '<td>Ruleset</td>'+
+                                        '<td>Ruleset Valencia</td>'+
+                                        '<td></td>'+
+                                    '</tr>'+
+                                '</tbody>'+                           
+                            '</table>'; 
+                            html = html + '<b>Zeek</b>'+
+                            '<table class="table" id="nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+
+                                '<thead>'+                           
+                                    '<tr>'+                           
+                                        '<th>Main config</th>'+
+                                        '<th></th>'+
+                                        '<th></th>'+
+                                    '</tr>'+
+                                '</thead>'+                           
+                                '<tbody>'+                           
+                                    '<tr>'+                           
+                                        '<td>Master node configuration</td>'+
+                                        '<td>Ruleset</td>'+
+                                        '<td></td>'+
+                                    '</tr>'+
+                                '</tbody>'+    
+                            '</table>'; 
+                        html = html + '</td>'+
+                    '</tr>';
+                }
+            html = html + '</tbody></table></div>';
+        if (isEmpty){
+            result.innerHTML = '<h3 style="text-align:center">No groups created</h3>';
+        }else{
+            result.innerHTML = html;
+        }
+
     })
     .catch(function (error) {
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
     });
+
+    // PingGroupNodes();
 }
 
-function generateAllGroupsHTMLOutput(response) {
-    if (response.data.ack == "false") {
-        return '<div style="text-align:center"><h3 style="color:red;">Error retrieving groups data</h3></div>';
-    }
-    var isEmpty = true;
-    var groups = response.data;
-    var html = '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
-        '<thead>                                                      ' +
-        '<tr>                                                         ' +
-            '<th width="20%">Name</th>                           ' +
-            '<th>Description</th>                              ' +
-            '<th width="10%">Actions</th>                      ' +
-        '</tr>                                                        ' +
-        '</thead>                                                     ' +
-        '<tbody>                                                      '; 
-    for (group in groups) {
-        isEmpty = false;
-        html = html + '<tr>'+
-            '<td style="word-wrap: break-word;">'+
-            groups[group]['name']+
-            '</td><td style="word-wrap: break-word;">'+
-            groups[group]['desc']+
-            '</td><td style="word-wrap: break-word;">'+
-                '<i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Edit group" onclick="showEditGroup(\''+group+'\')"></i> &nbsp;'+
-                '<i class="fas fa-plus" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Add nodes to group" onclick="modalSelectNodeGroup(\''+group+'\')"></i>  &nbsp'+
-                '<i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete group" onclick="modalDeleteGroup(\''+groups[group]['name']+'\',\''+group+'\')"></i>'+
-            '</td>'+
-        '</tr>'+
-        '<tr id="edit-group-row-'+group+'" style="display: none;">'+
-            '<td>Name: <input class="form-control" id="edit-group-name-'+group+'"></td>'+
-            '<td>Description: <input class="form-control" id="edit-group-desc-'+group+'"></td>'+
-            '<td>'+
-                '<a class="btn btn-secondary float-right text-decoration-none text-white" onclick="hideEditGroup(\''+group+'\')">Cancel</a>'+
-                '<a class="btn btn-primary float-right text-decoration-none text-white" id="edit-group-save" onclick="EditGroupData(\''+group+'\')">Modify</a>'+
-            '</td>'+
-        '</tr>';
-    }
-    html = html + '</tbody></table>';
-    if (isEmpty){
-        return '<h3 style="text-align:center">No groups created</h3>';
-    }else{
-        return html;
-    }
-}
+// function PingGroupNodes(){
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/pingGroupNodes';
+//     axios({
+//         method: 'get',
+//         url: nodeurl,
+//         timeout: 30000
+//         })
+//         .then(function (response) {
+//             // console.log(response.data); 
+//             for(id in response.data){
+//                 // console.log(response.data[id]["groupid"]);                
+//                 GetNodeValues(response.data[id]["groupid"], response.data[id]["nodesid"]);   
+//             }
+//         });
+// }
+
+// function GetNodeValues(groupid, nodeid){
+//     console.log("GROUP ID --> "+groupid);
+//     console.log("NODE ID --> "+nodeid);
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/getNodeValues/'+nodeid;
+//     axios({
+//         method: 'get',
+//         url: nodeurl,
+//         timeout: 30000
+//         })
+//         .then(function (response) {
+//             var values = response.data;
+//             var row = document.getElementById('nodes-for-group-'+groupid).innerHTML;
+//             for(id in values){
+//                 if (id == nodeid){
+//                     row = row + '<b>IP: </b><b>'+values[id]["ip"]+'</b><br>'
+//                     row = row + '<b>Name: </b><b>'+values[id]["name"]+'</b><br>'
+//                     console.log(response.data[id]);
+//                 }
+//             }
+
+//         });
+// }
+
 
 function modalSelectNodeGroup(uuid){
     var ipmaster = document.getElementById('ip-master').value;
@@ -275,7 +386,7 @@ function EditGroupData(uuid){
 }
 
 function deleteGroup(groupID){
-    $('#modal-groups').modal("show");
+    $('#modal-groups').modal("hide");
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/DeleteGroup/' + groupID;
@@ -296,6 +407,19 @@ function checkStatus() {
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
     document.getElementById('check-status-config').href = nodeurl;
+}
+
+function ShowNodesValue (uuid){
+    var detailsButton = document.getElementById('show-nodes-details-'+uuid);
+    var content = document.getElementById('nodes-for-group-'+uuid);
+
+    if (content.style.display == "none") {
+        content.style.display = "block";
+        detailsButton.className = "fas fa-chevron-circle-up";
+    } else if (content.style.display == "block"){
+        content.style.display = "none";
+        detailsButton.className = "fas fa-chevron-circle-down";
+    }
 }
 
 function loadJSONdata(){

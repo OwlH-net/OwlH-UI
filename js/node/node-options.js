@@ -27,7 +27,7 @@ function loadPlugins(){
                 '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
 
                 '</span>' +
-                '<button class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
+                '<button class="btn btn-primary float-right" style="font-size: 15px; display:block;" id="add-suricata-button" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
                 '<div id="table-suricata" style="display:block;">'+
                     '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
@@ -355,18 +355,19 @@ function loadPlugins(){
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
-    // $('#reload-analyzer').click(function(){ ReloadFilesData(uuid)    ;});
-    // $('#reload-wazuh').click(function(){ ReloadFilesData(uuid);});
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
 }
 
 function changeSuricataTable(uuid){
     var suricata = document.getElementById('table-suricata');
     var command = document.getElementById('table-suricata-command');
-    if(suricata.style.display == "block"){
+    var suricataButton = document.getElementById('add-suricata-button');
+    if(suricata.style.display == "block"){        
+        suricataButton.style.display = "none";
         suricata.style.display = "none";
         command.style.display = "block";
     }else{
+        suricataButton.style.display = "block";
         suricata.style.display = "block";
         command.style.display = "none";
     }

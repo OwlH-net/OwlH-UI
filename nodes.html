@@ -37,6 +37,9 @@
                     <a class="nav-link" href="nodes.html">Nodes</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="groups.html">Groups</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="rulesets.html">Open Rules</a>
                 </li>
                 <li class="nav-item">
@@ -52,7 +55,7 @@
                     <a class="nav-link" href="config.html">Config</a>
                 </li>
             </ul>
-            <p class="text-justify text-white mr-4">Current version: </p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+            <p id="current-version-text" class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
         </div>
     </nav>
 
@@ -72,10 +75,12 @@
             </div>
         </div>
 
-        <!-- <div class="text-decoration-none text-primary" style="width:20%; float:right;">
+        <!-- GROUPS OPTION
+        <div class="text-decoration-none text-primary" style="width:20%; float:right;">
             <a class="nav-link" href="groups.html">Edit groups</a>            
         </div>
         <br><br> -->
+
         <div class="container" id="nodes-table">
         </div>
      
@@ -148,8 +153,8 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text wt-125">Node Port</span>
                             </div>
-                            <input type="text" class="form-control" id="cfgnodeport" placeholder="10443" required>
-                            <input type="hidden" class="form-control" id="cfgnodeid" placeholder="10443" required>
+                            <input type="text" class="form-control" id="cfgnodeport" placeholder="50002" required>
+                            <input type="hidden" class="form-control" id="cfgnodeid" placeholder="50002" required>
                         </div>
                     </div>
                 </div>

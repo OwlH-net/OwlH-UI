@@ -207,7 +207,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                     if(sources[source]['sourceType'] != "custom"){
                         html = html +'<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['name']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
                     }
-                    html = html + '<i class="fas fa-sticky-note" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
+                    html = html + '<i class="fas fa-edit" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
                     if(sources[source]['sourceType'] == "custom"){
                         html = html + '<i class="fas fa-info-circle" id="customRuleDetails-'+source+'" title="Custom rule details" onclick="loadCustomRulesetRules(\''+source+'\',\''+sources[source]['path']+'\',\'custom\')"></i>';
                     }else{

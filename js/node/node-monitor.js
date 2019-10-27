@@ -42,16 +42,188 @@ function loadPlugins(){
                 '</tbody>'+
             '</table>'+
         '</span>'+
-    '</div>';
+    '</div>'+
 
+    //FILES
+    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'files\', \''+uuid+'\')"><b>Node files</b> <i class="fas fa-sort-down" id="files-form-icon-'+uuid+'"></i></h6>'+
+        '<span id="files-form-'+uuid+'" style="display:block"><br>'+
+            '<button type="button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddMonitorFileModal(\''+uuid+'\')">Add file</button><br><br>'+
+            '<table width="100%" style="table-layout: fixed" class="table table-hover">'+
+                '<thead>'+
+                    '<tr>'+
+                        '<th>Path</th>'+
+                        '<th width="15%">Status</th>'+
+                        '<th width="15%">Actions</th>'+
+                    '</tr>'+
+                '</thead>'+
+                '<tbody id="file-data-monitor">'+
+                '</tbody>'+
+            '</table>'+
+        '</span>'+
+    '</div>';
    
     document.getElementById('master-table-plugins').innerHTML = html;
 
     PingMonitor(uuid);
+    PingMonitorFiles(uuid);
     var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
+}
+
+function AddMonitorFileModal(uuid){
+    var modalWindow = document.getElementById('modal-window');
+    modalWindow.innerHTML =
+    '<div class="modal-dialog">'+
+      '<div class="modal-content">'+
+  
+        '<div class="modal-header" style="word-break: break-all;">'+
+          '<h4 class="modal-title">Add new file</h4>'+
+          '<button type="button" class="close" id="add-file-modal-cross">&times;</button>'+
+        '</div>'+
+  
+        '<div class="modal-body" style="word-break: break-all;">'+
+          '<p>Insert the path for add this file.</p>'+
+          '<input type="text" class="form-control" id="new-file-path" value="" required>'+
+        '</div>'+
+  
+        '<div class="modal-footer" id="sync-node-footer-btn" style="word-break: break-all;">'+
+          '<button type="button" class="btn btn-secondary" id="add-file-modal-close">Cancel</button>'+
+          '<button type="button" class="btn btn-primary" id="add-file-modal">Add</button>'+
+        '</div>'+
+  
+      '</div>'+
+    '</div>';
+    $('#modal-window').modal("show");
+    $('#add-file-modal').click(function(){ AddMonitorFile(uuid, document.getElementById('new-file-path').value); });
+    $('#add-file-modal-close').click(function(){ $('#modal-window').modal("hide");});
+    $('#add-file-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function ModalDeleteMonitorFile(uuid, file,path){
+    var modalWindow = document.getElementById('modal-window');
+    modalWindow.innerHTML =
+    '<div class="modal-dialog">'+
+      '<div class="modal-content">'+
+  
+        '<div class="modal-header" style="word-break: break-all;">'+
+          '<h4 class="modal-title">Add new file</h4>'+
+          '<button type="button" class="close" id="add-file-modal-cross">&times;</button>'+
+        '</div>'+
+  
+        '<div class="modal-body" style="word-break: break-all;">'+
+          '<p>Do you want to delete this file?</p>'+
+          '<p><b>'+path+'</b></p>'+
+        '</div>'+
+  
+        '<div class="modal-footer" id="sync-node-footer-btn" style="word-break: break-all;">'+
+          '<button type="button" class="btn btn-secondary" id="add-file-modal-close">Cancel</button>'+
+          '<button type="button" class="btn btn-danger" id="add-file-modal">Add</button>'+
+        '</div>'+
+  
+      '</div>'+
+    '</div>';
+    $('#modal-window').modal("show");
+    $('#add-file-modal').click(function(){ DeleteMonitorFile(uuid, file); });
+    $('#add-file-modal-close').click(function(){ $('#modal-window').modal("hide");});
+    $('#add-file-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function DeleteMonitorFile(uuid, file){
+    $('#modal-window').modal("hide");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/monitor/deleteFile';
+
+
+    var jsonSave = {}
+    jsonSave["uuid"] = uuid;
+    jsonSave["file"] = file;
+    var dataJSON = JSON.stringify(jsonSave);
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        loadPlugins();
+    })
+    .catch(function (error) {
+    });
+}
+
+function AddMonitorFile(uuid, path){
+    $('#modal-window').modal("hide");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/monitor/addFile';
+
+
+    var jsonSave = {}
+    jsonSave["uuid"] = uuid;
+    jsonSave["path"] = path;
+    var dataJSON = JSON.stringify(jsonSave);
+    axios({
+        method: 'post',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        loadPlugins();
+    })
+    .catch(function (error) {
+    });
+}
+
+function PingMonitorFiles(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/monitor/pingMonitorFiles/' + uuid;
+    var html = "";
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        console.log(response.data);
+        for (file in response.data){
+            html = html + '<tr>'+
+                '<td style="word-wrap: break-word;" id="'+file+'-monitor-files">'+response.data[file]["path"]+'</td>'+
+                '<td style="word-wrap: break-word;" id="monitor-file-column-'+file+'">';
+                if(response.data[file]["size"] < 0){
+                    html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
+                }else{
+                    if(response.data[file]["size"]<1024){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["size"].toFixed(2)+' Bytes</span>';}
+                    if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1024).toFixed(2)+' kB</span>';}
+                    if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1048576).toFixed(2)+' MB</span>';}
+                    if(response.data[file]["size"]>=1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1073741824).toFixed(2)+' GB</span>';}
+                }
+                html = html + '</td>'+
+                '<td style="color:grey; word-wrap: break-word;">';
+                    if(response.data[file]["size"] >=0){
+                        html = html + '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data[file]["path"]+'\')">10</span> &nbsp'+
+                        '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[file]["path"]+'\')">50</span> &nbsp'+
+                        '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[file]["path"]+'\')">100</span> &nbsp';
+                    }
+                    html = html + '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteMonitorFile(\''+uuid+'\', \''+file+'\', \''+response.data[file]["path"]+'\')"></i>'+
+                '</td>'+
+            '<tr>';
+        }
+        document.getElementById('file-data-monitor').innerHTML= html;
+    })
+    .catch(function (error) {
+    });
+
+}
+
+function LoadPageLastLines(uuid, line, path) {
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/load-content.html?uuid='+uuid+'&line='+line+'&path='+path;
 }
 
 function PingMonitor(uuid){

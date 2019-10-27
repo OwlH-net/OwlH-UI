@@ -34,6 +34,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="nodes.html">Nodes</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="groups.html">Groups</a>
+                    </li>
                     <li class="nav-item active">
                         <a class="nav-link" href="rulesets.html">Open Rules</span></a>
                     </li>
@@ -50,7 +53,7 @@
                         <a class="nav-link" href="config.html">Config</a>
                     </li>
                 </ul>
-                <p class="text-justify text-white mr-4">Current version: </p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+                <p id="current-version-text" class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
             </div>
         </nav>
 
@@ -69,9 +72,10 @@
             </div>
 
             <div class="float-right" style="width:100%;">
-                <a class="text-white btn btn-danger float-right" style="margin: 10px;" data-toggle="modal" data-target="#modal-ruleset" onclick="modalSynchronizeAllRulesets()">Synchronize all</a>
-                <a class="text-white btn btn-primary float-right" style="margin: 10px;" href="ruleset-source.html">Edit ruleset source</a>
-                <a class="text-white btn btn-success float-right" style="margin: 10px;" href="create-ruleset.html" >Create new ruleset</a>
+                <div width="100%" id ="search-input-ruesets"></div>
+                <a class="text-white btn btn-danger float-right" data-toggle="modal" data-target="#modal-ruleset" onclick="modalSynchronizeAllRulesets()">Synchronize all</a>
+                <a class="text-white btn btn-primary float-right" style="margin-right: 10px;" href="ruleset-source.html">Edit ruleset source</a>
+                <a class="text-white btn btn-success float-right" style="margin-right: 10px;" href="create-ruleset.html" >Create new ruleset</a>
             </div>
             <br><br><br><br>
                 
@@ -85,9 +89,9 @@
 
             <br><br>
             <div class="float-right" style="width:100%;">
-                <a class="text-white btn btn-danger float-right" style="margin: 10px;" data-toggle="modal" data-target="#modal-ruleset" onclick="modalSynchronizeAllRulesets()">Synchronize all</a>
-                <a class="text-white btn btn-primary float-right" style="margin: 10px;" href="ruleset-source.html">Edit ruleset source</a>
-                <a class="text-white btn btn-success float-right" style="margin: 10px;" href="create-ruleset.html" >Create new ruleset</a>
+                <a class="text-white btn btn-danger float-right" data-toggle="modal" data-target="#modal-ruleset" onclick="modalSynchronizeAllRulesets()">Synchronize all</a>
+                <a class="text-white btn btn-primary float-right" style="margin-right: 10px;" href="ruleset-source.html">Edit ruleset source</a>
+                <a class="text-white btn btn-success float-right" style="margin-right: 10px;" href="create-ruleset.html" >Create new ruleset</a>
             </div>
             <br><br>
 

@@ -37,6 +37,9 @@
                     <a class="nav-link" href="nodes.html">Nodes</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="groups.html">Groups</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="rulesets.html">Open Rules</span></a>
                 </li>
                 <li class="nav-item">
@@ -52,7 +55,7 @@
                     <a class="nav-link" href="config.html">Config</a>
                 </li>
             </ul>
-            <p class="text-justify text-white mr-4">Current version: </p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+            <p id="current-version-text" class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
         </div>
     </nav>
 
@@ -71,12 +74,12 @@
             </div>
         </div>
 
-        <!-- Monitor chart -->
-        <!-- <div id="canvas chart">      
-            <canvas id="myChart"></canvas>      
-        </div> -->
-        <!-- <canvas id="myChart" width="800" height="200"></canvas> -->
-
+        <!-- ProgressBar -->            
+        <div id="progressBar-options-div" class="progress" style="display:none;">
+            <div id="progressBar-options" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width: 100%"> &nbsp </div>
+        </div>
+        <br>
+        
         <!-- Modal -->
         <div class="modal fade" id="modal-window">
         </div>
@@ -85,11 +88,13 @@
         <div class="container" id="master-table-plugins">
         </div>
         
-        <!-- Load master ip/port -->
+        <!-- Load master ip/port and values -->
         <div id="load-json-data" style="display: none;">
             <input id="ip-master" type="text" class="form-control">
             <input id="port-master" type="text" class="form-control">
             <input id="current-ruleset" type="text" class="form-control">
+            <input id="analyzer-file-size" type="number" class="form-control" value="1234">
+            <input id="wazuh-count-table-value" type="text" class="form-control">
         </div>
     </main>
 

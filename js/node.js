@@ -2,30 +2,42 @@ function addNode() {
     var nname = document.getElementById('nodename').value;
     var nip = document.getElementById('nodeip').value;
     var nport = document.getElementById('nodeport').value;
-    formAddNids();//close add nids form
-    var nodejson = {}
-    nodejson["name"] = nname;
-    nodejson["port"] = nport;
-    nodejson["ip"] = nip;
-    var nodeJSON = JSON.stringify(nodejson);
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
-    axios({
-        method: 'post',
-        url: nodeurl,
-        timeout: 30000,
-        data: nodeJSON
-    })
-        .then(function (response) {
-            GetAllNodes();
-            return true;
-        })
-        .catch(function (error) {
-            return false;
-        });   
-    GetAllNodes();    
-    return false;
+    if(nname=="" || nip=="" || nport==""){
+		$('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Please, insert a name, port and IP for add a new node.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    }else{
+		formAddNids();//close add nids form
+		var nodejson = {}
+		nodejson["name"] = nname;
+		nodejson["port"] = nport;
+		nodejson["ip"] = nip;
+		var nodeJSON = JSON.stringify(nodejson);
+		var ipmaster = document.getElementById('ip-master').value;
+		var portmaster = document.getElementById('port-master').value;
+		var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
+		axios({
+			method: 'post',
+			url: nodeurl,
+			timeout: 30000,
+			data: nodeJSON
+		})
+			.then(function (response) {
+				GetAllNodes();
+				return true;
+			})
+			.catch(function (error) {
+				return false;
+			});   
+		GetAllNodes();    
+		return false;
+    }
 }
 
 function modifyNodeInformation() {

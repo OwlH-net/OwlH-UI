@@ -9,7 +9,7 @@ function loadPlugins(){
             '<br>'+
             '<p><img src="img/favicon.ico" height="25"><span style="font-size: 15px; color: Grey;">&nbsp; Edit master configuration | </span>'+
             '<span style="font-size: 15px; color: grey;"> ' +
-            '<i class="fas fa-info-circle" title="Edit Master configuration file" onclick="showMasterFile(\'main\')"></i>  ' +
+            '<i class="fas fa-info-circle" style="cursor:pointer;" title="Edit Master configuration file" onclick="showMasterFile(\'main\')"></i>  &nbsp <i class="fas fa-clipboard-list" style="cursor:pointer;" onclick="loadControlDataMaster(\'master\')"></i>  &nbsp <i class="fas fa-archive" style="cursor:pointer;" onclick="loadIncidentMaster(\'master\')"></i>' +
             '</span>'+
             '</p> '+
             '<span id="owlhMasterService" style="display:none; font-size: 15px; cursor: default;" class="col-md-2 badge bg-warning align-text-bottom text-white" onclick="DeployServiceMaster()">Install service</span>'+
@@ -230,6 +230,16 @@ function showMasterFile(file){
     document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
 }
 
+function loadControlDataMaster(type){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/control-data.html?type='+type;
+}
+
+function loadIncidentMaster(type){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/incident-data.html?type='+type;
+}
+
 function deployMaster(value){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -396,7 +406,6 @@ function loadNetworkStapValues(uuid){
     .catch(function (error) {
     });
 }
-
 
 function updateMasterStapInterface(uuid){
     var ipmaster = document.getElementById('ip-master').value;
@@ -1481,5 +1490,5 @@ function loadJSONdata(){
         loadPlugins();        
         loadTitleJSONdata();
     });
-  }
-  loadJSONdata();
+}
+loadJSONdata();

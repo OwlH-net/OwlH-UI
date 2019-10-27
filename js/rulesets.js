@@ -45,28 +45,51 @@ function generateAllRulesetsHTMLOutput(response) {
             ruleset[uuid]["desc"] +
             '</td><td style="word-wrap: break-word;">                                                            ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    '<i class="fas fa-info-circle" title="Details" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
-                    '<i class="fas fa-sync-alt" title="Sync ruleset files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
+                    '<i class="fas fa-info-circle" title="Details" style="cursor:pointer;" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
+                    '<i class="fas fa-sync-alt" title="Sync ruleset files" id="sync-ruleset-files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
+                    /*'<i class="fas fa-sync-alt" title="Sync ruleset files" style="cursor:pointer;" id="sync-ruleset-files-'+uuid+'"></i>&nbsp';*/
                     if(ruleset[uuid]["status"]=="enabled"){
                         html = html + '<i class="fas fa-stopwatch" style="color:green;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
-                        '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
+                        // html = html + '<i class="fas fa-stopwatch" style="color:green; cursor:pointer;" title="Update schedule" id="update-scheduler"></i>&nbsp'+
+                        // '<i class="far fa-clipboard" title="Scheduler LOG" style="cursor:pointer;" id="scheduler-log-'+uuid+'"></i>&nbsp';
+                        '<i class="far fa-clipboard" title="Scheduler LOG" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else if(ruleset[uuid]["status"]=="disabled"){
                         html = html + '<i class="fas fa-stopwatch" style="color:red;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
+                        // html = html + '<i class="fas fa-stopwatch" style="color:red; cursor:pointer;" title="Update schedule" id="update-scheduler-'+uuid+'"></i>&nbsp'+
                         '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
+                        // '<i class="far fa-clipboard" title="Scheduler LOG" style="cursor:pointer;" id="scheduler-log-'+uuid+'"></i>&nbsp';
                     }else{
                         html = html + '<i class="fas fa-stopwatch" style="color:grey;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp';                        
+                        // html = html + '<i class="fas fa-stopwatch" style="color:grey; cursor:pointer;" title="Update schedule" id="update-scheduler-'+uuid+'"></i>&nbsp';                        
                     }
                     html = html + '| <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
+                    // html = html + '| <i class="fas fa-trash-alt" style="color: red; cursor:pointer;" title="Delete source" id="delete-scheduler-'+uuid+'"></i>'+
                 '</span>'+
-            '</td></tr>'
+            '</td></tr>';
+
+                // console.log("testing");
+                // $('#sync-ruleset-files-'+uuid).click(function(){ console.log("dsfsfsgf"); });
+                // // $('#sync-ruleset-files-'+uuid).click(function(){ console.log("dsfsfsgf"); syncRulesetModal(uuid, ruleset[uuid]['name']); });
+                // $('#scheduler-log-'+uuid).click(function(){ modalShowLog(uuid, ruleset[uuid]['name']); });
+                // $('#update-scheduler-'+uuid).click(function(){ modalTimeSchedule(uuid, ruleset[uuid]['name'], ruleset[uuid]['status']); });
+                // $('#delete-scheduler-'+uuid).click(function(){ deleteRulesetModal(ruleset[uuid]['name'], uuid);});
+                // // $('#modal-ruleset').modal("show");
     }
     html = html + '</tbody></table>';
+
+    document.getElementById('search-input-ruesets').innerHTML = '<input class="form-control w-25 my-3" type="text" placeholder="Search" aria-label="Search" id="search-ruleset-details"><button type="button" class="btn btn-primary" onclick="loadRulesetBySearch()"><i class="fas fa-search"></i></button>'
 
     if (isEmptyRulesets) {
         return '<div style="text-align:center"><h3>No Rules available...</h3></div>';
     } else {
         return html;
     }
+}
+
+function loadRulesetBySearch(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var search = document.getElementById('search-ruleset-details').value;
+    document.location.href = 'https://' + ipmaster + '/ruleset-search.html?&search='+search;
 }
 
 function modalShowLog(uuid, name){
@@ -112,6 +135,7 @@ function modalShowLog(uuid, name){
                 '</div>'+
             '</div>';
             modalWindow.innerHTML = html;
+            $('#modal-ruleset').modal("show");
         })
         .catch(function (error) {
         });
@@ -351,6 +375,8 @@ function modalTimeSchedule(uuid, name, status){
     document.getElementById('schedule-time-minute').value = minuteSelected;
     document.getElementById('schedule-date-day').value = day;
     document.getElementById('schedule-date-month').value = month;
+
+    $('#modal-ruleset').modal("show");
 }
 
 function timeSchedule(uuid, status){
@@ -411,9 +437,8 @@ function loadRulesetsDetails(type,name,uuid){
 }
 
 function syncRulesetModal(uuid, name){
-    var modalWindow = document.getElementById('modal-ruleset');
-    modalWindow.innerHTML = 
-    '<div class="modal-dialog">'+
+    var html = "";
+    html = html + '<div class="modal-dialog">'+
         '<div class="modal-content">'+
     
             '<div class="modal-header">'+
@@ -432,6 +457,8 @@ function syncRulesetModal(uuid, name){
   
         '</div>'+
     '</div>';
+    document.getElementById('modal-ruleset').innerHTML = html;
+    $('#modal-ruleset').modal("show");
 }
 
 function deleteRulesetModal(name, uuid){
@@ -455,6 +482,7 @@ function deleteRulesetModal(name, uuid){
   
         '</div>'+
     '</div>';
+    $('#modal-ruleset').modal("show");
 }
 
 function modalSynchronizeAllRulesets(){

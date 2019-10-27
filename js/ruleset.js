@@ -32,7 +32,6 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
     var html = "";
     var isCustomSourceType;
     for (rule in rules) {
-        console.log(rules[rule]["sourceType"]);
         if (rules[rule]["sourceType"] == "custom"){
             isCustomSourceType = true;
             continue;
@@ -87,7 +86,7 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
             rules[rule]["ip"] +
             '</td><td style="word-wrap: break-word;" align="left">                                                           ' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
-                    '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\', \''+ipmaster+'\', \''+portmaster+'\')"></i>&nbsp';
+                    '<i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\')"></i>&nbsp';
                     if(type != "source"){
                         html = html +'<i class="fas fa-exchange-alt low-blue" id="' + rules[rule]["sid"] + '-change-status" onclick="changeRulesetStatus(\''+rules[rule]["sid"]+'\', \''+fileuuid+'\', \''+ruleStatus+'\')"></i>&nbsp' +
                         '<i class="fas fa-sticky-note low-blue" data-toggle="modal" data-target="#modal-window-ruleset" onclick="modalNotes(\''+rules[rule]["msg"]+'\', \''+rules[rule]["sid"]+'\', \''+fileuuid+'\')"></i>&nbsp';
@@ -121,9 +120,9 @@ function editRuleset(fileuuid, nodeName){
     document.location.href = 'https://' + ipmaster + '/edit-ruleset.html?fileuuid='+fileuuid+'&file='+nodeName;
 }
 
-function loadRulesetDetails(sid, fileuuid, ipmaster, portmaster){
+function loadRulesetDetails(sid, fileuuid){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/rules/showRuleDetails.php?sid='+sid+'&fileuuid='+fileuuid+'&ipmaster='+ipmaster+'&portmaster='+portmaster;
+    document.location.href = 'https://' + ipmaster + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
 }
 
 function addToCustomRuleset(rulesetuuid){
@@ -175,15 +174,15 @@ function addToCustomRuleset(rulesetuuid){
                                 '<th style="width: 20%">Actions</th>                                ' +
                                 '</tr>                                                        ' +
                             '</thead>                                                     ' +
-                                '<tbody>                                                      ' ;
-                                    for (source in customRulesets) {
-                                        html = html + '<tr><td style="word-wrap: break-word;">'+
-                                            customRulesets[source]['name']+
-                                        '</td><td style="word-wrap: break-word;">'+
-                                            '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\',\''+rulesetuuid+'\')">Add</button>' +
-                                        '</td></tr>';
-                                    }
-                                html = html + '</tbody></table>'+
+                            '<tbody>                                                      ' ;
+                                for (source in customRulesets) {
+                                    html = html + '<tr><td style="word-wrap: break-word;">'+
+                                        customRulesets[source]['name']+
+                                    '</td><td style="word-wrap: break-word;">'+
+                                        '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\',\''+rulesetuuid+'\')">Add</button>' +
+                                    '</td></tr>';
+                                }
+                            html = html + '</tbody></table>'+
                         '</table>'+
                     '</div>'+
     

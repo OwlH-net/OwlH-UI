@@ -35,15 +35,16 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid){
     }  
     var isEmpty = true;
     var files = response.data;
-    var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-        '<thead>                                                      ' +
-        '<tr>                                                         ' +
-        '<th>File Name</th>                                                  ' +
-        '<th>Ruleset</th>                                          ' +
-        '<th style="width: 15%">Actions</th>                                ' +
-        '</tr>                                                        ' +
-        '</thead>                                                     ' +
-        '<tbody>                                                      ' 
+    var html = 
+        '<div width="100%"><input class="form-control w-25 my-3" type="text" placeholder="Search" aria-label="Search" id="search-ruleset-details"><button type="button" class="btn btn-primary" onclick="loadRulesetBySearch(\''+uuid+'\', \''+sourceName+'\')"><i class="fas fa-search"></i></button> </div>'+
+        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+            '<thead>                                                      ' +
+                '<tr>                                                         ' +
+                '<th>File Name</th>                                                  ' +
+                '<th>Ruleset</th>                                          ' +
+                '<th style="width: 15%">Actions</th>                                ' +
+            '</thead>                                                     ' +
+            '<tbody>                                                      ' 
     for (file in files) {
         isEmpty = false;
         html = html + '<tr><td style="word-wrap: break-word;">'+
@@ -108,6 +109,12 @@ function modalAddNewLines(uuid, name){
         '</div>'+
     '</div>';
     modalWindowDelete.innerHTML = html;
+}
+
+function loadRulesetBySearch(uuid, rulesetName){
+    var ipmaster = document.getElementById('ip-master').value;
+    var search = document.getElementById('search-ruleset-details').value;
+    document.location.href = 'https://' + ipmaster + '/ruleset-search.html?rulesetName='+rulesetName+'&search='+search;
 }
 
 function addNewLines(uuid){

@@ -8,6 +8,11 @@ function loadTitleJSONdata(){
 
     $.get('../conf/current.version', function(data) {
         document.getElementById('current-version-show').innerHTML = data;        
+        document.getElementById('current-version-show').onclick = function(){loadReadme();}; 
+        document.getElementById('current-version-show').style.cursor = "pointer"; 
+        document.getElementById('current-version-text').onclick = function(){loadReadme();}; 
+        document.getElementById('current-version-text').style.cursor = "pointer"; 
+               
     }, 'text');
 
     axios({
@@ -22,6 +27,10 @@ function loadTitleJSONdata(){
     .catch(function (error) {
         return false;
     }); 
+}
+
+function loadReadme(){
+    window.open('https://github.com/OwlH-net/roadmap/blob/master/README.md', '_blank').focus();
 }
 
 loadTitleJSONdata();

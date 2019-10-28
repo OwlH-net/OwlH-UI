@@ -64,7 +64,6 @@ function GetAllGroups(){
     var groupurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/';
     document.getElementById('group-text').style.display ="none";
 
-    // formAddGroup();
     axios({
         method: 'get',
         url: groupurl,
@@ -72,115 +71,100 @@ function GetAllGroups(){
     })
     .then(function (response) {
         document.getElementById('group-text').style.display ="block";
-        if (response.data.ack == "false") {
+        if(response.data == null){
+            result.innerHTML= '<div style="text-align:center"><h3>No groups created</h3></div>';
+        }else if (response.data.ack == "false") {
             result.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving groups data</h3></div>';
-        }
-        var isEmpty = true;
-        var html = "";
-        html = html + '<div>'+
-        '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
-            '<thead>' +
-                '<tr>' +
-                    '<th width="20%">Name</th>' +
-                    '<th>Description</th>' +
-                    '<th width="15%">Actions</th>' +
-                '</tr>' +
-            '</thead>' +
-            '<tbody>'; 
-                for(x=0; x<response.data.length; x++){
-                    var groups = response.data[x];
-                    isEmpty = false;
-                    html = html + '<tr bgcolor="powderblue">'+
-                        '<td style="word-wrap: break-word;">'+
-                            groups['gname']+
-                        '</td><td style="word-wrap: break-word;">'+
-                            groups['gdesc']+
-                        '</td><td style="word-wrap: break-word;">'+
-                            '<i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Edit group" onclick="showEditGroup(\''+groups['guuid']+'\')"></i> &nbsp;'+
-                            '<i class="fas fa-plus" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Add nodes to group" onclick="modalSelectNodeGroup(\''+groups['guuid']+'\')"></i>  &nbsp'+
-                            '<i class="fas fa-chevron-circle-down" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Show nodes values" id="show-nodes-details-'+groups['guuid']+'" onclick="ShowNodesValue(\''+groups['guuid']+'\')"></i>  &nbsp'+
-                            '<i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete group" onclick="modalDeleteGroup(\''+groups['gname']+'\',\''+groups['guuid']+'\')"></i>'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr>'+
-                        '<td colspan="3">'+
-                            '<table class="table" id="edit-group-row-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+
-                                '<tr>'+
-                                    '<td>Name: <input class="form-control" id="edit-group-name-'+groups['guuid']+'"></td>'+
-                                    '<td>Description: <input class="form-control" id="edit-group-desc-'+groups['guuid']+'"></td>'+
-                                    '<td>'+
-                                        '<a class="btn btn-secondary float-right text-decoration-none text-white" onclick="hideEditGroup(\''+groups['guuid']+'\')">Cancel</a>'+
-                                        '<a class="btn btn-primary float-right text-decoration-none text-white" id="edit-group-save" onclick="EditGroupData(\''+groups['guuid']+'\')">Modify</a>'+
-                                    '</td>'+
-                                '</tr>'+
-                            '</table>'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr id="nodes-for-group-'+groups['guuid']+'">'+
-                        '<td colspan="3">'+
-                            '<b>Nodes</b>'+
-                            '<table class="table" id="nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+
-                                '<thead>'+                           
-                                    '<tr>'+                           
-                                        '<th>Node name:</th>'+
-                                        '<th>Node ip:</th>'+
-                                    '</tr>'+
-                                '</thead>';   
-                                for(r in groups["Nodes"]){
-                                    console.log(groups["Nodes"][r]);
-                                    html = html + '<tr>'+                           
-                                            // '<td>Node UUID: '+groups["Nodes"][r]["nuuid"]+'</td>'+
-                                            '<td>'+groups["Nodes"][r]["nname"]+'</td>'+
-                                            '<td>'+groups["Nodes"][r]["nip"]+'</td>'+
-                                    '</tr>';
-                                }
-                            html = html + '</table>';
-                            html = html + '<b>Suricata</b>'+
-                            '<table class="table" id="nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                                
-                                '<thead>'+                           
-                                    '<tr>'+                           
-                                        '<th>Configuration/Ruleset</th>'+
-                                        '<th>Ruleset</th>'+
-                                        '<th></th>'+
-                                    '</tr>'+
-                                '</thead>'+                           
-                                '<tbody>'+                           
-                                    '<tr>'+                           
-                                        '<td>Configuration</td>'+
-                                        '<td>From fodler</td>'+
-                                        '<td>/usr/local/owlh/suricata/confs</td>'+
-                                    '</tr>'+
-                                    '<tr>'+                           
-                                        '<td>Ruleset</td>'+
-                                        '<td>Ruleset Valencia</td>'+
-                                        '<td></td>'+
-                                    '</tr>'+
-                                '</tbody>'+                           
-                            '</table>'; 
-                            html = html + '<b>Zeek</b>'+
-                            '<table class="table" id="nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+
-                                '<thead>'+                           
-                                    '<tr>'+                           
-                                        '<th>Main config</th>'+
-                                        '<th></th>'+
-                                        '<th></th>'+
-                                    '</tr>'+
-                                '</thead>'+                           
-                                '<tbody>'+                           
-                                    '<tr>'+                           
-                                        '<td>Master node configuration</td>'+
-                                        '<td>Ruleset</td>'+
-                                        '<td></td>'+
-                                    '</tr>'+
-                                '</tbody>'+    
-                            '</table>'; 
-                        html = html + '</td>'+
-                    '</tr>';
-                }
-            html = html + '</tbody></table></div>';
-        if (isEmpty){
-            result.innerHTML = '<h3 style="text-align:center">No groups created</h3>';
         }else{
+            var html = "";
+            html = html + '<div>'+
+            '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th width="20%">Name</th>' +
+                        '<th>Description</th>' +
+                        '<th width="15%">Actions</th>' +
+                    '</tr>' +
+                '</thead>' +
+                '<tbody>'; 
+                    for(x=0; x<response.data.length; x++){
+                        var groups = response.data[x];
+                        html = html + '<tr bgcolor="powderblue">'+
+                            '<td style="word-wrap: break-word;">'+
+                                groups['gname']+
+                            '</td><td style="word-wrap: break-word;">'+
+                                groups['gdesc']+
+                            '</td><td style="word-wrap: break-word;">'+
+                                '<i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Edit group" onclick="showEditGroup(\''+groups['guuid']+'\')"></i> &nbsp;'+
+                                '<i class="fas fa-plus" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Add nodes to group" onclick="modalSelectNodeGroup(\''+groups['guuid']+'\')"></i>  &nbsp'+
+                                '<i class="fas fa-chevron-circle-down" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Show nodes values" id="show-nodes-details-'+groups['guuid']+'" onclick="ShowNodesValue(\''+groups['guuid']+'\')"></i> &nbsp'+
+                                '<i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete group" onclick="modalDeleteGroup(\''+groups['gname']+'\',\''+groups['guuid']+'\')"></i>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td id="edit-group-row-'+groups['guuid']+'" colspan="3" style="display:none;">'+
+                                '<table class="table" style="table-layout: fixed" width="100%">'+
+                                    '<tr>'+
+                                        '<td width="40%">Name: <input class="form-control" id="edit-group-name-'+groups['guuid']+'"></td>'+
+                                        '<td width="50%">Description: <input class="form-control" id="edit-group-desc-'+groups['guuid']+'"></td>'+
+                                        '<td width="10%">'+
+                                            '<a class="btn btn-secondary float-right text-decoration-none text-white my-2" onclick="hideEditGroup(\''+groups['guuid']+'\')">Cancel</a>'+
+                                            '<a class="btn btn-primary float-right text-decoration-none text-white my-2" id="edit-group-save" onclick="EditGroupData(\''+groups['guuid']+'\')">Modify</a>'+
+                                        '</td>'+
+                                    '</tr>'+
+                                '</table>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr id="nodes-for-group-'+groups['guuid']+'" style="display:none;">'+
+                            '<td colspan="3">'+
+                                '<b>Nodes</b>'+
+                                '<table class="table" id="nodes-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+
+                                    '<thead>'+                           
+                                        '<tr>'+                           
+                                            '<th>Node name</th>'+
+                                            '<th>Node ip</th>'+
+                                            '<th width="10%">Actions</th>'+
+                                        '</tr>'+
+                                    '</thead>';   
+                                    for(r in groups["Nodes"]){
+                                        html = html + '<tr>'+                           
+                                                '<td>'+groups["Nodes"][r]["nname"]+'</td>'+
+                                                '<td>'+groups["Nodes"][r]["nip"]+'</td>'+
+                                                '<td><i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete node for this group" onclick="modalDeleteNodeForGroup(\''+groups["Nodes"][r]["dbuuid"]+'\', \''+groups["Nodes"][r]["nname"]+'\')"></i></td>'+
+                                        '</tr>';
+                                    }
+                                html = html + '</table>';
+                                html = html + '<b>Suricata</b>'+
+                                '<table class="table" id="suricata-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                                                         
+                                    '<tbody>'+                           
+                                        '<tr>'+                           
+                                            '<td>Configuration</td>'+
+                                            '<td>From fodler</td>'+
+                                            '<td>/usr/local/owlh/suricata/confs</td>'+
+                                        '</tr>'+
+                                        '<tr>'+                           
+                                            '<td>Ruleset</td>'+
+                                            '<td>Ruleset Valencia</td>'+
+                                            '<td></td>'+
+                                        '</tr>'+
+                                    '</tbody>'+                           
+                                '</table>'; 
+                                html = html + '<b>Zeek</b>'+
+                                '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
+                                    '<tbody>'+                           
+                                        '<tr>'+                           
+                                            '<td>Master node configuration</td>'+
+                                            '<td>Ruleset</td>'+
+                                            '<td></td>'+
+                                        '</tr>'+
+                                    '</tbody>'+    
+                                '</table>'; 
+                            html = html + '</td>'+
+                        '</tr>';
+                        // $('#edit-group-row-'+groups['guuid']).hide();
+                        // $('#nodes-for-group-'+groups['guuid']).hide();
+                    }
+                html = html + '</tbody></table></div>';
             result.innerHTML = html;
         }
 
@@ -241,13 +225,14 @@ function GetAllGroups(){
 function modalSelectNodeGroup(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/getAllNodesGroup';
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/getAllNodesGroup/'+uuid;
     axios({
         method: 'get',
         url: nodeurl,
         timeout: 30000
         })
         .then(function (response) {
+            console.log(response.data);
             var modalWindowDelete = document.getElementById('modal-groups');
             var html = '<div class="modal-dialog">'+
                 '<div class="modal-content">'+
@@ -267,17 +252,21 @@ function modalSelectNodeGroup(uuid){
                                 '</tr>'+
                             '</thead>'+
                             '<tbody>';
-                                for(node in response.data){
+                                for(node in response.data){                                    
                                     html = html + '<tr>'+
                                         '<td style="word-wrap: break-word;">'+response.data[node]["name"]+'</td>'+
-                                        '<td style="word-wrap: break-word;">'+response.data[node]["ip"]+'</td>'+
-                                        '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'"></td>'+
+                                        '<td style="word-wrap: break-word;">'+response.data[node]["ip"]+'</td>';
+                                        if (response.data[node]["checked"] == "true"){
+                                            html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'" checked disabled></td>';
+                                        }else{
+                                            html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'"></td>';
+                                        }                                        
                                     '</tr>';                                
                                 }
                             html = html + '</tbody>'+
                         '</table>'+
                     '</div>'+
-            
+                          
                     '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
                         '<button type="button" id="add-node-to-group-close" class="btn btn-secondary">Close</button>'+
                         '<button type="button" id="add-node-to-group-button" class="btn btn-primary">Select</button>'+
@@ -340,23 +329,25 @@ function modalDeleteGroup(name, groupID){
     
             '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" id="delete-group-close">Close</button>'+
-                '<button type="submit" class="btn btn-danger" id="delete-group-button" onclick="deleteGroup(\''+groupID+'\')">Delete</button>'+
+                '<button type="submit" class="btn btn-danger" id="delete-group-button">Delete</button>'+
             '</div>'+
     
         '</div>'+
     '</div>';
     $('#modal-groups').modal("show");
-    $('#id="delete-group-cross"').click(function(){ $('#modal-groups').modal("hide");});
-    $('#id="delete-group-close"').click(function(){ $('#modal-groups').modal("hide");});
-    $('#id="delete-group-button"').click(function(){ deleteGroup(groupID); });
+    $('#delete-group-cross').click(function(){ $('#modal-groups').modal("hide");});
+    $('#delete-group-close').click(function(){ $('#modal-groups').modal("hide");});
+    $('#delete-group-button').click(function(){ deleteGroup(groupID); });
 }
 
 function showEditGroup(uuid){
-    document.getElementById('edit-group-row-'+uuid).style.display = "block";
+    // document.getElementById('edit-group-row-'+uuid).style.display = "block";
+    $('#edit-group-row-'+uuid).show();
 }
 
 function hideEditGroup(uuid){
-    document.getElementById('edit-group-row-'+uuid).style.display = "none";
+    // document.getElementById('edit-group-row-'+uuid).style.display = "none";
+    $('#edit-group-row-'+uuid).hide();
 }
 
 function EditGroupData(uuid){
@@ -402,6 +393,51 @@ function deleteGroup(groupID){
         });
 }
 
+function deleteNodeForGroup(uuid){
+    $('#modal-groups').modal("hide");
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/deleteNodeGroup/' + uuid;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+    })
+        .then(function (response) {
+            GetAllGroups();
+        })
+        .catch(function error() {
+        });
+}
+
+function modalDeleteNodeForGroup(uuid, nname){
+    var modalWindowDelete = document.getElementById('modal-groups');
+    modalWindowDelete.innerHTML = 
+    '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+    
+            '<div class="modal-header" style="word-break: break-all;">'+
+                '<h4 class="modal-title">Delete node from group list</h4>'+
+                '<button type="button" class="close" id="delete-node-group-cross">&times;</button>'+
+            '</div>'+
+    
+            '<div class="modal-body" style="word-break: break-all;">'+ 
+                '<p>Do you want to remove node <b>'+nname+'</b> from the list?</p>'+
+            '</div>'+
+    
+            '<div class="modal-footer">'+
+                '<button type="button" class="btn btn-secondary" id="delete-node-group-close">Close</button>'+
+                '<button type="submit" class="btn btn-danger" id="delete-node-group">Delete</button>'+
+            '</div>'+
+    
+        '</div>'+
+    '</div>';
+    $('#modal-groups').modal("show");
+    $('#delete-node-group-close').click(function(){ $('#modal-groups').modal("hide");});
+    $('#delete-node-group-cross').click(function(){ $('#modal-groups').modal("hide");});
+    $('#delete-node-group').click(function(){ deleteNodeForGroup(uuid); });
+}
+
 function checkStatus() {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -414,11 +450,11 @@ function ShowNodesValue (uuid){
     var content = document.getElementById('nodes-for-group-'+uuid);
 
     if (content.style.display == "none") {
-        content.style.display = "block";
         detailsButton.className = "fas fa-chevron-circle-up";
-    } else if (content.style.display == "block"){
-        content.style.display = "none";
+        $('#nodes-for-group-'+uuid).show();
+    } else {
         detailsButton.className = "fas fa-chevron-circle-down";
+        $('#nodes-for-group-'+uuid).hide();
     }
 }
 

@@ -1,3 +1,15 @@
+function loadJSONdata(){
+    $.getJSON('../conf/ui.conf', function(data) {
+        var ipLoad = document.getElementById('ip-master'); 
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        loadTitleJSONdata();
+        GetAllGroups();
+    });
+}
+loadJSONdata();
+
 function modalAddGroup(){
     var modalWindow = document.getElementById('modal-groups');
     modalWindow.innerHTML = '<div class="modal-dialog">'+
@@ -39,6 +51,8 @@ function addGroup() {
     var nodejson = {}
     nodejson["name"] = groupname;
     nodejson["desc"] = groupdesc;
+    nodejson["ruleset"] = "";
+    nodejson["rulesetID"] = "";
     nodejson["type"] = "Nodes";
     var nodeJSON = JSON.stringify(nodejson);
 
@@ -70,6 +84,7 @@ function GetAllGroups(){
         timeout: 30000
     })
     .then(function (response) {
+        console.log(response.data);
         document.getElementById('group-text').style.display ="block";
         if(response.data == null){
             result.innerHTML= '<div style="text-align:center"><h3>No groups created</h3></div>';
@@ -126,11 +141,11 @@ function GetAllGroups(){
                                             '<th width="10%">Actions</th>'+
                                         '</tr>'+
                                     '</thead>';   
-                                    for(r in groups["Nodes"]){
+                                    for(nid in groups["Nodes"]){
                                         html = html + '<tr>'+                           
-                                                '<td>'+groups["Nodes"][r]["nname"]+'</td>'+
-                                                '<td>'+groups["Nodes"][r]["nip"]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete node for this group" onclick="modalDeleteNodeForGroup(\''+groups["Nodes"][r]["dbuuid"]+'\', \''+groups["Nodes"][r]["nname"]+'\')"></i></td>'+
+                                                '<td>'+groups["Nodes"][nid]["nname"]+'</td>'+
+                                                '<td>'+groups["Nodes"][nid]["nip"]+'</td>'+
+                                                '<td><i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete node for this group" onclick="modalDeleteNodeForGroup(\''+groups["Nodes"][nid]["dbuuid"]+'\', \''+groups["Nodes"][nid]["nname"]+'\')"></i></td>'+
                                         '</tr>';
                                     }
                                 html = html + '</table>';
@@ -143,8 +158,14 @@ function GetAllGroups(){
                                             '<td>/usr/local/owlh/suricata/confs</td>'+
                                         '</tr>'+
                                         '<tr>'+                           
-                                            '<td>Ruleset</td>'+
-                                            '<td>Ruleset Valencia</td>'+
+                                            '<td>Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['grulesetID']+'\')"></i></td>'+
+                                            '<td id="ruleset-group-'+groups['guuid']+'">';
+                                                if(groups['gruleset'] != ""){
+                                                    html = html + groups['gruleset'];
+                                                }else{
+                                                    html = html + '<p style="color: red;">No ruleset selected...</p>';
+                                                }
+                                            html = html + '</td>'+
                                             '<td></td>'+
                                         '</tr>'+
                                     '</tbody>'+                           
@@ -174,8 +195,84 @@ function GetAllGroups(){
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
     });
-
     // PingGroupNodes();
+}
+
+function modalLoadRuleset(group){
+    document.getElementById('modal-groups').innerHTML = '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+
+            '<div class="modal-header" style="word-break: break-all;">'+
+                '<h4 class="modal-title">Groups rulesets</h4>'+
+                '<button type="button" class="close" id="ruleset-group-cross">&times;</button>'+
+            '</div>'+
+
+            '<div class="modal-body" style="word-break: break-all;" id="group-ruleset-values">'+ 
+            '</div>'+
+
+            '<div class="modal-footer" id="ruleset-ruleset-footer-btn">'+
+                '<button type="button" class="btn btn-secondary" id="ruleset-group-close">Close</button>'+
+            '</div>'+
+
+        '</div>'+
+    '</div>';
+    $('#modal-groups').modal("show");
+    $('#ruleset-group-cross').click(function(){ $('#modal-groups').modal("hide");});
+    $('#ruleset-group-close').click(function(){ $('#modal-groups').modal("hide");});
+
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
+        .then(function (response) {
+            if (typeof response.data.error != "undefined"){
+                document.getElementById('group-ruleset-values').innerHTML = '<p>No rules available...</p>';
+            }else{
+                var html = '';
+                html = html + '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th>Ruleset</th>'+
+                        '<th>Select</th>'+
+                    '</thead>'+
+                    '<tbody>';
+                        for(id in response.data){
+                            html = html + '<tr>'+
+                                '<td>'+response.data[id]["name"]+'</td>'+
+                                '<td><button type="submit" class="btn btn-primary" onclick="selectGroupRuleset(\''+group+'\', \''+response.data[id]["name"]+'\', \''+id+'\')">Select</button></td>'+
+                            '<tr>';
+                        }
+                    html = html + '</tbody>'+
+                '</table>';
+                document.getElementById('group-ruleset-values').innerHTML = html;
+            }
+        })
+        .catch(function (error) {
+            document.getElementById('group-ruleset-values').innerHTML = '<p>Error retrieving rules</p>';
+        }); 
+}
+
+function selectGroupRuleset(group, ruleset, rulesetID){
+    $('#modal-groups').modal("hide");
+    // document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/changeGroupRuleset';
+
+    var groupjson = {}
+    groupjson["uuid"] = group;
+    groupjson["ruleset"] = ruleset;
+    groupjson["rulesetID"] = rulesetID;
+    var grJSON = JSON.stringify(groupjson);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: grJSON
+        })
+        .then(function (response) {
+            GetAllGroups();
+        })
+        .catch(function (error) {
+        }); 
 }
 
 // function PingGroupNodes(){
@@ -221,7 +318,6 @@ function GetAllGroups(){
 //         });
 // }
 
-
 function modalSelectNodeGroup(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -230,9 +326,8 @@ function modalSelectNodeGroup(uuid){
         method: 'get',
         url: nodeurl,
         timeout: 30000
-        })
+    })
         .then(function (response) {
-            console.log(response.data);
             var modalWindowDelete = document.getElementById('modal-groups');
             var html = '<div class="modal-dialog">'+
                 '<div class="modal-content">'+
@@ -458,14 +553,52 @@ function ShowNodesValue (uuid){
     }
 }
 
-function loadJSONdata(){
-    $.getJSON('../conf/ui.conf', function(data) {
-      var ipLoad = document.getElementById('ip-master'); 
-      ipLoad.value = data.master.ip;
-      var portLoad = document.getElementById('port-master');
-      portLoad.value = data.master.port;
-      loadTitleJSONdata();
-      GetAllGroups();
+function SyncRulesetToAllGroupNodes(nid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/syncGroups';
+
+    var jsonRuleUID = {}
+    jsonRuleUID["uuid"] = nid;
+    var dataJSON = JSON.stringify(jsonRuleUID);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        if (response.data.ack == "true") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Success!</strong> Ruleset synchronized succesfully for all group nodes.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Ruleset Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Synchronize for all group nodes: '+error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
-  }
-  loadJSONdata();
+}

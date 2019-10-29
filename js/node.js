@@ -197,28 +197,28 @@ function generateAllRulesModal(response, nid) {
     var rules = response.data;
     var isEmpty = true;
     var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                '<thead>                                                      ' +
-                '<tr>                                                         ' +
-                '<th width="30%">Name</th>                                    ' +
-                '<th>Description</th>                                         ' +
-                '<th width="15%">Options</th>                                 ' +
-                '</tr>                                                        ' +
-                '</thead>                                                     ' +
-                '<tbody >                                                     ' 
+                	'<thead>' +
+                		'<tr>' +
+							'<th width="30%">Name</th>' +
+							'<th>Description</th>' +
+							'<th width="15%">Options</th>' +
+                		'</tr>' +
+                	'</thead>' +
+                	'<tbody>';
     for (rule in rules) {
         isEmpty = false;
-        html = html + '<tr><td style="word-wrap: break-word;" width="30%">                                       ' +
-        rules[rule]["name"]                                                     +
-        '</td><td style="word-wrap: break-word;">                                                            ' +
-        rules[rule]["desc"]                                                     +
-        '</td><td style="word-wrap: break-word;" width="15%">                                                ' +
-        '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
-        '</td></tr>                                                           '
+        html = html + '<tr><td style="word-wrap: break-word;" width="30%"> ' +
+        rules[rule]["name"] +
+        '</td><td style="word-wrap: break-word;"> ' +
+        rules[rule]["desc"] +
+        '</td><td style="word-wrap: break-word;" width="15%"> ' +
+        	'<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button> ' +
+        '</td></tr> ';
     }
     html = html + '</tbody></table>';
     
     if (isEmpty){
-        return '<p>No rules available...</p>';;
+        return '<p>No rules available...</p>';
     }else{
         return html;
     }

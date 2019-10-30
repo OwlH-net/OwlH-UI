@@ -78,9 +78,7 @@ function generateAllRulesetsHTMLOutput(response) {
     html = html + '</tbody></table>';
 
     document.getElementById('search-input-ruesets').innerHTML = '<input class="form-control mx-3" type="text" placeholder="Search" aria-label="Search" id="search-ruleset-details">'+
-        // '<div class="pr-2">'+    
             '<a type="button" class="btn btn-primary" onclick="loadRulesetBySearch()"><i class="fas fa-search" style="color: white;"></i></a>';
-        // '</div>';
 
     if (isEmptyRulesets) {
         return '<div style="text-align:center"><h3>No Rules available...</h3></div>';

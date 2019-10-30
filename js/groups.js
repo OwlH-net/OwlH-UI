@@ -5,6 +5,8 @@ function loadJSONdata(){
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
         loadTitleJSONdata();
+        document.getElementById('progressBar-create-div').style.display="none";
+        document.getElementById('progressBar-create').style.display="none"; 
         GetAllGroups();
     });
 }
@@ -158,7 +160,7 @@ function GetAllGroups(){
                                             '<td>/usr/local/owlh/suricata/confs</td>'+
                                         '</tr>'+
                                         '<tr>'+                           
-                                            '<td>Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['grulesetID']+'\')"></i></td>'+
+                                            '<td>Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>'+
                                             '<td id="ruleset-group-'+groups['guuid']+'">';
                                                 if(groups['gruleset'] != ""){
                                                     html = html + groups['gruleset'];
@@ -553,21 +555,27 @@ function ShowNodesValue (uuid){
     }
 }
 
-function SyncRulesetToAllGroupNodes(nid){
+function SyncRulesetToAllGroupNodes(groupID){
+    document.getElementById('progressBar-create-div').style.display="block";
+    document.getElementById('progressBar-create').style.display="block"; 
+
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/syncGroups';
 
     var jsonRuleUID = {}
-    jsonRuleUID["uuid"] = nid;
+    jsonRuleUID["uuid"] = groupID;
     var dataJSON = JSON.stringify(jsonRuleUID);
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000,
+        timeout: 300000,
         data: dataJSON
     })
     .then(function (response) {
+        document.getElementById('progressBar-create-div').style.display="none";
+        document.getElementById('progressBar-create').style.display="none"; 
+
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -591,6 +599,9 @@ function SyncRulesetToAllGroupNodes(nid){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-create-div').style.display="none";
+        document.getElementById('progressBar-create').style.display="none"; 
+
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

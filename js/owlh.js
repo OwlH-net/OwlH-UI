@@ -154,13 +154,13 @@ function GetAllNodes() {
                                 '<thead> ' +
                                     '<tr>  ' +
                                         '<th scope="col" width="5%"></th> ' +
-                                        '<th scope="col" width="30%" align="left">Name</th> ' +
+                                        '<th id="node-table-name-column" scope="col" width="30%" align="left">Name</th> ' +
                                         '<th scope="col" width="25%" align="right">Status</th> ' +
                                         '<th scope="col" width="10%"></th>' +
                                         '<th scope="col" width="25%">Actions</th>  ' +
                                     '</tr> ' +
                                 '</thead> ' +
-                                '<tbody >';
+                                '<tbody id="node-table-tbody">';
                 for (node in nodes) {
                     isEmpty = false;
                     if (nodes[node]['port'] != undefined) {
@@ -225,6 +225,9 @@ function GetAllNodes() {
                     });
                 }                    
             }
+
+            $('#node-table').click(function(){sortTable(); });
+
         })
         .catch(function (error) {
             console.log(error);
@@ -232,6 +235,29 @@ function GetAllNodes() {
                 '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
                 checkStatus();
         });
+}
+
+
+
+function sortTable() {
+    var tbody = $('#node-table-tbody');
+   
+    tbody.find('tr').sort(function(a, b) {
+        return $('td:first', a).text().localeCompare($('td:first', b).text());
+        // if($('#name_order').val()=='asc') {
+        //     return $('td:first', a).text().localeCompare($('td:first', b).text());
+        // }else {
+        //     return $('td:first', b).text().localeCompare($('td:first', a).text());
+        // }   
+    }).appendTo(tbody);
+        
+    var sort_order=$('#name_order').val();
+    if(sort_order=="asc"){
+        document.getElementById("name_order").value="desc";
+    }
+    if(sort_order=="desc"){
+        document.getElementById("name_order").value="asc";
+    }
 }
 
 function showNodes(status){

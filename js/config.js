@@ -11,17 +11,6 @@ function saveFileChanged() {
     // var nodeurl = '../conf/ui.conf';    
     var nodeurl = 'ui.php';    
 
-// console.log(fileContent);
-
-//     $.ajax({
-//         type: 'POST',
-//         url: nodeurl,
-//         data: JSON.stringify( fileContent ),
-//         // dataType: "json",
-//         success: function(resultData) { console.log(resultData) }
-//     });
-
-
     axios({
         method: 'put',
         url: nodeurl,
@@ -32,7 +21,6 @@ function saveFileChanged() {
         location.reload(true);        
     })
     .catch(function (error) {
-        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

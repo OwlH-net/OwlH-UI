@@ -36,58 +36,64 @@ function loadControlData(){
         timeout: 30000
     })
     .then(function (response) {
-        var isEmpty = true;
-        progressBar.style.display = "none";
-        progressBarDiv.style.display = "none";
+        if(response.data.ack == "false"){
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            document.getElementById("control-data-content").innerHTML = '<h3 class="text-center">There are not change control</h3>';
+        }else{
+            var isEmpty = true;
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
 
-        html = '<table class="table" style="table-layout: fixed" style="width:1px">'+
-            '<thead>'+
-                '<tr>'+
-                    '<th>Date</td>'+
-                    '<th>Device</td>'+
-                    '<th>Status</td>'+
-                    '<th>Action value</td>'+
-                    '<th>Action desc</td>'+
-                    '<th>Actions</td>'+
-                '</tr>'+
-            '</thead>'+
-            '<tbody>';
-                for(data in response.data){
-                    isEmpty = false;
-                    html = html + '<tr>'+
-                        '<td>'+response.data[data]["time"]+'</td>'+
-                        '<td>'+response.data[data]["deviceName"]+'</td>';                        
-                        if(response.data[data]["actionStatus"] == "success"){
-                            html = html + '<td style="color:green;">'+response.data[data]["actionStatus"]+'</td>';
-                        }else if(response.data[data]["actionStatus"] == "error"){
-                            html = html + '<td style="color:red;">'+response.data[data]["actionStatus"]+'</td>';
-                        }
-                        html = html + '<td>'+response.data[data]["action"]+'</td>'+
-                        '<td>'+response.data[data]["actionDescription"]+'</td>'+
-                        '<td><i class="fas fa-chevron-circle-down" style="cursor:pointer;" onclick="showControlDetails(\''+data+'\')" id="details-show-'+data+'"></i></td>'+
-                    '</tr>'+
+            html = '<table class="table" style="table-layout: fixed" style="width:1px" id="control-table">'+
+                '<thead>'+
                     '<tr>'+
-                        '<td colspan="6">'+
-                            '<table id="control-'+data+'" style="display: none;" class="table" style="table-layout: fixed" style="width:100%">'+
-                                '<tr>'+
-                                    '<td>';
-                                        for(param in response.data[data]){
-                                            html = html + '<b>'+param+': </b>'+response.data[data][param]+'<br>';
-                                        }
-                                    html = html + '</td>'+
-                                '</tr>'+
-                            '</table>'+
-                        '</td>'+
-                    '</tr>';
-                }
-                
-            html = html + '</tbody>'+
-        '</table>';
+                        '<th onclick="sortTable()">Date</td>'+
+                        '<th>Device</td>'+
+                        '<th>Status</td>'+
+                        '<th>Action value</td>'+
+                        '<th>Action desc</td>'+
+                        '<th>Actions</td>'+
+                    '</tr>'+
+                '</thead>'+
+                '<tbody>';
+                    for(data in response.data){
+                        isEmpty = false;
+                        html = html + '<tr>'+
+                            '<td>'+response.data[data]["time"]+'</td>'+
+                            '<td>'+response.data[data]["deviceName"]+'</td>';                        
+                            if(response.data[data]["actionStatus"] == "success"){
+                                html = html + '<td style="color:green;">'+response.data[data]["actionStatus"]+'</td>';
+                            }else if(response.data[data]["actionStatus"] == "error"){
+                                html = html + '<td style="color:red;">'+response.data[data]["actionStatus"]+'</td>';
+                            }
+                            html = html + '<td>'+response.data[data]["action"]+'</td>'+
+                            '<td>'+response.data[data]["actionDescription"]+'</td>'+
+                            '<td><i class="fas fa-chevron-circle-down" style="cursor:pointer;" onclick="showControlDetails(\''+data+'\')" id="details-show-'+data+'"></i></td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td colspan="6">'+
+                                '<table id="control-'+data+'" style="display: none;" class="table" style="table-layout: fixed" style="width:100%">'+
+                                    '<tr>'+
+                                        '<td>';
+                                            for(param in response.data[data]){
+                                                html = html + '<b>'+param+': </b>'+response.data[data][param]+'<br>';
+                                            }
+                                        html = html + '</td>'+
+                                    '</tr>'+
+                                '</table>'+
+                            '</td>'+
+                        '</tr>';
+                    }
+                    
+                html = html + '</tbody>'+
+            '</table>';
 
-        if (isEmpty == true){
-            html = '<h2 class="text-center">There is no change control available</h2>';
+            if (isEmpty == true){
+                html = '<h2 class="text-center">There is no change control available</h2>';
+            }
+            document.getElementById("control-data-content").innerHTML = html;
         }
-        document.getElementById("control-data-content").innerHTML = html;
     })
     .catch(function (error) {
     });
@@ -103,5 +109,40 @@ function showControlDetails(uuid){
     } else if (details.style.display == "block"){
         details.style.display = "none";
         showDetailsButton.className = "fas fa-chevron-circle-down";
+    }
+}
+
+function sortTable() {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("control-table");
+    switching = true;
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+		// Start by saying: no switching is done:
+		switching = false;
+		rows = table.rows;
+		/* Loop through all table rows (except the
+		first, which contains table headers): */
+		for (i = 1; i < (rows.length - 1); i++) {
+			// Start by saying there should be no switching:
+			shouldSwitch = false;
+			/* Get the two elements you want to compare,
+			one from current row and one from the next: */
+			x = rows[i].getElementsByTagName("TD")[0];
+			y = rows[i + 1].getElementsByTagName("TD")[0];
+			// Check if the two rows should switch place:
+			if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+			// If so, mark as a switch and break the loop:
+			shouldSwitch = true;
+			break;
+			}
+		}
+		if (shouldSwitch) {
+			/* If a switch has been marked, make the switch
+			and mark that a switch has been done: */
+			rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+			switching = true;
+		}
     }
 }

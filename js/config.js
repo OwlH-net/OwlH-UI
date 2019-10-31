@@ -8,7 +8,8 @@ function loadFileIntoTextarea(){
 
 function saveFileChanged() {
     var fileContent = document.getElementById('inputTextUI').value;
-    var nodeurl = '../conf/ui.conf';    
+    // var nodeurl = '../conf/ui.conf';    
+    var nodeurl = 'ui.php';    
 
 // console.log(fileContent);
 

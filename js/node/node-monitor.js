@@ -22,7 +22,7 @@ function loadPlugins(){
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'monitor\', \''+uuid+'\')"><b>Node monitor</b> <i class="fas fa-sort-down" id="monitor-form-icon-'+uuid+'"></i></h6>'+
         '<span id="monitor-form-'+uuid+'" style="display:block"><br>'+
             '<table width="100%" style="table-layout: fixed">'+
-                '<tbody>'+
+                '<tbody id="chart-content">'+
                     '<tr>'+
                             '<div>'+
                                 '<td style="word-wrap: break-word;" valign="top" width="50%"><canvas id="myChartPercentage"></canvas></td>'+
@@ -54,7 +54,7 @@ function loadPlugins(){
                     '<tr>'+
                         '<th>Path</th>'+
                         '<th width="15%">Status</th>'+
-                        '<th width="15%">Actions</th>'+
+                        '<th width="20%">Actions</th>'+
                     '</tr>'+
                 '</thead>'+
                 '<tbody id="file-data-monitor">'+
@@ -120,7 +120,7 @@ function ModalDeleteMonitorFile(uuid, file,path){
   
         '<div class="modal-footer" id="sync-node-footer-btn" style="word-break: break-all;">'+
           '<button type="button" class="btn btn-secondary" id="add-file-modal-close">Cancel</button>'+
-          '<button type="button" class="btn btn-danger" id="add-file-modal">Add</button>'+
+          '<button type="button" class="btn btn-danger" id="add-file-modal">Delete</button>'+
         '</div>'+
   
       '</div>'+
@@ -190,31 +190,34 @@ function PingMonitorFiles(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
-        for (file in response.data){
-            html = html + '<tr>'+
-                '<td style="word-wrap: break-word;" id="'+file+'-monitor-files">'+response.data[file]["path"]+'</td>'+
-                '<td style="word-wrap: break-word;" id="monitor-file-column-'+file+'">';
-                if(response.data[file]["size"] < 0){
-                    html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
-                }else{
-                    if(response.data[file]["size"]<1024){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["size"].toFixed(2)+' Bytes</span>';}
-                    if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1024).toFixed(2)+' kB</span>';}
-                    if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1048576).toFixed(2)+' MB</span>';}
-                    if(response.data[file]["size"]>=1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1073741824).toFixed(2)+' GB</span>';}
-                }
-                html = html + '</td>'+
-                '<td style="color:grey; word-wrap: break-word;">';
-                    if(response.data[file]["size"] >=0){
-                        html = html + '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data[file]["path"]+'\')">10</span> &nbsp'+
-                        '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[file]["path"]+'\')">50</span> &nbsp'+
-                        '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[file]["path"]+'\')">100</span> &nbsp';
+        if (response.data.ack == "false"){
+            document.getElementById('file-data-monitor').innerHTML= '<p style="color:red;">There are no files</p>'
+        }else{
+            for (file in response.data){
+                html = html + '<tr>'+
+                    '<td style="word-wrap: break-word;" id="'+file+'-monitor-files">'+response.data[file]["path"]+'</td>'+
+                    '<td style="word-wrap: break-word;" id="monitor-file-column-'+file+'">';
+                    if(response.data[file]["size"] < 0){
+                        html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
+                    }else{
+                        if(response.data[file]["size"]<1024){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["size"].toFixed(2)+' Bytes</span>';}
+                        if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1024).toFixed(2)+' kB</span>';}
+                        if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1048576).toFixed(2)+' MB</span>';}
+                        if(response.data[file]["size"]>=1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1073741824).toFixed(2)+' GB</span>';}
                     }
-                    html = html + '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteMonitorFile(\''+uuid+'\', \''+file+'\', \''+response.data[file]["path"]+'\')"></i>'+
-                '</td>'+
-            '<tr>';
+                    html = html + '</td>'+
+                    '<td style="color:grey; word-wrap: break-word;">';
+                        if(response.data[file]["size"] >=0){
+                            html = html + '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data[file]["path"]+'\')">10</span> &nbsp'+
+                            '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[file]["path"]+'\')">50</span> &nbsp'+
+                            '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[file]["path"]+'\')">100</span> &nbsp';
+                        }
+                        html = html + '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteMonitorFile(\''+uuid+'\', \''+file+'\', \''+response.data[file]["path"]+'\')"></i>'+
+                    '</td>'+
+                '<tr>';
+            }
+            document.getElementById('file-data-monitor').innerHTML= html;
         }
-        document.getElementById('file-data-monitor').innerHTML= html;
     })
     .catch(function (error) {
     });
@@ -237,149 +240,154 @@ function PingMonitor(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        var CPUvalues = [];
-        var CPUpercentage = [];
-        for(x in response.data.cpus){
-            CPUvalues.push("CPU: "+x);
-            CPUpercentage.push(parseFloat(response.data.cpus[x].percentage).toFixed(2));
-        }
+        if (response.data.ack == "false"){            
+            document.getElementById('chart-content').innerHTML = '<h5 class="text-center" style="color:red;">The are no information due to node connection...</h5>';
 
-        //CPU USE PERCENTAGE
-        var ctx_cpu = document.getElementById('myChartPercentage').getContext('2d');
-        var chart = new Chart(ctx_cpu, {
-            type: 'bar',
-
-            data: {
-                scaleOverride : true,
-                labels: CPUvalues,
-                datasets: [{
-                    label: 'CPU percentage usage',
-                    backgroundColor: 'rgb(36, 138, 216)',
-                    borderColor: 'rgb(208, 91, 91)',
-                    data: CPUpercentage
-                }]
-            },
-            options: {
-                animation: false,
-                layout: {padding: {left: 0,right: 50,top: 0,bottom: 0}},
-                responsive: true,
-                maintainAspectRatio: true,
-                // title: {
-                // 	display: true,
-                // 	text: 'Min and Max Settings'
-                // },
-                scales: {
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Percentage'
-                        },
-                        ticks: {
-                            beginAtZero: true,
-                            min: 0,
-                            max: 100,
-                        }
-                    }],
-                    xAxes: [{
-                        barPercentage: 0.3
+        }else{
+            var CPUvalues = [];
+            var CPUpercentage = [];
+            for(x in response.data.cpus){
+                CPUvalues.push("CPU: "+x);
+                CPUpercentage.push(parseFloat(response.data.cpus[x].percentage).toFixed(2));
+            }
+    
+            //CPU USE PERCENTAGE
+            var ctx_cpu = document.getElementById('myChartPercentage').getContext('2d');
+            var chart = new Chart(ctx_cpu, {
+                type: 'bar',
+    
+                data: {
+                    scaleOverride : true,
+                    labels: CPUvalues,
+                    datasets: [{
+                        label: 'CPU percentage usage',
+                        backgroundColor: 'rgb(36, 138, 216)',
+                        borderColor: 'rgb(208, 91, 91)',
+                        data: CPUpercentage
                     }]
-                }
-            }
-        });
-
-        //MEMORY STATS
-        var ctx_owlh = document.getElementById('myChartOwlh').getContext('2d');
-        var chart = new Chart(ctx_owlh, {
-            type: 'bar',
-            data: {
-                labels: ['Total alloc', 'alloc', 'gc', 'sys'],
-                datasets: [{
-                    label: 'MEMORY OwlH stats',
-                    backgroundColor: ['rgb(48,216,36)','rgb(216,150,36)','rgb(36,168,216)','rgb(216,36,54)'],
-                    borderColor: 'rgb(255, 255, 255)',
-                    data: [
-                            parseFloat(response.data.mem.totalalloc).toFixed(2),
-                            parseFloat(response.data.mem.alloc).toFixed(2),
-                            parseFloat(response.data.mem.gc).toFixed(2),
-                            parseFloat(response.data.mem.sys).toFixed(2)
-                        ],
-                    }
-                ],
-            },
-            options: {
-                animation: false,
-                responsive: true,
-                maintainAspectRatio: true,
-                layout: {padding: {left: 50,right: 0,top: 0,bottom: 0}},
-                scales: {
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Memory in MiB'
-                        },
-                        ticks: {
-                            beginAtZero: true,
-                            // min: 0,
-                            // max: 5000,
-                            // maxTicksLimit: 5
-                        }
-                    }]
-                }
-            }
-        });
-        //MEMORY STATS
-        var ctx_mem = document.getElementById('myChartMem').getContext('2d');
-        var chart = new Chart(ctx_mem, {
-            type: 'doughnut',
-            data: {
-                labels: ['MEMORY used', 'MEMORY free'],
-                datasets: [{
-                    label: 'MEMORY stats',
-                    backgroundColor: ['rgb(216,36,54)','rgb(48,216,36)'],
-                    borderColor: 'rgb(255, 255, 255)',
-                    data: [
-                        parseFloat(response.data.mem.usedmem).toFixed(2),
-                        parseFloat(response.data.mem.freemem).toFixed(2)
-                    ]
-                }]
-            },
-            options: {
-                animation: false,
-                layout: {padding: {left: 0,right: 50,top: 50,bottom: 0}},
-                responsive: true,
-                maintainAspectRatio: true,
-            }
-        });
-        //STORAGE STATS
-        var ctx_sto = document.getElementById('myChartSto').getContext('2d');
-        var chart = new Chart(ctx_sto, {
-            type: 'doughnut',
-            data: {
-                labels: ['STORAGE used','STORAGE free'],
-                datasets: [{
-                    label: 'STORAGE stats',
-                    backgroundColor: ['rgb(216,36,54)','rgb(48,216,36)'],
-                    borderColor: 'rgb(255, 255, 255)',
-                    data: [
-                        parseFloat(response.data.disk.useddisk).toFixed(2),
-                        parseFloat(response.data.disk.freedisk).toFixed(2)
-                    ]
-                }]
-            },
-            options: {
-                layout: {
-                    padding: {left: 50,right: 0,top: 50,bottom: 0}
                 },
-                animation: false,
-                responsive: true,
-                maintainAspectRatio: true,
-            }
-        });
-
-        ctx_cpu.render();
-        ctx_owlh.render();
-        ctx_mem.render();
-        ctx_sto.render();
+                options: {
+                    animation: false,
+                    layout: {padding: {left: 0,right: 50,top: 0,bottom: 0}},
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    // title: {
+                    // 	display: true,
+                    // 	text: 'Min and Max Settings'
+                    // },
+                    scales: {
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Percentage'
+                            },
+                            ticks: {
+                                beginAtZero: true,
+                                min: 0,
+                                max: 100,
+                            }
+                        }],
+                        xAxes: [{
+                            barPercentage: 0.3
+                        }]
+                    }
+                }
+            });
+    
+            //MEMORY STATS
+            var ctx_owlh = document.getElementById('myChartOwlh').getContext('2d');
+            var chart = new Chart(ctx_owlh, {
+                type: 'bar',
+                data: {
+                    labels: ['Total alloc', 'alloc', 'gc', 'sys'],
+                    datasets: [{
+                        label: 'MEMORY OwlH stats',
+                        backgroundColor: ['rgb(48,216,36)','rgb(216,150,36)','rgb(36,168,216)','rgb(216,36,54)'],
+                        borderColor: 'rgb(255, 255, 255)',
+                        data: [
+                                parseFloat(response.data.mem.totalalloc).toFixed(2),
+                                parseFloat(response.data.mem.alloc).toFixed(2),
+                                parseFloat(response.data.mem.gc).toFixed(2),
+                                parseFloat(response.data.mem.sys).toFixed(2)
+                            ],
+                        }
+                    ],
+                },
+                options: {
+                    animation: false,
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    layout: {padding: {left: 50,right: 0,top: 0,bottom: 0}},
+                    scales: {
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Memory in MiB'
+                            },
+                            ticks: {
+                                beginAtZero: true,
+                                // min: 0,
+                                // max: 5000,
+                                // maxTicksLimit: 5
+                            }
+                        }]
+                    }
+                }
+            });
+            //MEMORY STATS
+            var ctx_mem = document.getElementById('myChartMem').getContext('2d');
+            var chart = new Chart(ctx_mem, {
+                type: 'doughnut',
+                data: {
+                    labels: ['MEMORY used', 'MEMORY free'],
+                    datasets: [{
+                        label: 'MEMORY stats',
+                        backgroundColor: ['rgb(216,36,54)','rgb(48,216,36)'],
+                        borderColor: 'rgb(255, 255, 255)',
+                        data: [
+                            parseFloat(response.data.mem.usedmem).toFixed(2),
+                            parseFloat(response.data.mem.freemem).toFixed(2)
+                        ]
+                    }]
+                },
+                options: {
+                    animation: false,
+                    layout: {padding: {left: 0,right: 50,top: 50,bottom: 0}},
+                    responsive: true,
+                    maintainAspectRatio: true,
+                }
+            });
+            //STORAGE STATS
+            var ctx_sto = document.getElementById('myChartSto').getContext('2d');
+            var chart = new Chart(ctx_sto, {
+                type: 'doughnut',
+                data: {
+                    labels: ['STORAGE used','STORAGE free'],
+                    datasets: [{
+                        label: 'STORAGE stats',
+                        backgroundColor: ['rgb(216,36,54)','rgb(48,216,36)'],
+                        borderColor: 'rgb(255, 255, 255)',
+                        data: [
+                            parseFloat(response.data.disk.useddisk).toFixed(2),
+                            parseFloat(response.data.disk.freedisk).toFixed(2)
+                        ]
+                    }]
+                },
+                options: {
+                    layout: {
+                        padding: {left: 50,right: 0,top: 50,bottom: 0}
+                    },
+                    animation: false,
+                    responsive: true,
+                    maintainAspectRatio: true,
+                }
+            });
+    
+            ctx_cpu.render();
+            ctx_owlh.render();
+            ctx_mem.render();
+            ctx_sto.render();
+        }
     })
     .catch(function (error) {
     });

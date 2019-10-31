@@ -271,7 +271,8 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         data: grJSON
         })
         .then(function (response) {
-            GetAllGroups();
+            document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
+            // GetAllGroups();
         })
         .catch(function (error) {
         }); 

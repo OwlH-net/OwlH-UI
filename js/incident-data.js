@@ -80,7 +80,7 @@ function loadIncidentData(){
         '</table>';
 
         if (isEmpty == true){
-            html = '<h2 class="text-center">There is no incidents available</h2>';
+            html = '<h2 class="text-center">There are no incidents available</h2>';
         }
         document.getElementById("incident-data-content").innerHTML = html;
     })

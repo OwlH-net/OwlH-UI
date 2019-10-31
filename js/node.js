@@ -4,14 +4,14 @@ function addNode() {
     var nport = document.getElementById('nodeport').value;
     if(nname=="" || nip=="" || nport==""){
 		$('html,body').scrollTop(0);
-        var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> Please, insert a name, port and IP for add a new node.'+
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                '<span aria-hidden="true">&times;</span>'+
-            '</button>'+
-        '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+		var alert = document.getElementById('floating-alert');
+		alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+			'<strong>Error!</strong> Please, insert a name, port and IP for add a new node.'+
+			'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+				'<span aria-hidden="true">&times;</span>'+
+			'</button>'+
+		'</div>';
+      setTimeout(function() {$(".alert").alert('close')}, 5000);
     }else{
 		formAddNids();//close add nids form
 		var nodejson = {}
@@ -28,15 +28,41 @@ function addNode() {
 			timeout: 30000,
 			data: nodeJSON
 		})
-			.then(function (response) {
-				GetAllNodes();
-				return true;
-			})
-			.catch(function (error) {
-				return false;
-			});   
-		GetAllNodes();    
-		return false;
+		.then(function (response) {
+			if(response.data.ack == "false"){
+				$('html,body').scrollTop(0);
+				var alert = document.getElementById('floating-alert');
+				alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+					'<strong>Error adding node!</strong> '+response.data.error+'.'+
+					'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+						'<span aria-hidden="true">&times;</span>'+
+					'</button>'+
+				'</div>';
+				setTimeout(function() {$(".alert").alert('close')}, 5000);
+			}else{
+				$('html,body').scrollTop(0);
+				var alert = document.getElementById('floating-alert');
+				alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+					'<strong>Success!</strong> Node added successfully.'+
+					'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+						'<span aria-hidden="true">&times;</span>'+
+					'</button>'+
+				'</div>';
+				setTimeout(function() {$(".alert").alert('close')}, 5000);
+			}
+			GetAllNodes();
+		})
+		.catch(function (error) {
+			$('html,body').scrollTop(0);
+			var alert = document.getElementById('floating-alert');
+			alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+				'<strong>Error adding node!</strong> '+error+'.'+
+				'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+					'<span aria-hidden="true">&times;</span>'+
+				'</button>'+
+			'</div>';
+			setTimeout(function() {$(".alert").alert('close')}, 5000);
+		});   
     }
 }
 

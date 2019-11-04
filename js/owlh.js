@@ -1,3 +1,17 @@
+
+//load json data from local file
+function loadJSONdata() {
+    $.getJSON('../conf/ui.conf', function (data) {
+        var ipLoad = document.getElementById('ip-master');
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        loadTitleJSONdata();
+        GetAllNodes();
+    });
+}
+loadJSONdata();
+
 function showConfig(oip, oname, oport, ouuid){
     var cfgform = document.getElementById('divconfigform');
     cfgform.style.display = "block";
@@ -28,6 +42,7 @@ function PingNode(uuid) {
                 document.getElementById('node-row-'+uuid).setAttribute("status", "online");
                 PingMonitor(uuid);
                 var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
+                sortTableName();
                 // PingService(uuid);
                 // PingSuricata(uuid);
                 // PingZeek(uuid);
@@ -132,6 +147,7 @@ function GetAllNodes() {
             }
         })
         .then(function (response) {
+            var nodes = response.data;
             document.getElementById('addnids').style.display = "block";
 
             if (response.data.ack == "false") {
@@ -139,7 +155,7 @@ function GetAllNodes() {
                 resultElement.innerHTML =  '<div style="text-align:center"><h3 style="color:red;">Error retrieving nodes</h3></div>';
             }else{
                 var isEmpty = true;
-                var nodes = response.data;
+                
                 var html =  '<div class="input-group" width="100%" id="search-input-ruesets">'+
                     '<input class="form-control mx-3 searchInputNodes" type="text" placeholder="Search by name or ip..." aria-label="Search" id="search-node-details">'+
                     '<a type="button" class="btn btn-primary" id="node-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
@@ -148,67 +164,67 @@ function GetAllNodes() {
                     '<span id="show-nodes-online" onclick="showNodes(\'online\')" class="badge bg-success align-text-bottom text-white float-right" style="cursor:pointer;" title="Show only online nodes">ON LINE</span>'+
                     '<span id="show-nodes-offline" onclick="showNodes(\'offline\')" class="badge bg-danger align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show only offline nodes">OFF LINE</span>'+
                     '<span id="show-nodes-all" onclick="showNodes(\'all\')" class="badge bg-primary align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show all nodes">ALL NODES</span>'+
+                    '<span id="sort-nodes-ip" onclick="sortTableIP()" sort="asc" class="sort-table asc badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;"   title="Sort table by IP">Sort by IP</span>'+
+                    '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
                 '</div>'+
                 '<br>'+
                 '<table class="table table-hover" style="table-layout: fixed" id="node-table"> ' +
-                                '<thead> ' +
-                                    '<tr>  ' +
-                                        '<th scope="col" width="5%"></th> ' +
-                                        '<th id="node-table-name-column" scope="col" width="30%" align="left">Name</th> ' +
-                                        '<th scope="col" width="25%" align="right">Status</th> ' +
-                                        '<th scope="col" width="10%"></th>' +
-                                        '<th scope="col" width="25%">Actions</th>  ' +
-                                    '</tr> ' +
-                                '</thead> ' +
-                                '<tbody id="node-table-tbody">';
-                for (node in nodes) {
-                    isEmpty = false;
-                    if (nodes[node]['port'] != undefined) {
-                        port = nodes[node]['port'];
-                    } else {
-                        port = "10443";
-                    }
-                    var uuid = node;
-                    PingNode(uuid);
-                    getRulesetUID(uuid);
-            
-            
-                    html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
-                        // '<th class="align-middle" scope="row"><img data-src="holder.js/16x16?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded"></th>' +
-                        '<td></td>'+
-                        '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
-                            '<p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
-                            '<i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
-                            '<br><br>'+
-                            '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
-                        '</td>' +
-                        '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
-                            '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
-                            // '<span id="details-'+uuid+'" class="badge bg-primary align-text-bottom text-white node-option-'+uuid+'" style="cursor: pointer;" onclick="ShowNodeDetails(\''+uuid+'\', \''+nodes[node]['name']+'\');">See details</span> <br>'+
-                            '<span>'+
-                                '<div><p></p></div>'+
-                                '<div id="node-values-'+uuid+'">'+
-                                    '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
-                                    '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
-                                    '<div id="cpu-'+uuid+'"></div>'+                        
-                                '</div>'+
-                            '</span>'+
-                        '</td>'+    
-                        '<td></td>'+        
-                        '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+
-                            '<span style="font-size: 15px; color: Dodgerblue;" >                            ' +
-                                '<i class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring                            ' +
-                                '<br><i class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration                            ' +
-                                '<br><i class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node                            ' +
-                                '<br><i class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
-                                '<br><i class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
-                                '<br><i class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\')"></i> | Change control             ' +
-                                '<br><i class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\')"></i> | Incident data             ' +
-                                '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
-                            '</span>'+
-                        '</td> ' +
-                    '</tr>';
-                }
+                    '<thead> ' +
+                        '<tr>  ' +
+                            '<th scope="col" width="5%"></th> ' +
+                            '<th id="node-table-name-column" scope="col" width="30%" align="left">Name</th> ' +
+                            '<th scope="col" width="25%" align="right">Status</th> ' +
+                            '<th scope="col" width="10%"></th>' +
+                            '<th scope="col" width="25%">Actions</th>  ' +
+                        '</tr> ' +
+                    '</thead> ' +
+                    '<tbody id="node-table-tbody">';
+                        for (node in nodes) {
+                            isEmpty = false;
+                            if (nodes[node]['port'] != undefined) {
+                                port = nodes[node]['port'];
+                            } else {
+                                port = "10443";
+                            }
+                            var uuid = node;
+                            PingNode(uuid);
+                            getRulesetUID(uuid);
+                    
+                    
+                            html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
+                                '<td></td>'+
+                                '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
+                                    '<p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
+                                    '<i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
+                                    '<br><br>'+
+                                    '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
+                                '</td>' +
+                                '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
+                                    '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
+                                    '<span>'+
+                                        '<div><p></p></div>'+
+                                        '<div id="node-values-'+uuid+'">'+
+                                            '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
+                                            '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
+                                            '<div id="cpu-'+uuid+'"></div>'+                        
+                                        '</div>'+
+                                    '</span>'+
+                                '</td>'+    
+                                '<td></td>'+        
+                                '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+
+                                    '<span style="font-size: 15px; color: Dodgerblue;" >                            ' +
+                                        '<i class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring                            ' +
+                                        '<br><i class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration                            ' +
+                                        '<br><i class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node                            ' +
+                                        '<br><i class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration           ' +
+                                        '<br><i class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files             ' +
+                                        '<br><i class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\')"></i> | Change control             ' +
+                                        '<br><i class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\')"></i> | Incident data             ' +
+                                        '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node                         ' +
+                                    '</span>'+
+                                '</td> ' +
+                            '</tr>';
+                        }
                 html = html + '</tbody></table>';
             
                 if (isEmpty){
@@ -240,24 +256,27 @@ function GetAllNodes() {
 
 
 function sortTable() {
-    var tbody = $('#node-table-tbody');
-   
-    tbody.find('tr').sort(function(a, b) {
-        return $('td:first', a).text().localeCompare($('td:first', b).text());
-        // if($('#name_order').val()=='asc') {
-        //     return $('td:first', a).text().localeCompare($('td:first', b).text());
-        // }else {
-        //     return $('td:first', b).text().localeCompare($('td:first', a).text());
-        // }   
-    }).appendTo(tbody);
-        
-    var sort_order=$('#name_order').val();
-    if(sort_order=="asc"){
-        document.getElementById("name_order").value="desc";
-    }
-    if(sort_order=="desc"){
-        document.getElementById("name_order").value="asc";
-    }
+    // var $table = $('node-table');
+    // var $tableBody = $table.find('tbody');
+    // var rows, sortedRows;
+
+    // function sortRows(a, b){
+    //     if ( $(a).find('tr:first-Child').text() > $(b).find('td:first-Child').text() ) {
+    //         return 1;
+    //     }
+
+    //     if ( $(a).find('td:first-Child').text() < $(b).find('td:first-Child').text() ) {
+    //         return -1;
+    //     }
+
+    //     return 0;
+    // }
+
+
+    // $($('#node-table > tbody  > tr')).val('');
+    // // $('#node-table > tbody  > tr').each(function() {
+    // //     console.log($(this).attr('name'));
+    // // });
 }
 
 function showNodes(status){
@@ -1460,15 +1479,96 @@ function checkStatus() {
     document.getElementById('check-status-config').href = nodeurl;
 }
 
-//load json data from local file
-function loadJSONdata() {
-    $.getJSON('../conf/ui.conf', function (data) {
-        var ipLoad = document.getElementById('ip-master');
-        ipLoad.value = data.master.ip;
-        var portLoad = document.getElementById('port-master');
-        portLoad.value = data.master.port;
-        loadTitleJSONdata();
-        GetAllNodes();
-    });
+function sortTableName() {
+    var type = document.getElementById('sort-nodes-name').getAttribute("sort");
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("node-table");
+    switching = true;
+    while (switching) {
+		switching = false;
+		rows = table.rows;
+		for (i = 1; i < (rows.length - 1); i++) {
+			shouldSwitch = false;
+			x = rows[i].getAttribute("name");
+            y = rows[i + 1].getAttribute("name");
+            if (type == "asc"){
+                if (x.toLowerCase() > y.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }else{
+                if (x.toLowerCase() < y.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+		}
+		if (shouldSwitch) {
+			rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+			switching = true;
+		}
+    }
+
+    //change attr
+    if (type == "asc"){
+        document.getElementById('sort-nodes-name').setAttribute("sort", "desc");
+    }else{
+        document.getElementById('sort-nodes-name').setAttribute("sort", "asc");
+    }
 }
-loadJSONdata();
+
+function sortTableIP() {
+    var type = document.getElementById('sort-nodes-ip').getAttribute("sort");
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("node-table");
+    switching = true;
+    while (switching) {
+		switching = false;
+		rows = table.rows;
+		for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+			x = rows[i].getAttribute("ip").split('.');
+            y = rows[i + 1].getAttribute("ip").split('.');
+            if (type == "asc"){
+                if (x[0] > y[0]) {
+                    shouldSwitch = true;
+                    break;
+                }else if ((x[0] == y[0]) && (x[1] > y[1])){
+                    shouldSwitch = true;
+                    break;
+                }else if ((x[0] == y[0]) && (x[1] == y[1]) && (x[2] > y[2])){
+                    shouldSwitch = true;
+                    break;
+                }else if ((x[0] == y[0]) && (x[1] == y[1]) && (x[2] == y[2]) && (x[3] > y [3])){
+                    shouldSwitch = true;
+                    break;
+                }
+            }else{
+                if (x[0] < y[0]) {
+                    shouldSwitch = true;
+                    break;
+                }else if ((x[0] == y[0]) && (x[1] < y[1])){
+                    shouldSwitch = true;
+                    break;
+                }else if ((x[0] == y[0]) && (x[1] == y[1]) && (x[2] < y[2])){
+                    shouldSwitch = true;
+                    break;
+                }else if ((x[0] == y[0]) && (x[1] == y[1]) && (x[2] == y[2]) && (x[3] < y[3])){
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+		}
+		if (shouldSwitch) {
+			rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+			switching = true;
+		}
+    }
+
+    //change attr
+    if (type == "asc"){
+        document.getElementById('sort-nodes-ip').setAttribute("sort", "desc");
+    }else{
+        document.getElementById('sort-nodes-ip').setAttribute("sort", "asc");
+    }
+}

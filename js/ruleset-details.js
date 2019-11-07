@@ -1,7 +1,7 @@
 function GetAllRulesetDetails(){
     var urlWeb = new URL(window.location.href);
-    var sourceName = urlWeb.searchParams.get("sourceName");
     var uuid = urlWeb.searchParams.get("uuid");
+    var sourceName = urlWeb.searchParams.get("sourceName");
     var type = urlWeb.searchParams.get("type");
     var ipmaster = document.getElementById('ip-master').value;
     document.getElementById('ruleset-source-details-title').innerHTML = sourceName;

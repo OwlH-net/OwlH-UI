@@ -156,7 +156,7 @@ function GetAllNodes() {
             }else{
                 var isEmpty = true;
                 
-                var html =  '<div class="input-group" width="100%" id="search-input-ruesets">'+
+                var html =  '<div class="input-group" width="100%" id="search-input-nodes">'+
                     '<input class="form-control mx-3 searchInputNodes" type="text" placeholder="Search by name or ip..." aria-label="Search" id="search-node-details">'+
                     '<a type="button" class="btn btn-primary" id="node-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
                 '</div><br>'+
@@ -246,7 +246,6 @@ function GetAllNodes() {
 
         })
         .catch(function (error) {
-            console.log(error);
             resultElement.innerHTML = '<h3 align="center">No connection</h3>'+
                 '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
                 checkStatus();
@@ -353,7 +352,7 @@ function formAddNids(){
 //     }  
 //     var isEmpty = true;
 //     var nodes = response.data;
-//     var html =  '<div class="input-group" width="100%" id="search-input-ruesets">'+
+//     var html =  '<div class="input-group" width="100%" id="search-input-nodes">'+
 //         '<input class="form-control mx-3" type="text" placeholder="Search by name or ip..." aria-label="Search" id="search-node-details">'+
 //         '<a type="button" class="btn btn-primary" onclick="loadNodeBySearch()"><i class="fas fa-search" style="color: white;"></i></a>'+
 //     '</div><br>'+
@@ -1530,16 +1529,16 @@ function sortTableIP() {
 			x = rows[i].getAttribute("ip").split('.');
             y = rows[i + 1].getAttribute("ip").split('.');
             if (type == "asc"){
-                if (x[0] > y[0]) {
+                if (parseInt(x[0]) > parseInt(y[0])) {
                     shouldSwitch = true;
                     break;
-                }else if ((x[0] == y[0]) && (x[1] > y[1])){
+                }else if ((parseInt(x[0]) == parseInt(y[0])) && (parseInt(x[1]) > parseInt(y[1]))){
                     shouldSwitch = true;
                     break;
-                }else if ((x[0] == y[0]) && (x[1] == y[1]) && (x[2] > y[2])){
+                }else if ((parseInt(x[0]) == parseInt(y[0])) && (parseInt(x[1]) == parseInt(y[1])) && (parseInt(x[2]) > parseInt(y[2]))){
                     shouldSwitch = true;
                     break;
-                }else if ((x[0] == y[0]) && (x[1] == y[1]) && (x[2] == y[2]) && (x[3] > y [3])){
+                }else if ((parseInt(x[0]) == parseInt(y[0])) && (parseInt(x[1]) == parseInt(y[1])) && (parseInt(x[2]) == parseInt(y[2])) && (parseInt(x[3]) > parseInt(y[3]))){
                     shouldSwitch = true;
                     break;
                 }

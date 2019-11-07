@@ -7,78 +7,19 @@ function loadJSONdata(){
         loadTitleJSONdata();
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none"; 
-        GetAllGroups();
+        GetGroupsDetails();
     });
 }
 loadJSONdata();
 
-function modalAddGroup(){
-    var modalWindow = document.getElementById('modal-groups');
-    modalWindow.innerHTML = '<div class="modal-dialog">'+
-        '<div class="modal-content">'+
+function GetGroupsDetails(){
+    var urlWeb = new URL(window.location.href);
+    var uuid = urlWeb.searchParams.get("uuid");
 
-            '<div class="modal-header">'+
-                '<h4 class="modal-title" id="group-header">Add group</h4>'+
-                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-            '</div>'+
-
-            '<div class="modal-body" id="group-modal-footer-inputtext">'+
-                '<p>Insert name:</p>'+
-                '<input type="text" class="form-control" id="recipient-name-group" placeholder="Insert here a new name"><br>'+
-                '<p>Insert description:</p>'+
-                '<input type="text" class="form-control" id="recipient-desc-group" placeholder="Insert here a new description">'+
-            '</div>'+
-
-            '<div class="modal-footer" id="group-modal-footer-btn">'+
-                '<button type="button" class="btn btn-secondary" id="add-group-modal-close">Cancel</button>'+
-                '<button type="button" class="btn btn-primary" id="add-group-modal">Add</button>'+
-            '</div>'+
-
-        '</div>'+
-    '</div>';
-    $('#modal-groups').modal("show");
-    $('#add-group-modal').click(function(){ addGroup(); });
-    $('#add-group-modal-close').click(function(){ $('#modal-groups').modal("hide");});
-}
-
-function addGroup() {
-    $('#modal-groups').modal("hide");
-    var groupname = document.getElementById('recipient-name-group').value;
-    var groupdesc = document.getElementById('recipient-desc-group').value;
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var groupurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/';
-    
-    // formAddGroup();//close add group form
-    var nodejson = {}
-    nodejson["name"] = groupname;
-    nodejson["desc"] = groupdesc;
-    nodejson["ruleset"] = "";
-    nodejson["rulesetID"] = "";
-    nodejson["type"] = "Nodes";
-    var nodeJSON = JSON.stringify(nodejson);
-
-    axios({
-        method: 'post',
-        url: groupurl,
-        timeout: 30000,
-        data: nodeJSON
-    })
-    .then(function (response) {
-        GetAllGroups();
-        return true;
-    })
-    .catch(function (error) {
-        return false;
-    });   
-}
-
-function GetAllGroups(){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var result = document.getElementById('list-groups');
     var groupurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/';
-    document.getElementById('group-text').style.display ="none";
 
     axios({
         method: 'get',
@@ -86,55 +27,19 @@ function GetAllGroups(){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
-        document.getElementById('group-text').style.display ="block";
-        if(response.data == null){
-            result.innerHTML= '<div style="text-align:center"><h3>No groups created</h3></div>';
-        }else if (response.data.ack == "false") {
-            result.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving groups data</h3></div>';
+        if (response.data.ack == "false") {
+            result.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving group data</h3></div>';
         }else{
             var html = "";
-            html = html + '<div>'+
-            '<table class="table table-hover" style="table-layout: fixed" width="100%">' +
-                '<thead>' +
-                    '<tr>' +
-                        '<th width="20%">Name</th>' +
-                        '<th>Description</th>' +
-                        '<th width="15%">Actions</th>' +
-                    '</tr>' +
-                '</thead>' +
-                '<tbody>'; 
-                    for(x=0; x<response.data.length; x++){
-                        var groups = response.data[x];
-                        html = html + '<tr bgcolor="powderblue">'+
-                            '<td style="word-wrap: break-word;">'+
-                                groups['gname']+
-                            '</td><td style="word-wrap: break-word;">'+
-                                groups['gdesc']+
-                            '</td><td style="word-wrap: break-word;">'+
-                                '<i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Edit group" onclick="showEditGroup(\''+groups['guuid']+'\')"></i> &nbsp;'+
-                                // '<i class="fas fa-plus" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Add nodes to group" onclick="modalSelectNodeGroup(\''+groups['guuid']+'\')"></i>  &nbsp'+
-                                '<i class="fas fa-eye" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Show nodes values" id="show-nodes-details-'+groups['guuid']+'" onclick="ShowNodesValue(\''+groups['guuid']+'\')"></i> &nbsp'+
-                                '<i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete group" onclick="modalDeleteGroup(\''+groups['gname']+'\',\''+groups['guuid']+'\')"></i>'+
-                            '</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td id="edit-group-row-'+groups['guuid']+'" colspan="3" style="display:none;">'+
-                                '<table class="table" style="table-layout: fixed" width="100%">'+
-                                    '<tr>'+
-                                        '<td width="40%">Name: <input class="form-control" id="edit-group-name-'+groups['guuid']+'"></td>'+
-                                        '<td width="50%">Description: <input class="form-control" id="edit-group-desc-'+groups['guuid']+'"></td>'+
-                                        '<td width="10%">'+
-                                            '<a class="btn btn-secondary float-right text-decoration-none text-white my-2" onclick="hideEditGroup(\''+groups['guuid']+'\')">Cancel</a>'+
-                                            '<a class="btn btn-primary float-right text-decoration-none text-white my-2" id="edit-group-save" onclick="EditGroupData(\''+groups['guuid']+'\')">Modify</a>'+
-                                        '</td>'+
-                                    '</tr>'+
-                                '</table>'+
-                            '</td>'+
-                        '</tr>'+
-                        '<tr id="nodes-for-group-'+groups['guuid']+'" style="display:none;">'+
-                            '<td colspan="3">'+
-                                '<b>Nodes</b>'+
+            html = html + '<div>';
+                for(x=0; x<response.data.length; x++){
+                    var groups = response.data[x];
+                    if(groups['guuid'] == uuid){
+                        html = html + '<div>'+
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="modalSelectNodeGroup(\''+uuid+'\')">Add node</button>'+
+                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="backButton()">Back</button>'+
+                                    '<b>Nodes</b>'+
+                                '</div><br>'+
                                 '<table class="table" id="nodes-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+
                                     '<thead>'+                           
                                         '<tr>'+                           
@@ -156,8 +61,18 @@ function GetAllGroups(){
                                     '<tbody>'+                           
                                         '<tr>'+                           
                                             '<td>Configuration</td>'+
-                                            '<td>From fodler</td>'+
+                                            '<td>From folder</td>'+
                                             '<td>/usr/local/owlh/suricata/confs</td>'+
+                                        '</tr>'+
+                                        '<tr>'+                           
+                                            '<td></td>'+
+                                            '<td>From master</td>'+
+                                            '<td id="group-detail-master-folder">/usr/local/owlh/suricata/confs</td>'+
+                                        '</tr>'+
+                                        '<tr>'+                           
+                                            '<td></td>'+
+                                            '<td>From node</td>'+
+                                            '<td id="group-detail-node-folder">/usr/local/owlh/suricata/confs</td>'+
                                         '</tr>'+
                                         '<tr>'+                           
                                             '<td>Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>'+
@@ -187,17 +102,20 @@ function GetAllGroups(){
                         // $('#edit-group-row-'+groups['guuid']).hide();
                         // $('#nodes-for-group-'+groups['guuid']).hide();
                     }
-                html = html + '</tbody></table></div>';
+                }
+            html = html + '</div>';
             result.innerHTML = html;
         }
 
     })
     .catch(function (error) {
-        result.innerHTML = '<h3 align="center">No connection</h3>'+
-        '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
-        checkStatus();
+        result.innerHTML = '<h3 align="center">No connection</h3>';
     });
     // PingGroupNodes();
+}
+
+function backButton(){
+    window.history.back();
 }
 
 function modalLoadRuleset(group){
@@ -272,54 +190,11 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         })
         .then(function (response) {
             document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
-            // GetAllGroups();
+            // GetGroupsDetails();
         })
         .catch(function (error) {
         }); 
 }
-
-// function PingGroupNodes(){
-//     var ipmaster = document.getElementById('ip-master').value;
-//     var portmaster = document.getElementById('port-master').value;
-//     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/pingGroupNodes';
-//     axios({
-//         method: 'get',
-//         url: nodeurl,
-//         timeout: 30000
-//         })
-//         .then(function (response) {
-//             // console.log(response.data); 
-//             for(id in response.data){
-//                 // console.log(response.data[id]["groupid"]);                
-//                 GetNodeValues(response.data[id]["groupid"], response.data[id]["nodesid"]);   
-//             }
-//         });
-// }
-
-// function GetNodeValues(groupid, nodeid){
-//     console.log("GROUP ID --> "+groupid);
-//     console.log("NODE ID --> "+nodeid);
-//     var ipmaster = document.getElementById('ip-master').value;
-//     var portmaster = document.getElementById('port-master').value;
-//     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/getNodeValues/'+nodeid;
-//     axios({
-//         method: 'get',
-//         url: nodeurl,
-//         timeout: 30000
-//         })
-//         .then(function (response) {
-//             var values = response.data;
-//             var row = document.getElementById('nodes-for-group-'+groupid).innerHTML;
-//             for(id in values){
-//                 if (id == nodeid){
-//                     row = row + '<b>IP: </b><b>'+values[id]["ip"]+'</b><br>'
-//                     row = row + '<b>Name: </b><b>'+values[id]["name"]+'</b><br>'
-//                     console.log(response.data[id]);
-//                 }
-//             }
-
-//         });
-// }
 
 function modalSelectNodeGroup(uuid){
     var ipmaster = document.getElementById('ip-master').value;
@@ -404,91 +279,10 @@ function addNodesToGroup(uuid){
         data: nodeJSON
         })
         .then(function (response) {
-            GetAllGroups();
+            GetGroupsDetails();
         })
         .catch(function (error) {
         });  
-}
-
-function modalDeleteGroup(name, groupID){
-    var modalWindowDelete = document.getElementById('modal-groups');
-    modalWindowDelete.innerHTML = 
-    '<div class="modal-dialog">'+
-        '<div class="modal-content">'+
-    
-            '<div class="modal-header" style="word-break: break-all;">'+
-                '<h4 class="modal-title">Groups</h4>'+
-                '<button type="button" class="close" id="delete-group-cross">&times;</button>'+
-            '</div>'+
-    
-            '<div class="modal-body" style="word-break: break-all;">'+ 
-                '<p>Do you want to delete group <b>'+name+'</b>?</p>'+
-            '</div>'+
-    
-            '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
-                '<button type="button" class="btn btn-secondary" id="delete-group-close">Close</button>'+
-                '<button type="submit" class="btn btn-danger" id="delete-group-button">Delete</button>'+
-            '</div>'+
-    
-        '</div>'+
-    '</div>';
-    $('#modal-groups').modal("show");
-    $('#delete-group-cross').click(function(){ $('#modal-groups').modal("hide");});
-    $('#delete-group-close').click(function(){ $('#modal-groups').modal("hide");});
-    $('#delete-group-button').click(function(){ deleteGroup(groupID); });
-}
-
-function showEditGroup(uuid){
-    // document.getElementById('edit-group-row-'+uuid).style.display = "block";
-    $('#edit-group-row-'+uuid).show();
-}
-
-function hideEditGroup(uuid){
-    // document.getElementById('edit-group-row-'+uuid).style.display = "none";
-    $('#edit-group-row-'+uuid).hide();
-}
-
-function EditGroupData(uuid){
-    hideEditGroup(uuid);
-    var name = document.getElementById('edit-group-name-'+uuid).value;
-    var desc = document.getElementById('edit-group-desc-'+uuid).value;
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/editGroup';
-    var nodejson = {}
-    nodejson["name"] = name;
-    nodejson["uuid"] = uuid;
-    nodejson["desc"] = desc;
-    var nodeJSON = JSON.stringify(nodejson);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: nodeJSON
-        })
-        .then(function (response) {
-            GetAllGroups();
-        })
-        .catch(function (error) {
-        });   
-}
-
-function deleteGroup(groupID){
-    $('#modal-groups').modal("hide");
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/DeleteGroup/' + groupID;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-    })
-        .then(function (response) {
-            GetAllGroups();
-        })
-        .catch(function error() {
-        });
 }
 
 function deleteNodeForGroup(uuid){
@@ -502,7 +296,7 @@ function deleteNodeForGroup(uuid){
         timeout: 30000,
     })
         .then(function (response) {
-            GetAllGroups();
+            GetGroupsDetails();
         })
         .catch(function error() {
         });
@@ -541,23 +335,6 @@ function checkStatus() {
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
     document.getElementById('check-status-config').href = nodeurl;
-}
-
-function ShowNodesValue (uuid){
-    //load values for this group
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/groups-info.html?uuid='+uuid;
-
-    // var detailsButton = document.getElementById('show-nodes-details-'+uuid);
-    // var content = document.getElementById('nodes-for-group-'+uuid);
-
-    // if (content.style.display == "none") {
-    //     detailsButton.className = "fas fa-chevron-circle-up";
-    //     $('#nodes-for-group-'+uuid).show();
-    // } else {
-    //     detailsButton.className = "fas fa-chevron-circle-down";
-    //     $('#nodes-for-group-'+uuid).hide();
-    // }
 }
 
 function SyncRulesetToAllGroupNodes(groupID){

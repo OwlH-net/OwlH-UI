@@ -27,6 +27,7 @@ function GetGroupsDetails(){
         timeout: 30000
     })
     .then(function (response) {
+        console.log(response.data);
         if (response.data.ack == "false") {
             result.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving group data</h3></div>';
         }else{
@@ -58,49 +59,79 @@ function GetGroupsDetails(){
                                 html = html + '</table>';
                                 html = html + '<b>Suricata</b>'+
                                 '<table class="table" id="suricata-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                                                         
-                                    '<tbody>'+                           
-                                        '<tr>'+                           
-                                            '<td>Configuration</td>'+
-                                            '<td>From folder</td>'+
-                                            '<td>/usr/local/owlh/suricata/confs</td>'+
-                                        '</tr>'+
-                                        '<tr>'+                           
-                                            '<td></td>'+
-                                            '<td>From master</td>'+
-                                            '<td id="group-detail-master-folder">/usr/local/owlh/suricata/confs</td>'+
-                                        '</tr>'+
-                                        '<tr>'+                           
-                                            '<td></td>'+
-                                            '<td>From node</td>'+
-                                            '<td id="group-detail-node-folder">/usr/local/owlh/suricata/confs</td>'+
-                                        '</tr>'+
+                                    '<tbody>'+     
                                         '<tr>'+                           
                                             '<td>Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>'+
                                             '<td id="ruleset-group-'+groups['guuid']+'">';
-                                                if(groups['gruleset'] != ""){
+                                                if(groups['gruleset']  != ""){
                                                     html = html + groups['gruleset'];
                                                 }else{
                                                     html = html + '<p style="color: red;">No ruleset selected...</p>';
                                                 }
                                             html = html + '</td>'+
                                             '<td></td>'+
-                                        '</tr>'+
-                                    '</tbody>'+                           
-                                '</table>'; 
-                                html = html + '<b>Zeek</b>'+
-                                '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
-                                    '<tbody>'+                           
+                                        '</tr>';
+                                        html = html + '<tr>'+                           
+                                            '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick=""></i></td>'+
+                                            '<td>Master path</td>';
+                                            if(groups["mastersuricata"] == ""){
+                                                html = html + '<td style="color: red;">No Suricata master path...</td>';
+                                            }else{
+                                                html = html + '<td>'+groups["mastersuricata"]+'</td>';
+                                            }
+                                        html = html + '</tr>'+
                                         '<tr>'+                           
-                                            '<td>Master node configuration</td>'+
-                                            '<td>Ruleset</td>'+
-                                            '<td></td>'+
-                                        '</tr>'+
-                                    '</tbody>'+    
-                                '</table>'; 
-                            html = html + '</td>'+
+                                            '<td>Node path</td>';
+                                            if(groups["nodesuricata"] == ""){
+                                                html = html + '<td style="color: red;">No Suricata node path...</td>';
+                                            }else{
+                                                html = html + '<td>'+groups["nodesuricata"]+'</td>';
+                                            }
+                                        html = html + '</tr>'+
+                                        '<tr id="suricata-edit-row" style="display:none;">'+
+                                            '<td>Master: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
+                                            '<td>Node: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
+                                            '<td width="10%">'+
+                                                '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'suricata\')">Save</button>'+
+                                                '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
+                                            '</td>'+
+                                        '</tr>';
+                                    html = html + '</tbody>'+                           
+                                '</table>'+
+                                '<b>Zeek</b>'+
+                                '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
+                                    '<tbody>';      
+                                    // for(nid in groups["Nodes"]){
+                                        html = html + '<tr>'+                           
+                                            '<td class="align-middle" rowspan="2">Master node configuration policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick=""></i></td>'+
+                                            '<td>Master path</td>';
+                                            if(groups["masterzeek"] == ""){
+                                                html = html + '<td style="color: red;">No Zeek master path...</td>';
+                                            }else{
+                                                html = html + '<td>'+groups["masterzeek"]+'</td>';
+                                            }
+                                        html = html + '</tr>'+
+                                        '<tr>'+                           
+                                            '<td>Node path</td>';
+                                            if(groups["masterzeek"] == ""){
+                                                html = html + '<td style="color: red;">No Zeek node path...</td>';
+                                            }else{
+                                                html = html + '<td>'+groups["nodezeek"]+'</td>';
+                                            }                                            
+                                            html = html + '</tr>'+
+                                        '<tr id="zeek-edit-row" style="display:none;">'+
+                                            '<td>Master: <input class="form-control" id="zeek-group-master-'+groups['guuid']+'" value="'+groups["masterzeek"]+'"></td>'+
+                                            '<td>Node: <input class="form-control" id="zeek-group-node-'+groups['guuid']+'" value="'+groups["nodezeek"]+'"></td>'+
+                                            '<td width="10%">'+
+                                                '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'zeek\')">Save</button>'+
+                                                '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
+                                            '</td>'+
+                                        '</tr>';
+                                    // }                    
+                                    html = html + '</tbody>'+    
+                                '</table>'+
+                            '</td>'+
                         '</tr>';
-                        // $('#edit-group-row-'+groups['guuid']).hide();
-                        // $('#nodes-for-group-'+groups['guuid']).hide();
                     }
                 }
             html = html + '</div>';
@@ -112,6 +143,74 @@ function GetGroupsDetails(){
         result.innerHTML = '<h3 align="center">No connection</h3>';
     });
     // PingGroupNodes();
+}
+
+function changePaths(guuid, type){
+    hideEditGroup(type);
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/changePaths';
+
+    var groupjson = {}
+    groupjson["uuid"] = guuid;
+    groupjson["type"] = type;
+    if(type == "suricata"){
+        groupjson["mastersuricata"] = document.getElementById('suricata-group-master-'+guuid).value;
+        groupjson["nodesuricata"] = document.getElementById('suricata-group-node-'+guuid).value;
+    }else{
+        groupjson["masterzeek"] = document.getElementById('zeek-group-master-'+guuid).value;
+        groupjson["nodezeek"] = document.getElementById('zeek-group-node-'+guuid).value;
+    }
+    var grJSON = JSON.stringify(groupjson);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: grJSON
+        })
+        .then(function (response) {           
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Paths updated successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                GetGroupsDetails();
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Ruleset Error!</strong> '+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }            
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Ruleset Error!</strong> '+error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }); 
+}
+
+function showEditGroup(type){
+    $('#'+type+'-edit-row').show();
+}
+
+function hideEditGroup(type){
+    $('#'+type+'-edit-row').hide();
 }
 
 function backButton(){

@@ -55,6 +55,10 @@ function addGroup() {
     nodejson["desc"] = groupdesc;
     nodejson["ruleset"] = "";
     nodejson["rulesetID"] = "";
+    nodejson["mastersuricata"] = "";
+    nodejson["nodesuricata"] = "";
+    nodejson["masterzeek"] = "";
+    nodejson["nodezeek"] = "";
     nodejson["type"] = "Nodes";
     var nodeJSON = JSON.stringify(nodejson);
 
@@ -439,12 +443,10 @@ function modalDeleteGroup(name, groupID){
 }
 
 function showEditGroup(uuid){
-    // document.getElementById('edit-group-row-'+uuid).style.display = "block";
     $('#edit-group-row-'+uuid).show();
 }
 
 function hideEditGroup(uuid){
-    // document.getElementById('edit-group-row-'+uuid).style.display = "none";
     $('#edit-group-row-'+uuid).hide();
 }
 

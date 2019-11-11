@@ -42,39 +42,54 @@ function modalAddGroup(){
 }
 
 function addGroup() {
-    $('#modal-groups').modal("hide");
-    var groupname = document.getElementById('recipient-name-group').value;
-    var groupdesc = document.getElementById('recipient-desc-group').value;
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var groupurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/';
+    var nameInput = document.getElementById('recipient-name-group').value;
+    var descInput = document.getElementById('recipient-desc-group').value;
+    if(nameInput == "" || descInput == ""){
+        if(nameInput == ""){
+            $("#recipient-name-group").css('border', '2px solid red');
+        }else{
+            $("#recipient-name-group").css('border', '');
+        }
+        if(descInput == ""){
+            $("#recipient-desc-group").css('border', '2px solid red');
+        }else{
+            $("#recipient-desc-group").css('border', '');
+        }
+    }else{
+        $('#modal-groups').modal("hide");
+        var groupname = document.getElementById('recipient-name-group').value;
+        var groupdesc = document.getElementById('recipient-desc-group').value;
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var groupurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/';
+        
+        // formAddGroup();//close add group form
+        var nodejson = {}
+        nodejson["name"] = groupname;
+        nodejson["desc"] = groupdesc;
+        nodejson["ruleset"] = "";
+        nodejson["rulesetID"] = "";
+        nodejson["mastersuricata"] = "";
+        nodejson["nodesuricata"] = "";
+        nodejson["masterzeek"] = "";
+        nodejson["nodezeek"] = "";
+        nodejson["type"] = "Nodes";
+        var nodeJSON = JSON.stringify(nodejson);
     
-    // formAddGroup();//close add group form
-    var nodejson = {}
-    nodejson["name"] = groupname;
-    nodejson["desc"] = groupdesc;
-    nodejson["ruleset"] = "";
-    nodejson["rulesetID"] = "";
-    nodejson["mastersuricata"] = "";
-    nodejson["nodesuricata"] = "";
-    nodejson["masterzeek"] = "";
-    nodejson["nodezeek"] = "";
-    nodejson["type"] = "Nodes";
-    var nodeJSON = JSON.stringify(nodejson);
-
-    axios({
-        method: 'post',
-        url: groupurl,
-        timeout: 30000,
-        data: nodeJSON
-    })
-    .then(function (response) {
-        GetAllGroups();
-        return true;
-    })
-    .catch(function (error) {
-        return false;
-    });   
+        axios({
+            method: 'post',
+            url: groupurl,
+            timeout: 30000,
+            data: nodeJSON
+        })
+        .then(function (response) {
+            GetAllGroups();
+            return true;
+        })
+        .catch(function (error) {
+            return false;
+        });   
+    }
 }
 
 function GetAllGroups(){

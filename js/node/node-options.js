@@ -251,22 +251,22 @@ function loadPlugins(){
 
             '</table>'+
         '</span>'+
-    '</div>'+
-    //knownports
-    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'knownports\',\''+uuid+'\')"><b>Knownports</b> <i class="fas fa-sort-down" id="knownports-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="knownports-form-'+uuid+'" style="display:block"><br>'+
-            '<table width="100%" tyle="table-layout: fixed">'+
-                '<tr>'+
-                    '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
-                    '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i></td>'+
-                    '<td width="25%">Mode: <i style="cursor: default; color: grey; cursor: pointer;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
-                    '<td width="25%">Ports: <i style="cursor: default; color: grey; cursor: pointer;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
-                '</tr>'+
-            '</table>'+
-        '</span>'+
     '</div>';
+    // //knownports
+    // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+    //     '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'knownports\',\''+uuid+'\')"><b>Knownports</b> <i class="fas fa-sort-down" id="knownports-form-icon-'+uuid+'"></i></h6>'+
+    //     '<span id="knownports-form-'+uuid+'" style="display:block"><br>'+
+    //         '<table width="100%" tyle="table-layout: fixed">'+
+    //             '<tr>'+
+    //                 '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
+    //                 '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
+    //                 '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i></td>'+
+    //                 '<td width="25%">Mode: <i style="cursor: default; color: grey; cursor: pointer;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
+    //                 '<td width="25%">Ports: <i style="cursor: default; color: grey; cursor: pointer;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
+    //             '</tr>'+
+    //         '</table>'+
+    //     '</span>'+
+    // '</div>';
     // //traffic flow
     // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
     //     '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
@@ -2961,18 +2961,19 @@ function PingPluginsNode(uuid) {
     })
     .then(function (response) {
         for(line in response.data){
-            if (line == "knownports"){
-                if (response.data[line]["status"] == "Enabled"){
-                    document.getElementById('ports-status-'+uuid).innerHTML = "ON";
-                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
-                    document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-                }else if (response.data[line]["status"] == "Disabled"){
-                    document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
-                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
-                    document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                }
-                document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-            }else if (response.data[line]["type"] == "suricata"){
+            // if (line == "knownports"){
+            //     if (response.data[line]["status"] == "Enabled"){
+            //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
+            //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
+            //         document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+            //     }else if (response.data[line]["status"] == "Disabled"){
+            //         document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
+            //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
+            //         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+            //     }
+            //     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+            // }else if (response.data[line]["type"] == "suricata"){
+            if (response.data[line]["type"] == "suricata"){
                 if (response.data[line]["command"]){
                     tableSuricataCommand = tableSuricataCommand + '<tr>'+                    
                         '<td>'+response.data[line]["pid"]+'</td>'+

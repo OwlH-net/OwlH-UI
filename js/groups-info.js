@@ -72,7 +72,7 @@ function GetGroupsDetails(){
                                             '<td></td>'+
                                         '</tr>';
                                         html = html + '<tr>'+                           
-                                            '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick=""></i></td>'+
+                                            '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
                                             '<td>Master path</td>';
                                             if(groups["mastersuricata"] == ""){
                                                 html = html + '<td style="color: red;">No Suricata master path...</td>';
@@ -101,9 +101,8 @@ function GetGroupsDetails(){
                                 '<b>Zeek</b>'+
                                 '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
                                     '<tbody>';      
-                                    // for(nid in groups["Nodes"]){
                                         html = html + '<tr>'+                           
-                                            '<td class="align-middle" rowspan="2">Master node configuration policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick=""></i></td>'+
+                                            '<td class="align-middle" rowspan="2">Master node configuration policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
                                             '<td>Master path</td>';
                                             if(groups["masterzeek"] == ""){
                                                 html = html + '<td style="color: red;">No Zeek master path...</td>';
@@ -127,7 +126,6 @@ function GetGroupsDetails(){
                                                 '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
                                             '</td>'+
                                         '</tr>';
-                                    // }                    
                                     html = html + '</tbody>'+    
                                 '</table>'+
                             '</td>'+
@@ -174,6 +172,66 @@ function changePaths(guuid, type){
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
                     '<strong>Success!</strong> Paths updated successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                GetGroupsDetails();
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Ruleset Error!</strong> '+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }            
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Ruleset Error!</strong> '+error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }); 
+}
+
+function SyncPathGroup(guuid, type){
+    hideEditGroup(type);
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/syncPathGroup';
+
+    var groupjson = {}
+    groupjson["uuid"] = guuid;
+    groupjson["type"] = type;
+    if(type == "suricata"){
+        groupjson["mastersuricata"] = document.getElementById('suricata-group-master-'+guuid).value;
+        groupjson["nodesuricata"] = document.getElementById('suricata-group-node-'+guuid).value;
+    }else{
+        groupjson["masterzeek"] = document.getElementById('zeek-group-master-'+guuid).value;
+        groupjson["nodezeek"] = document.getElementById('zeek-group-node-'+guuid).value;
+    }
+    var grJSON = JSON.stringify(groupjson);
+    axios({
+        method: 'post',
+        url: nodeurl,
+        timeout: 30000,
+        data: grJSON
+        })
+        .then(function (response) {           
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Paths synchronized successfully.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+

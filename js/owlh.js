@@ -13,9 +13,9 @@ function loadJSONdata() {
 loadJSONdata();
 
 function showConfig(oip, oname, oport, ouuid){
-    document.getElementById('divconfigform').style.display = "block";;
+    document.getElementById('divconfigform').style.display = "block";
     document.getElementById('divconfigform').scrollIntoView();
-    
+
     var name = document.getElementById('cfgnodename');
     var ip = document.getElementById('cfgnodeip');
     var port = document.getElementById('cfgnodeport');

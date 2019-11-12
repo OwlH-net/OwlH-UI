@@ -67,13 +67,18 @@ function addGroup() {
         var nodejson = {}
         nodejson["name"] = groupname;
         nodejson["desc"] = groupdesc;
+        nodejson["type"] = "Nodes";
         nodejson["ruleset"] = "";
         nodejson["rulesetID"] = "";
         nodejson["mastersuricata"] = "";
         nodejson["nodesuricata"] = "";
         nodejson["masterzeek"] = "";
         nodejson["nodezeek"] = "";
-        nodejson["type"] = "Nodes";
+        nodejson["interface"] = "";
+        nodejson["BPFfile"] = "";
+        nodejson["BPFrule"] = "";
+        nodejson["configFile"] = "";
+        nodejson["commandLine"] = "";
         var nodeJSON = JSON.stringify(nodejson);
     
         axios({
@@ -83,11 +88,39 @@ function addGroup() {
             data: nodeJSON
         })
         .then(function (response) {
-            GetAllGroups();
-            return true;
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong> Add group error: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Ruleset synchronized succesfully for all group nodes.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                GetAllGroups();
+            }
         })
         .catch(function (error) {
-            return false;
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong> Add group error: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });   
     }
 }
@@ -105,7 +138,6 @@ function GetAllGroups(){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
         document.getElementById('group-text').style.display ="block";
         if(response.data == null){
             result.innerHTML= '<div style="text-align:center"><h3>No groups created</h3></div>';
@@ -212,6 +244,16 @@ function GetAllGroups(){
 
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error: </strong>'+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
@@ -267,13 +309,22 @@ function modalLoadRuleset(group){
             }
         })
         .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>'+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+
             document.getElementById('group-ruleset-values').innerHTML = '<p>Error retrieving rules</p>';
         }); 
 }
 
 function selectGroupRuleset(group, ruleset, rulesetID){
     $('#modal-groups').modal("hide");
-    // document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/changeGroupRuleset';
@@ -290,55 +341,32 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         data: grJSON
         })
         .then(function (response) {
-            document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
-            // GetAllGroups();
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
+            }
         })
         .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>'+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }); 
 }
-
-// function PingGroupNodes(){
-//     var ipmaster = document.getElementById('ip-master').value;
-//     var portmaster = document.getElementById('port-master').value;
-//     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/pingGroupNodes';
-//     axios({
-//         method: 'get',
-//         url: nodeurl,
-//         timeout: 30000
-//         })
-//         .then(function (response) {
-//             // console.log(response.data); 
-//             for(id in response.data){
-//                 // console.log(response.data[id]["groupid"]);                
-//                 GetNodeValues(response.data[id]["groupid"], response.data[id]["nodesid"]);   
-//             }
-//         });
-// }
-
-// function GetNodeValues(groupid, nodeid){
-//     console.log("GROUP ID --> "+groupid);
-//     console.log("NODE ID --> "+nodeid);
-//     var ipmaster = document.getElementById('ip-master').value;
-//     var portmaster = document.getElementById('port-master').value;
-//     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/getNodeValues/'+nodeid;
-//     axios({
-//         method: 'get',
-//         url: nodeurl,
-//         timeout: 30000
-//         })
-//         .then(function (response) {
-//             var values = response.data;
-//             var row = document.getElementById('nodes-for-group-'+groupid).innerHTML;
-//             for(id in values){
-//                 if (id == nodeid){
-//                     row = row + '<b>IP: </b><b>'+values[id]["ip"]+'</b><br>'
-//                     row = row + '<b>Name: </b><b>'+values[id]["name"]+'</b><br>'
-//                     console.log(response.data[id]);
-//                 }
-//             }
-
-//         });
-// }
 
 function modalSelectNodeGroup(uuid){
     var ipmaster = document.getElementById('ip-master').value;
@@ -350,54 +378,76 @@ function modalSelectNodeGroup(uuid){
         timeout: 30000
     })
         .then(function (response) {
-            var modalWindowDelete = document.getElementById('modal-groups');
-            var html = '<div class="modal-dialog">'+
-                '<div class="modal-content">'+
-            
-                    '<div class="modal-header" style="word-break: break-all;">'+
-                        '<h4 class="modal-title">Add nodes to group</h4>'+
-                        '<button type="button" class="close" data-dismiss="modal" id="add-node-to-group-cross">&times;</button>'+
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                var modalWindowView = document.getElementById('modal-groups');
+                var html = '<div class="modal-dialog">'+
+                    '<div class="modal-content">'+
+                
+                        '<div class="modal-header" style="word-break: break-all;">'+
+                            '<h4 class="modal-title">Add nodes to group</h4>'+
+                            '<button type="button" class="close" data-dismiss="modal" id="add-node-to-group-cross">&times;</button>'+
+                        '</div>'+
+                
+                        '<div class="modal-body" style="word-break: break-all;">'+
+                            '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                                '<thead>'+
+                                    '<tr>'+
+                                        '<th>Node name</th>'+
+                                        '<th>Node IP</th>'+
+                                        '<th>Select</th>'+
+                                    '</tr>'+
+                                '</thead>'+
+                                '<tbody>';
+                                    for(node in response.data){                                    
+                                        html = html + '<tr>'+
+                                            '<td style="word-wrap: break-word;">'+response.data[node]["name"]+'</td>'+
+                                            '<td style="word-wrap: break-word;">'+response.data[node]["ip"]+'</td>';
+                                            if (response.data[node]["checked"] == "true"){
+                                                html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'" checked disabled></td>';
+                                            }else{
+                                                html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'"></td>';
+                                            }                                        
+                                        '</tr>';                                
+                                    }
+                                html = html + '</tbody>'+
+                            '</table>'+
+                        '</div>'+
+                              
+                        '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                            '<button type="button" id="add-node-to-group-close" class="btn btn-secondary">Close</button>'+
+                            '<button type="button" id="add-node-to-group-button" class="btn btn-primary">Select</button>'+
+                        '</div>'+
+                
                     '</div>'+
-            
-                    '<div class="modal-body" style="word-break: break-all;">'+
-                        '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                            '<thead>'+
-                                '<tr>'+
-                                    '<th>Node name</th>'+
-                                    '<th>Node IP</th>'+
-                                    '<th>Select</th>'+
-                                '</tr>'+
-                            '</thead>'+
-                            '<tbody>';
-                                for(node in response.data){                                    
-                                    html = html + '<tr>'+
-                                        '<td style="word-wrap: break-word;">'+response.data[node]["name"]+'</td>'+
-                                        '<td style="word-wrap: break-word;">'+response.data[node]["ip"]+'</td>';
-                                        if (response.data[node]["checked"] == "true"){
-                                            html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'" checked disabled></td>';
-                                        }else{
-                                            html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'"></td>';
-                                        }                                        
-                                    '</tr>';                                
-                                }
-                            html = html + '</tbody>'+
-                        '</table>'+
-                    '</div>'+
-                          
-                    '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
-                        '<button type="button" id="add-node-to-group-close" class="btn btn-secondary">Close</button>'+
-                        '<button type="button" id="add-node-to-group-button" class="btn btn-primary">Select</button>'+
-                    '</div>'+
-            
-                '</div>'+
-            '</div>';
-            modalWindowDelete.innerHTML = html;
-            $('#modal-groups').modal("show");
-            $('#add-node-to-group-button').click(function(){ addNodesToGroup(uuid); });
-            $('#add-node-to-group-cross').click(function(){ $('#modal-groups').modal("hide");});
-            $('#add-node-to-group-close').click(function(){ $('#modal-groups').modal("hide");});
+                '</div>';
+
+                modalWindowView.innerHTML = html;
+                $('#modal-groups').modal("show");
+                $('#add-node-to-group-button').click(function(){ addNodesToGroup(uuid); });
+                $('#add-node-to-group-cross').click(function(){ $('#modal-groups').modal("hide");});
+                $('#add-node-to-group-close').click(function(){ $('#modal-groups').modal("hide");});
+            }
         })
         .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>'+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 
@@ -423,9 +473,30 @@ function addNodesToGroup(uuid){
         data: nodeJSON
         })
         .then(function (response) {
-            GetAllGroups();
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllGroups();
+            }
         })
         .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>'+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });  
 }
 
@@ -465,30 +536,66 @@ function hideEditGroup(uuid){
     $('#edit-group-row-'+uuid).hide();
 }
 
-function EditGroupData(uuid){
-    hideEditGroup(uuid);
+function EditGroupData(uuid){    
     var name = document.getElementById('edit-group-name-'+uuid).value;
-    var desc = document.getElementById('edit-group-desc-'+uuid).value;
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
+    var desc = document.getElementById('edit-group-desc-'+uuid).value;    
 
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/editGroup';
-    var nodejson = {}
-    nodejson["name"] = name;
-    nodejson["uuid"] = uuid;
-    nodejson["desc"] = desc;
-    var nodeJSON = JSON.stringify(nodejson);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: nodeJSON
-        })
-        .then(function (response) {
-            GetAllGroups();
-        })
-        .catch(function (error) {
-        });   
+    if(name == ""  || desc == ""){
+        if(name == ""){
+            $("#edit-group-name-"+uuid).css('border', '2px solid red');
+            $("#edit-group-name-"+uuid).attr("placeholder", "Insert a valid name...");
+        }else{
+            $("#edit-group-name-"+uuid).css('border', '');
+        }
+        if(desc == ""){
+            $("#edit-group-desc-"+uuid).css('border', '2px solid red');
+            $("#edit-group-desc-"+uuid).attr("placeholder", "Insert a valid description");
+        }else{
+            $("#edit-group-desc-"+uuid).css('border', '');
+        }
+    }else{
+        hideEditGroup(uuid);
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/editGroup';
+        var nodejson = {}
+        nodejson["name"] = name;
+        nodejson["uuid"] = uuid;
+        nodejson["desc"] = desc;
+        var nodeJSON = JSON.stringify(nodejson);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: nodeJSON
+            })
+            .then(function (response) {
+                if(response.data.ack == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error: </strong>'+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    GetAllGroups();
+                }
+            })
+            .catch(function (error) {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            });   
+    }
 }
 
 function deleteGroup(groupID){
@@ -502,9 +609,30 @@ function deleteGroup(groupID){
         timeout: 30000,
     })
         .then(function (response) {
-            GetAllGroups();
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllGroups();
+            }
         })
-        .catch(function error() {
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>'+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 
@@ -519,9 +647,30 @@ function deleteNodeForGroup(uuid){
         timeout: 30000,
     })
         .then(function (response) {
-            GetAllGroups();
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllGroups();
+            }
         })
-        .catch(function error() {
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>'+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 }
 
@@ -561,20 +710,8 @@ function checkStatus() {
 }
 
 function ShowNodesValue (uuid){
-    //load values for this group
     var ipmaster = document.getElementById('ip-master').value;
     document.location.href = 'https://' + ipmaster + '/groups-info.html?uuid='+uuid;
-
-    // var detailsButton = document.getElementById('show-nodes-details-'+uuid);
-    // var content = document.getElementById('nodes-for-group-'+uuid);
-
-    // if (content.style.display == "none") {
-    //     detailsButton.className = "fas fa-chevron-circle-up";
-    //     $('#nodes-for-group-'+uuid).show();
-    // } else {
-    //     detailsButton.className = "fas fa-chevron-circle-down";
-    //     $('#nodes-for-group-'+uuid).hide();
-    // }
 }
 
 function SyncRulesetToAllGroupNodes(groupID){

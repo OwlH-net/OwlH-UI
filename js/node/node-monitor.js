@@ -86,7 +86,7 @@ function AddMonitorFileModal(uuid){
   
         '<div class="modal-body" style="word-break: break-all;">'+
           '<p>Insert the path for add this file.</p>'+
-          '<input type="text" class="form-control" id="new-file-path" value="" required>'+
+          '<input type="text" class="form-control" id="new-file-path">'+
         '</div>'+
   
         '<div class="modal-footer" id="sync-node-footer-btn" style="word-break: break-all;">'+
@@ -149,34 +149,81 @@ function DeleteMonitorFile(uuid, file){
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>AddMonitorFile '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error: </strong>AddMonitorFile '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
 function AddMonitorFile(uuid, path){
-    $('#modal-window').modal("hide");
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/monitor/addFile';
+    if(document.getElementById('new-file-path').value == ""){
+        $("#new-file-path").css('border', '2px solid red');
+        $("#new-file-path").attr('placeholder', 'Please, insert a valid path...');
+    }else{
+        $('#modal-window').modal("hide");
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/monitor/addFile';
 
-
-    var jsonSave = {}
-    jsonSave["uuid"] = uuid;
-    jsonSave["path"] = path;
-    var dataJSON = JSON.stringify(jsonSave);
-    axios({
-        method: 'post',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        loadPlugins();
-    })
-    .catch(function (error) {
-    });
+        $("#new-file-path").css('border', '');
+        var jsonSave = {}
+        jsonSave["uuid"] = uuid;
+        jsonSave["path"] = path;
+        var dataJSON = JSON.stringify(jsonSave);
+        axios({
+            method: 'post',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>AddMonitorFile '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>AddMonitorFile '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+    }
 }
 
 function PingMonitorFiles(uuid){
@@ -200,10 +247,10 @@ function PingMonitorFiles(uuid){
                     if(response.data[file]["size"] < 0){
                         html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
                     }else{
-                        if(response.data[file]["size"]<1024){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["size"].toFixed(2)+' Bytes</span>';}
-                        if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1024).toFixed(2)+' kB</span>';}
-                        if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1048576).toFixed(2)+' MB</span>';}
-                        if(response.data[file]["size"]>=1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1073741824).toFixed(2)+' GB</span>';}
+                        if(response.data[file]["size"]<1024){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+parseFloat(response.data[file]["size"]).toFixed(2)+' Bytes</span>';}
+                        if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+parseFloat(response.data[file]["size"]/1024).toFixed(2)+' kB</span>';}
+                        if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+parseFloat(response.data[file]["size"]/1048576).toFixed(2)+' MB</span>';}
+                        if(response.data[file]["size"]>=1073741824){html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+parseFloat(response.data[file]["size"]/1073741824).toFixed(2)+' GB</span>';}
                     }
                     html = html + '</td>'+
                     '<td style="color:grey; word-wrap: break-word;">';
@@ -220,6 +267,15 @@ function PingMonitorFiles(uuid){
         }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error: </strong>PingMonitorFiles '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 
 }
@@ -383,13 +439,23 @@ function PingMonitor(uuid){
                 }
             });
     
-            ctx_cpu.render();
-            ctx_owlh.render();
-            ctx_mem.render();
-            ctx_sto.render();
+            // ctx_cpu.render();
+            // ctx_owlh.render();
+            // ctx_mem.render();
+            // ctx_sto.render();
         }
     })
     .catch(function (error) {
+        console.log(error);
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error: </strong>PingMonitor '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 

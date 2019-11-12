@@ -23,7 +23,7 @@ function loadPlugins(){
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             //suricata
             '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+           
-                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | &nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp <i class="fas fa-terminal" style="color:grey; cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')"></i>'+
+                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp|&nbsp <span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')">To expert</span>'+
                 '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
 
                 '</span>' +
@@ -56,8 +56,8 @@ function loadPlugins(){
                 '<br><br>'+
             // //zeek
             '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
-                '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |&nbsp '+
-                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp<b>|</b> &nbsp'+
+                '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
+                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp| &nbsp'+
                 '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalon</span> &nbsp <span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span>'+
             '</div>'+
                 //Zeek standalone
@@ -628,23 +628,23 @@ function GetMainconfData(uuid){
     .then(function (response) {
         for (service in response.data){
             if(service == "suricata"){
+                document.getElementById('managed-expert-span').innerHTML = 'To expert';
+                document.getElementById('table-suricata').style.display = 'block';
+                    document.getElementById('table-suricata-command').style.display = 'none';
                 if(response.data[service]["status"] == "disabled"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
                     document.getElementById('suricata-current-status').innerHTML = 'Disabled';
                     document.getElementById('main-suricata-status-btn').className = 'fas fa-play-circle';
-                    document.getElementById('table-suricata').style.display = 'block';
-                    document.getElementById('table-suricata-command').style.display = 'none';
                 }else if(response.data[service]["status"] == "enabled"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
                     document.getElementById('main-suricata-status-btn').className = 'fas fa-stop-circle';
                     document.getElementById('suricata-current-status').innerHTML = 'Enabled';
-                    document.getElementById('table-suricata').style.display = 'block';
-                    document.getElementById('table-suricata-command').style.display = 'none';
                 }else if(response.data[service]["status"] == "expert"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-warning align-text-bottom text-white';
                     document.getElementById('table-suricata').style.display = 'none';
                     document.getElementById('table-suricata-command').style.display = 'block';
                     document.getElementById('suricata-current-status').innerHTML = 'Expert';
+                    document.getElementById('managed-expert-span').innerHTML = 'To managed';
                     document.getElementById('main-suricata-status-btn').style.display = 'none';
                 }
             }else if(service == "zeek"){
@@ -3764,10 +3764,6 @@ function ReloadFilesData(uuid){
     })
     .catch(function (error) {
     });
-    
-    
-    
-    
     
     // //wazuh
     // //analyzer

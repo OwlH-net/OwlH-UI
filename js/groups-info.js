@@ -27,7 +27,7 @@ function GetGroupsDetails(){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
+        // console.log(response.data);
         if (response.data.ack == "false") {
             result.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving group data</h3></div>';
         }else{
@@ -36,6 +36,8 @@ function GetGroupsDetails(){
                 for(x=0; x<response.data.length; x++){
                     var groups = response.data[x];
                     if(groups['guuid'] == uuid){
+                        console.log("command Line--> "+groups["commandLine"]);
+                        console.log("config File--> "+groups["configFile"]);
                         html = html + '<div>'+
                                     '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="modalSelectNodeGroup(\''+uuid+'\')">Add node</button>'+
                                     '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="backButton()">Back</button>'+
@@ -61,7 +63,7 @@ function GetGroupsDetails(){
                                 '<table class="table" id="suricata-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                                                         
                                     '<tbody>'+     
                                         '<tr>'+                           
-                                            '<td>Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>'+
+                                            '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>'+
                                             '<td id="ruleset-group-'+groups['guuid']+'">';
                                                 if(groups['gruleset']  != ""){
                                                     html = html + groups['gruleset'];
@@ -70,8 +72,8 @@ function GetGroupsDetails(){
                                                 }
                                             html = html + '</td>'+
                                             '<td></td>'+
-                                        '</tr>';
-                                        html = html + '<tr>'+                           
+                                        '</tr>'+
+                                        '<tr>'+
                                             '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
                                             '<td>Master path</td>';
                                             if(groups["mastersuricata"] == ""){
@@ -89,20 +91,41 @@ function GetGroupsDetails(){
                                             }
                                         html = html + '</tr>'+
                                         '<tr id="suricata-edit-row" style="display:none;">'+
-                                            '<td>Master: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
-                                            '<td>Node: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
+                                            '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
+                                            '<td>Node path: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
                                             '<td width="10%">'+
                                                 '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'suricata\')">Save</button>'+
                                                 '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
                                             '</td>'+
-                                        '</tr>';
-                                    html = html + '</tbody>'+                           
+                                        '</tr>'+
+                                        '<tr>'+
+                                            '<td class="align-middle" rowspan="5">Services &nbsp <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick=""></i></td>'+
+                                            '<td>Interface &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select an interface" onclick="modalEditGroupService(\''+uuid+'\', \'interface\', \'interface\')"></i></td>';
+                                            if(groups["interface"] == ""){html = html + '<td style="color: red;">No interface selected...</td>';}else{html = html + '<td>'+groups["interface"]+'</td>';}
+                                        html = html + '</tr>'+
+                                        '<tr>'+
+                                            '<td>BPF file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF file path" onclick="modalEditGroupService(\''+uuid+'\', \'BPFfile\', \'BPF file\')"></i></td>';
+                                            if(groups["BPFfile"] == ""){html = html + '<td style="color: red;">No BPF file selected...</td>';}else{html = html + '<td>'+groups["BPFfile"]+'</td>';}
+                                        html = html + '</tr>'+
+                                        '<tr>'+
+                                            '<td>BPF rule &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF rule" onclick="modalEditGroupService(\''+uuid+'\', \'BPFrule\', \'BPF rule\')"></i></td>';
+                                            if(groups["BPFrule"] == ""){html = html + '<td style="color: red;">No BPF rule selected...</td>';}else{html = html + '<td>'+groups["BPFrule"]+'</td>';}
+                                        html = html + '</tr>'+
+                                        '<tr>'+
+                                            '<td>Config file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a config file path" onclick="modalEditGroupService(\''+uuid+'\', \'configFile\', \'config file\')"></i></td>';
+                                            if(groups["configFile"] == ""){html = html + '<td style="color: red;">No config file selected...</td>';}else{html = html + '<td>'+groups["configFile"]+'</td>';}
+                                        html = html + '</tr>'+
+                                        '<tr>'+
+                                            '<td>Command line &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Command line" onclick="modalEditGroupService(\''+uuid+'\', \'commandLine\', \'command line\')"></i></td>';
+                                            if(groups["commandLine"] == ""){html = html + '<td style="color: red;">No command line selected...</td>';}else{html = html + '<td>'+groups["commandLine"]+'</td>';}
+                                        html = html + '</tr>'+
+                                    '</tbody>'+                           
                                 '</table>'+
                                 '<b>Zeek</b>'+
                                 '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
                                     '<tbody>';      
                                         html = html + '<tr>'+                           
-                                            '<td class="align-middle" rowspan="2">Master node configuration policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
+                                            '<td class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
                                             '<td>Master path</td>';
                                             if(groups["masterzeek"] == ""){
                                                 html = html + '<td style="color: red;">No Zeek master path...</td>';
@@ -551,4 +574,86 @@ function SyncRulesetToAllGroupNodes(groupID){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
+}
+
+function modalEditGroupService(uuid, type, editField){
+    var modalWindowUpdate = document.getElementById('modal-groups');
+    modalWindowUpdate.innerHTML = 
+    '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+    
+            '<div class="modal-header" style="word-break: break-all;">'+
+                '<h4 class="modal-title">Update group services</h4>'+
+                '<button type="button" class="close" id="update-node-group-cross">&times;</button>'+
+            '</div>'+
+    
+            '<div class="modal-body" style="word-break: break-all;">'+ 
+                '<input class="form-control" id="suricata-group-service-value" placeholder="Insert the new value for '+editField+'...">'+
+            '</div>'+
+    
+            '<div class="modal-footer">'+
+                '<button type="button" class="btn btn-secondary" id="update-node-group-close">Close</button>'+
+                '<button type="button" class="btn btn-primary" id="update-node-group">Update</button>'+
+            '</div>'+
+    
+        '</div>'+
+    '</div>';
+    $('#modal-groups').modal("show");
+    $('#update-node-group-close').click(function(){ $('#modal-groups').modal("hide");});
+    $('#update-node-group-cross').click(function(){ $('#modal-groups').modal("hide");});
+    $('#update-node-group').click(function(){ $('#modal-groups').modal("hide"); updateGroupService(uuid, type, document.getElementById("suricata-group-service-value").value); });
+}
+
+function updateGroupService(uuid, type, value){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/updateGroupService';
+
+    var groupjson = {}
+    groupjson["uuid"] = uuid;
+    groupjson["param"] = type;
+    groupjson["value"] = value;
+    var grJSON = JSON.stringify(groupjson);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: grJSON
+    })
+        .then(function (response) {
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Group value updated successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    GetGroupsDetails();
+            }
+        })
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error updating Values! </strong> '+error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
 }

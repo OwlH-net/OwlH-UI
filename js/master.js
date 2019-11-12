@@ -1074,7 +1074,6 @@ function showMasterModalCollector(response){
         '</div>'+
     '</div>';
     document.getElementById('modal-master').innerHTML = html;
-    // $('#modal-master').modal('show');
     $('#modal-master').modal().hide();
 }
 

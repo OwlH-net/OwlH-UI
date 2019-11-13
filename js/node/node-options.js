@@ -58,7 +58,7 @@ function loadPlugins(){
             '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
                 '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp| &nbsp'+
-                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalon</span> &nbsp <span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span>'+
+                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalone</span> &nbsp <span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span>'+
             '</div>'+
                 //Zeek standalone
             '<div id="standalone-zeek-table" style="display:block;">'+
@@ -100,7 +100,7 @@ function loadPlugins(){
                     '</table>'+
                 '</div><br>'+
                 '<div>'+
-                    '<div><b style="display:inline;">Proxy</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'proxy\')">Add worker</button></div>'+
+                    '<div><b style="display:inline;">Proxy</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'proxy\')">Add proxy</button></div>'+
                     '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
                         '<thead>'+
                             '<th>Name</th>'+
@@ -112,7 +112,7 @@ function loadPlugins(){
                     '</table>'+
                 '</div><br>'+
                 '<div>'+
-                    '<div><b style="display:inline;">Worker</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'worker\')">Add proxy</button></div>'+
+                    '<div><b style="display:inline;">Worker</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'worker\')">Add worker</button></div>'+
                     '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
                         '<thead>'+
                             '<th>Name</th>'+
@@ -235,7 +235,7 @@ function loadPlugins(){
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
                     '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
                     '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
-                    '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey; cursor: pointer;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
+                    '<td width="25%"><button class="btn btn-primary float-right" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')">Edit Analyzer</button></td>'+
                 '</tr>'+
                 '<tr>'+
                     '<table class="table table-hover" width="100%" style="table-layout: fixed">'+

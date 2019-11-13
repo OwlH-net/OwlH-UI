@@ -125,10 +125,10 @@
                         <input type="radio" id="create-path-custom" name="create-new-source-radiobuttons" value="custom" class="custom-control-input">
                         <label class="custom-control-label" for="create-path-custom">Custom</label>
                     </div>  
-                    <div class="custom-control custom-radio custom-control-inline">
+                    <!-- <div class="custom-control custom-radio custom-control-inline">
                         <input type="radio" id="create-threat" name="create-new-source-radiobuttons" value="threat" class="custom-control-input">
                         <label class="custom-control-label" for="create-threat">Threat Intelligence</label>
-                    </div>  
+                    </div>   -->
                 </div>
 
 
@@ -141,36 +141,39 @@
 
         <!-- Form ruleset source group edit -->
         <div class="container" style="display: none" id="edit-ruleset-source">
-                <form id="group-ruleset-source-details">
-                    <div class="form-row" >
-                        <div class="form-group col-md-6">
-                            <div class="input-group mb-4 mr-sm-4 mb-sm-0">
-                                <input type="text" class="form-control" id="ruleset-source-name-edit" placeholder="New ruleset name">
-                            </div>
+            <form id="group-ruleset-source-details">
+                <div class="form-row" >
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-4 mr-sm-4 mb-sm-0">
+                            <input type="text" class="form-control" id="ruleset-source-name-edit" placeholder="New ruleset name">
                         </div>
                     </div>
-                    <div class="form-row" >
-                        <div class="form-group col-md-6">
-                            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                <input type="text" class="form-control" id="ruleset-source-edit-desc" placeholder="New ruleset description">
-                                <input type="hidden" class="form-control" id="ruleset-source-uuid">
-                            </div>
+                </div>
+                <div class="form-row" >
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <input type="text" class="form-control" id="ruleset-source-edit-desc" placeholder="New ruleset description">
+                            <input type="hidden" class="form-control" id="ruleset-source-uuid">
                         </div>
                     </div>
-                    <div class="form-row" >
-                        <div class="form-group col-md-6">
-                            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                <input type="text" class="form-control" id="ruleset-source-edit-url" placeholder="New url">
-                            </div>
+                </div>
+                <div class="form-row" >
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <input type="text" class="form-control" id="ruleset-source-edit-url" placeholder="New url">
                         </div>
                     </div>
-                    <div class="text-primary form-group col-md-6">
-                        <a href="#" onclick="editRulesetSourceData()">Modify</a>
-                        <a href="#" onclick="editRulesetSourceClose()">Close</a>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="text-primary form-group col-md-6">
+                    <a href="#" onclick="editRulesetSourceData()">Modify</a>
+                    <a href="#" onclick="editRulesetSourceClose()">Close</a>
+                </div>
+            </form>
+        </div>
     
+        <!-- Footer -->
+        <div id="footer"></div>
+
         <!-- Modal delete ruleset source -->
         <div class="modal fade" id="modal-delete-source">
         </div>
@@ -193,6 +196,7 @@
     <script src="js/offcanvas.js"></script>
     <script src="js/ruleset-source.js"></script>
     <script src="js/loadTitle.js"></script>
+    <script src="js/footer.js"></script>
   </body>
 </html>
 

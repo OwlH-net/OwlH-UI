@@ -165,7 +165,7 @@ function GetAllGroups(){
                             '</td><td style="word-wrap: break-word;">'+
                                 '<i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Edit group" onclick="showEditGroup(\''+groups['guuid']+'\')"></i> &nbsp;'+
                                 // '<i class="fas fa-plus" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Add nodes to group" onclick="modalSelectNodeGroup(\''+groups['guuid']+'\')"></i>  &nbsp'+
-                                '<i class="fas fa-eye" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Show nodes values" id="show-nodes-details-'+groups['guuid']+'" onclick="ShowNodesValue(\''+groups['guuid']+'\')"></i> &nbsp'+
+                                '<i class="fas fa-eye" style="cursor: pointer; color: Dodgerblue; font-size: 20px" title="Show nodes values" id="show-nodes-details-'+groups['guuid']+'" onclick="ShowNodesValue(\''+groups['guuid']+'\', \''+groups['gname']+'\')"></i> &nbsp'+
                                 '<i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete group" onclick="modalDeleteGroup(\''+groups['gname']+'\',\''+groups['guuid']+'\')"></i>'+
                             '</td>'+
                         '</tr>'+
@@ -709,9 +709,9 @@ function checkStatus() {
     document.getElementById('check-status-config').href = nodeurl;
 }
 
-function ShowNodesValue (uuid){
+function ShowNodesValue (uuid, gname){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/groups-info.html?uuid='+uuid;
+    document.location.href = 'https://' + ipmaster + '/groups-info.html?uuid='+uuid+'&gname='+gname;
 }
 
 function SyncRulesetToAllGroupNodes(groupID){

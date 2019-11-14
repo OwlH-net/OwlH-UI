@@ -1306,32 +1306,34 @@ function AddSTAPModal(uuid, type){
             '<p>Insert BPF:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-bpf-socket" value="" required><br>';
         }
-        html = html + '<p>Forward traffic to interface:</p>'+
-        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-            '<tbody id="socket-network-modal-table">' +
-            '</tbody>'+
-        '</table>';   
-        axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
-        .then(function (response) {
-            var isChecked = false;
-            var inner = "";
-            for (net in response.data){
-                inner = inner + '<tr>'+
-                    '<td style="word-wrap: break-word;">' +
-                        '<p class="ml-4">'+response.data[net]+'</p>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;">';
-                        if (!isChecked){
-                            inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
-                            isChecked = true;
-                        }else{
-                            inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
-                        }
-                    inner = inner + '</td>'+
-                '</tr>';
-            }
-            document.getElementById('socket-network-modal-table').innerHTML = inner;
-        });   
+        if (type != "socket-pcap"){
+            html = html + '<p>Forward traffic to interface:</p>'+
+            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                '<tbody id="socket-network-modal-table">' +
+                '</tbody>'+
+            '</table>';   
+            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
+            .then(function (response) {
+                var isChecked = false;
+                var inner = "";
+                for (net in response.data){
+                    inner = inner + '<tr>'+
+                        '<td style="word-wrap: break-word;">' +
+                            '<p class="ml-4">'+response.data[net]+'</p>'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (!isChecked){
+                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                                isChecked = true;
+                            }else{
+                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                            }
+                        inner = inner + '</td>'+
+                    '</tr>';
+                }
+                document.getElementById('socket-network-modal-table').innerHTML = inner;
+            });   
+        }
     html = html + '</div>'+
     '<div class="modal-footer" id="sync-node-footer-btn">'+
         '<button type="button" class="btn btn-secondary" id="add-stap-modal-close">Cancel</button>'+
@@ -3696,8 +3698,6 @@ function PingAnalyzer(uuid) {
                 '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data["path"]+'\')">100</span> &nbsp';
             '</td>';
         document.getElementById('analyzer-file-content').innerHTML = html;
-
-        // $('#reload-analyzer').click(function(){ ReloadFilesData(uuid);});
     })
     .catch(function (error) {
 
@@ -3733,9 +3733,6 @@ function ReloadFilesData(uuid){
                 document.getElementById('analyzer-file-size').value = response.data[file]["size"];
             }else if (file == "wazuh"){
                 for (value in response.data[file]){
-                    console.log("Value: "+response.data[file][value]);
-                    console.log("Path: "+value);
-
                     for (x = 1; x <= wazuhCount; x++){
                         var htmlWazuh = "";
                         if (value == document.getElementById(x+'-wazuh-files').innerHTML){

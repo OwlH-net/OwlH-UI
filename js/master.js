@@ -1111,32 +1111,34 @@ function AddSTAPModal(type){
                 '<p>Insert BPF:</p>'+
                     '<input type="text" class="form-control" id="soft-tap-bpf-socket"><br>';
             }
-            html = html + '<p>Select an interface:</p>'+
-            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                '<tbody id="socket-network-modal-table">' +
-                '</tbody>'+
-            '</table>';   
-            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface')
-            .then(function (response) {
-                var isChecked = false;
-                var inner = "";
-                for (net in response.data){
-                    inner = inner + '<tr>'+
-                        '<td style="word-wrap: break-word;">' +
-                            '<p class="ml-4">'+response.data[net]+'</p>'+
-                        '</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            if (!isChecked){
-                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
-                                isChecked = true;
-                            }else{
-                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
-                            }
-                        inner = inner + '</td>'+
-                    '</tr>';
-                }
-                document.getElementById('socket-network-modal-table').innerHTML = inner;
-            });   
+            if (type != "socket-pcap"){
+                html = html + '<p>Select an interface:</p>'+
+                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                    '<tbody id="socket-network-modal-table">' +
+                    '</tbody>'+
+                '</table>';   
+                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface')
+                .then(function (response) {
+                    var isChecked = false;
+                    var inner = "";
+                    for (net in response.data){
+                        inner = inner + '<tr>'+
+                            '<td style="word-wrap: break-word;">' +
+                                '<p class="ml-4">'+response.data[net]+'</p>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;">';
+                                if (!isChecked){
+                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                                    isChecked = true;
+                                }else{
+                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                                }
+                            inner = inner + '</td>'+
+                        '</tr>';
+                    }
+                    document.getElementById('socket-network-modal-table').innerHTML = inner;
+                });   
+            }
         html = html + '</div>'+
         '<div class="modal-footer" id="sync-node-footer-btn">'+
             '<button type="button" class="btn btn-secondary" id="add-stap-modal-close">Cancel</button>'+

@@ -1,12 +1,11 @@
 function loadFileIntoTextarea(){
-    var uuidHidden = document.getElementById('uuid-hidden-text');
-    var fileHidden = document.getElementById('file-hidden-text');
-
     var urlData = new URL(window.location.href);
     var uuid = urlData.searchParams.get("uuid");
     var file = urlData.searchParams.get("file");
     var node = urlData.searchParams.get("node");
-    
+
+    var uuidHidden = document.getElementById('uuid-hidden-text');
+    var fileHidden = document.getElementById('file-hidden-text');
     var txtArea = document.getElementById('inputTextToSave');
     var title = document.getElementById('title-edit');
     var subtitle = document.getElementById('subtitle-edit');
@@ -28,22 +27,19 @@ function loadFileIntoTextarea(){
             return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
         }else{
             txtArea.innerHTML = response.data.fileContent;
-            uuidHidden.value = response.data.nodeUUID;
+            if(uuid == "local") {uuidHidden.value = "local"} else {uuidHidden.value = response.data.nodeUUID;}
             fileHidden.value = response.data.fileName;
         }
-        return true;
     })
     .catch(function (error) {
-        return false;
     });
+     
 }
-loadFileIntoTextarea();
 
 function saveFileChanged() {
     var uuidHidden = document.getElementById('uuid-hidden-text');
     var fileHidden = document.getElementById('file-hidden-text');
     var fileContent = document.getElementById('inputTextToSave');
-
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/savefile';
@@ -60,11 +56,30 @@ function saveFileChanged() {
         data: nodeJSON
     })
     .then(function (response) {
-        window.history.back();
-        return true;
+        if (response.data.ack == "false"){
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Error saving file content: '+response.data.error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            window.history.back();
+        }
     })
     .catch(function (error) {
-        return false;
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Error saving file content: '+error+''+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 

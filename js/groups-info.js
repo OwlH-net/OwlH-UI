@@ -318,7 +318,7 @@ async function syncAnalyzer(nodes){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
-                '<strong>Error!</strong> Nodes not synchronized: '+errorNodes+'.'+
+                '<strong>Error!</strong> Nodes not synchronized: '+errorNodes
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -334,8 +334,17 @@ async function syncAnalyzer(nodes){
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Error!</strong> All analyzers synchronized successfully.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }
-
     })
     .catch(function (error) {
         $('html,body').scrollTop(0);
@@ -562,9 +571,7 @@ function SyncPathGroup(guuid, type){
     }
 }
 
-function showEditGroup(uuid, type, master, node){
-    document.getElementById(type+'-group-master-'+uuid).value = master;
-    document.getElementById(type+'-group-node-'+uuid).value = node;
+function showEditGroup(type){
     $('#'+type+'-edit-row').show();
 }
 

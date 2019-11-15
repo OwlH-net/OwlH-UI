@@ -153,6 +153,7 @@ function GetGroupsDetails(){
                                         '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
                                     '</td>'+
                                 '</tr>'+
+                                /*
                                 '<tr id="cluster">'+
                                     '<tr>'+
                                         '<td class="align-middle" rowspan="2">Cluster</td>'+
@@ -164,6 +165,7 @@ function GetGroupsDetails(){
                                         '<td>Actions</td>'+
                                     '</tr>'+
                                 '</tr>'+
+                                */
                             '</tbody>'+    
                         '</table>'+
                         //analyzer table

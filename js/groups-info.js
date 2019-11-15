@@ -62,14 +62,15 @@ function GetGroupsDetails(){
                                     '<td><i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete node for this group" onclick="modalDeleteNodeForGroup(\''+groups["Nodes"][nid]["dbuuid"]+'\', \''+groups["Nodes"][nid]["nname"]+'\')"></i></td>'+
                                 '</tr>';
                             }
-                        html = html + '</table>';
-                        html = html + '<b>Suricata</b>'+
+                        html = html + '</table>'+
+                        //suricata table
+                        '<b>Suricata</b>'+
                         '<table class="table" id="suricata-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                                                         
                             '<tbody>'+     
                                 '<tr>'+                           
                                     '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
                                     if(groups['gruleset']  != ""){
-                                        html = html + '<td id="ruleset-group-'+groups['guuid']+'" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                        html = html + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
                                     }else{
                                         html = html + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
                                     }
@@ -123,11 +124,12 @@ function GetGroupsDetails(){
                                 html = html + '</tr>'+
                             '</tbody>'+                           
                         '</table>'+
+                        //zeek table
                         '<b>Zeek</b>'+
                         '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
                             '<tbody>';      
                                 html = html + '<tr>'+                           
-                                    '<td class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
+                                    '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
                                     '<td>Master path</td>';
                                     if(groups["masterzeek"] == ""){
                                         html = html + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
@@ -151,11 +153,23 @@ function GetGroupsDetails(){
                                         '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
                                     '</td>'+
                                 '</tr>'+
+                                '<tr id="cluster">'+
+                                    '<tr>'+
+                                        '<td class="align-middle" rowspan="2">Cluster</td>'+
+                                        '<td>Name</td>'+
+                                        '<td>Actions</td>'+
+                                    '</tr>'+
+                                    '<tr>'+
+                                        '<td>Name</td>'+
+                                        '<td>Actions</td>'+
+                                    '</tr>'+
+                                '</tr>'+
                             '</tbody>'+    
                         '</table>'+
+                        //analyzer table
                         '<b>Analyzer</b>'+
                         '<table class="table" id="cluster-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+                          
-                            '<tbody id="analyzer-nodes-status">'+
+                            '<tbody>'+
                                 '<tr>'+
                                     '<td>'+
                                         '<span style="cursor: pointer;" id="group-enable-all-analyzer" class="badge bg-primary align-text-bottom text-white float-left mr-2" >Enable all</span>'+
@@ -166,6 +180,8 @@ function GetGroupsDetails(){
                                 '</tr>'+
                             '</tbody>'+    
                         '</table>'+
+                        '<table class="table" id="analyzer-nodes-status" style="table-layout: fixed" width="100%">'+
+                        '</table>'+
                     '</tr>';
                 }
 
@@ -175,9 +191,9 @@ function GetGroupsDetails(){
         }
 
        
-        $('#group-sync-analyzer').click(function(){ console.log(allNodes); syncAnalyzer(allNodes); });
-        $('#group-enable-all-analyzer').click(function(){ console.log(allNodes);ChangeAnalyzerStatus(allNodes, "Disabled"); });
-        $('#group-disable-all-analyzer').click(function(){ console.log(allNodes);ChangeAnalyzerStatus(allNodes, "Enabled"); });
+        $('#group-sync-analyzer').click(function(){ syncAnalyzer(allNodes); });
+        $('#group-enable-all-analyzer').click(function(){ ChangeAnalyzerStatus(allNodes, "Enabled"); });
+        $('#group-disable-all-analyzer').click(function(){ ChangeAnalyzerStatus(allNodes, "Disabled"); });
         LoadAnalyzerNodeStatus(allNodes);
     })
     .catch(function (error) {
@@ -186,11 +202,14 @@ function GetGroupsDetails(){
 }
 
 function LoadAnalyzerNodeStatus(allNodes){
-    var html = '<tr>'+
-        '<th>Node name</th>'+
-        '<th>Node IP</th>'+
-        '<th>Node status</th>'+
-    '</tr>';
+    var html = '<thead>'+
+        '<tr>'+
+            '<th>Node name</th>'+
+            '<th>Node IP</th>'+
+            '<th>Node status</th>'+
+        '</tr>'+
+    '</thead>'
+    '<tbody>';
     for(x in allNodes){
         html = html + '<tr>'+
             '<td>'+allNodes[x]["nname"]+'</td>'+        
@@ -204,11 +223,11 @@ function LoadAnalyzerNodeStatus(allNodes){
             }
         html = html + '</tr>';        
     }
-    document.getElementById('analyzer-nodes-status').innerHTML = document.getElementById('analyzer-nodes-status').innerHTML + html;        
+    html = html + '</tbody>';
+    document.getElementById('analyzer-nodes-status').innerHTML = html;        
 }
 
-function ChangeAnalyzerStatus(nodes, status){
-    console.log(nodes);
+async function ChangeAnalyzerStatus(nodes, status){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer';
@@ -220,7 +239,8 @@ function ChangeAnalyzerStatus(nodes, status){
         jsonAnalyzer["status"] = status;
         var dataJSON = JSON.stringify(jsonAnalyzer);
     
-        axios({
+        // let response = await axios.put('https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer',{timeout: 30000, data: dataJSON});
+        await axios({
             method: 'put',
             url: nodeurl,
             timeout: 30000,
@@ -238,6 +258,7 @@ function ChangeAnalyzerStatus(nodes, status){
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }
+
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -271,8 +292,64 @@ function editAnalyzer(node, type, name){
     }
 }
 
-function syncAnalyzer(nodes){
-    console.log(nodes);
+async function syncAnalyzer(nodes){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer/sync';
+
+    var errorNodes = "";
+
+    var dataJSON = JSON.stringify(nodes);
+
+    await axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        for(x in response.data){
+            if(response.data[x]["status"] == "error"){
+                errorNodes = errorNodes + response.data[x]["name"]+" "; 
+                response.data.ack = "alert";
+            }
+        }
+        if (response.data.ack == "alert") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+                '<strong>Error!</strong> Nodes not synchronized: '+errorNodes+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Sync analyzer: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }
+
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Sync analyzer status: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+    // }
+    GetGroupsDetails();
 }
 
 function syncAllGroupElements(uuid){

@@ -645,43 +645,97 @@ function GetAllClusterFiles(guuid){
         })
         .then(function (response) {
             var html = '<tr>'+
-                    '<td id="cluster-row-span" rowspan="2" class="align-middle" width="20%">Cluster <i class="fas fa-sync" style="color:dodgerblue; cursor:pointer"></i> </td>'+
+                    '<td id="cluster-row-span" rowspan="2" class="align-middle" width="20%">Cluster <i class="fas fa-sync" style="color:dodgerblue; cursor:pointer" onclick="SyncClusterFile(\''+guuid+'\', \'all\')"></i> </td>'+
                     '<th>Cluster path</td>'+
                     '<th width="20%">Actions</td>'+
                 '</tr>';
             var count = 1;
             for(uuid in response.data){
-                count++;
+                count = count+2;
                 html = html +'<tr>'+
                     '<td>'+response.data[uuid]["path"]+'</td>'+
                     '<td>'+
-                        '<i id="edit-cluster-data" class="fas fa-edit" style="color:dodgerblue; cursor:pointer"></i> &nbsp'+
+                        '<i id="edit-cluster-data-'+uuid+'" class="fas fa-edit" style="color:dodgerblue; cursor:pointer" onclick="showEditGroup(\''+uuid+'\')"></i> &nbsp'+
                         '<i class="fas fa-eye" style="color:dodgerblue; cursor:pointer" onclick="loadClusterFile(\''+uuid+'\', \''+response.data[uuid]["path"]+'\', \'Cluster group\')"></i> &nbsp'+
-                        '<i class="fas fa-sync" style="color:dodgerblue; cursor:pointer"></i> &nbsp'+
+                        '<i class="fas fa-sync" style="color:dodgerblue; cursor:pointer" onclick="SyncClusterFile(\''+uuid+'\', \'one\')"></i> &nbsp'+
                         '<i class="fas fa-trash-alt" style="color:red; cursor:pointer" onclick="modalDeleteCluster(\''+uuid+'\', \''+response.data[uuid]["path"]+'\')"></i> &nbsp'+
                     '</td>'+
                 '</tr>'+
-                '<tr id="edit-cluster-data-div" style="display:none;">'+
-                    '<td colspan="2">'+
-                        '<div class="input-group">Path: &nbsp <input class="form-control" id="new-cluster-value-'+uuid+'"></input></div>'+
+                '<tr id="'+uuid+'-edit-row" style="display:none;" bgcolor="AntiqueWhite">'+
+                    '<td>'+
+                        '<div class="input-group">Path: &nbsp <input class="form-control" id="new-cluster-value-'+uuid+'" value="'+response.data[uuid]["path"]+'"></input></div>'+
                     '</td>'+
                     '<td class="align-middle">'+
-                        '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" id="edit-cluster-data-save">Save</button>'+
-                        '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" id="edit-cluster-data-close">Cancel</button>'+
+                        '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" id="edit-cluster-data-save-'+uuid+'" onclick="changeClusterValue(\''+guuid+'\', \''+uuid+'\')">Save</button>'+
+                        '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" id="edit-cluster-data-close-'+uuid+'" onclick="hideEditGroup(\''+uuid+'\')">Cancel</button>'+
                     '</td>'+
                 '</tr>';
             }
             document.getElementById('cluster-elements').innerHTML = html;
             document.getElementById('cluster-row-span').rowSpan = count;
-            $('#edit-cluster-data').click(function(){ $('#edit-cluster-data-div').show();});
-            $('#edit-cluster-data-close').click(function(){ $('#edit-cluster-data-div').hide();});
-            $('#edit-cluster-data-save').click(function(){ $('#edit-cluster-data-div').hide(); changeClusterValue(guuid, uuid, document.getElementById('new-cluster-value-'+uuid).value)});
         })
         .catch(function (error) {
         }); 
 }
 
-function changeClusterValue(guuid, uuid, path){    
+function SyncClusterFile(uuid, type){    
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+
+    if(type == "one"){
+        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/syncClusterFile';
+    }else{
+        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/syncAllGroupCluster';
+    }
+    var groupjson = {}    
+    groupjson["uuid"] = uuid;
+    var grJSON = JSON.stringify(groupjson);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: grJSON
+    })
+        .then(function (response) {
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Sync cluster file: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Cluster file synchronized correctly.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
+            GetGroupsDetails();
+        })
+        .catch(function error() {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Sync cluster file: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+}
+
+function changeClusterValue(guuid, uuid){    
+    hideEditGroup(uuid);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/changeClusterValue';
@@ -689,7 +743,7 @@ function changeClusterValue(guuid, uuid, path){
     var groupjson = {}
     groupjson["uuid"] = uuid;
     groupjson["guuid"] = guuid;
-    groupjson["path"] = path;
+    groupjson["path"] = document.getElementById('new-cluster-value-'+uuid).value;
     var grJSON = JSON.stringify(groupjson);
     axios({
         method: 'put',

@@ -46,9 +46,12 @@ function loadPlugins(){
 
     //FILES
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'files\', \''+uuid+'\')"><b>Node files</b> <i class="fas fa-sort-down" id="files-form-icon-'+uuid+'"></i></h6>'+
+        '<h6 class="border-bottom border-gray pb-4 mb-0" style="color: black;" onclick="showActions(\'files\', \''+uuid+'\')"><b>Node files</b>'+ 
+            '<i class="fas fa-sort-down" id="files-form-icon-'+uuid+'"></i>'+
+            '<button type="button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddMonitorFileModal(\''+uuid+'\')">Add file</button>'+
+        '</h6>'+
         '<span id="files-form-'+uuid+'" style="display:block"><br>'+
-            '<button type="button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddMonitorFileModal(\''+uuid+'\')">Add file</button><br><br>'+
+            // '<button type="button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddMonitorFileModal(\''+uuid+'\')">Add file</button><br><br>'+
             '<table width="100%" style="table-layout: fixed" class="table table-hover">'+
                 '<thead>'+
                     '<tr>'+
@@ -109,7 +112,7 @@ function ModalDeleteMonitorFile(uuid, file,path){
       '<div class="modal-content">'+
   
         '<div class="modal-header" style="word-break: break-all;">'+
-          '<h4 class="modal-title">Add new file</h4>'+
+          '<h4 class="modal-title">Delete file</h4>'+
           '<button type="button" class="close" id="add-file-modal-cross">&times;</button>'+
         '</div>'+
   

@@ -133,7 +133,8 @@ function GetAllNodes() {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var resultElement = document.getElementById('nodes-table');
-    document.getElementById('addnids').style.display = "none";
+    document.getElementById('add-nid-bottom').style.display = "none";
+    document.getElementById('add-nid-top').style.display = "none";
 
     //    var instance = axios.create({
     //     baseURL: 'https://' + ipmaster + ':' + portmaster + '/v1/node',
@@ -149,18 +150,17 @@ function GetAllNodes() {
         })
         .then(function (response) {
             var nodes = response.data;
-            document.getElementById('addnids').style.display = "block";
+            document.getElementById('add-nid-bottom').style.display = "block";
+            document.getElementById('add-nid-top').style.display = "block";
 
             if (response.data.ack == "false") {
-                document.getElementById('addnids').style.display = "none";
+                document.getElementById('add-nid-bottom').style.display = "none";
+                document.getElementById('add-nid-top').style.display = "none";
                 resultElement.innerHTML =  '<div style="text-align:center"><h3 style="color:red;">Error retrieving nodes</h3></div>';
             }else{
                 var isEmpty = true;
                 
-                var html =  '<div class="input-group" width="100%" id="search-input-nodes">'+
-                    '<input class="form-control mx-3 searchInputNodes" type="text" placeholder="Search by name or ip..." aria-label="Search" id="search-node-details">'+
-                    '<a type="button" class="btn btn-primary" id="node-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
-                '</div><br>'+
+                var html =  
                 '<div>'+
                     '<span id="show-nodes-online" onclick="showNodes(\'online\')" class="badge bg-success align-text-bottom text-white float-right" style="cursor:pointer;" title="Show only online nodes">ON LINE</span>'+
                     '<span id="show-nodes-offline" onclick="showNodes(\'offline\')" class="badge bg-danger align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show only offline nodes">OFF LINE</span>'+
@@ -305,15 +305,22 @@ function showAllHiddenNodes(){
 
 function loadNodeBySearch(search){
     showAllHiddenNodes();
-    $('#node-table tbody').each(function(){
-        $(this).find('tr').each(function(){
-            // console.log($(this).attr("name").toLowerCase().includes(search.toLowerCase()));
-            if ($(this).attr("name").toLowerCase().includes(search.toLowerCase()) || $(this).attr("ip").toLowerCase().includes(search.toLowerCase())){
-            }else {
-                $(this).hide();
-            }
+    if (search.length == 0){
+        $('#search-node-details').css('border', '2px solid red');
+        $('#search-node-details').attr("placeholder", "Insert a valid name for search...");
+    }else{
+        $('#search-node-details').css('border', '2px solid #ced4da');
+        $('#search-node-details').attr("placeholder", "");
+        $('#node-table tbody').each(function(){
+            $(this).find('tr').each(function(){
+                // console.log($(this).attr("name").toLowerCase().includes(search.toLowerCase()));
+                if ($(this).attr("name").toLowerCase().includes(search.toLowerCase()) || $(this).attr("ip").toLowerCase().includes(search.toLowerCase())){
+                }else {
+                    $(this).hide();
+                }
+            })
         })
-    })
+    }
 }
 
 function deleteNode(node) {
@@ -335,15 +342,19 @@ function deleteNode(node) {
 }
 
 function formAddNids(){
-    var addnids = document.getElementById('addnids');
+    var addnidsbot = document.getElementById('add-nid-bottom');
+    var addnidstop = document.getElementById('add-nid-top');
     var nform = document.getElementById('nidsform');
 
     if (nform.style.display == "none") {
         nform.style.display = "block";
-        addnids.innerHTML = "Close Add NIDS";
+        addnidsbot.innerHTML = "Close Add NID";
+        addnidstop.innerHTML = "Close Add NID";
+        nform.scrollIntoView();
     } else {
         nform.style.display = "none";
-        addnids.innerHTML = "Add NIDS";
+        addnidsbot.innerHTML = "Add NID";
+        addnidstop.innerHTML = "Add NID";
     }
 }
 

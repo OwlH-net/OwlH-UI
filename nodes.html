@@ -75,6 +75,13 @@
             </div>
         </div>
 
+
+        <div class="input-group" width="100%" id="search-input-nodes">
+            <input class="form-control mx-3 searchInputNodes" type="text" placeholder="Search by name or ip..." aria-label="Search" id="search-node-details">
+            <a type="button" class="btn btn-primary mr-2" id="node-search-value"><i class="fas fa-search" style="color: white;"></i></a>
+            <a class="btn btn-primary float-right text-decoration-none text-white mr-2" id="add-nid-top" onclick="formAddNids()">Add NID</a>
+        </div><br>
+
         <!-- GROUPS OPTION
         <div class="text-decoration-none text-primary" style="width:20%; float:right;">
             <a class="nav-link" href="groups.html">Edit groups</a>            
@@ -87,7 +94,7 @@
         <!-- <small class="text-decoration-none text-white" style="width:20%; float:right;">
             <a class="btn btn-primary float-right" id="addnids" onclick="formAddNids()">Add NIDS</a>
         </small> -->
-        <a class="btn btn-primary float-right text-decoration-none text-white" id="addnids" onclick="formAddNids()">Add NIDS</a>
+        <a class="btn btn-primary float-right text-decoration-none text-white" id="add-nid-bottom" onclick="formAddNids()">Add NID</a>
         <br><br>
         <div class="container" style="display: none" id="nidsform">
             <form id="nodedetails">

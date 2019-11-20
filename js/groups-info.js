@@ -77,7 +77,7 @@ function GetGroupsDetails(){
                                     html = html + '<td></td>'+
                                 '</tr>'+
                                 '<tr>'+
-                                    '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
+                                    '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
                                     '<td>Master path:</td>';
                                     if(groups["mastersuricata"] == ""){
                                         html = html + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
@@ -129,7 +129,7 @@ function GetGroupsDetails(){
                         '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
                             '<tbody>';      
                                 html = html + '<tr>'+                           
-                                    '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
+                                    '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
                                     '<td>Master path</td>';
                                     if(groups["masterzeek"] == ""){
                                         html = html + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
@@ -427,63 +427,97 @@ function syncAllGroupElements(uuid){
 }
 
 function changePaths(guuid, type){
-    hideEditGroup(type);
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/changePaths';
-
-    var groupjson = {}
-    groupjson["uuid"] = guuid;
-    groupjson["type"] = type;
-    if(type == "suricata"){
-        groupjson["mastersuricata"] = document.getElementById('suricata-group-master-'+guuid).value;
-        groupjson["nodesuricata"] = document.getElementById('suricata-group-node-'+guuid).value;
-    }else{
-        groupjson["masterzeek"] = document.getElementById('zeek-group-master-'+guuid).value;
-        groupjson["nodezeek"] = document.getElementById('zeek-group-node-'+guuid).value;
-    }
-    var grJSON = JSON.stringify(groupjson);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: grJSON
-        })
-        .then(function (response) {           
-            if (response.data.ack == "true") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> Paths updated successfully.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-                GetGroupsDetails();
+    if(document.getElementById("suricata-group-master-"+guuid).value == "" || 
+            document.getElementById("suricata-group-node-"+guuid).value == "" ||
+            document.getElementById("zeek-group-master-"+guuid).value == "" ||
+            document.getElementById("zeek-group-node-"+guuid).value == ""
+    ){
+        if(type == "suricata"){
+            if(document.getElementById("suricata-group-master-"+guuid).value == ""){
+                $('#suricata-group-master-'+guuid).attr("placeholder", "Please, insert a valid master path");  
+                $('#suricata-group-master-'+guuid).css('border', '2px solid red');
             }else{
+                $('#suricata-group-master-'+guuid).css('border', '2px solid #ced4da');
+            }
+            if(document.getElementById("suricata-group-node-"+guuid).value == ""){
+                $('#suricata-group-node-'+guuid).attr("placeholder", "Please, insert a valid node path");  
+                $('#suricata-group-node-'+guuid).css('border', '2px solid red');
+            }else{
+                $('#suricata-group-node-'+guuid).css('border', '2px solid #ced4da');
+            }
+        }
+        if(type == "zeek"){
+            if(document.getElementById("zeek-group-master-"+guuid).value == ""){
+                $('#zeek-group-master-'+guuid).attr("placeholder", "Please, insert a valid master path");  
+                $('#zeek-group-master-'+guuid).css('border', '2px solid red');
+            }else{
+                $('#zeek-group-master-'+guuid).css('border', '2px solid #ced4da');
+            }
+            if(document.getElementById("zeek-group-node-"+guuid).value == ""){
+                $('#zeek-group-node-'+guuid).attr("placeholder", "Please, insert a valid node path");  
+                $('#zeek-group-node-'+guuid).css('border', '2px solid red');
+            }else{
+                $('#zeek-group-node-'+guuid).css('border', '2px solid #ced4da');
+            }
+        }
+    }else{        
+        hideEditGroup(type);
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/changePaths';
+        var groupjson = {}
+        groupjson["uuid"] = guuid;
+        groupjson["type"] = type;
+        if(type == "suricata"){
+            groupjson["mastersuricata"] = document.getElementById('suricata-group-master-'+guuid).value;
+            groupjson["nodesuricata"] = document.getElementById('suricata-group-node-'+guuid).value;
+        }else{
+            groupjson["masterzeek"] = document.getElementById('zeek-group-master-'+guuid).value;
+            groupjson["nodezeek"] = document.getElementById('zeek-group-node-'+guuid).value;
+        }
+        var grJSON = JSON.stringify(groupjson);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: grJSON
+            })
+            .then(function (response) {           
+                if (response.data.ack == "true") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Paths updated successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    GetGroupsDetails();
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Change paths: '+response.data.error+''+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }            
+            })
+            .catch(function (error) {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Change paths: '+response.data.error+''+
+                    '<strong>Error!</strong> Change paths: '+error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }            
-        })
-        .catch(function (error) {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Change paths: '+error+''+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }); 
+            }); 
+    }
 }
 
 function SyncPathGroup(guuid, type){
@@ -564,7 +598,13 @@ function SyncPathGroup(guuid, type){
     }
 }
 
-function showEditGroup(type){
+function showEditGroup(type, guuid){
+    if(type=="suricata" || type=="zeek"){
+        $('#'+type+'-group-master-'+guuid).css('border', '2px solid #ced4da');
+        $('#'+type+'-group-node-'+guuid).css('border', '2px solid #ced4da');
+        $('#'+type+'-group-master-'+guuid).attr('placeholder', '');
+        $('#'+type+'-group-node-'+guuid).attr('placeholder', '');
+    }
     $('#'+type+'-edit-row').show();
 }
 
@@ -735,38 +775,62 @@ function SyncClusterFile(uuid, type){
 }
 
 function changeClusterValue(guuid, uuid){    
-    hideEditGroup(uuid);
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/changeClusterValue';
-
-    var groupjson = {}
-    groupjson["uuid"] = uuid;
-    groupjson["guuid"] = guuid;
-    groupjson["path"] = document.getElementById('new-cluster-value-'+uuid).value;
-    var grJSON = JSON.stringify(groupjson);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: grJSON
-    })
-        .then(function (response) {
-            if(response.data.ack == "false"){
+    if(document.getElementById("new-cluster-value-"+uuid).value == ""){
+        $('#new-cluster-value-'+uuid).attr("placeholder", "Please, insert a valid cluster path");  
+        $('#new-cluster-value-'+uuid).css('border', '2px solid red');        
+    }else{
+        hideEditGroup(uuid);
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/changeClusterValue';
+    
+        var groupjson = {}
+        groupjson["uuid"] = uuid;
+        groupjson["guuid"] = guuid;
+        groupjson["path"] = document.getElementById('new-cluster-value-'+uuid).value;
+        var grJSON = JSON.stringify(groupjson);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: grJSON
+        })
+            .then(function (response) {
+                if(response.data.ack == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Cluster file synchronized successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    GetGroupsDetails();
+                }
+            })
+            .catch(function error() {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<strong>Error!</strong> '+error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }
-            GetGroupsDetails();
-        })
-        .catch(function error() {
-        });
+            });
+    }
 }
 
 function modalDeleteCluster(uuid, name){

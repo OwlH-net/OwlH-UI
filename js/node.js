@@ -74,14 +74,20 @@ function modifyNodeInformation() {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
-    var nodejson = {}
-    nodejson["name"] = name;
-    nodejson["port"] = port;
-    nodejson["ip"] = ip;
-    nodejson["id"] = nid;
     
-    var newValues = JSON.stringify(nodejson);
-    axios({
+    if(name=="" || ip=="" || port==""){
+      if(name == ""){$('#cfgnodename').attr("placeholder", "Please, insert a valid name"); $('#cfgnodename').css('border', '2px solid red'); }else{$('#cfgnodename').css('border', '2px solid #ced4da');}
+      if(ip == ""){$('#cfgnodeip').attr("placeholder", "Please, insert a valid ip"); $('#cfgnodeip').css('border', '2px solid red'); }else{$('#cfgnodeip').css('border', '2px solid #ced4da');}
+      if(port == ""){$('#cfgnodeport').attr("placeholder", "Please, insert a valid port"); $('#cfgnodeport').css('border', '2px solid red'); }else{$('#cfgnodeport').css('border', '2px solid #ced4da');}
+    }else{
+      var nodejson = {}
+      nodejson["name"] = name;
+      nodejson["port"] = port;
+      nodejson["ip"] = ip;
+      nodejson["id"] = nid;
+      var newValues = JSON.stringify(nodejson);
+
+      axios({
         method: 'put',
         url: nodeurl,
         timeout: 30000,
@@ -103,6 +109,7 @@ function modifyNodeInformation() {
         });   
         document.getElementById('divconfigform').style.display = "none";
         return false;
+    }
 }
 
 function cancelNodeModification(){

@@ -1572,7 +1572,7 @@ function AddPluginService(uuid, name, type){
         newSuriData["type"] = type;
         var dataMap = JSON.stringify(newSuriData);
         axios({
-            method: 'put',
+            method: 'post',
             url: nodeurl,
             timeout: 30000,
             data: dataMap

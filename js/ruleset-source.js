@@ -72,8 +72,6 @@ function addRulesetSource() {
         if (sourceType != "custom"){nodejson["isDownloaded"] = "false";} //only for source and threat, not for custom ruleset source
         var nodeJSON = JSON.stringify(nodejson);
 
-        console.log(nodejson);
-
         axios({
             method: 'post',
             url: sourceURL,

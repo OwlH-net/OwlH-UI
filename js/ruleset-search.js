@@ -42,7 +42,6 @@ function getRulesetsBySearch(){
         data: searchJSON
     })
     .then(function (response) {
-        console.log(response.data);
         if (response.data.ack == "false") {
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
@@ -65,7 +64,8 @@ function getRulesetsBySearch(){
                 '<tr><td colspan="6">'+
                     '<table class="table table-hover" style="table-layout: fixed;  word-break: break-all">' +
                     '<thead>' +
-                        '<th width="10%">Status</th>' +
+                        '<th width="7%">Status</th>' +
+                        '<th width="13%">Type</th>' +
                         '<th width="50%">File</th>' +
                         '<th width="20%">Ruleset Name</th>' +
                         '<th width="10%">Actions</th>' +
@@ -79,8 +79,9 @@ function getRulesetsBySearch(){
                             }else{
                                 html = html + '<i class="fas fa-times-circle" style="color:red;"></i>';
                             }
-                        html = html + '</td>'+
-                        '<td width="50%">'+rulesets[element]["file"]+'</td>'+
+                        html = html + '</td>';
+                        if(rulesets[element]["sourceType"] != ""){html = html + '<td width="50%">'+rulesets[element]["sourceType"]+'</td>';}else{html = html + '<td width="50%">local</td>';}                        
+                        html = html + '<td width="50%">'+rulesets[element]["file"]+'</td>'+
                         '<td width="20%">'+rulesets[element]["name"]+'</td>'+
                         '<td width="10%"><i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+response.data[rule]["sid"]+'\', \''+rulesets[element]["uuid"]+'\')"></i></td>' +
                     '</tr>';

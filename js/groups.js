@@ -605,7 +605,7 @@ function deleteGroup(groupID){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/DeleteGroup/' + groupID;
     axios({
-        method: 'put',
+        method: 'delete',
         url: nodeurl,
         timeout: 30000,
     })
@@ -643,7 +643,7 @@ function deleteNodeForGroup(uuid){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/deleteNodeGroup/' + uuid;
     axios({
-        method: 'put',
+        method: 'delete',
         url: nodeurl,
         timeout: 30000,
     })

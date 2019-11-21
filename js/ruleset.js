@@ -210,8 +210,6 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addRulesToCustom';
 
-    console.log(fileuuid+"  --  "+sourcefileuuid+"  --  "+ruleset+"  --  "+rules);
-
     var jsondata = {}
     jsondata["orig"] = fileuuid;
     jsondata["dest"] = sourcefileuuid;

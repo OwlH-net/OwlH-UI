@@ -109,7 +109,7 @@ function generateAllLinesHTMLOutput (response){
 //     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/createNewFile';
 //     var nodeJSON = JSON.stringify(arrayLinesSelected);
 //     axios({
-//         method: 'put',
+//         method: 'post',
 //         url: nodeurl,
 //         timeout: 30000,
 //         data: nodeJSON

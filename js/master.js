@@ -1091,30 +1091,30 @@ function AddSTAPModal(type){
 
         '<div class="modal-body">'+
             '<p>Insert Description:</p>'+
-                '<input type="text" class="form-control" id="soft-tap-name"><br>'+
+                '<input type="text" class="form-control" id="soft-tap-name-master"><br>'+
             '<p>Insert port:</p>'+
-                '<input type="text" class="form-control" id="soft-tap-port" value="50010"><br>'+
+                '<input type="text" class="form-control" id="soft-tap-port-master" value="50010"><br>'+
             '<p>Insert certificate:</p>'+
-                '<input type="text" class="form-control" id="soft-tap-cert" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
+                '<input type="text" class="form-control" id="soft-tap-cert-master" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
             // if (type == "socket-network"){                  
             // }else 
             if (type == "socket-pcap"){
                 html = html + '<p>Insert PCAP path:</p>'+
-                    '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps"><br>'+
+                    '<input type="text" class="form-control" id="soft-tap-pcap-path-master" value="/usr/local/owlh/pcaps"><br>'+
                 '<p>Insert PCAP prefix:</p>'+
-                    '<input type="text" class="form-control" id="soft-tap-pcap-prefix" value="remote-"><br>'+
+                    '<input type="text" class="form-control" id="soft-tap-pcap-prefix-master" value="remote-"><br>'+
                 '<p>Insert BPF:</p>'+
-                    '<input type="text" class="form-control" id="soft-tap-bpf"><br>';
+                    '<input type="text" class="form-control" id="soft-tap-bpf-master"><br>';
             }else if (type == "network-socket"){
                 html = html + '<p>Select collector:</p>'+
-                    '<input type="text" class="form-control" id="soft-tap-collector" value="192.168.1.100"><br>'+
+                    '<input type="text" class="form-control" id="soft-tap-collector-master" value="192.168.1.100"><br>'+
                 '<p>Insert BPF:</p>'+
-                    '<input type="text" class="form-control" id="soft-tap-bpf-socket"><br>';
+                    '<input type="text" class="form-control" id="soft-tap-bpf-socket-master"><br>';
             }
             if (type != "socket-pcap"){
                 html = html + '<p>Select an interface:</p>'+
                 '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                    '<tbody id="socket-network-modal-table">' +
+                    '<tbody id="socket-network-modal-table-master">' +
                     '</tbody>'+
                 '</table>';   
                 axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface')
@@ -1136,7 +1136,7 @@ function AddSTAPModal(type){
                             inner = inner + '</td>'+
                         '</tr>';
                     }
-                    document.getElementById('socket-network-modal-table').innerHTML = inner;
+                    document.getElementById('socket-network-modal-table-master').innerHTML = inner;
                 });   
             }
         html = html + '</div>'+
@@ -1157,69 +1157,69 @@ function AddSTAPModal(type){
 }
 
 function saveSoftwareTAP(type){ 
-    console.log(type); 
-    if(type == "socket-network" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "") ||  
-        type == "socket-pcap" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == ""))
+    $('#soft-tap-name-master').css('border', '2px solid red');
+    $('#soft-tap-name-master').attr("placeholder", "Please, insert a valid name"); 
+    if(type == "socket-network" && (document.getElementById('soft-tap-name-master').value == "" || document.getElementById('soft-tap-port-master').value == "" || document.getElementById('soft-tap-cert-master').value == "") ||  
+        type == "socket-pcap" && (document.getElementById('soft-tap-name-master').value == "" || document.getElementById('soft-tap-port-master').value == "" || document.getElementById('soft-tap-cert-master').value == "" || document.getElementById('soft-tap-pcap-path-master').value == "" || document.getElementById('soft-tap-pcap-prefix-master').value == "" || document.getElementById('soft-tap-bpf-master').value == ""))
     {
         if(type == "socket-network"){
-            if (document.getElementById('soft-tap-name').value == ""){
-                $('#soft-tap-name').css('border', '2px solid red');
-                $('#soft-tap-name').attr("placeholder", "Please, insert a valid name"); 
+            if (document.getElementById('soft-tap-name-master').value == ""){
+                $('#soft-tap-name-master').css('border', '2px solid red');
+                $('#soft-tap-name-master').attr("placeholder", "Please, insert a valid name"); 
             }else{
-                $('#soft-tap-name').css('border', '2px solid #ced4da');
+                $('#soft-tap-name-master').css('border', '2px solid #ced4da');
             }
-            if (document.getElementById('soft-tap-port').value == ""){
-                $('#soft-tap-port').css('border', '2px solid red');
-                $('#soft-tap-port').attr("placeholder", "Please, insert a valid port"); 
+            if (document.getElementById('soft-tap-port-master').value == ""){
+                $('#soft-tap-port-master').css('border', '2px solid red');
+                $('#soft-tap-port-master').attr("placeholder", "Please, insert a valid port"); 
             }else{
-                $('#soft-tap-port').css('border', '2px solid #ced4da');
+                $('#soft-tap-port-master').css('border', '2px solid #ced4da');
             }
-            if (document.getElementById('soft-tap-cert').value == ""){
-                $('#soft-tap-cert').css('border', '2px solid red');
-                $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate"); 
+            if (document.getElementById('soft-tap-cert-master').value == ""){
+                $('#soft-tap-cert-master').css('border', '2px solid red');
+                $('#soft-tap-cert-master').attr("placeholder", "Please, insert a valid certificate"); 
             }else{
-                $('#soft-tap-cert').css('border', '2px solid #ced4da');
+                $('#soft-tap-cert-master').css('border', '2px solid #ced4da');
             }
         }else if(type == "socket-pcap"){
-            if (document.getElementById('soft-tap-port').value == ""){
-                $('#soft-tap-port').css('border', '2px solid red');
-                $('#soft-tap-port').attr("placeholder", "Please, insert a valid port"); 
+            if (document.getElementById('soft-tap-port-master').value == ""){
+                $('#soft-tap-port-master').css('border', '2px solid red');
+                $('#soft-tap-port-master').attr("placeholder", "Please, insert a valid port"); 
             }else{
-                $('#soft-tap-port').css('border', '2px solid #ced4da');
+                $('#soft-tap-port-master').css('border', '2px solid #ced4da');
             }
-            if (document.getElementById('soft-tap-name').value == ""){   
-                $('#soft-tap-name').css('border', '2px solid red');
-                $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");              
+            if (document.getElementById('soft-tap-name-master').value == ""){   
+                $('#soft-tap-name-master').css('border', '2px solid red');
+                $('#soft-tap-name-master').attr("placeholder", "Please, insert a valid name");              
             }else{
-                $('#soft-tap-name').css('border', '2px solid #ced4da');
+                $('#soft-tap-name-master').css('border', '2px solid #ced4da');
             }
-            if (document.getElementById('soft-tap-cert').value == ""){
-                $('#soft-tap-cert').css('border', '2px solid red');
-                $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");   
+            if (document.getElementById('soft-tap-cert-master').value == ""){
+                $('#soft-tap-cert-master').css('border', '2px solid red');
+                $('#soft-tap-cert-master').attr("placeholder", "Please, insert a valid certificate");   
             }else{
-                $('#soft-tap-cert').css('border', '2px solid #ced4da');
+                $('#soft-tap-cert-master').css('border', '2px solid #ced4da');
             }
-            if (document.getElementById('soft-tap-pcap-path').value == ""){
-                $('#soft-tap-pcap-path').css('border', '2px solid red');
-                $('#soft-tap-pcap-path').attr("placeholder", "Please, insert a valid pcap path");   
+            if (document.getElementById('soft-tap-pcap-path-master').value == ""){
+                $('#soft-tap-pcap-path-master').css('border', '2px solid red');
+                $('#soft-tap-pcap-path-master').attr("placeholder", "Please, insert a valid pcap path");   
             }else{
-                $('#soft-tap-pcap-path').css('border', '2px solid #ced4da');
+                $('#soft-tap-pcap-path-master').css('border', '2px solid #ced4da');
             }
-            if (document.getElementById('soft-tap-pcap-prefix').value == ""){
-                $('#soft-tap-pcap-prefix').css('border', '2px solid red');
-                $('#soft-tap-pcap-prefix').attr("placeholder", "Please, insert a valid pcap prefix");            
+            if (document.getElementById('soft-tap-pcap-prefix-master').value == ""){
+                $('#soft-tap-pcap-prefix-master').css('border', '2px solid red');
+                $('#soft-tap-pcap-prefix-master').attr("placeholder", "Please, insert a valid pcap prefix");            
             }else{
-                $('#soft-tap-pcap-prefix').css('border', '2px solid #ced4da');
+                $('#soft-tap-pcap-prefix-master').css('border', '2px solid #ced4da');
             }
-            if (document.getElementById('soft-tap-bpf').value == ""){
-                $('#soft-tap-bpf').css('border', '2px solid red');
-                $('#soft-tap-bpf').attr("placeholder", "Please, insert a valid bpf");   
+            if (document.getElementById('soft-tap-bpf-master').value == ""){
+                $('#soft-tap-bpf-master').css('border', '2px solid red');
+                $('#soft-tap-bpf-master').attr("placeholder", "Please, insert a valid bpf");   
             }else{
-                $('#soft-tap-bpf').css('border', '2px solid #ced4da');
+                $('#soft-tap-bpf-master').css('border', '2px solid #ced4da');
             }
         }
-    }else{    
-        console.log(document.getElementById('soft-tap-name').value);
+    }else{           
         $('#modal-master').modal("hide");
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
@@ -1233,12 +1233,12 @@ function saveSoftwareTAP(type){
         });
 
         var jsonSave = {}
-        jsonSave["name"] = document.getElementById('soft-tap-name').value;
+        jsonSave["name"] = document.getElementById('soft-tap-name-master').value;
         jsonSave["type"] = type;
-        jsonSave["cert"] = document.getElementById('soft-tap-cert').value;
-        jsonSave["port"] = document.getElementById('soft-tap-port').value;
+        jsonSave["cert"] = document.getElementById('soft-tap-cert-master').value;
+        jsonSave["port"] = document.getElementById('soft-tap-port-master').value;
         jsonSave["interface"] = valueSelected;
-        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf').value;}
+        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path-master').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix-master').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-master').value;}
         var dataJSON = JSON.stringify(jsonSave);
         axios({
             method: 'put',
@@ -1251,7 +1251,7 @@ function saveSoftwareTAP(type){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> '+type+' service added successfully!'+
+                    '<strong>Success!</strong> '+type+' service added successfully.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -1282,7 +1282,6 @@ function saveSoftwareTAP(type){
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
     }
-    $('#modal-master').modal("hide");
 }
 
 function DeployStapServiceMaster(uuid, collector,port,interface, type){

@@ -4,14 +4,14 @@ function addNode() {
     var nport = document.getElementById('nodeport').value;
     if(nname=="" || nip=="" || nport==""){
 		$('html,body').scrollTop(0);
-        var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> Please, insert a name, port and IP for add a new node.'+
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                '<span aria-hidden="true">&times;</span>'+
-            '</button>'+
-        '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+		var alert = document.getElementById('floating-alert');
+		alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+			'<strong>Error!</strong> Please, insert a name, port and IP for add a new node.'+
+			'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+				'<span aria-hidden="true">&times;</span>'+
+			'</button>'+
+		'</div>';
+      setTimeout(function() {$(".alert").alert('close')}, 5000);
     }else{
 		formAddNids();//close add nids form
 		var nodejson = {}
@@ -28,15 +28,41 @@ function addNode() {
 			timeout: 30000,
 			data: nodeJSON
 		})
-			.then(function (response) {
-				GetAllNodes();
-				return true;
-			})
-			.catch(function (error) {
-				return false;
-			});   
-		GetAllNodes();    
-		return false;
+		.then(function (response) {
+			if(response.data.ack == "false"){
+				$('html,body').scrollTop(0);
+				var alert = document.getElementById('floating-alert');
+				alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+					'<strong>Error adding node!</strong> '+response.data.error+'.'+
+					'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+						'<span aria-hidden="true">&times;</span>'+
+					'</button>'+
+				'</div>';
+				setTimeout(function() {$(".alert").alert('close')}, 5000);
+			}else{
+				$('html,body').scrollTop(0);
+				var alert = document.getElementById('floating-alert');
+				alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+					'<strong>Success!</strong> Node added successfully.'+
+					'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+						'<span aria-hidden="true">&times;</span>'+
+					'</button>'+
+				'</div>';
+				setTimeout(function() {$(".alert").alert('close')}, 5000);
+			}
+			GetAllNodes();
+		})
+		.catch(function (error) {
+			$('html,body').scrollTop(0);
+			var alert = document.getElementById('floating-alert');
+			alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+				'<strong>Error adding node!</strong> '+error+'.'+
+				'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+					'<span aria-hidden="true">&times;</span>'+
+				'</button>'+
+			'</div>';
+			setTimeout(function() {$(".alert").alert('close')}, 5000);
+		});   
     }
 }
 
@@ -48,14 +74,20 @@ function modifyNodeInformation() {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
-    var nodejson = {}
-    nodejson["name"] = name;
-    nodejson["port"] = port;
-    nodejson["ip"] = ip;
-    nodejson["id"] = nid;
     
-    var newValues = JSON.stringify(nodejson);
-    axios({
+    if(name=="" || ip=="" || port==""){
+      if(name == ""){$('#cfgnodename').attr("placeholder", "Please, insert a valid name"); $('#cfgnodename').css('border', '2px solid red'); }else{$('#cfgnodename').css('border', '2px solid #ced4da');}
+      if(ip == ""){$('#cfgnodeip').attr("placeholder", "Please, insert a valid ip"); $('#cfgnodeip').css('border', '2px solid red'); }else{$('#cfgnodeip').css('border', '2px solid #ced4da');}
+      if(port == ""){$('#cfgnodeport').attr("placeholder", "Please, insert a valid port"); $('#cfgnodeport').css('border', '2px solid red'); }else{$('#cfgnodeport').css('border', '2px solid #ced4da');}
+    }else{
+      var nodejson = {}
+      nodejson["name"] = name;
+      nodejson["port"] = port;
+      nodejson["ip"] = ip;
+      nodejson["id"] = nid;
+      var newValues = JSON.stringify(nodejson);
+
+      axios({
         method: 'put',
         url: nodeurl,
         timeout: 30000,
@@ -77,6 +109,7 @@ function modifyNodeInformation() {
         });   
         document.getElementById('divconfigform').style.display = "none";
         return false;
+    }
 }
 
 function cancelNodeModification(){
@@ -197,28 +230,28 @@ function generateAllRulesModal(response, nid) {
     var rules = response.data;
     var isEmpty = true;
     var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                '<thead>                                                      ' +
-                '<tr>                                                         ' +
-                '<th width="30%">Name</th>                                    ' +
-                '<th>Description</th>                                         ' +
-                '<th width="15%">Options</th>                                 ' +
-                '</tr>                                                        ' +
-                '</thead>                                                     ' +
-                '<tbody >                                                     ' 
+                	'<thead>' +
+                		'<tr>' +
+							'<th width="30%">Name</th>' +
+							'<th>Description</th>' +
+							'<th width="15%">Options</th>' +
+                		'</tr>' +
+                	'</thead>' +
+                	'<tbody>';
     for (rule in rules) {
         isEmpty = false;
-        html = html + '<tr><td style="word-wrap: break-word;" width="30%">                                       ' +
-        rules[rule]["name"]                                                     +
-        '</td><td style="word-wrap: break-word;">                                                            ' +
-        rules[rule]["desc"]                                                     +
-        '</td><td style="word-wrap: break-word;" width="15%">                                                ' +
-        '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button>        ' +
-        '</td></tr>                                                           '
+        html = html + '<tr><td style="word-wrap: break-word;" width="30%"> ' +
+        rules[rule]["name"] +
+        '</td><td style="word-wrap: break-word;"> ' +
+        rules[rule]["desc"] +
+        '</td><td style="word-wrap: break-word;" width="15%"> ' +
+        	'<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button> ' +
+        '</td></tr> ';
     }
     html = html + '</tbody></table>';
     
     if (isEmpty){
-        return '<p>No rules available...</p>';;
+        return '<p>No rules available...</p>';
     }else{
         return html;
     }

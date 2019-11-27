@@ -23,7 +23,7 @@ function loadPlugins(){
         '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             //suricata
             '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+           
-                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> | &nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp <i class="fas fa-terminal" style="color:grey; cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')"></i>'+
+                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp|&nbsp <span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')">To expert</span>'+
                 '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
 
                 '</span>' +
@@ -56,9 +56,9 @@ function loadPlugins(){
                 '<br><br>'+
             // //zeek
             '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
-                '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> |&nbsp '+
-                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp<b>|</b> &nbsp'+
-                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalon</span> &nbsp <span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span>'+
+                '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
+                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp| &nbsp'+
+                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalone</span> &nbsp <span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span>'+
             '</div>'+
                 //Zeek standalone
             '<div id="standalone-zeek-table" style="display:block;">'+
@@ -76,7 +76,7 @@ function loadPlugins(){
             '</div>'+
             //zeek cluster
             '<div id="cluster-zeek-table" class="cluster" style="display:block;"><br>'+
-                '<button id="sync-zeek-cluster" class="btn btn-success float-right" style="font-size: 15px;" onclick="ModalSyncCluster(\''+uuid+'\')">Sync cluster</button>'+
+                '<button id="sync-zeek-cluster" class="btn btn-primary float-right" style="font-size: 15px;" onclick="ModalSyncCluster(\''+uuid+'\')">Sync cluster</button>'+
                 '<div>'+
                     '<div><b style="display:inline;">Manager</b></div>'+
                     '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
@@ -100,7 +100,7 @@ function loadPlugins(){
                     '</table>'+
                 '</div><br>'+
                 '<div>'+
-                    '<div><b style="display:inline;">Proxy</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'proxy\')">Add worker</button></div>'+
+                    '<div><b style="display:inline;">Proxy</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'proxy\')">Add proxy</button></div>'+
                     '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
                         '<thead>'+
                             '<th>Name</th>'+
@@ -112,7 +112,7 @@ function loadPlugins(){
                     '</table>'+
                 '</div><br>'+
                 '<div>'+
-                    '<div><b style="display:inline;">Worker</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'worker\')">Add proxy</button></div>'+
+                    '<div><b style="display:inline;">Worker</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'worker\')">Add worker</button></div>'+
                     '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
                         '<thead>'+
                             '<th>Name</th>'+
@@ -156,8 +156,8 @@ function loadPlugins(){
                             '</td>'+
                             '<td>'+
                                 '<div class="col">'+
-                                    '<button type="button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="addNewWazuhPath(\''+uuid+'\')">Save</button> &nbsp'+
-                                    '<button type="button" class="btn btn-danger float-right" style="font-size: 15px;" id="wazuh-close-button" onclick="hideInputAreaValue(\'wazuh-insert\')">Cancel</button>'+ //onoclick="hideInputAreaValue(\'wazuh-insert\')"
+                                    '<button type="button" class="btn btn-primary float-right mr-1" style="font-size: 15px;" onclick="addNewWazuhPath(\''+uuid+'\')">Save</button> &nbsp'+
+                                    '<button type="button" class="btn btn-danger float-right mr-1" style="font-size: 15px;" id="wazuh-close-button" onclick="hideInputAreaValue(\'wazuh-insert\')">Cancel</button>'+ //onoclick="hideInputAreaValue(\'wazuh-insert\')"
                                 '</div>'+
                             '</td>'+
                         '</tr>'+
@@ -167,7 +167,7 @@ function loadPlugins(){
         '</span>'+
     '</div>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Software TAP</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
+        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Traffic Management</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
         '<span id="plugins-form-'+uuid+'" style="display:block"><br>'+
             //socket->Network
             '<p> <i class="fas fa-plug fa-lg"></i> Traffic from socket to network interface '+
@@ -235,7 +235,7 @@ function loadPlugins(){
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
                     '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
                     '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
-                    '<td width="25%">Edit: <i class="fas fa-info-circle" style="color: grey; cursor: pointer;" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')"></i></td>'+
+                    '<td width="25%"><button class="btn btn-primary float-right" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')">Edit Analyzer</button></td>'+
                 '</tr>'+
                 '<tr>'+
                     '<table class="table table-hover" width="100%" style="table-layout: fixed">'+
@@ -251,22 +251,22 @@ function loadPlugins(){
 
             '</table>'+
         '</span>'+
-    '</div>'+
-    //knownports
-    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'knownports\',\''+uuid+'\')"><b>Knownports</b> <i class="fas fa-sort-down" id="knownports-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="knownports-form-'+uuid+'" style="display:block"><br>'+
-            '<table width="100%" tyle="table-layout: fixed">'+
-                '<tr>'+
-                    '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
-                    '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i></td>'+
-                    '<td width="25%">Mode: <i style="cursor: default; color: grey; cursor: pointer;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
-                    '<td width="25%">Ports: <i style="cursor: default; color: grey; cursor: pointer;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
-                '</tr>'+
-            '</table>'+
-        '</span>'+
     '</div>';
+    // //knownports
+    // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
+    //     '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'knownports\',\''+uuid+'\')"><b>Knownports</b> <i class="fas fa-sort-down" id="knownports-form-icon-'+uuid+'"></i></h6>'+
+    //     '<span id="knownports-form-'+uuid+'" style="display:block"><br>'+
+    //         '<table width="100%" tyle="table-layout: fixed">'+
+    //             '<tr>'+
+    //                 '<td width="25%"><img src="img/favicon.ico" height="25"> Knownports</th>'+
+    //                 '<td width="25%">Status: <i id="ports-status-'+uuid+'"">[N/A]</i></td>'+
+    //                 '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="ports-status-btn-'+uuid+'" onclick="ChangeStatus(\''+uuid+'\')"></i></td>'+
+    //                 '<td width="25%">Mode: <i style="cursor: default; color: grey; cursor: pointer;" title="port mode" id="ports-mode-'+uuid+'" onclick="ChangeMode(\''+uuid+'\')">[mode error]</i></td>'+
+    //                 '<td width="25%">Ports: <i style="cursor: default; color: grey; cursor: pointer;" title="Show ports" id="show-ports-plugin" onclick="showPorts(\''+uuid+'\')">[Ports]</i></td>'+
+    //             '</tr>'+
+    //         '</table>'+
+    //     '</span>'+
+    // '</div>';
     // //traffic flow
     // '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
     //     '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'flow\',\''+uuid+'\')"><b>Traffic flow</b> <i class="fas fa-sort-down" id="flow-form-icon-'+uuid+'"></i></h6>'+
@@ -438,8 +438,8 @@ function hideInputAreaValue(key){
 
 function addNewWazuhPath(uuid){      
     if (document.getElementById("wazuh-add-line").value == ""){
-        $("#wazuh-add-line").prop('required',true);
-        $("#wazuh-add-line").prop('placeholder',"Please, insert a valid path");
+        $('#wazuh-add-line').css('border', '2px solid red');
+        $('#wazuh-add-line').attr("placeholder", "Please, insert a valid path");  
     }else{
         $("#wazuh-insert").hide();
         var html = ""
@@ -628,23 +628,23 @@ function GetMainconfData(uuid){
     .then(function (response) {
         for (service in response.data){
             if(service == "suricata"){
+                document.getElementById('managed-expert-span').innerHTML = 'To expert';
+                document.getElementById('table-suricata').style.display = 'block';
+                    document.getElementById('table-suricata-command').style.display = 'none';
                 if(response.data[service]["status"] == "disabled"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
                     document.getElementById('suricata-current-status').innerHTML = 'Disabled';
                     document.getElementById('main-suricata-status-btn').className = 'fas fa-play-circle';
-                    document.getElementById('table-suricata').style.display = 'block';
-                    document.getElementById('table-suricata-command').style.display = 'none';
                 }else if(response.data[service]["status"] == "enabled"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
                     document.getElementById('main-suricata-status-btn').className = 'fas fa-stop-circle';
                     document.getElementById('suricata-current-status').innerHTML = 'Enabled';
-                    document.getElementById('table-suricata').style.display = 'block';
-                    document.getElementById('table-suricata-command').style.display = 'none';
                 }else if(response.data[service]["status"] == "expert"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-warning align-text-bottom text-white';
                     document.getElementById('table-suricata').style.display = 'none';
                     document.getElementById('table-suricata-command').style.display = 'block';
                     document.getElementById('suricata-current-status').innerHTML = 'Expert';
+                    document.getElementById('managed-expert-span').innerHTML = 'To managed';
                     document.getElementById('main-suricata-status-btn').style.display = 'none';
                 }
             }else if(service == "zeek"){
@@ -697,10 +697,10 @@ function ModalAddClusterValue(uuid, type){
   
         '<div class="modal-body">'+
           '<p>Insert the host:</p>'+
-          '<input type="text" class="form-control" id="new-cluster-host" value="" required><br>';
+          '<input type="text" class="form-control" id="new-cluster-host" value=""><br>';
           if (type == "worker"){
             html = html + '<p>Insert the interface:</p>'+
-              '<input type="text" class="form-control" id="new-cluster-interface" value="" required>';
+              '<input type="text" class="form-control" id="new-cluster-interface" value="">';
           }else{
             html = html + '<div id="new-cluster-interface"></div>';
           }
@@ -801,12 +801,26 @@ function SyncCluster(uuid){
 }
 
 function AddClusterValue(uuid, type, host, interface){
-    if (host == "" || (type == "worker" && interface == "")){
-        document.getElementById('new-cluster-host').placeholder = "Please, insert a valid host";
-        document.getElementById('new-cluster-host').required = "true";
-        if (type == "worker"){
-            document.getElementById('new-cluster-interface').placeholder = "Please, insert a valid interface";
-            document.getElementById('new-cluster-interface').required = "true";
+    if (host == "" ||  interface == ""){
+        if ((type == "proxy")&&(host == "")){
+            $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");  
+            $('#new-cluster-host').css('border', '2px solid red');
+        }else{
+            $('#new-cluster-host').css('border', '2px solid #ced4da');
+        }
+        if ((type == "worker")&&(host == "" || interface == "")){
+            if(host == ""){
+                $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");  
+                $('#new-cluster-host').css('border', '2px solid red');
+            }else{
+                $('#new-cluster-host').css('border', '2px solid #ced4da');
+            }
+            if(interface == ""){
+                $('#new-cluster-interface').attr("placeholder", "Please, insert a valid interface");  
+                $('#new-cluster-interface').css('border', '2px solid red');
+            }else{
+                $('#new-cluster-interface').css('border', '2px solid #ced4da');
+            }
         }
     }else{
         $('#modal-window').modal("hide");
@@ -949,10 +963,10 @@ function ModalEditClusterValue(uuid, type, cluster){
 
         '<div class="modal-body">'+
             '<p>Insert the host:</p>'+
-            '<input type="text" class="form-control" id="edit-cluster-host" value="" required><br>';
+            '<input type="text" class="form-control" id="edit-cluster-host" value=""><br>';
             if (type.includes("worker")){
             html = html + '<p>Insert the interface:</p>'+
-                '<input type="text" class="form-control" id="edit-cluster-interface" value="" required>';
+                '<input type="text" class="form-control" id="edit-cluster-interface" value="">';
             }else{
             html = html + '<div id="edit-cluster-interface"></div>';
             }
@@ -974,50 +988,74 @@ function ModalEditClusterValue(uuid, type, cluster){
 }
 
 function EditClusterValue(uuid, type, host, interface, cluster){
-    $('#modal-window').modal("hide");
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/zeek/editClusterValue';
-
-    var jsonCluster = {}
-    jsonCluster["uuid"] = uuid;
-    jsonCluster["cluster"] = cluster;
-    jsonCluster["type"] = type;
-    jsonCluster["host"] = host;
-    jsonCluster["interface"] = interface;
-    var dataJSON = JSON.stringify(jsonCluster);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        if (response.data.ack == "false") {
+    if (host == "" ||  interface == ""){
+        $('#edit-cluster-host').css('border', '2px solid red');
+        if ((type.includes("proxy"))&&(host == "")){
+            $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");  
+            $('#edit-cluster-host').css('border', '2px solid red');
+        }else{
+            $('#edit-cluster-host').css('border', '2px solid #ced4da');
+        }
+        if ((type.includes("worker"))&&(host == "" || interface == "")){
+            if(host == ""){
+                $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");  
+                $('#edit-cluster-host').css('border', '2px solid red');
+            }else{
+                $('#edit-cluster-host').css('border', '2px solid #ced4da');
+            }
+            if(interface == ""){
+                $('#edit-cluster-interface').attr("placeholder", "Please, insert a valid interface");  
+                $('#edit-cluster-interface').css('border', '2px solid red');
+            }else{
+                $('#edit-cluster-interface').css('border', '2px solid #ced4da');
+            }
+        }
+    }else{
+        $('#modal-window').modal("hide");
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/zeek/editClusterValue';
+    
+        var jsonCluster = {}
+        jsonCluster["uuid"] = uuid;
+        jsonCluster["cluster"] = cluster;
+        jsonCluster["type"] = type;
+        jsonCluster["host"] = host;
+        jsonCluster["interface"] = interface;
+        var dataJSON = JSON.stringify(jsonCluster);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Edit cluster value: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
+        })
+        .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Edit cluster value: '+response.data.error+'.'+
+                '<strong>Error!</strong> Edit cluster value: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            loadPlugins();
-        }
-    })
-    .catch(function (error) {
-        $('html,body').scrollTop(0);
-        var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> Edit cluster value: '+error+'.'+
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                '<span aria-hidden="true">&times;</span>'+
-            '</button>'+
-        '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
-    });
+        });
+    }
 }
 
 function DeleteClusterValue(uuid, type){
@@ -1256,7 +1294,7 @@ function AddServiceModal(uuid, type){
 
       '<div class="modal-body">'+
         '<p>Insert a description for the new '+type+' service:</p>'+
-        '<input type="text" class="form-control" id="new-service-name" value="" required>'+
+        '<input type="text" class="form-control" id="new-service-name" value="">'+
       '</div>'+
 
       '<div class="modal-footer" id="sync-node-footer-btn">'+
@@ -1286,52 +1324,54 @@ function AddSTAPModal(uuid, type){
 
       '<div class="modal-body">'+
         '<p>Insert name:</p>'+
-            '<input type="text" class="form-control" id="soft-tap-name" value="" required><br>'+
+            '<input type="text" class="form-control" id="soft-tap-name" value=""><br>'+
         '<p>Define listening port:</p>'+
-            '<input type="text" class="form-control" id="soft-tap-port" value="50010" required><br>'+
+            '<input type="text" class="form-control" id="soft-tap-port" value="50010"><br>'+
         '<p>Insert certificate:</p>'+
-            '<input type="text" class="form-control" id="soft-tap-cert" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem" required><br>';
+            '<input type="text" class="form-control" id="soft-tap-cert" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
         // if (type == "socket-network"){                  
         // }else 
         if (type == "socket-pcap"){
             html = html + '<p>Insert PCAP path:</p>'+
-                '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps" required><br>'+
+                '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps"><br>'+
             '<p>Insert PCAP prefix:</p>'+
-                '<input type="text" class="form-control" id="soft-tap-pcap-prefix" value="remote-" required><br>'+
+                '<input type="text" class="form-control" id="soft-tap-pcap-prefix" value="remote-"><br>'+
             '<p>Insert BPF:</p>'+
-                '<input type="text" class="form-control" id="soft-tap-bpf" value="" required><br>';
+                '<input type="text" class="form-control" id="soft-tap-bpf" value=""><br>';
         }else if (type == "network-socket"){
             html = html + '<p>Select collector:</p>'+
-                '<input type="text" class="form-control" id="soft-tap-collector" value="192.168.1.100" required><br>'+
+                '<input type="text" class="form-control" id="soft-tap-collector" value="192.168.1.100"><br>'+
             '<p>Insert BPF:</p>'+
-                '<input type="text" class="form-control" id="soft-tap-bpf-socket" value="" required><br>';
+                '<input type="text" class="form-control" id="soft-tap-bpf-socket" value=""><br>';
         }
-        html = html + '<p>Forward traffic to interface:</p>'+
-        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-            '<tbody id="socket-network-modal-table">' +
-            '</tbody>'+
-        '</table>';   
-        axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
-        .then(function (response) {
-            var isChecked = false;
-            var inner = "";
-            for (net in response.data){
-                inner = inner + '<tr>'+
-                    '<td style="word-wrap: break-word;">' +
-                        '<p class="ml-4">'+response.data[net]+'</p>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;">';
-                        if (!isChecked){
-                            inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
-                            isChecked = true;
-                        }else{
-                            inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
-                        }
-                    inner = inner + '</td>'+
-                '</tr>';
-            }
-            document.getElementById('socket-network-modal-table').innerHTML = inner;
-        });   
+        if (type != "socket-pcap"){
+            html = html + '<p>Forward traffic to interface:</p>'+
+            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                '<tbody id="socket-network-modal-table">' +
+                '</tbody>'+
+            '</table>';   
+            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
+            .then(function (response) {
+                var isChecked = false;
+                var inner = "";
+                for (net in response.data){
+                    inner = inner + '<tr>'+
+                        '<td style="word-wrap: break-word;">' +
+                            '<p class="ml-4">'+response.data[net]+'</p>'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (!isChecked){
+                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                                isChecked = true;
+                            }else{
+                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                            }
+                        inner = inner + '</td>'+
+                    '</tr>';
+                }
+                document.getElementById('socket-network-modal-table').innerHTML = inner;
+            });   
+        }
     html = html + '</div>'+
     '<div class="modal-footer" id="sync-node-footer-btn">'+
         '<button type="button" class="btn btn-secondary" id="add-stap-modal-close">Cancel</button>'+
@@ -1359,67 +1399,95 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
         if(type == "socket-network"){
             if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "") {
                 if (document.getElementById('soft-tap-name').value == "" ){
-                    document.getElementById('soft-tap-name').placeholder = "Please insert a valid name";
-                    document.getElementById('soft-tap-name').required = "true";
-                    // $("#soft-tap-name").prop('required',true);
+                    $('#soft-tap-name').css('border', '2px solid red');
+                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name"); 
+                }else{
+                    $('#soft-tap-name').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-port').value == ""){
-                    document.getElementById('soft-tap-port').placeholder = "Please insert a port";
-                    document.getElementById('soft-tap-port').required = "true";
+                    $('#soft-tap-port').css('border', '2px solid red');
+                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port"); 
+                }else{
+                    $('#soft-tap-port').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-cert').value == ""){
-                    document.getElementById('soft-tap-cert').placeholder = "Please insert a certificate";
-                    document.getElementById('soft-tap-cert').required = "true";
+                    $('#soft-tap-cert').css('border', '2px solid red');
+                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate"); 
+                }else{
+                    $('#soft-tap-cert').css('border', '2px solid #ced4da');
                 }
             }
         }else if(type == "socket-pcap"){
             if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ){                
                 if (document.getElementById('soft-tap-port').value == ""){
-                    document.getElementById('soft-tap-port').placeholder = "Please insert a port";
-                    document.getElementById('soft-tap-port').required = "true";
+                    $('#soft-tap-port').css('border', '2px solid red');
+                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port"); 
+                }else{
+                    $('#soft-tap-port').css('border', '2px solid #ced4da');
                 }
-                if (document.getElementById('soft-tap-name').value == ""){                
-                    document.getElementById('soft-tap-name').placeholder = "Please insert a name";
-                    document.getElementById('soft-tap-name').required = "true";
+                if (document.getElementById('soft-tap-name').value == ""){   
+                    $('#soft-tap-name').css('border', '2px solid red');
+                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");              
+                }else{
+                    $('#soft-tap-name').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-cert').value == ""){
-                    document.getElementById('soft-tap-cert').placeholder = "Please insert a certificate";
-                    document.getElementById('soft-tap-cert').required = "true";
+                    $('#soft-tap-cert').css('border', '2px solid red');
+                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");   
+                }else{
+                    $('#soft-tap-cert').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-pcap-path').value == ""){
-                    document.getElementById('soft-tap-pcap-path').placeholder = "Please insert a pcap path";
-                    document.getElementById('soft-tap-pcap-path').required = "true";
+                    $('#soft-tap-pcap-path').css('border', '2px solid red');
+                    $('#soft-tap-pcap-path').attr("placeholder", "Please, insert a valid pcap path");   
+                }else{
+                    $('#soft-tap-pcap-path').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-pcap-prefix').value == ""){
-                    document.getElementById('soft-tap-pcap-prefix').placeholder = "Please insert a pcap prefix";
-                    document.getElementById('soft-tap-pcap-prefix').required = "true";            
+                    $('#soft-tap-pcap-prefix').css('border', '2px solid red');
+                    $('#soft-tap-pcap-prefix').attr("placeholder", "Please, insert a valid pcap prefix");            
+                }else{
+                    $('#soft-tap-pcap-prefix').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-bpf').value == ""){
-                    document.getElementById('soft-tap-bpf').placeholder = "Please insert a BPF path:";
-                    document.getElementById('soft-tap-bpf').required = "true";
+                    $('#soft-tap-bpf').css('border', '2px solid red');
+                    $('#soft-tap-bpf').attr("placeholder", "Please, insert a valid bpf");   
+                }else{
+                    $('#soft-tap-bpf').css('border', '2px solid #ced4da');
                 }
                 
             }
         }else if(type == "network-socket"){
             if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == ""){
-                if (document.getElementById('soft-tap-name').value == ""){                
-                    document.getElementById('soft-tap-name').placeholder = "Please insert a name";
-                    document.getElementById('soft-tap-name').required = "true";
+                if (document.getElementById('soft-tap-name').value == ""){  
+                    $('#soft-tap-name').css('border', '2px solid red');
+                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");                 
+                }else{
+                    $('#soft-tap-name').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-port').value == ""){
-                    document.getElementById('soft-tap-port').placeholder = "Please insert a port";
-                    document.getElementById('soft-tap-port').required = "true";
+                    $('#soft-tap-port').css('border', '2px solid red');
+                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port");   
+                }else{
+                    $('#soft-tap-port').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-cert').value == ""){
-                    document.getElementById('soft-tap-cert').placeholder = "Please insert a certificate";
-                    document.getElementById('soft-tap-cert').required = "true";
+                    $('#soft-tap-cert').css('border', '2px solid red');
+                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");   
+                }else{
+                    $('#soft-tap-cert').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-collector').value == ""){
-                    document.getElementById('soft-tap-collector').placeholder = "Please insert a collector IP";
-                    document.getElementById('soft-tap-collector').required = "true";
-                }if (document.getElementById('soft-tap-bpf-socket').value == ""){
-                    document.getElementById('soft-tap-bpf-socket').placeholder = "Please insert a BPF path";
-                    document.getElementById('soft-tap-bpf-socket').required = "true";
+                    $('#soft-tap-collector').css('border', '2px solid red');
+                    $('#soft-tap-collector').attr("placeholder", "Please, insert a valid collector IP");   
+                }else{
+                    $('#soft-tap-collector').css('border', '2px solid #ced4da');
+                }
+                if (document.getElementById('soft-tap-bpf-socket').value == ""){
+                    $('#soft-tap-bpf-socket').css('border', '2px solid red');
+                    $('#soft-tap-bpf-socket').attr("placeholder", "Please, insert a valid BPF path");   
+                }else{
+                    $('#soft-tap-bpf-socket').css('border', '2px solid #ced4da');
                 }
             }
         }
@@ -1491,9 +1559,9 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
 }
 
 function AddPluginService(uuid, name, type){
-    if (name == ""){        
-        document.getElementById('new-service-name').placeholder = "Please, inserta a description";
-        document.getElementById('new-service-name').required = "true";
+    if (name == ""){       
+        $('#new-service-name').css('border', '2px solid red');
+        $('#new-service-name').attr("placeholder", "Please, insert a description"); 
     }else{
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
@@ -1504,7 +1572,7 @@ function AddPluginService(uuid, name, type){
         newSuriData["type"] = type;
         var dataMap = JSON.stringify(newSuriData);
         axios({
-            method: 'put',
+            method: 'post',
             url: nodeurl,
             timeout: 30000,
             data: dataMap
@@ -2961,18 +3029,19 @@ function PingPluginsNode(uuid) {
     })
     .then(function (response) {
         for(line in response.data){
-            if (line == "knownports"){
-                if (response.data[line]["status"] == "Enabled"){
-                    document.getElementById('ports-status-'+uuid).innerHTML = "ON";
-                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
-                    document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-                }else if (response.data[line]["status"] == "Disabled"){
-                    document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
-                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
-                    document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                }
-                document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-            }else if (response.data[line]["type"] == "suricata"){
+            // if (line == "knownports"){
+            //     if (response.data[line]["status"] == "Enabled"){
+            //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
+            //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
+            //         document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+            //     }else if (response.data[line]["status"] == "Disabled"){
+            //         document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
+            //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
+            //         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+            //     }
+            //     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+            // }else if (response.data[line]["type"] == "suricata"){
+            if (response.data[line]["type"] == "suricata"){
                 if (response.data[line]["command"]){
                     tableSuricataCommand = tableSuricataCommand + '<tr>'+                    
                         '<td>'+response.data[line]["pid"]+'</td>'+
@@ -3695,8 +3764,6 @@ function PingAnalyzer(uuid) {
                 '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data["path"]+'\')">100</span> &nbsp';
             '</td>';
         document.getElementById('analyzer-file-content').innerHTML = html;
-
-        // $('#reload-analyzer').click(function(){ ReloadFilesData(uuid);});
     })
     .catch(function (error) {
 
@@ -3732,9 +3799,6 @@ function ReloadFilesData(uuid){
                 document.getElementById('analyzer-file-size').value = response.data[file]["size"];
             }else if (file == "wazuh"){
                 for (value in response.data[file]){
-                    console.log("Value: "+response.data[file][value]);
-                    console.log("Path: "+value);
-
                     for (x = 1; x <= wazuhCount; x++){
                         var htmlWazuh = "";
                         if (value == document.getElementById(x+'-wazuh-files').innerHTML){
@@ -3763,10 +3827,6 @@ function ReloadFilesData(uuid){
     })
     .catch(function (error) {
     });
-    
-    
-    
-    
     
     // //wazuh
     // //analyzer

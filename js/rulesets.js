@@ -77,7 +77,8 @@ function generateAllRulesetsHTMLOutput(response) {
     }
     html = html + '</tbody></table>';
 
-    document.getElementById('search-input-ruesets').innerHTML = '<input class="form-control w-25 my-3" type="text" placeholder="Search" aria-label="Search" id="search-ruleset-details"><button type="button" class="btn btn-primary" onclick="loadRulesetBySearch()"><i class="fas fa-search"></i></button>'
+    document.getElementById('search-input-ruesets').innerHTML = '<input class="form-control mx-3" type="text" placeholder="Search" aria-label="Search" id="search-ruleset-details">'+
+            '<a type="button" class="btn btn-primary" onclick="loadRulesetBySearch()"><i class="fas fa-search" style="color: white;"></i></a>';
 
     if (isEmptyRulesets) {
         return '<div style="text-align:center"><h3>No Rules available...</h3></div>';
@@ -89,7 +90,13 @@ function generateAllRulesetsHTMLOutput(response) {
 function loadRulesetBySearch(){
     var ipmaster = document.getElementById('ip-master').value;
     var search = document.getElementById('search-ruleset-details').value;
-    document.location.href = 'https://' + ipmaster + '/ruleset-search.html?&search='+search;
+    if(search.length >= 3){
+        document.location.href = 'https://' + ipmaster + '/ruleset-search.html?&search='+search;
+    }else{
+        $('#search-ruleset-details').val("");
+        $('#search-ruleset-details').css('border', '2px solid red');
+        $('#search-ruleset-details').attr("placeholder", "To make a search, please insert 3 or more characters");
+    }
 }
 
 function modalShowLog(uuid, name){

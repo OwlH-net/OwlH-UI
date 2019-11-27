@@ -1,21 +1,19 @@
 function loadFileIntoTextarea(){
     var urlData = new URL(window.location.href);
     var uuid = urlData.searchParams.get("uuid");
-    var file = urlData.searchParams.get("file");
-    var node = urlData.searchParams.get("node");
+    var path = urlData.searchParams.get("path");
+    var type = urlData.searchParams.get("type");
 
-    var uuidHidden = document.getElementById('uuid-hidden-text');
-    var fileHidden = document.getElementById('file-hidden-text');
     var txtArea = document.getElementById('inputTextToSave');
     var title = document.getElementById('title-edit');
     var subtitle = document.getElementById('subtitle-edit');
 
-    title.innerHTML = "File: "+file;
-    subtitle.innerHTML = node;
+    title.innerHTML = "File: "+path;
+    subtitle.innerHTML = type;
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/loadfile/'+uuid+'/'+file;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/group/getClusterFileContent/'+uuid;
         
     axios({
         method: 'get',
@@ -24,11 +22,11 @@ function loadFileIntoTextarea(){
     })
     .then(function (response) {
         if (response.data.ack == "false") {
-            return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
+            return '<div style="text-align:center"><h3 style="color:red;">Error retrieving file content...</h3></div>';
         }else{
-            txtArea.innerHTML = response.data.fileContent;
-            if(uuid == "local") {uuidHidden.value = "local"} else {uuidHidden.value = response.data.nodeUUID;}
-            fileHidden.value = response.data.fileName;
+            for(x in response.data){
+                txtArea.innerHTML = response.data[x];
+            }
         }
     })
     .catch(function (error) {
@@ -37,16 +35,17 @@ function loadFileIntoTextarea(){
 }
 
 function saveFileChanged() {
-    var uuidHidden = document.getElementById('uuid-hidden-text');
-    var fileHidden = document.getElementById('file-hidden-text');
+    var urlData = new URL(window.location.href);
+    var uuid = urlData.searchParams.get("uuid");
+    var path = urlData.searchParams.get("path");
     var fileContent = document.getElementById('inputTextToSave');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/savefile';
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/group/saveClusterFileContent';
     
     var nodejson = {}
-    nodejson["uuid"] = uuidHidden.value;
-    nodejson["file"] = fileHidden.value;
+    nodejson["uuid"] = uuid;
+    nodejson["path"] = path;
     nodejson["content"] = fileContent.value;
     var nodeJSON = JSON.stringify(nodejson);
     axios({

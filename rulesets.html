@@ -71,13 +71,13 @@
                 </div>
             </div>
 
-            <div class="float-right" style="width:100%;">
-                <div width="100%" id ="search-input-ruesets"></div>
+            <div class="float-right py-3" style="width:100%;">
+                <div class="input-group" width="100%" id="search-input-ruesets"></div><br><br>
                 <a class="text-white btn btn-danger float-right" data-toggle="modal" data-target="#modal-ruleset" onclick="modalSynchronizeAllRulesets()">Synchronize all</a>
                 <a class="text-white btn btn-primary float-right" style="margin-right: 10px;" href="ruleset-source.html">Edit ruleset source</a>
                 <a class="text-white btn btn-success float-right" style="margin-right: 10px;" href="create-ruleset.html" >Create new ruleset</a>
             </div>
-            <br><br><br><br>
+            <!-- <br><br><br><br> -->
                 
             <!-- Modal -->
             <div class="modal fade" id="modal-ruleset">
@@ -93,7 +93,9 @@
                 <a class="text-white btn btn-primary float-right" style="margin-right: 10px;" href="ruleset-source.html">Edit ruleset source</a>
                 <a class="text-white btn btn-success float-right" style="margin-right: 10px;" href="create-ruleset.html" >Create new ruleset</a>
             </div>
-            <br><br>
+            
+            <!-- Footer -->
+            <div id="footer"></div>
 
             <!-- Load master ip/port -->
             <div id="load-json-data" style="display: none;">
@@ -105,11 +107,12 @@
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="js/axios/dist/axios.js"></script>
-        <script src="js/jquery-3.3.1.js"></script>
+        <script src="js/jquery-3.4.1.js"></script>
         <script src="css/popper/popper.min.js"></script>
         <script src="css/dist/js/bootstrap.min.js"></script>
         <script src="js/offcanvas.js"></script>
         <script src="js/rulesets.js"></script>
         <script src="js/loadTitle.js"></script>
+        <script src="js/footer.js"></script>
     </body>
 </html>

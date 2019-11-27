@@ -8,18 +8,8 @@ function loadFileIntoTextarea(){
 
 function saveFileChanged() {
     var fileContent = document.getElementById('inputTextUI').value;
-    var nodeurl = '../conf/ui.conf';    
-
-// console.log(fileContent);
-
-//     $.ajax({
-//         type: 'POST',
-//         url: nodeurl,
-//         data: JSON.stringify( fileContent ),
-//         // dataType: "json",
-//         success: function(resultData) { console.log(resultData) }
-//     });
-
+    // var nodeurl = '../conf/ui.conf';    
+    var nodeurl = 'ui.php';    
 
     axios({
         method: 'put',
@@ -31,7 +21,6 @@ function saveFileChanged() {
         location.reload(true);        
     })
     .catch(function (error) {
-        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

@@ -22,7 +22,6 @@ function loadRulesData(){
         }         
     })
     .catch(function (error) {
-        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
@@ -30,7 +29,6 @@ function loadRulesData(){
 }
 
 function generateAllRuleDataHTMLOutput(sources) {
-    console.log(sources);
     var html = "";
     var isEmpty = true;
     var arrayRulesets = new Array();
@@ -63,7 +61,6 @@ function generateAllRuleDataHTMLOutput(sources) {
         if(sources[source]["type"] == "source"){            
             if(!arrayRulesets.includes(sources[source]["name"])){
                 arrayRulesets.push(sources[source]["name"]);
-                console.log(sources[source]["sourceUUID"]);
                 html = html +'<ul class="checkbox-grid">'+
                 ' <li style="display: block; float: left; width: 25%"><input type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked /><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
                 '</ul>';

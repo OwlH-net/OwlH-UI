@@ -72,8 +72,6 @@ function addRulesetSource() {
         if (sourceType != "custom"){nodejson["isDownloaded"] = "false";} //only for source and threat, not for custom ruleset source
         var nodeJSON = JSON.stringify(nodejson);
 
-        console.log(nodejson);
-
         axios({
             method: 'post',
             url: sourceURL,
@@ -362,31 +360,52 @@ function editRulesetSourceClose(){
 }
 
 function editRulesetSourceData(){
-    var name = document.getElementById('ruleset-source-name-edit').value;
-    var desc = document.getElementById('ruleset-source-edit-desc').value;
-    var sourceUUID = document.getElementById('ruleset-source-uuid').value;
-    var url = document.getElementById('ruleset-source-edit-url').value;
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/EditRulesetSource';
-    var nodejson = {}
-    nodejson["name"] = name;
-    nodejson["desc"] = desc;
-    nodejson["url"] = url;
-    nodejson["uuid"] = sourceUUID;
-    var nodeJSON = JSON.stringify(nodejson);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: nodeJSON
-        })
-        .then(function (response) {
-            GetAllRulesetSource();
-        })
-        .catch(function (error) {
-        });   
-        document.getElementById('edit-ruleset-source').style.display = "none";
+    var name = document.getElementById('ruleset-source-name-edit');
+    var desc = document.getElementById('ruleset-source-edit-desc');
+    var url = document.getElementById('ruleset-source-edit-url');
+    if(name.value=="" || desc.value == "" || url.value == ""){
+        if(name.value==""){
+            $('#ruleset-source-name-edit').attr("placeholder", "Please, insert a valid name");  
+            $('#ruleset-source-name-edit').css('border', '2px solid red');
+        }else{
+            $('#ruleset-source-name-edit').css('border', '2px solid #ced4da');
+        }
+        if(desc.value==""){
+            $('#ruleset-source-edit-desc').attr("placeholder", "Please, insert a valid description");  
+            $('#ruleset-source-edit-desc').css('border', '2px solid red');
+        }else{
+            $('#ruleset-source-edit-desc').css('border', '2px solid #ced4da');
+        }
+        if(url.value==""){
+            $('#ruleset-source-edit-url').attr("placeholder", "Please, insert a valid url");  
+            $('#ruleset-source-edit-url').css('border', '2px solid red');
+        }else{
+            $('#ruleset-source-edit-url').css('border', '2px solid #ced4da');
+        }
+    }else{
+        var sourceUUID = document.getElementById('ruleset-source-uuid').value;
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/EditRulesetSource';
+        var nodejson = {}
+        nodejson["name"] = name.value;
+        nodejson["desc"] = desc.value;
+        nodejson["url"] = url.value;
+        nodejson["uuid"] = sourceUUID;
+        var nodeJSON = JSON.stringify(nodejson);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: nodeJSON
+            })
+            .then(function (response) {
+                GetAllRulesetSource();
+            })
+            .catch(function (error) {
+            });   
+            document.getElementById('edit-ruleset-source').style.display = "none";
+    }
 }
 
 function deleteRulesetSource(sourceUUID,sourceType){

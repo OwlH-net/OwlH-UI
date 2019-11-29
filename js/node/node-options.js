@@ -3738,6 +3738,7 @@ function PingAnalyzer(uuid) {
         timeout: 30000
     })
     .then(function (response) {
+        console.log(response.data)
         if (response.data["status"] == "Enabled"){
             document.getElementById('analyzer-status-'+uuid).innerHTML = "ON";
             document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-stop-circle";
@@ -3752,7 +3753,7 @@ function PingAnalyzer(uuid) {
                 if(response.data["size"] < 0){
                     html = html +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
                 }else{
-                    if(response.data["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data["size"].toFixed(2)+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data["size"]+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
                     if(response.data["size"]>=1024 && response.data["size"]<1048576){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1024).toFixed(2)+' kB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
                     if(response.data["size"]>=1048576 && response.data["size"]<1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1048576).toFixed(2)+' MB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
                     if(response.data["size"]>=1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1073741824).toFixed(2)+' GB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
@@ -3766,7 +3767,7 @@ function PingAnalyzer(uuid) {
         document.getElementById('analyzer-file-content').innerHTML = html;
     })
     .catch(function (error) {
-
+        console.log("error analyzer file -> "+error)
     });
 }
 

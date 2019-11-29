@@ -192,7 +192,7 @@ function GetGroupsDetails(){
                                 '<tr>'+
                                     '<td>'+
                                         '<span style="cursor: pointer;" id="group-enable-all-analyzer" class="badge bg-primary align-text-bottom text-white float-left mr-2" >Enable all</span>'+
-                                        '<span style="cursor: pointer;" id="group-disable-all-analyzer" class="badge bg-secondary align-text-bottom text-white float-left mr-2" >Disable all</span>'+
+                                        '<span style="cursor: pointer;" id="group-disable-all-analyzer" class="badge bg-success align-text-bottom text-white float-left mr-2" >Disable all</span>'+
                                     '</td>'+                                                            
                                     '<td>Edit analyzer &nbsp <i class="fas fa-edit" style="color: dodgerblue; cursor: pointer;" onclick="editAnalyzer(\'local\', \'group-analyzer\', \''+gname+'\')"></i></td>'+                                       
                                     '<td>Synchronize analyzer &nbsp <i class="fas fa-sync" id="group-sync-analyzer" style="color: dodgerblue; cursor: pointer;"></i></td>'+                                       

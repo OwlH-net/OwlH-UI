@@ -137,7 +137,6 @@ function CheckAll(ele){
             var value = $(this).prop("value");
             var id = $(this).prop("id");
             if (value == "table-elements" && document.getElementById("row-"+id).style.display != 'none'){                
-                console.log($(this).is(":hidden") );
                 $(this).prop("checked", true);
             }
         });
@@ -146,7 +145,6 @@ function CheckAll(ele){
             var value = $(this).prop("value");
             var id = $(this).prop("id");
             if (value == "table-elements" && document.getElementById("row-"+id).style.display != 'none'){
-                console.log($(this).is(":hidden") );
                 $(this).prop("checked", false);
             }
         });
@@ -169,6 +167,8 @@ function addRulesetFilesToTable(sources){
             if (checked == sources[source]["name"]){
                 document.getElementById("row-"+source).style.display = "none";
                 document.getElementById("row-"+source).value = "false"; //false == hidden at table
+                document.getElementById(source).checked = false; 
+                console.log(document.getElementById("row-"+source));//$(this).prop("checked", false);
             }
         }
     });
@@ -274,7 +274,8 @@ function modalAddNewRuleset(){
         if (length == 0){
             document.getElementById('progressBar-create-div').style.display="none";
             document.getElementById('progressBar-create').style.display="none";
-
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+            
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -309,7 +310,7 @@ function modalAddNewRuleset(){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);                    
                 }else{
                     $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
                     document.getElementById('progressBar-create-div').style.display="none";

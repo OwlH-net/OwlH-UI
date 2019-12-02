@@ -49,13 +49,14 @@ function PingNode(uuid) {
                 document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
                 document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
                 document.getElementById('node-row-'+uuid).setAttribute("status", "offline");
-                $('#node-monitor-'+uuid).prop("onclick", null).off("click");
-                $('#node-services-'+uuid).prop("onclick", null).off("click");
-                $('#node-modify-'+uuid).prop("onclick", null).off("click");
-                $('#node-config-'+uuid).prop("onclick", null).off("click");
-                $('#node-files-'+uuid).prop("onclick", null).off("click");
-                $('#node-change-'+uuid).prop("onclick", null).off("click");
-                $('#node-incident-'+uuid).prop("onclick", null).off("click");
+                // $('#node-monitor-'+uuid).unbind("click");
+                // $('#node-services-'+uuid).unbind("click");
+                // $('#node-modify-'+uuid).unbind("click");
+                // $('#node-config-'+uuid).unbind("click");
+                // $('#node-files-'+uuid).unbind("click");
+                // $('#node-change-'+uuid).unbind("click");
+                // $('#node-incident-'+uuid).unbind("click");
+                // $('#node-actions-'+uuid).attr("color","grey");
             }      
         })
             .catch(function (error) {

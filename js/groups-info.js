@@ -21,7 +21,11 @@ function GetGroupsDetails(){
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var result = document.getElementById('list-groups');
+    var resultnodes = document.getElementById('pills-nodes');
+    var resultsuricata = document.getElementById('pills-suricata');
+    var resultzeek = document.getElementById('pills-zeek');
+    var resultanalyzer = document.getElementById('pills-analyzer');
+
     var groupurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/';
 
     axios({
@@ -31,14 +35,17 @@ function GetGroupsDetails(){
     })
     .then(function (response) {
         if (response.data.ack == "false") {
-            result.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving group data</h3></div>';
+            resultnodes.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving group data</h3></div>';
         }else{
             var html = "";
-            html = html + '<div>';
+            var htmlnodes = "";
+            var htmlsuricata = "";
+            var htmlzeek = "";
+            var htmlanalyzer = "";
             for(x=0; x<response.data.length; x++){
                 var groups = response.data[x];
                 if(groups['guuid'] == uuid){
-                    html = html + '<div>'+
+                    htmlnodes = "" + '<div>'+
                         '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="modalSelectNodeGroup(\''+uuid+'\')">Add node</button>'+
                         '<button class="btn btn-success float-right text-decoration-none text-white mr-2" type="button" onclick="syncAllGroupElements(\''+uuid+'\')">Sync all</button>'+
                         '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="backButton()">Back</button>'+
@@ -56,43 +63,44 @@ function GetGroupsDetails(){
                             for(nid in groups["Nodes"]){
                                 allNodes[nid] = new Map();
                                 allNodes[nid] = groups["Nodes"][nid]; 
-                                html = html + '<tr>'+                           
+                                htmlnodes = htmlnodes + '<tr>'+                           
                                     '<td>'+groups["Nodes"][nid]["nname"]+'</td>'+
                                     '<td>'+groups["Nodes"][nid]["nip"]+'</td>'+
                                     '<td><i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete node for this group" onclick="modalDeleteNodeForGroup(\''+groups["Nodes"][nid]["dbuuid"]+'\', \''+groups["Nodes"][nid]["nname"]+'\')"></i></td>'+
                                 '</tr>';
                             }
-                        html = html + '</table>'+
+                        htmlnodes = htmlnodes + '</table></div>';
                         //suricata table
+                        htmlsuricata = "<div>" +
                         '<b>Suricata</b>'+
                         '<table class="table" id="suricata-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                                                         
                             '<tbody>'+     
                                 '<tr>'+                           
                                     '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
                                     if(groups['gruleset']  != ""){
-                                        html = html + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                        htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
                                     }else{
-                                        html = html + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
+                                        htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
                                     }
-                                    html = html + '<td></td>'+
+                                    htmlsuricata = htmlsuricata + '<td></td>'+
                                 '</tr>'+
                                 '<tr>'+
                                     '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
                                     '<td>Master path:</td>';
                                     if(groups["mastersuricata"] == ""){
-                                        html = html + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
+                                        htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
                                     }else{
                                         html = html + '<td id="group-suricata-master-path" value="'+groups["mastersuricata"]+'">'+groups["mastersuricata"]+'</td>';
                                     }
-                                html = html + '</tr>'+
+                                htmlsuricata = htmlsuricata + '</tr>'+
                                 '<tr>'+                           
                                     '<td>Node path:</td>';
                                     if(groups["nodesuricata"] == ""){
-                                        html = html + '<td style="color: red;" id="group-suricata-node-path" value="">No Suricata node path...</td>';
+                                        htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-node-path" value="">No Suricata node path...</td>';
                                     }else{
-                                        html = html + '<td id="group-suricata-node-path" value="'+groups["nodesuricata"]+'">'+groups["nodesuricata"]+'</td>';
+                                        htmlsuricata = htmlsuricata + '<td id="group-suricata-node-path" value="'+groups["nodesuricata"]+'">'+groups["nodesuricata"]+'</td>';
                                     }
-                                html = html + '</tr>'+
+                                htmlsuricata = htmlsuricata + '</tr>'+
                                 '<tr id="suricata-edit-row" style="display:none;">'+
                                     '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
                                     '<td>Node path: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
@@ -104,47 +112,64 @@ function GetGroupsDetails(){
                                 '<tr>'+
                                     '<td class="align-middle" rowspan="5">Services &nbsp <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick=""></i></td>'+
                                     '<td>Interface &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select an interface" onclick="modalEditGroupService(\''+uuid+'\', \'interface\', \'interface\')"></i></td>';
-                                    if(groups["interface"] == ""){html = html + '<td id="service-interface" value="" style="color: red;">No interface selected...</td>';}else{html = html + '<td id="service-interface" value="'+groups["interface"]+'">'+groups["interface"]+'</td>';}
-                                html = html + '</tr>'+
+                                    if(groups["interface"] == ""){
+                                        htmlsuricata = htmlsuricata + '<td id="service-interface" value="" style="color: red;">No interface selected...</td>';
+                                    }else{
+                                        htmlsuricata = htmlsuricata + '<td id="service-interface" value="'+groups["interface"]+'">'+groups["interface"]+'</td>';}
+                                htmlsuricata = htmlsuricata + '</tr>'+
                                 '<tr>'+
                                     '<td>BPF file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF file path" onclick="modalEditGroupService(\''+uuid+'\', \'BPFfile\', \'BPF file\')"></i></td>';
-                                    if(groups["BPFfile"] == ""){html = html + '<td id="service-bpffile" value="" style="color: red;">No BPF file selected...</td>';}else{html = html + '<td id="service-bpffile" value="'+groups["BPFfile"]+'">'+groups["BPFfile"]+'</td>';}
-                                html = html + '</tr>'+
+                                    if(groups["BPFfile"] == ""){
+                                        htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="" style="color: red;">No BPF file selected...</td>';
+                                    }else{
+                                        htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="'+groups["BPFfile"]+'">'+groups["BPFfile"]+'</td>';}
+                                htmlsuricata = htmlsuricata + '</tr>'+
                                 '<tr>'+
                                     '<td>BPF rule &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF rule" onclick="modalEditGroupService(\''+uuid+'\', \'BPFrule\', \'BPF rule\')"></i></td>';
-                                    if(groups["BPFrule"] == ""){html = html + '<td id="service-bpfrule" value="" style="color: red;">No BPF rule selected...</td>';}else{html = html + '<td id="service-bpfrule" value="'+groups["BPFrule"]+'">'+groups["BPFrule"]+'</td>';}
-                                html = html + '</tr>'+
+                                    if(groups["BPFrule"] == ""){
+                                        htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="" style="color: red;">No BPF rule selected...</td>';
+                                    }else{
+                                        htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="'+groups["BPFrule"]+'">'+groups["BPFrule"]+'</td>';}
+                                htmlsuricata = htmlsuricata + '</tr>'+
                                 '<tr>'+
                                     '<td>Config file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a config file path" onclick="modalEditGroupService(\''+uuid+'\', \'configFile\', \'config file\')"></i></td>';
-                                    if(groups["configFile"] == ""){html = html + '<td id="service-configfile" value="" style="color: red;">No config file selected...</td>';}else{html = html + '<td id="service-configfile" value="'+groups["configFile"]+'">'+groups["configFile"]+'</td>';}
-                                html = html + '</tr>'+
+                                    if(groups["configFile"] == ""){
+                                        htmlsuricata = htmlsuricata + '<td id="service-configfile" value="" style="color: red;">No config file selected...</td>';
+                                    }else{
+                                        htmlsuricata = htmlsuricata + '<td id="service-configfile" value="'+groups["configFile"]+'">'+groups["configFile"]+'</td>';
+                                    }
+                                htmlsuricata = htmlsuricata + '</tr>'+
                                 '<tr>'+
-                                    '<td>Command line &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Command line" onclick="modalEditGroupService(\''+uuid+'\', \'commandLine\', \'command line\')"></i></td>';
-                                    if(groups["commandLine"] == ""){html = html + '<td id="service-commandline" value="" style="color: red;">No command line selected...</td>';}else{html = html + '<td id="service-commandline" value="'+groups["commandLine"]+'">'+groups["commandLine"]+'</td>';}
-                                html = html + '</tr>'+
+                                '<td>Command line &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Command line" onclick="modalEditGroupService(\''+uuid+'\', \'commandLine\', \'command line\')"></i></td>';
+                                    if(groups["commandLine"] == ""){
+                                        htmlsuricata = htmlsuricata + '<td id="service-commandline" value="" style="color: red;">No command line selected...</td>';
+                                    }else{
+                                        htmlsuricata = htmlsuricata + '<td id="service-commandline" value="'+groups["commandLine"]+'">'+groups["commandLine"]+'</td>';}
+                                htmlsuricata = htmlsuricata + '</tr>'+
                             '</tbody>'+                           
-                        '</table>'+
+                        '</table></div>';
                         //zeek table
+                        htmlzeek = "<div>"+
                         '<b>Zeek</b> <button class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddCluster(\''+uuid+'\')">Add Cluster</button>'+
                         '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
                             '<tbody>';      
-                                html = html + '<tr>'+                           
+                                htmlzeek = htmlzeek + '<tr>'+                           
                                     '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
                                     '<td>Master path</td>';
                                     if(groups["masterzeek"] == ""){
-                                        html = html + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
+                                        htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
                                     }else{
-                                        html = html + '<td id="group-zeek-master-path" value="'+groups["masterzeek"]+'">'+groups["masterzeek"]+'</td>';
+                                        htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="'+groups["masterzeek"]+'">'+groups["masterzeek"]+'</td>';
                                     }
-                                html = html + '</tr>'+
+                                htmlzeek = htmlzeek + '</tr>'+
                                 '<tr>'+                           
                                     '<td>Node path</td>';
                                     if(groups["nodezeek"] == ""){
-                                        html = html + '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>';
+                                        htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>';
                                     }else{
-                                        html = html + '<td id="group-zeek-node-path" value="'+groups["nodezeek"]+'">'+groups["nodezeek"]+'</td>';
+                                        htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="'+groups["nodezeek"]+'">'+groups["nodezeek"]+'</td>';
                                     }                                            
-                                    html = html + '</tr>'+
+                                    htmlzeek = htmlzeek + '</tr>'+
                                 '<tr id="zeek-edit-row" style="display:none;">'+
                                     '<td>Master: <input class="form-control" id="zeek-group-master-'+groups['guuid']+'" value="'+groups["masterzeek"]+'"></td>'+
                                     '<td>Node: <input class="form-control" id="zeek-group-node-'+groups['guuid']+'" value="'+groups["nodezeek"]+'"></td>'+
@@ -157,16 +182,17 @@ function GetGroupsDetails(){
                         '</table>'+
                         //Zeek cluster
                         '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
-                        '</table>'+
+                        '</table></div>';
 
                         //analyzer table
+                        htmlanalyzer = "<div"+
                         '<b>Analyzer</b>'+
                         '<table class="table" id="cluster-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+                          
                             '<tbody>'+
                                 '<tr>'+
                                     '<td>'+
                                         '<span style="cursor: pointer;" id="group-enable-all-analyzer" class="badge bg-primary align-text-bottom text-white float-left mr-2" >Enable all</span>'+
-                                        '<span style="cursor: pointer;" id="group-disable-all-analyzer" class="badge bg-secondary align-text-bottom text-white float-left mr-2" >Disable all</span>'+
+                                        '<span style="cursor: pointer;" id="group-disable-all-analyzer" class="badge bg-success align-text-bottom text-white float-left mr-2" >Disable all</span>'+
                                     '</td>'+                                                            
                                     '<td>Edit analyzer &nbsp <i class="fas fa-edit" style="color: dodgerblue; cursor: pointer;" onclick="editAnalyzer(\'local\', \'group-analyzer\', \''+gname+'\')"></i></td>'+                                       
                                     '<td>Synchronize analyzer &nbsp <i class="fas fa-sync" id="group-sync-analyzer" style="color: dodgerblue; cursor: pointer;"></i></td>'+                                       
@@ -179,8 +205,11 @@ function GetGroupsDetails(){
                 }
 
             }
-            html = html + '</div>';
-            result.innerHTML = html;
+            resultnodes.innerHTML = htmlnodes;
+            resultsuricata.innerHTML = htmlsuricata;
+            resultzeek.innerHTML = htmlzeek;
+            resultanalyzer.innerHTML = htmlanalyzer;
+
         }
 
         $('#group-sync-analyzer').click(function(){ syncAnalyzer(allNodes); });
@@ -190,7 +219,7 @@ function GetGroupsDetails(){
         GetAllClusterFiles(uuid);
     })
     .catch(function (error) {
-        result.innerHTML = '<h3 align="center">No connection</h3>';
+        resultnodes.innerHTML = '<h3 align="center">No connection</h3>';
     });
 }
 

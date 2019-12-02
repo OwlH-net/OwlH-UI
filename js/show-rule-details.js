@@ -14,8 +14,7 @@ function loadRule(){
     var urlWeb = new URL(window.location.href);
     var fileuuid = urlWeb.searchParams.get("fileuuid");
     var sid = urlWeb.searchParams.get("sid");
-
-    getRule(sid, fileuuid)
+    getRule(sid, fileuuid);
 }
 
 function cancelRuleEdit(){
@@ -67,7 +66,7 @@ function getRule(sid, fileuuid){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
-            var re = /msg:"([^"]+)"/;
+            var re = /msg:\s?"([^"]+)"/;
             var inline = response.data.raw.match(re)
             var title = document.getElementById('rule-title');
             var secondaryTitle = document.getElementById('rule-subtitle');
@@ -256,8 +255,11 @@ function getRule(sid, fileuuid){
                     var valuesSplited = rawline[2].split(';');
                     var count = 1;
                         for(value in valuesSplited){
+                            var vlen = valuesSplited[value].length;
+                            if (vlen == 1) {
+                                continue;
+                            }
                             var line = valuesSplited[value].split(':');
-                            if (line == "") {continue;}
                             html = html +'<tr class="'+count+'-row-displayed" id="'+count+'-data-row" value="'+count+'">'+
                                 '<td style="word-wrap: break-word;" id="'+count+'-key-data" value="'+line[0].trim()+'">'+line[0].trim()+'</td>';
                                     var valueRetrieved = ""

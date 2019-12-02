@@ -10,7 +10,5 @@ echo  file_put_contents($file, $newjson);
 //     url: e,
 //     dataType: "json",
 //     success: function(data) {
-//             console.log(data["master"]["ip"]);
-//             console.log(data["master"]["port"]);
 //     }
 // }); -->

@@ -47,33 +47,18 @@ function generateAllRulesetsHTMLOutput(response) {
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-info-circle" title="Details" style="cursor:pointer;" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
                     '<i class="fas fa-sync-alt" title="Sync ruleset files" id="sync-ruleset-files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
-                    /*'<i class="fas fa-sync-alt" title="Sync ruleset files" style="cursor:pointer;" id="sync-ruleset-files-'+uuid+'"></i>&nbsp';*/
                     if(ruleset[uuid]["status"]=="enabled"){
                         html = html + '<i class="fas fa-stopwatch" style="color:green;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
-                        // html = html + '<i class="fas fa-stopwatch" style="color:green; cursor:pointer;" title="Update schedule" id="update-scheduler"></i>&nbsp'+
-                        // '<i class="far fa-clipboard" title="Scheduler LOG" style="cursor:pointer;" id="scheduler-log-'+uuid+'"></i>&nbsp';
                         '<i class="far fa-clipboard" title="Scheduler LOG" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else if(ruleset[uuid]["status"]=="disabled"){
                         html = html + '<i class="fas fa-stopwatch" style="color:red;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
-                        // html = html + '<i class="fas fa-stopwatch" style="color:red; cursor:pointer;" title="Update schedule" id="update-scheduler-'+uuid+'"></i>&nbsp'+
                         '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
-                        // '<i class="far fa-clipboard" title="Scheduler LOG" style="cursor:pointer;" id="scheduler-log-'+uuid+'"></i>&nbsp';
                     }else{
                         html = html + '<i class="fas fa-stopwatch" style="color:grey;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp';                        
-                        // html = html + '<i class="fas fa-stopwatch" style="color:grey; cursor:pointer;" title="Update schedule" id="update-scheduler-'+uuid+'"></i>&nbsp';                        
                     }
                     html = html + '| <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
-                    // html = html + '| <i class="fas fa-trash-alt" style="color: red; cursor:pointer;" title="Delete source" id="delete-scheduler-'+uuid+'"></i>'+
                 '</span>'+
             '</td></tr>';
-
-                // console.log("testing");
-                // $('#sync-ruleset-files-'+uuid).click(function(){ console.log("dsfsfsgf"); });
-                // // $('#sync-ruleset-files-'+uuid).click(function(){ console.log("dsfsfsgf"); syncRulesetModal(uuid, ruleset[uuid]['name']); });
-                // $('#scheduler-log-'+uuid).click(function(){ modalShowLog(uuid, ruleset[uuid]['name']); });
-                // $('#update-scheduler-'+uuid).click(function(){ modalTimeSchedule(uuid, ruleset[uuid]['name'], ruleset[uuid]['status']); });
-                // $('#delete-scheduler-'+uuid).click(function(){ deleteRulesetModal(ruleset[uuid]['name'], uuid);});
-                // // $('#modal-ruleset').modal("show");
     }
     html = html + '</tbody></table>';
 

@@ -1427,10 +1427,7 @@ function loadNetworkValuesService(name, service){
 
           '</div>'+
         '</div>';
-        console.log(response);
         document.getElementById('modal-master').innerHTML = html;
-        console.log(document.getElementById('modal-master').innerHTML);
-        // LoadNetworkValuesSelected(uuid);
 
         $('#modal-master').modal("show");
         $('#btn-select-interface-cross').click(function(){ $('#modal-master').modal("hide"); });

@@ -27,7 +27,6 @@ function showConfig(oip, oname, oport, ouuid){
 }
 
 function PingNode(uuid) {
-    console.log("-->"+uuid);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ping/' + uuid;
@@ -38,7 +37,6 @@ function PingNode(uuid) {
             timeout: 30000
     })
         .then(function (response) {
-            console.log(response.data);
             if (response.data.ping=='pong') {
                 document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
                 document.getElementById(uuid+'-online').innerHTML = "ON LINE";
@@ -61,7 +59,6 @@ function PingNode(uuid) {
             }      
         })
             .catch(function (error) {
-                console.log(error);
         });   
 }
 
@@ -273,7 +270,6 @@ function sortTable() {
 
     // $($('#node-table > tbody  > tr')).val('');
     // // $('#node-table > tbody  > tr').each(function() {
-    // //     console.log($(this).attr('name'));
     // // });
 }
 
@@ -311,7 +307,6 @@ function loadNodeBySearch(search){
         $('#search-node-details').attr("placeholder", "");
         $('#node-table tbody').each(function(){
             $(this).find('tr').each(function(){
-                // console.log($(this).attr("name").toLowerCase().includes(search.toLowerCase()));
                 if ($(this).attr("name").toLowerCase().includes(search.toLowerCase()) || $(this).attr("ip").toLowerCase().includes(search.toLowerCase())){
                 }else {
                     $(this).hide();
@@ -831,10 +826,8 @@ function showModalPorts(response, uuid){
 //             '<div class="modal-body">';
 
 //                 if(response.data.ack=="false"){
-//                     console.log(response.data.ack);
 //                     htlm = html + '<h4 class="modal-title" style="color:red;">Error retrieving ports...</h4>';
 //                 }else{
-//                     console.log(response);
 //                     htlm = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
 //                             '<thead>                                                      ' +
 //                                 '<tr>                                                         ' +

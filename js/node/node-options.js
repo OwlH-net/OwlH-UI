@@ -1626,7 +1626,6 @@ function AddPluginService(uuid, name, type){
 //         timeout: 30000
 //     })
 //     .then(function (response) {
-//         console.log(response.data);
 //     })
 //     .catch(function (error) {
 //     });
@@ -1902,12 +1901,10 @@ function saveRuleSelected(rule, nid, source, name, service){
             if (source == "main"){
                 loadPlugins();
             }else if (source == "service"){
-                console.log('suricata-ruleset-edit-'+service);
                 document.getElementById('suricata-ruleset-edit-'+service).value = name;
             }
         })
         .catch(function (error) {
-            console.log(error);
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -2077,7 +2074,6 @@ function PingPorts(uuid) {
     })
         .then(function (response) {
             for(line in response.data){
-                console.log(response.data);
                 if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
@@ -3345,23 +3341,12 @@ function PingPluginsNode(uuid) {
                     '</td>'+
                 '</tr>';
             }
-            
-            // if(($(".cluster")[0]) == undefined){ document.getElementById('zeek-table-services').innerHTML = tableZeek;}
             document.getElementById('zeek-table-services').innerHTML = tableZeek;
             document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
             document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
             document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
             document.getElementById('suricata-table-services').innerHTML = tableSuricata;
-            document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;
-            // onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"
-            // if (response.data[line]["type"] == "suricata"){
-            //     console.log('suricata-bpf-icon-'+line);
-            //     var x = document.getElementById('suricata-bpf-icon-'+line).onclick = loadBPF(uuid, document.getElementById('suricata-bpf-'+line).value, line, response.data[line]["name"], response.data[line]["type"]);
-            //     var x = document.getElementById('suricata-bpf-'+line).value
-            //     console.log(x);
-            //     // $('#suricata-bpf-icon-'+line).click(function(){ console.log("here"); loadBPF(uuid, document.getElementById('suricata-bpf-'+line).value, line, response.data[line]["name"], response.data[line]["type"]); });
-            //     // $('#suricata-bpf-icon-'+line).click(function(){ console.log("here"); });
-            // }            
+            document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;           
         }
 
         axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid)
@@ -3398,7 +3383,6 @@ function PingPluginsNode(uuid) {
     
     })
     .catch(function (error) {
-        console.log(error)
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -3533,7 +3517,6 @@ function deployStapService(uuid, service, collector,port,interface, type){
         jsonDeployService["port"] = port;
         jsonDeployService["interface"] = interface;
     }
-    console.log(jsonDeployService);
     var dataJSON = JSON.stringify(jsonDeployService);
 
     axios({
@@ -3784,7 +3767,6 @@ function ReloadFilesData(uuid){
     .then(function (response) {
         var wazuhCount = document.getElementById('wazuh-count-table-value').value;
         for (file in response.data){
-            console.log(response.data);
             if (file == "analyzer"){
                 var html = ""
                 if(response.data[file]["size"] < 0){
@@ -3838,7 +3820,6 @@ function ReloadFilesData(uuid){
     //     document.getElementById('analyzer-comparative').className = "fas fa-equals";
     // }
     // fileSize = response.data["size"];
-    // console.log("After: "+fileSize);
 }
 
 

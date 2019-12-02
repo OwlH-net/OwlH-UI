@@ -10,8 +10,8 @@ function loadTitleJSONdata(){
         document.getElementById('current-version-show').innerHTML = data;        
         document.getElementById('current-version-show').onclick = function(){loadReadme();}; 
         document.getElementById('current-version-show').style.cursor = "pointer"; 
-        document.getElementById('current-version-text').onclick = function(){loadReadme();}; 
-        document.getElementById('current-version-text').style.cursor = "pointer"; 
+        // document.getElementById('current-version-text').onclick = function(){loadReadme();}; 
+        // document.getElementById('current-version-text').style.cursor = "pointer"; 
                
     }, 'text');
 

@@ -138,7 +138,6 @@ function GetAllGroups(){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
         document.getElementById('group-text').style.display ="block";
         if(response.data == null){
             result.innerHTML= '<div style="text-align:center"><h3>No groups created</h3></div>';

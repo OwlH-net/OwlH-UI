@@ -449,7 +449,6 @@ function PingMonitor(uuid){
         }
     })
     .catch(function (error) {
-        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

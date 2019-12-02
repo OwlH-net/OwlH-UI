@@ -62,7 +62,7 @@ function generateAllRuleDataHTMLOutput(sources) {
             if(!arrayRulesets.includes(sources[source]["name"])){
                 arrayRulesets.push(sources[source]["name"]);
                 html = html +'<ul class="checkbox-grid">'+
-                ' <li style="display: block; float: left; width: 25%"><input type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked /><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
+                ' <li style="display: block; float: left; width: 25%"><input type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked/><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
                 '</ul>';
                 
             }
@@ -89,9 +89,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         '<thead>                                                      ' +
         '<tr>                                                         ' +
         '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset" onchange="CheckAll(this)"></th>' +
-        // '<th>Ruleset name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
         '<th>Ruleset name</th>                                          ' +
-        // '<th>File name <i class="fas fa-sort" style="cursor: pointer;" onclick="sortTable(1)"></i></th>                                          ' +
         '<th>File name</th>                                          ' +
         '<th>File path</th>                                          ' +
         '<th>Source</th>                                          ' +
@@ -133,12 +131,13 @@ function generateAllRuleDataHTMLOutput(sources) {
     }
 }
 
-function CheckAll(ele){
+function CheckAll(ele){       
     if (ele.checked) {
         $('input:checkbox:not(checked)').each(function() {
             var value = $(this).prop("value");
             var id = $(this).prop("id");
             if (value == "table-elements" && document.getElementById("row-"+id).style.display != 'none'){                
+                console.log($(this).is(":hidden") );
                 $(this).prop("checked", true);
             }
         });
@@ -147,6 +146,7 @@ function CheckAll(ele){
             var value = $(this).prop("value");
             var id = $(this).prop("id");
             if (value == "table-elements" && document.getElementById("row-"+id).style.display != 'none'){
+                console.log($(this).is(":hidden") );
                 $(this).prop("checked", false);
             }
         });
@@ -199,7 +199,7 @@ function modalAddNewRuleset(){
     //show progress-bar
     document.getElementById('progressBar-create-div').style.display="block";
     document.getElementById('progressBar-create').style.display="block";    
-
+    var length = 0;
     var newRuleset = new Map();
     $('input:checkbox:checked').each(function() {
         var uuid = $(this).prop("id");
@@ -212,6 +212,7 @@ function modalAddNewRuleset(){
             newRuleset[uuid]["rulesetName"] = document.getElementById('new-ruleset-name-input').value;
             newRuleset[uuid]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value;
             newRuleset[uuid]["sourceType"] = document.getElementById('source-type-'+uuid).innerHTML;
+            length++;
         }
     });
 
@@ -270,90 +271,105 @@ function modalAddNewRuleset(){
         var portmaster = document.getElementById('port-master').value;
         var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
         var nodeJSON = JSON.stringify(newRuleset);
-        axios({
-            method: 'put',
-            url: sourceurl,
-            timeout: 30000,
-            data: nodeJSON
-        })
-        .then(function (response) {
-            if (response.data.ack == "true"){                
-                document.getElementById('progressBar-create-div').style.display="none";
-                document.getElementById('progressBar-create').style.display="none";
-                document.location.href = 'https://' + ipmaster + '/rulesets.html';
-            }else if (response.data.ack == "false"){
-                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
-                document.getElementById('progressBar-create-div').style.display="none";
-                document.getElementById('progressBar-create').style.display="none";
+        if (length == 0){
+            document.getElementById('progressBar-create-div').style.display="none";
+            document.getElementById('progressBar-create').style.display="none";
 
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
-                document.getElementById('progressBar-create-div').style.display="none";
-                document.getElementById('progressBar-create').style.display="none";
-
-                lines = JSON.parse(response.data)
-                var html =
-                '<div class="modal-dialog modal-lg">'+
-                    '<div class="modal-content">'+
-                
-                        '<div class="modal-header">'+
-                            '<h4 class="modal-title">Lines duplicated</h4>'+
-                            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                        '</div>'+
-                
-                        '<div class="modal-body">'+
-                            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                                '<thead>                                                      ' +
-                                    '<tr>                                                         ' +
-                                    '<th>SID</th>                                                ' +
-                                    '<th>Files</th>                                         ' +
-                                    '</tr>                                                        ' +
-                                '</thead>                                                     ' +
-                                '<tbody>                                                     '
-                                    for (sid in lines){
-                                        for(values in lines[sid]){
-                                            var cont = true;
-                                            for(data in lines[sid][values]){
-                                                html = html + '<tr>'
-                                                if (cont){
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Cannot create an empty ruleset.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            axios({
+                method: 'put',
+                url: sourceurl,
+                timeout: 30000,
+                data: nodeJSON
+            })
+            .then(function (response) {
+                if (response.data.ack == "true"){                
+                    document.getElementById('progressBar-create-div').style.display="none";
+                    document.getElementById('progressBar-create').style.display="none";
+                    document.location.href = 'https://' + ipmaster + '/rulesets.html';
+                }else if (response.data.ack == "false"){
+                    $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                    document.getElementById('progressBar-create-div').style.display="none";
+                    document.getElementById('progressBar-create').style.display="none";
+    
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                    document.getElementById('progressBar-create-div').style.display="none";
+                    document.getElementById('progressBar-create').style.display="none";
+    
+                    lines = JSON.parse(response.data)
+                    var html =
+                    '<div class="modal-dialog modal-lg">'+
+                        '<div class="modal-content">'+
+                    
+                            '<div class="modal-header">'+
+                                '<h4 class="modal-title">Lines duplicated</h4>'+
+                                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                            '</div>'+
+                    
+                            '<div class="modal-body">'+
+                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                    '<thead>                                                      ' +
+                                        '<tr>                                                         ' +
+                                        '<th>SID</th>                                                ' +
+                                        '<th>Files</th>                                         ' +
+                                        '</tr>                                                        ' +
+                                    '</thead>                                                     ' +
+                                    '<tbody>                                                     '
+                                        for (sid in lines){
+                                            for(values in lines[sid]){
+                                                var cont = true;
+                                                for(data in lines[sid][values]){
+                                                    html = html + '<tr>'
+                                                    if (cont){
+                                                        html = html + 
+                                                        '<th rowspan="'+lines[sid]["counter"]+'">' +
+                                                            sid +
+                                                        '</th>'
+                                                        cont = false;
+                                                    }
                                                     html = html + 
-                                                    '<th rowspan="'+lines[sid]["counter"]+'">' +
-                                                        sid +
-                                                    '</th>'
-                                                    cont = false;
+                                                    '<td style="word-wrap: break-word;">'+
+                                                        lines[sid][values][data]["fileName"] +
+                                                    '</td></tr>'
                                                 }
-                                                html = html + 
-                                                '<td style="word-wrap: break-word;">'+
-                                                    lines[sid][values][data]["fileName"] +
-                                                '</td></tr>'
                                             }
                                         }
-                                    }
-                                html = html + '</tbody></table>'+
+                                    html = html + '</tbody></table>'+
+                            '</div>'+
+                    
+                            '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                                '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                            '</div>'+
+                    
                         '</div>'+
-                
-                        '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
-                            '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                        '</div>'+
-                
-                    '</div>'+
-                '</div>';
-        
-                document.getElementById('modal-window').innerHTML = html;
-                $('#modal-window').modal('show')     
-            }
-        })
-        .catch(function (error) {
-        });
+                    '</div>';
+            
+                    document.getElementById('modal-window').innerHTML = html;
+                    $('#modal-window').modal('show')     
+                }
+            })
+            .catch(function (error) {
+            });
+        }
     }
 }
 

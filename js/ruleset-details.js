@@ -38,7 +38,7 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid){
     var html = 
 
     '<div class="input-group" width="100%" id="search-input-nodes">'+
-        '<input class="form-control mx-3 searchInputNodes" type="text" placeholder="Search..." aria-label="Search" id="search-ruleset-details">'+
+        '<input class="form-control mx-3 searchInputNodes" type="text" placeholder="Search by rule file description..." aria-label="Search" id="search-ruleset-details">'+
         '<a type="button" class="btn btn-primary mr-2" onclick="loadRulesetBySearch(\''+uuid+'\', \''+sourceName+'\')"><i class="fas fa-search" style="color: white;"></i></a>'+
     '</div><br>'+
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +

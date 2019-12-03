@@ -84,15 +84,17 @@ function GetGroupsDetails(){
                                     }
                                     htmlsuricata = htmlsuricata + '<td></td>'+
                                 '</tr>'+
+
                                 '<tr>'+
                                     '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
                                     '<td>Master path:</td>';
                                     if(groups["mastersuricata"] == ""){
                                         htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
                                     }else{
-                                        html = html + '<td id="group-suricata-master-path" value="'+groups["mastersuricata"]+'">'+groups["mastersuricata"]+'</td>';
+                                        htmlsuricata = htmlsuricata + '<td id="group-suricata-master-path" value="'+groups["mastersuricata"]+'">'+groups["mastersuricata"]+'</td>';
                                     }
                                 htmlsuricata = htmlsuricata + '</tr>'+
+
                                 '<tr>'+                           
                                     '<td>Node path:</td>';
                                     if(groups["nodesuricata"] == ""){
@@ -550,11 +552,12 @@ function changePaths(guuid, type){
 }
 
 function SyncPathGroup(guuid, type){
-
-    if(type == "suricata" && document.getElementById('group-suricata-master-path').getAttribute("value") == ""
-        || type == "suricata" && document.getElementById('group-suricata-node-path').getAttribute("value") == ""
-        || type == "suricata" && document.getElementById('group-suricata-node-path').getAttribute("value") == ""
-        || type == "suricata" && document.getElementById('group-suricata-node-path').getAttribute("value") == ""){
+    console.log(document.getElementById('group-suricata-master-path').getAttribute("value"));
+    console.log(type);
+    if(type == "suricata" && document.getElementById('group-suricata-master-path').getAttribute("value") == "" ||
+        type == "suricata" && document.getElementById('group-suricata-node-path').getAttribute("value") == "" ||
+        type == "zeek" && document.getElementById('group-zeek-master-path').getAttribute("value") == "" ||
+        type == "zeek" && document.getElementById('group-zeek-node-path').getAttribute("value") == ""){
             
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');

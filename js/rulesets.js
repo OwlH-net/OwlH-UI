@@ -62,7 +62,7 @@ function generateAllRulesetsHTMLOutput(response) {
     }
     html = html + '</tbody></table>';
 
-    document.getElementById('search-input-ruesets').innerHTML = '<input class="form-control mx-3" type="text" placeholder="Search" aria-label="Search" id="search-ruleset-details">'+
+    document.getElementById('search-input-ruesets').innerHTML = '<input class="form-control mx-3" type="text" placeholder="Search by rule description..." aria-label="Search" id="search-ruleset-details">'+
             '<a type="button" class="btn btn-primary" onclick="loadRulesetBySearch()"><i class="fas fa-search" style="color: white;"></i></a>';
 
     if (isEmptyRulesets) {

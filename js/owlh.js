@@ -26,40 +26,83 @@ function showConfig(oip, oname, oport, ouuid){
     uuid.value = ouuid;
 }
 
-function PingNode(uuid) {
+// function DisableOfflineNodes() {
+//     $('#node-table-tbody tr').each(function(){
+//         console.log($(this));
+//         console.log($(this).attr('status'));
+//         // if ($(this).attr('status') == "online"){
+//         //     console.log("online");
+//         // }else if ($(this).attr('status') == "offline"){
+//         //     console.log("not...");
+//         // }
+//     });
+// }
+
+async function PingNode(uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ping/' + uuid;
     
-    axios({
+    await axios({
             method: 'get',
             url: nodeurl,
-            timeout: 30000
+            timeout: 3000
     })
-        .then(function (response) {
+        .then(function (response) {            
             if (response.data.ping=='pong') {
+                document.getElementById('node-actions-'+uuid).style.color = "Dodgerblue";
                 document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
                 document.getElementById(uuid+'-online').innerHTML = "ON LINE";
                 document.getElementById('node-row-'+uuid).setAttribute("status", "online");
 
                 PingMonitor(uuid);
                 var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
-                sortTableName();
+                // sortTableName();
             } else {
+                document.getElementById('node-monitor-'+uuid).onclick = "";
+                document.getElementById('node-services-'+uuid).onclick = "";
+                document.getElementById('node-modify-'+uuid).onclick = "";
+                document.getElementById('node-config-'+uuid).onclick = "";
+                document.getElementById('node-files-'+uuid).onclick = "";
+                document.getElementById('node-change-'+uuid).onclick = "";
+                document.getElementById('node-incident-'+uuid).onclick = "";
+                document.getElementById('node-actions-'+uuid).onclick = "";
+
+                document.getElementById('node-monitor-'+uuid).style.cursor = " default";
+                document.getElementById('node-services-'+uuid).style.cursor = "default";
+                document.getElementById('node-modify-'+uuid).style.cursor = "default";
+                document.getElementById('node-config-'+uuid).style.cursor = "default";
+                document.getElementById('node-files-'+uuid).style.cursor = "default";
+                document.getElementById('node-change-'+uuid).style.cursor = "default";
+                document.getElementById('node-incident-'+uuid).style.cursor = "default";
+                document.getElementById('node-actions-'+uuid).style.cursor = "default";
+
                 document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
                 document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
                 document.getElementById('node-row-'+uuid).setAttribute("status", "offline");
-                // $('#node-monitor-'+uuid).unbind("click");
-                // $('#node-services-'+uuid).unbind("click");
-                // $('#node-modify-'+uuid).unbind("click");
-                // $('#node-config-'+uuid).unbind("click");
-                // $('#node-files-'+uuid).unbind("click");
-                // $('#node-change-'+uuid).unbind("click");
-                // $('#node-incident-'+uuid).unbind("click");
-                // $('#node-actions-'+uuid).attr("color","grey");
-            }      
+            }  
+            if(document.getElementById('node-row-'+uuid).getAttribute == "offline"){
+                console.log("not a number");
+            }    
         })
-            .catch(function (error) {
+        .catch(function (error) {
+            document.getElementById('node-monitor-'+uuid).onclick = "";
+            document.getElementById('node-services-'+uuid).onclick = "";
+            document.getElementById('node-modify-'+uuid).onclick = "";
+            document.getElementById('node-config-'+uuid).onclick = "";
+            document.getElementById('node-files-'+uuid).onclick = "";
+            document.getElementById('node-change-'+uuid).onclick = "";
+            document.getElementById('node-incident-'+uuid).onclick = "";
+            document.getElementById('node-actions-'+uuid).onclick = "";
+
+            document.getElementById('node-monitor-'+uuid).style.cursor = " default";
+            document.getElementById('node-services-'+uuid).style.cursor = "default";
+            document.getElementById('node-modify-'+uuid).style.cursor = "default";
+            document.getElementById('node-config-'+uuid).style.cursor = "default";
+            document.getElementById('node-files-'+uuid).style.cursor = "default";
+            document.getElementById('node-change-'+uuid).style.cursor = "default";
+            document.getElementById('node-incident-'+uuid).style.cursor = "default";
+            document.getElementById('node-actions-'+uuid).style.cursor = "default";
         });   
 }
 
@@ -209,7 +252,7 @@ function GetAllNodes() {
                                 '</td>'+    
                                 '<td></td>'+        
                                 '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+                                   
-                                    '<span style="font-size: 15px; color: Dodgerblue;" id="node-actions-'+uuid+'">'+                                                                          
+                                    '<span style="font-size: 15px; color: Grey;" id="node-actions-'+uuid+'">'+                                                                          
                                         '<i id="node-monitor-'+uuid+'" class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring' +
                                         '<br><i id="node-services-'+uuid+'" class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration' +
                                         '<br><i id="node-modify-'+uuid+'" class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node' +
@@ -220,7 +263,7 @@ function GetAllNodes() {
                                         '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node';
                                     '</span>'+
                                 '</td> ' +
-                            '</tr>'; 
+                            '</tr>';                             
                         }
                 html = html + '</tbody></table>';
             
@@ -237,10 +280,9 @@ function GetAllNodes() {
                         if (document.getElementById('search-node-details').value.trim() == ""){ showAllHiddenNodes();} 
                     });
                 }                    
-            }
-
-            $('#node-table').click(function(){sortTable(); });
-
+            }            
+            // $('#node-table').click(function(){sortTable(); });
+            // DisableOfflineNodes();
         })
         .catch(function (error) {
             resultElement.innerHTML = '<h3 align="center">No connection</h3>'+
@@ -251,7 +293,7 @@ function GetAllNodes() {
 
 
 
-function sortTable() {
+// function sortTable() {
     // var $table = $('node-table');
     // var $tableBody = $table.find('tbody');
     // var rows, sortedRows;
@@ -272,7 +314,7 @@ function sortTable() {
     // $($('#node-table > tbody  > tr')).val('');
     // // $('#node-table > tbody  > tr').each(function() {
     // // });
-}
+// }
 
 function showNodes(status){
     if (status == "all"){

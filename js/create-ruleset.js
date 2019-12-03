@@ -1,3 +1,15 @@
+function loadJSONdata(){
+    $.getJSON('../conf/ui.conf', function(data) {
+      var ipLoad = document.getElementById('ip-master'); 
+      ipLoad.value = data.master.ip;
+      var portLoad = document.getElementById('port-master');
+      portLoad.value = data.master.port;      
+      loadRulesData();
+      loadTitleJSONdata();      
+    });
+}
+loadJSONdata();
+
 function loadRulesData(){
     var result = document.getElementById('new-ruleset-table');
     var ipmaster = document.getElementById('ip-master').value;
@@ -62,7 +74,7 @@ function generateAllRuleDataHTMLOutput(sources) {
             if(!arrayRulesets.includes(sources[source]["name"])){
                 arrayRulesets.push(sources[source]["name"]);
                 html = html +'<ul class="checkbox-grid">'+
-                ' <li style="display: block; float: left; width: 25%"><input type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked/><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
+                ' <li style="display: block; float: left; width: 25%"><input class="ruleset-input" type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked/><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
                 '</ul>';
                 
             }
@@ -79,12 +91,14 @@ function generateAllRuleDataHTMLOutput(sources) {
             '<div class="input-group-prepend">'+
                 '<span class="input-group-text">Search rule file</span>'+
             '</div>'+
-            '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset()"'+
-                'placeholder="Search for rulesets..." title="Insert a ruleset name for search">'+
+            '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\')"'+
+                'placeholder="Search for rule file name..." title="Insert a ruleset name for search">'+
         '</div>'+
     '</div>'+
-
-    '<button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
+    '<div class="mt-3">'+
+        '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mb-0" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
+        '<button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
+    '</div>'+
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
@@ -100,7 +114,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         if(sources[source]["type"]){
             if(sources[source]["exists"]=="true"){
                 isEmpty = false;
-                html = html + '<tr id="row-'+source+'"><td style="width: 100%; word-wrap: break-word;" align="center">'+
+                html = html + '<tr name="'+sources[source]["name"]+'" id="row-'+source+'"><td style="width: 100%; word-wrap: break-word;" align="center">'+
                         '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
                     '</td>'+
                     '<td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'" value="'+sources[source]["sourceType"]+'">'+                 
@@ -168,13 +182,12 @@ function addRulesetFilesToTable(sources){
                 document.getElementById("row-"+source).style.display = "none";
                 document.getElementById("row-"+source).value = "false"; //false == hidden at table
                 document.getElementById(source).checked = false; 
-                console.log(document.getElementById("row-"+source));//$(this).prop("checked", false);
             }
         }
     });
 }
 
-function searchRuleset(){
+function searchRuleset(rulesets){
     var input, filter, table, tr, td, i, txtValue;
     input = document.getElementById("ruleset-search-input");
     filter = input.value.toUpperCase();
@@ -183,12 +196,20 @@ function searchRuleset(){
     for (i = 0; i < tr.length; i++) {
         td = tr[i].getElementsByTagName("td")[2];
         if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-            } else {
-                tr[i].style.display = "none";
-            }
+        // if (rulesets.incledes(tr[i].name)) {
+
+            // $('.ruleset-input').each(function() {
+            //     if($(this).prop('checked') == "true"){
+            //         if (rulesets.incledes(tr[i].name)) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    // }
+                // }
+            // });
         }
     }
 }
@@ -418,14 +439,40 @@ function checkStatus() {
     document.getElementById('check-status-config').href = nodeurl;
 }
 
-function loadJSONdata(){
-    $.getJSON('../conf/ui.conf', function(data) {
-      var ipLoad = document.getElementById('ip-master'); 
-      ipLoad.value = data.master.ip;
-      var portLoad = document.getElementById('port-master');
-      portLoad.value = data.master.port;      
-      loadRulesData();
-      loadTitleJSONdata();      
-    });
-  }
-  loadJSONdata();
+function sortTableName() {
+    var type = document.getElementById('sort-nodes-name').getAttribute("sort");
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("create-ruleset-table");
+    switching = true;
+    while (switching) {
+		switching = false;
+		rows = table.rows;
+		for (i = 1; i < (rows.length - 1); i++) {
+			shouldSwitch = false;
+			x = rows[i].getAttribute("name");
+            y = rows[i + 1].getAttribute("name");
+            if (type == "asc"){
+                if (x.toLowerCase() > y.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }else{
+                if (x.toLowerCase() < y.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+		}
+		if (shouldSwitch) {
+			rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+			switching = true;
+		}
+    }
+
+    //change attr
+    if (type == "asc"){
+        document.getElementById('sort-nodes-name').setAttribute("sort", "desc");
+    }else{
+        document.getElementById('sort-nodes-name').setAttribute("sort", "asc");
+    }
+}

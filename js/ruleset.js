@@ -41,7 +41,7 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
         }
     }
     if(type == "ruleset" && !isCustomSourceType){
-        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="addToCustomRuleset(\''+rulesetuuid+'\')">Add to custom</button><br><br>';
+        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="getToCustomRuleset(\''+rulesetuuid+'\')">Add to custom</button><br><br>';
     }else if(type == "custom"){
         html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+fileuuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
     }       
@@ -125,7 +125,7 @@ function loadRulesetDetails(sid, fileuuid){
     document.location.href = 'https://' + ipmaster + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
 }
 
-function addToCustomRuleset(rulesetuuid){
+function getToCustomRuleset(rulesetuuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var customRulesetsURL = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/custom';

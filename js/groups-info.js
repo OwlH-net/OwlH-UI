@@ -552,8 +552,6 @@ function changePaths(guuid, type){
 }
 
 function SyncPathGroup(guuid, type){
-    console.log(document.getElementById('group-suricata-master-path').getAttribute("value"));
-    console.log(type);
     if(type == "suricata" && document.getElementById('group-suricata-master-path').getAttribute("value") == "" ||
         type == "suricata" && document.getElementById('group-suricata-node-path').getAttribute("value") == "" ||
         type == "zeek" && document.getElementById('group-zeek-master-path').getAttribute("value") == "" ||

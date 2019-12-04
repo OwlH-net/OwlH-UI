@@ -1519,7 +1519,7 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
         if (type == "network-socket"){ jsonSave["collector"] = document.getElementById('soft-tap-collector').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-socket').value;}
         var dataJSON = JSON.stringify(jsonSave);
         axios({
-            method: 'put',
+            method: 'post',
             url: nodeurl,
             timeout: 30000,
             data: dataJSON
@@ -3022,6 +3022,7 @@ function PingPluginsNode(uuid) {
     var tableSocketNetwork = "";
     var tableSocketPcap = "";
     var tableNetworkSocket = "";
+    var count = 0;
     axios({
         method: 'get',
         url: nodeurl,
@@ -3043,6 +3044,7 @@ function PingPluginsNode(uuid) {
             // }else if (response.data[line]["type"] == "suricata"){
             if (response.data[line]["type"] == "suricata"){
                 if (response.data[line]["command"]){
+                    count++;
                     tableSuricataCommand = tableSuricataCommand + '<tr>'+                    
                         '<td>'+response.data[line]["pid"]+'</td>'+
                         '<td>'+response.data[line]["command"]+'</td>'+
@@ -3344,7 +3346,7 @@ function PingPluginsNode(uuid) {
                         '</div>'+
                     '</td>'+
                 '</tr>';
-            }
+            }            
             document.getElementById('zeek-table-services').innerHTML = tableZeek;
             document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
             document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
@@ -3352,6 +3354,7 @@ function PingPluginsNode(uuid) {
             document.getElementById('suricata-table-services').innerHTML = tableSuricata;
             document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;           
         }
+        document.getElementById('managed-expert-span').innerHTML = document.getElementById('managed-expert-span').innerHTML + ' ('+count+')';
 
         axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid)
         .then(function (response) {
@@ -3776,10 +3779,10 @@ function ReloadFilesData(uuid){
                 if(response.data[file]["size"] < 0){
                     html = html +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
                 }else{
-                    if(response.data[file]["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["size"]+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                    if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1024)+' kB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                    if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1048576)+' MB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                    if(response.data[file]["size"]>=1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1073741824)+' GB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data[file]["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["size"].toFixed(2)+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1024).toFixed(2)+' kB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1048576).toFixed(2)+' MB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    if(response.data[file]["size"]>=1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1073741824).toFixed(2)+' GB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
                 }
                 document.getElementById('analyzer-file-path').innerHTML = html;
                 document.getElementById('analyzer-file-size').value = response.data[file]["size"];
@@ -3791,10 +3794,10 @@ function ReloadFilesData(uuid){
                             if(response.data[file][value] < 0){
                                 htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
                             }else{
-                                if(response.data[file][value]<1024){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file][value]+' Bytes</span>';}
-                                if(response.data[file][value]>=1024 && response.data[file][value]<1048576){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1024)+' kB</span>';}
-                                if(response.data[file][value]>=1048576 && response.data[file][value]<1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1048576)+' MB</span>';}
-                                if(response.data[file][value]>=1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1073741824)+' GB</span>';}
+                                if(response.data[file][value]<1024){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file][value].toFixed(2)+' Bytes</span>';}
+                                if(response.data[file][value]>=1024 && response.data[file][value]<1048576){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1024).toFixed(2)+' kB</span>';}
+                                if(response.data[file][value]>=1048576 && response.data[file][value]<1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1048576).toFixed(2)+' MB</span>';}
+                                if(response.data[file][value]>=1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1073741824).toFixed(2)+' GB</span>';}
                             }
                             document.getElementById('wazuh-file-column-'+x).innerHTML = htmlWazuh; 
                         }

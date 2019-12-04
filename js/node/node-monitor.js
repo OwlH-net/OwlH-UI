@@ -46,7 +46,7 @@ function loadPlugins(){
 
     //FILES
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-4 mb-0" style="color: black;" onclick="showActions(\'files\', \''+uuid+'\')"><b>Node files</b>'+ 
+        '<h6 class="border-bottom border-gray pb-4 mb-0" style="color: black;" onclick="showActions(\'files\', \''+uuid+'\')"><b>Node log files</b>'+ 
             '<i class="fas fa-sort-down" id="files-form-icon-'+uuid+'"></i>'+
             '<button type="button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddMonitorFileModal(\''+uuid+'\')">Add file</button>'+
         '</h6>'+

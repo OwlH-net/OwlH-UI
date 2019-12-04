@@ -97,15 +97,8 @@ function getRulesetsBySearch(){
     .catch(function error(error) {
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
-        $('html,body').scrollTop(0);
-        var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> No data found -- '+error+'.'+
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                '<span aria-hidden="true">&times;</span>'+
-            '</button>'+
-        '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        localStorage.setItem("searchError", "error");
+        document.location.href = 'https://' + ipmaster + '/rulesets.html';
     });
 }
 

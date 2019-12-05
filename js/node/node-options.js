@@ -20,7 +20,7 @@ function loadPlugins(){
             //suricata
             var htmlsuricata = ""+
             '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+           
-                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp|&nbsp <span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')">To expert</span>'+
+                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp|&nbsp <span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')"></span>'+
                 '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
 
                 '</span>' +
@@ -347,6 +347,7 @@ function loadPlugins(){
     document.getElementById('pills-wazuh').innerHTML = htmlwazuh;
     document.getElementById('pills-analyzer').innerHTML = htmlanalyzer;
 
+    getCommandsRunning(uuid);
     PingWazuh(uuid);
     PingWazuhFiles(uuid);
     PingAnalyzer(uuid);
@@ -360,6 +361,8 @@ function loadPlugins(){
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
+
+    // console.log( document.getElementById('expert-number-services').innerHTML );
 }
 
 function changeSuricataTable(uuid){
@@ -380,6 +383,7 @@ function changeSuricataTable(uuid){
     var progressBarDiv = document.getElementById('progressBar-options-div');
     progressBar.style.display = "block";
     progressBarDiv.style.display = "block";
+    
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/plugin/changeSuricataTable';
@@ -597,7 +601,6 @@ function getCurrentRulesetName(uuid) {
                 document.getElementById('current-ruleset').style.color = "red";
             }else{
                 document.getElementById('current-ruleset-options').innerHTML = response2.data;
-                // document.getElementById('current-ruleset').innerHTML = response2.data;
                 axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid)
                 .then(function (response) {
                     for (line in response.data){
@@ -620,19 +623,50 @@ function getCurrentRulesetName(uuid) {
     });
 }
 
-function GetMainconfData(uuid){
+async function getCommandsRunning(uuid){
+    // console.log("get command"+document.getElementById('expert-number-services').value);       
+    // var ipmaster = document.getElementById('ip-master').value;
+    // var portmaster = document.getElementById('port-master').value;
+    // var count = 0;
+    // await axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid)
+    // .then(function (response) {
+    //     for (line in response.data){
+    //         if(response.data[line]["command"]){count++;}
+    //     }
+    //     document.getElementById('expert-number-services').value = count;
+    //     console.log(document.getElementById('expert-number-services').value);      
+    // })
+    // .catch(function (error) {
+    // });
+}
+
+ async function GetMainconfData(uuid){   
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/getMainconfData/'+uuid;
-    axios({
+
+    var count = 0;
+    await axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid)
+    .then(function (response) {
+        for (line in response.data){
+            if(response.data[line]["command"]){count++;}
+        }
+        document.getElementById('expert-number-services').value = count;
+    })
+    .catch(function (error) {
+    });
+
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/getMainconfData/'+uuid;    
+    await axios({
         method: 'get',
         url: nodeurl,
         timeout: 30000
     })
-    .then(function (response) {
+    .then(function (response) {  
         for (service in response.data){
             if(service == "suricata"){
-                document.getElementById('managed-expert-span').innerHTML = 'To expert';
+                document.getElementById('managed-expert-span').innerHTML = 'To expert ('+count+')';
                 document.getElementById('table-suricata').style.display = 'block';
                     document.getElementById('table-suricata-command').style.display = 'none';
                 if(response.data[service]["status"] == "disabled"){
@@ -3012,7 +3046,7 @@ function PingStap(uuid) {
     return false;
 }
 
-function PingPluginsNode(uuid) {
+function PingPluginsNode(uuid) {    
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/' + uuid;
@@ -3354,7 +3388,8 @@ function PingPluginsNode(uuid) {
             document.getElementById('suricata-table-services').innerHTML = tableSuricata;
             document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;           
         }
-        document.getElementById('managed-expert-span').innerHTML = document.getElementById('managed-expert-span').innerHTML + ' ('+count+')';
+        // document.getElementById('expert-number-services').innerHTML = count;                   
+        // document.getElementById('managed-expert-span').innerHTML = document.getElementById('managed-expert-span').innerHTML+' ('+count+')';
 
         axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid)
         .then(function (response) {
@@ -3387,7 +3422,6 @@ function PingPluginsNode(uuid) {
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
-    
     })
     .catch(function (error) {
         $('html,body').scrollTop(0);

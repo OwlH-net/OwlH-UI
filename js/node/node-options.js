@@ -3063,6 +3063,7 @@ function PingPluginsNode(uuid) {
         timeout: 30000
     })
     .then(function (response) {
+        console.log(response.data);
         for(line in response.data){
             // if (line == "knownports"){
             //     if (response.data[line]["status"] == "Enabled"){
@@ -3089,8 +3090,18 @@ function PingPluginsNode(uuid) {
                         '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
                             if(response.data[line]["status"]=="enabled"){
                                 tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
                             }else if (response.data[line]["status"]=="disabled"){
                                 tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
                             }
                             tableSuricata = tableSuricata + '</td>'+
                         '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+

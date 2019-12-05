@@ -55,8 +55,15 @@ function loadPlugins(){
             var htmlzeek = ""+
             '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
-                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp| &nbsp'+
-                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalone</span> &nbsp <span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span>'+
+                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp '+
+            '<span id="2-zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Current configuration and status -> </span> &nbsp '+
+                '<span id="2-zeek-mode-standalone" class="badge bg-success align-text-bottom text-white" style="cursor:pointer;">Standalone</span> &nbsp <span id="2-zeek-mode-cluster" class="badge bg-success align-text-bottom text-white" style="cursor:pointer;">Cluster</span> &nbsp '+
+            '</div>'+
+            '<div>'+
+                '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Configure as -> </span> &nbsp '+  
+                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalone</span> &nbsp '+
+                '<span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span> &nbsp '+
+                '<span id="zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Expert</span>'+
             '</div>'+
                 //Zeek standalone
             '<div id="standalone-zeek-table" style="display:block;">'+
@@ -72,8 +79,10 @@ function loadPlugins(){
                     '</tbody>'+
                 '</table>'+
             '</div>'+
+            '<div id="expert-zeek-table" style="display:none;">'+
+            '</div>'+
             //zeek cluster
-            '<div id="cluster-zeek-table" class="cluster" style="display:block;"><br>'+
+            '<div id="cluster-zeek-table" class="cluster" style="display:none;"><br>'+
                 '<button id="sync-zeek-cluster" class="btn btn-primary float-right" style="font-size: 15px;" onclick="ModalSyncCluster(\''+uuid+'\')">Sync cluster</button>'+
                 '<div>'+
                     '<div><b style="display:inline;">Manager</b></div>'+
@@ -134,7 +143,7 @@ function loadPlugins(){
             '<span style="font-size: 15px; color: grey;">                                  ' +
                 '<i class="fas fa-stop-circle" style="cursor: pointer;" id="'+uuid+'-wazuh-icon"></i> &nbsp' +
                 '<i class="fas fa-sync-alt" style="cursor: pointer;" title="Reload Wazuh information" id="reload-wazuh" onclick="ReloadFilesData(\''+uuid+'\')"></i>' +
-                ' <a style="color:black;">|</a> <span style="cursor: pointer;" title="Edit main Wazuh config file" class="badge bg-primary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\',\'none\',\'/var/ossec/etc/ossec.conf\')">Edit main config file</span>'+
+                ' <a style="color:black;">|</a> <span style="cursor: pointer;" title="Edit main Wazuh config file" class="badge bg-primary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\',\'none\',\'/var/ossec/etc/ossec.conf\')">Edit ossec.conf file</span>'+
                 '<button class="btn btn-primary float-right" style="font-size: 15px;" id="show-wazuh-add-file">Add file</button>'+ 
             '</span></p>'+
             '<div>'+

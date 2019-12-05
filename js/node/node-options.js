@@ -356,7 +356,6 @@ function loadPlugins(){
     document.getElementById('pills-wazuh').innerHTML = htmlwazuh;
     document.getElementById('pills-analyzer').innerHTML = htmlanalyzer;
 
-    getCommandsRunning(uuid);
     PingWazuh(uuid);
     PingWazuhFiles(uuid);
     PingAnalyzer(uuid);
@@ -632,24 +631,7 @@ function getCurrentRulesetName(uuid) {
     });
 }
 
-async function getCommandsRunning(uuid){
-    // console.log("get command"+document.getElementById('expert-number-services').value);       
-    // var ipmaster = document.getElementById('ip-master').value;
-    // var portmaster = document.getElementById('port-master').value;
-    // var count = 0;
-    // await axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid)
-    // .then(function (response) {
-    //     for (line in response.data){
-    //         if(response.data[line]["command"]){count++;}
-    //     }
-    //     document.getElementById('expert-number-services').value = count;
-    //     console.log(document.getElementById('expert-number-services').value);      
-    // })
-    // .catch(function (error) {
-    // });
-}
-
- async function GetMainconfData(uuid){   
+async function GetMainconfData(uuid){   
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
 
@@ -2628,6 +2610,7 @@ function PingZeek(uuid) {
         timeout: 30000
     })
         .then(function (response) {
+            console.log(response.data);
             if (!response.data.path && !response.data.bin) {
                 document.getElementById(uuid + '-zeek').className = "badge bg-dark align-text-bottom text-white";
                 document.getElementById(uuid + '-zeek').innerHTML = "N/A";
@@ -3065,14 +3048,12 @@ function PingPluginsNode(uuid) {
     var tableSocketNetwork = "";
     var tableSocketPcap = "";
     var tableNetworkSocket = "";
-    var count = 0;
     axios({
         method: 'get',
         url: nodeurl,
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
         for(line in response.data){
             // if (line == "knownports"){
             //     if (response.data[line]["status"] == "Enabled"){
@@ -3088,7 +3069,6 @@ function PingPluginsNode(uuid) {
             // }else if (response.data[line]["type"] == "suricata"){
             if (response.data[line]["type"] == "suricata"){
                 if (response.data[line]["command"]){
-                    count++;
                     tableSuricataCommand = tableSuricataCommand + '<tr>'+                    
                         '<td>'+response.data[line]["pid"]+'</td>'+
                         '<td>'+response.data[line]["command"]+'</td>'+
@@ -3174,8 +3154,18 @@ function PingPluginsNode(uuid) {
                     '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
                         if(response.data[line]["status"]=="enabled"){
                             tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
                         }else if (response.data[line]["status"]=="disabled"){
                             tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
                         }
                         tableZeek = tableZeek + '</td>'+
                     '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
@@ -3218,13 +3208,24 @@ function PingPluginsNode(uuid) {
                 
             }else if (response.data[line]["type"] == "socket-network"){                
                 tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
                         if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
                         }else{
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
                         }
-                    tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    tableSocketNetwork = tableSocketNetwork + '</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
@@ -3272,13 +3273,24 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }else if (response.data[line]["type"] == "socket-pcap"){
                 tableSocketPcap = tableSocketPcap + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
                     if (response.data[line]["pid"] == "none"){
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                        if(response.data[line]["running"]=="true"){
+                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                        }
                     }else{
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                        if(response.data[line]["running"]=="true"){
+                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                        }
                     }
-                    tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    tableSocketPcap = tableSocketPcap + '</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
@@ -3336,13 +3348,24 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }else if (response.data[line]["type"] == "network-socket"){
                 tableNetworkSocket = tableNetworkSocket + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
                     if (response.data[line]["pid"] == "none"){
-                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
+                        if(response.data[line]["running"]=="true"){
+                            tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                        }else{
+                            tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                        }
                     }else{
-                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> ';
+                        if(response.data[line]["running"]=="true"){
+                            tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                        }else{
+                            tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                        }
                     }
-                    tableNetworkSocket = tableNetworkSocket + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    tableNetworkSocket = tableNetworkSocket + '</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;" id="network-socket-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
@@ -3408,8 +3431,6 @@ function PingPluginsNode(uuid) {
             document.getElementById('suricata-table-services').innerHTML = tableSuricata;
             document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;           
         }
-        // document.getElementById('expert-number-services').innerHTML = count;                   
-        // document.getElementById('managed-expert-span').innerHTML = document.getElementById('managed-expert-span').innerHTML+' ('+count+')';
 
         axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid)
         .then(function (response) {

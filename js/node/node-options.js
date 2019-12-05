@@ -3209,13 +3209,24 @@ function PingPluginsNode(uuid) {
                 
             }else if (response.data[line]["type"] == "socket-network"){                
                 tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
                         if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
                         }else{
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
                         }
-                    tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    tableSocketNetwork = tableSocketNetwork + '</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
@@ -3263,13 +3274,24 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }else if (response.data[line]["type"] == "socket-pcap"){
                 tableSocketPcap = tableSocketPcap + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
                     if (response.data[line]["pid"] == "none"){
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                        if(response.data[line]["running"]=="true"){
+                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                        }
                     }else{
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                        if(response.data[line]["running"]=="true"){
+                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                        }
                     }
-                    tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    tableSocketPcap = tableSocketPcap + '</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
@@ -3327,13 +3349,24 @@ function PingPluginsNode(uuid) {
                 '</tr>';
             }else if (response.data[line]["type"] == "network-socket"){
                 tableNetworkSocket = tableNetworkSocket + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
+                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
                     if (response.data[line]["pid"] == "none"){
-                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
+                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
+                        if(response.data[line]["running"]=="true"){
+                            tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                        }else{
+                            tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                        }
                     }else{
-                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> ';
+                        if(response.data[line]["running"]=="true"){
+                            tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                        }else{
+                            tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                        }
                     }
-                    tableNetworkSocket = tableNetworkSocket + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                    tableNetworkSocket = tableNetworkSocket + '</td>'+
+                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                     '<td style="word-wrap: break-word;" id="network-socket-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+

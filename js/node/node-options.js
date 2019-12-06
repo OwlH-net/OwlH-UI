@@ -51,22 +51,59 @@ function loadPlugins(){
                     '</table>'+
                 '</div>'+
                 '<br><br>';
-            // //zeek
+            //zeek
             var htmlzeek = ""+
             '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
                 '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp '+
-            '<span id="2-zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Current configuration and status -> </span> &nbsp '+
+            '<span id="2-zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" >Current configuration and status -> </span> &nbsp '+
                 '<span id="2-zeek-mode-standalone" class="badge bg-success align-text-bottom text-white" style="cursor:pointer;">Standalone</span> &nbsp <span id="2-zeek-mode-cluster" class="badge bg-success align-text-bottom text-white" style="cursor:pointer;">Cluster</span> &nbsp '+
             '</div>'+
             '<div>'+
                 '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Configure as -> </span> &nbsp '+  
-                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalone</span> &nbsp '+
-                '<span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span> &nbsp '+
-                '<span id="zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Expert</span>'+
-            '</div>'+
+                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'standalone-zeek-table\')">Standalone</span> &nbsp '+
+                '<span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
+                '<span id="zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'expert-zeek-table\')">Expert</span>'+
+            '</div>';
+                        //zeek expert
+            htmlzeek = htmlzeek + '<div id="expert-zeek-table" style="display:none;">'+
+                        '</br><b>Expert mode</b>'+
+                        '<table class="table" id="zeek-cluster-nodes" style="table-layout: fixed"  width="100%">'+                         
+                            '<tbody>';      
+                                htmlzeek = htmlzeek + '<tr>'+                           
+                                    '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditCluster(\''+uuid+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathCluster(\''+uuid+'\')"></i></td>'+
+                                    '<td>Master path</td>';
+                                    // if(groups["masterzeek"] == ""){
+                                        htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
+                                    // }else{
+                                    //     htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="'+groups["masterzeek"]+'">'+groups["masterzeek"]+'</td>';
+                                    // }
+                                htmlzeek = htmlzeek + '</tr>'+
+                                '<tr>'+                           
+                                    '<td>Node path</td>';
+                                    // if(groups["nodezeek"] == ""){
+                                        htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>';
+                                    // }else{
+                                    //     htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="'+groups["nodezeek"]+'">'+groups["nodezeek"]+'</td>';
+                                    // }                                            
+                                    htmlzeek = htmlzeek + '</tr>'+
+                                '<tr id="zeek-edit-row" style="display:none;">'+
+                                    '<td>Master: <input class="form-control" id="zeek-cluster-master" value="master"></td>'+
+                                    '<td>Node: <input class="form-control" id="zeek-cluster-node" value="node"></td>'+
+                                    '<td width="10%">'+
+                                        '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+uuid+'\', \'zeek\')">Save</button>'+
+                                        '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
+                                    '</td>'+
+                                '</tr>'+                                
+                            '</tbody>'+    
+                        '</table>'+
+                        //Zeek cluster
+                        '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
+                        '</table>'+
+                        '</div>';
+
                 //Zeek standalone
-            '<div id="standalone-zeek-table" style="display:block;">'+
+            htmlzeek = htmlzeek + '<div id="standalone-zeek-table" style="display:block;">'+
                 '<button id="add-zeek-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
                 '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
                     '<thead id="">'+
@@ -78,11 +115,10 @@ function loadPlugins(){
                     '<tbody id="zeek-table-services">'+
                     '</tbody>'+
                 '</table>'+
-            '</div>'+
-            '<div id="expert-zeek-table" style="display:none;">'+
-            '</div>'+
+            '</div>';
+
             //zeek cluster
-            '<div id="cluster-zeek-table" class="cluster" style="display:none;"><br>'+
+            htmlzeek = htmlzeek + '<div id="cluster-zeek-table" class="cluster" style="display:none;"><br>'+
                 '<button id="sync-zeek-cluster" class="btn btn-primary float-right" style="font-size: 15px;" onclick="ModalSyncCluster(\''+uuid+'\')">Sync cluster</button>'+
                 '<div>'+
                     '<div><b style="display:inline;">Manager</b></div>'+
@@ -373,6 +409,14 @@ function loadPlugins(){
     // console.log( document.getElementById('expert-number-services').innerHTML );
 }
 
+
+function showEditCluster(uuid){
+    console.log("showEditCluster");
+}
+
+function SyncPathCluster(uuid){
+    console.log("SyncPathCluster");
+}
 function changeSuricataTable(uuid){
     var suricata = document.getElementById('table-suricata');
     var command = document.getElementById('table-suricata-command');
@@ -687,17 +731,17 @@ async function GetMainconfData(uuid){
                     document.getElementById('zeek-current-status').innerHTML = 'Enabled';
                 }
                 if(response.data[service]["mode"] == "standalone"){
-                    document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white standalone';
+                    // document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white standalone';
                     document.getElementById('zeek-mode-standalone').disabled = true; 
-                    document.getElementById('zeek-mode-cluster').onclick = function(){ChangeZeekMode(uuid, "cluster");}; 
-                    document.getElementById('standalone-zeek-table').style.display = "block"; 
-                    document.getElementById('cluster-zeek-table').style.display = "none"; 
+                    // document.getElementById('zeek-mode-cluster').onclick = function(){ChangeZeekMode(uuid, "cluster");}; 
+                    // document.getElementById('standalone-zeek-table').style.display = "block"; 
+                    // document.getElementById('cluster-zeek-table').style.display = "none"; 
                 }else if(response.data[service]["mode"] == "cluster"){
-                    document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white cluster';
+                    // document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white cluster';
                     document.getElementById('zeek-mode-cluster').disabled = true; 
-                    document.getElementById('zeek-mode-standalone').onclick = function(){ChangeZeekMode(uuid, "standalone");}; 
-                    document.getElementById('standalone-zeek-table').style.display = "none";
-                    document.getElementById('cluster-zeek-table').style.display = "block";
+                    // document.getElementById('zeek-mode-standalone').onclick = function(){ChangeZeekMode(uuid, "standalone");}; 
+                    // document.getElementById('standalone-zeek-table').style.display = "none";
+                    // document.getElementById('cluster-zeek-table').style.display = "block";
                 }
             }
         }
@@ -748,6 +792,38 @@ function ModalAddClusterValue(uuid, type){
     $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value, document.getElementById('new-cluster-interface').value); });
     $('#add-cluster-modal-close').click(function(){ $('#modal-window').modal("hide");});
     $('#add-cluster-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function ChangeZeekConfigTable(tab){
+    if (tab == "standalone-zeek-table"){
+        document.getElementById('standalone-zeek-table').style.display = 'block';
+        document.getElementById('cluster-zeek-table').style.display = 'none';
+        document.getElementById('expert-zeek-table').style.display = 'none';
+
+
+        document.getElementById('zeek-mode-standalone').disabled = false;
+        document.getElementById('zeek-mode-cluster').disabled = true;
+        document.getElementById('zeek-mode-expert').disabled = true;
+
+    } else if (tab == "cluster-zeek-table") {
+        document.getElementById('standalone-zeek-table').style.display = 'none';
+        document.getElementById('cluster-zeek-table').style.display = 'block';
+        document.getElementById('expert-zeek-table').style.display = 'none';
+
+        document.getElementById('zeek-mode-standalone').disabled = true;
+        document.getElementById('zeek-mode-cluster').disabled = true;
+        document.getElementById('zeek-mode-expert').disabled = false;
+
+
+    } else if (tab == "expert-zeek-table") {
+        document.getElementById('standalone-zeek-table').style.display = 'none';
+        document.getElementById('cluster-zeek-table').style.display = 'none';
+        document.getElementById('expert-zeek-table').style.display = 'block';
+
+        document.getElementById('zeek-mode-standalone').disabled = true;
+        document.getElementById('zeek-mode-cluster').disabled = true;
+        document.getElementById('zeek-mode-expert').disabled = false;
+    }
 }
 
 function ModalSyncCluster(uuid){

@@ -43,8 +43,12 @@ function loadPlugins(){
                 '<div id="table-suricata-command" style="display:none;">'+
                     '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
                         '<thead>'+
-                            '<th width="20%">PID</th>'+
-                            '<th>Command</th>'+
+                            '<th width="10%">PID &nbsp '+
+                                '<span style="cursor: default;" title="Stop Suricata" class="badge bg-primary align-text-bottom text-white" onclick="StartSuricataMainConf()">Start</span>'+
+
+                            '</th>'+
+                            '<th >Command</th>'+
+                            '<th width="15%">Actions</th>'+
                         '</thead>'+
                         '<tbody id="suricata-table-services-command">'+
                         '</tbody>'+
@@ -417,11 +421,12 @@ function showEditCluster(uuid){
 function SyncPathCluster(uuid){
     console.log("SyncPathCluster");
 }
+
 function changeSuricataTable(uuid){
     var suricata = document.getElementById('table-suricata');
     var command = document.getElementById('table-suricata-command');
     var suricataButton = document.getElementById('add-suricata-button');
-    if(suricata.style.display == "block"){        
+    if(suricata.style.display == "block"){
         suricataButton.style.display = "none";
         suricata.style.display = "none";
         command.style.display = "block";
@@ -703,7 +708,7 @@ async function GetMainconfData(uuid){
             if(service == "suricata"){
                 document.getElementById('managed-expert-span').innerHTML = 'To expert ('+count+')';
                 document.getElementById('table-suricata').style.display = 'block';
-                    document.getElementById('table-suricata-command').style.display = 'none';
+                document.getElementById('table-suricata-command').style.display = 'none';
                 if(response.data[service]["status"] == "disabled"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
                     document.getElementById('suricata-current-status').innerHTML = 'Disabled';
@@ -715,6 +720,7 @@ async function GetMainconfData(uuid){
                 }else if(response.data[service]["status"] == "expert"){
                     document.getElementById('suricata-current-status').className = 'badge badge-pill bg-warning align-text-bottom text-white';
                     document.getElementById('table-suricata').style.display = 'none';
+                    document.getElementById('add-suricata-button').style.display = 'none';
                     document.getElementById('table-suricata-command').style.display = 'block';
                     document.getElementById('suricata-current-status').innerHTML = 'Expert';
                     document.getElementById('managed-expert-span').innerHTML = 'To managed';
@@ -800,29 +806,25 @@ function ChangeZeekConfigTable(tab){
         document.getElementById('cluster-zeek-table').style.display = 'none';
         document.getElementById('expert-zeek-table').style.display = 'none';
 
-
-        document.getElementById('zeek-mode-standalone').disabled = false;
-        document.getElementById('zeek-mode-cluster').disabled = true;
-        document.getElementById('zeek-mode-expert').disabled = true;
-
+        document.getElementById('zeek-mode-standalone').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('zeek-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
     } else if (tab == "cluster-zeek-table") {
         document.getElementById('standalone-zeek-table').style.display = 'none';
         document.getElementById('cluster-zeek-table').style.display = 'block';
         document.getElementById('expert-zeek-table').style.display = 'none';
 
-        document.getElementById('zeek-mode-standalone').disabled = true;
-        document.getElementById('zeek-mode-cluster').disabled = true;
-        document.getElementById('zeek-mode-expert').disabled = false;
-
-
+        document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('zeek-mode-cluster').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('zeek-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
     } else if (tab == "expert-zeek-table") {
         document.getElementById('standalone-zeek-table').style.display = 'none';
         document.getElementById('cluster-zeek-table').style.display = 'none';
         document.getElementById('expert-zeek-table').style.display = 'block';
 
-        document.getElementById('zeek-mode-standalone').disabled = true;
-        document.getElementById('zeek-mode-cluster').disabled = true;
-        document.getElementById('zeek-mode-expert').disabled = false;
+        document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('zeek-mode-expert').className = 'badge bg-primary align-text-bottom text-white';
     }
 }
 
@@ -1343,6 +1345,26 @@ function deployNode(value,uuid,nodeName){
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
+}
+
+//Stop suricata using main.conf
+function StopSuricataMainConf(uuid) {
+    console.log("stop suricata using main.conf configuration")
+}
+
+//Stop suricata using kill -9 
+function KillSuricataMainConf(uuid) {
+    console.log("kill suricata using main.conf configuration")
+}
+
+//Stop suricata using kill -9 
+function ReloadSuricataMainConf(uuid) {
+    console.log("reload suricata using main.conf configuration")
+}
+
+//Stop suricata using kill -9 
+function StartSuricataMainConf() {
+    console.log("start suricata using main.conf configuration")
 }
 
 //Stop suricata system
@@ -3148,6 +3170,12 @@ function PingPluginsNode(uuid) {
                     tableSuricataCommand = tableSuricataCommand + '<tr>'+                    
                         '<td>'+response.data[line]["pid"]+'</td>'+
                         '<td>'+response.data[line]["command"]+'</td>'+
+                        '<td>'+
+                            '<span style="cursor: default;" title="Stop Suricata using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="StopSuricataMainConf(\''+response.data[line]["pid"]+'\')">Stop</span> &nbsp '+
+                            '<span style="cursor: default;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
+                            '<span style="cursor: default;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+response.data[line]["pid"]+'\')">Reload</span>'+
+                        '</td>'+
+
                     '<tr>';
                 }else{
                     tableSuricata = tableSuricata + '<tr>'+

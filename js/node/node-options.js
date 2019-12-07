@@ -19,97 +19,169 @@ function loadPlugins(){
     //SURICATA & ZEEK
             //suricata
             var htmlsuricata = ""+
-            '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+           
-                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp|&nbsp <span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')"></span>'+
-                '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
+            '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+
+                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
+                    '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp|&nbsp '+
+                '<span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')"></span> &nbsp |'+
+                '<span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp '+
+                '<b> Current ruleset: </b><i id="current-ruleset-options"></i>'+
 
-                '</span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px; display:block;" id="add-suricata-button" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
-                '<div id="table-suricata" style="display:block;">'+
-                    '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                        '<thead>'+
-                            '<th width="16%">Description</th>'+
-                            '<th width="16%">Status</th>'+
-                            '<th width="16%">BPF</th>'+
-                            '<th width="16%">Ruleset</th>'+
-                            '<th width="16%">Interface</th>'+
-                            '<th width="16%">Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="suricata-table-services">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div>'+
-                '<div id="table-suricata-command" style="display:none;">'+
-                    '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                        '<thead>'+
-                            '<th width="10%">PID &nbsp '+
-                                '<span style="cursor: default;" title="Stop Suricata" class="badge bg-primary align-text-bottom text-white" onclick="StartSuricataMainConf()">Start</span>'+
+            '<div id="table-suricata" style="display:block;">'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th width="16%">Description</th>'+
+                        '<th width="16%">Status</th>'+
+                        '<th width="16%">BPF</th>'+
+                        '<th width="16%">Ruleset</th>'+
+                        '<th width="16%">Interface</th>'+
+                        '<th width="16%">Actions</th>'+
+                    '</thead>'+
+                    '<tbody id="suricata-table-services">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div>'+
+            '<div id="table-suricata-command" style="display:none;">'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th width="10%">PID '+
 
-                            '</th>'+
-                            '<th >Command</th>'+
-                            '<th width="15%">Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="suricata-table-services-command">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div>'+
-                '<br><br>';
+                        '</th>'+
+                        '<th >Command</th>'+
+                        '<th width="20%">Actions &nbsp '+
+                            '<span style="cursor: default;" title="Start Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="StartSuricataMainConf()">Start</span> &nbsp '+
+                            '<span style="cursor: default;" title="Stop Suricata using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="StopSuricataMainConf()">Stop</span> &nbsp '+
+                        '</th>'+
+                    '</thead>'+
+                    '<tbody id="suricata-table-services-command">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div>'+
+
             //zeek
             var htmlzeek = ""+
             '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
                 '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp '+
-            '<span id="2-zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" >Current configuration and status -> </span> &nbsp '+
-                '<span id="2-zeek-mode-standalone" class="badge bg-success align-text-bottom text-white" style="cursor:pointer;">Standalone</span> &nbsp <span id="2-zeek-mode-cluster" class="badge bg-success align-text-bottom text-white" style="cursor:pointer;">Cluster</span> &nbsp '+
-            '</div>'+
-            '<div>'+
-                '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Configure as -> </span> &nbsp '+  
-                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'standalone-zeek-table\')">Standalone</span> &nbsp '+
-                '<span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
-                '<span id="zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'expert-zeek-table\')">Expert</span>'+
+                '<span id="btn-zeek-node-status" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-status-tab\')">Current status</span> &nbsp '+
+                '<span id="btn-zeek-node-configuration" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-configuration-tab\')">Change Zeek configuration</span>'+
+            '</div></br>';
+
+            // ZEEK STATUS - GLOBAL
+            htmlzeek = htmlzeek + ""+
+            '<div id="zeek-status-tab" style="display:block;">'+
+                '<span id="zeek-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
+                    '<span style="cursor: default;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white">Stop</span> &nbsp '+
+                    '<span style="cursor: default;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white">Start</span> &nbsp '+
+                    '<span style="cursor: default;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white">Deploy</span> &nbsp '+
+                    '<span style="cursor: default;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white">Status</span> &nbsp '+
+                '</span>'+
+                '<div id="status-zeek-table" style="display:block;">'+
+                    '</br><b>Current status</b> &nbsp '+
+
+                    '<table class="table" id="tb-zeek-current-status" style="table-layout: fixed"  width="100%">'+
+                        '<tbody>'+
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Zeek Mode</td>'+
+                                '<td>Standalone / Cluster</td>'+
+                                '<td style="color: red;">extra info</td>'+
+                            '</tr>'+
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Node Role</td>'+
+                                '<td>node role value</td>'+
+                                '<td style="color: red;">extra info</td>'+
+                            '</tr>'+
+                        '</tbody>'+
+                    '</table>'+
+                '</div>'+
+                '<div id="status-zeek-detail-table" style="display:block;">'+
+                    '</br><b>Status Detail</b>'+
+                    '<table class="table" id="tb-zeek-current-status" style="table-layout: fixed"  width="100%">'+
+                        '<thead id="">'+
+                            '<th>Name (host)</th>'+
+                            '<th>Status</th>'+
+                            '<th>Type</th>'+
+                            '<th>Interface</th>'+
+                            '<th>PID</th>'+
+                            '<th>Started</th>'+
+                            '<th>Extra</th>'+
+                        '</thead>'+
+                        '<tbody>'+
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Zeek Mode</td>'+
+                                '<td>Runningg</td>'+
+                                '<td>Worker</td>'+
+                                '<td>eth0</td>'+
+                                '<td>34453</td>'+
+                                '<td>Started</td>'+
+                                '<td style="color: red;">Extra info</td>'+
+                            '</tr>'+
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Node Role</td>'+
+                                '<td>node role value</td>'+
+                                '<td style="color: red;">extra info</td>'+
+                            '</tr>'+
+                        '</tbody>'+
+                    '</table>'+
+                '</div>'+
             '</div>';
-                        //zeek expert
-            htmlzeek = htmlzeek + '<div id="expert-zeek-table" style="display:none;">'+
-                        '</br><b>Expert mode</b>'+
-                        '<table class="table" id="zeek-cluster-nodes" style="table-layout: fixed"  width="100%">'+                         
-                            '<tbody>';      
-                                htmlzeek = htmlzeek + '<tr>'+                           
-                                    '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditCluster(\''+uuid+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathCluster(\''+uuid+'\')"></i></td>'+
-                                    '<td>Master path</td>';
-                                    // if(groups["masterzeek"] == ""){
-                                        htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
-                                    // }else{
-                                    //     htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="'+groups["masterzeek"]+'">'+groups["masterzeek"]+'</td>';
-                                    // }
-                                htmlzeek = htmlzeek + '</tr>'+
-                                '<tr>'+                           
-                                    '<td>Node path</td>';
-                                    // if(groups["nodezeek"] == ""){
-                                        htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>';
-                                    // }else{
-                                    //     htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="'+groups["nodezeek"]+'">'+groups["nodezeek"]+'</td>';
-                                    // }                                            
-                                    htmlzeek = htmlzeek + '</tr>'+
-                                '<tr id="zeek-edit-row" style="display:none;">'+
-                                    '<td>Master: <input class="form-control" id="zeek-cluster-master" value="master"></td>'+
-                                    '<td>Node: <input class="form-control" id="zeek-cluster-node" value="node"></td>'+
-                                    '<td width="10%">'+
-                                        '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+uuid+'\', \'zeek\')">Save</button>'+
-                                        '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
-                                    '</td>'+
-                                '</tr>'+                                
-                            '</tbody>'+    
-                        '</table>'+
-                        //Zeek cluster
-                        '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
-                        '</table>'+
-                        '</div>';
+
+            // ZEEK CONFIGURATION - GLOBAL
+            htmlzeek = htmlzeek +
+            '<div id="zeek-configuration-tab" style="display:none;">'+
+                '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Edit Configuration &nbsp '+  
+                    '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'standalone-zeek-table\')">Standalone</span> &nbsp '+
+                    '<span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
+                    '<span id="zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'expert-zeek-table\')">Expert</span>'+
+                '</span> ';
+                
+                //zeek expert
+                htmlzeek = htmlzeek +
+                '<div id="expert-zeek-table" style="display:none;">'+
+                    '</br><b>Expert mode</b>'+
+                    '<table class="table" id="zeek-cluster-nodes" style="table-layout: fixed"  width="100%">'+
+                        '<tbody>';
+                        htmlzeek = htmlzeek +
+                        '<tr>'+
+                            '<td width="20%" class="align-middle">Node.cfg file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Upload node.cfg file"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;"></i></td>'+
+                            '<td>node.cfg path</td>'+
+                            '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek node.cfg...</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td width="20%" class="align-middle">Network.cfg file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Upload node.cfg file"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;"></i></td>'+
+                            '<td>network.cfg path</td>'+
+                            '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek network.cfg...</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditCluster(\''+uuid+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathCluster(\''+uuid+'\')"></i></td>'+
+                            '<td>Master path</td>'+
+                            '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td>Node path</td>'+
+                            '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>'+
+                        '</tr>'+
+                        '<tr id="zeek-edit-row" style="display:none;">'+
+                            '<td>Master: <input class="form-control" id="zeek-cluster-master" value="master"></td>'+
+                            '<td>Node: <input class="form-control" id="zeek-cluster-node" value="node"></td>'+
+                            '<td width="10%">'+
+                                '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+uuid+'\', \'zeek\')">Save</button>'+
+                                '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
+                           '</td>'+
+                        '</tr>'+                                
+                        '</tbody>'+    
+                    '</table>'+
+                    //Zeek cluster
+                    '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
+                    '</table>'+
+                '</div>';
 
                 //Zeek standalone
-            htmlzeek = htmlzeek + '<div id="standalone-zeek-table" style="display:block;">'+
-                '<button id="add-zeek-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
-                '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                htmlzeek = htmlzeek +
+                '<div id="standalone-zeek-table" style="display:none;">'+
+                    '<button id="add-zeek-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
+                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
                     '<thead id="">'+
                         '<th>Description</th>'+
                         '<th>Status</th>'+
@@ -118,59 +190,67 @@ function loadPlugins(){
                     '</thead>'+
                     '<tbody id="zeek-table-services">'+
                     '</tbody>'+
-                '</table>'+
-            '</div>';
+                    '</table>'+
+                '</div>';
 
-            //zeek cluster
-            htmlzeek = htmlzeek + '<div id="cluster-zeek-table" class="cluster" style="display:none;"><br>'+
-                '<button id="sync-zeek-cluster" class="btn btn-primary float-right" style="font-size: 15px;" onclick="ModalSyncCluster(\''+uuid+'\')">Sync cluster</button>'+
-                '<div>'+
-                    '<div><b style="display:inline;">Manager</b></div>'+
-                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
-                        '<thead>'+
-                            '<th>Host</th>'+
-                            '<th>Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="zeek-table-manager">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div><br>'+
-                '<div style="display:inline;">'+
-                    '<div><b style="display:inline;">Logger</b></div>'+
-                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
-                        '<thead>'+
-                            '<th>Host</th>'+
-                            '<th>Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="zeek-table-logger">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div><br>'+
-                '<div>'+
-                    '<div><b style="display:inline;">Proxy</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'proxy\')">Add proxy</button></div>'+
-                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
-                        '<thead>'+
-                            '<th>Name</th>'+
-                            '<th>Host</th>'+
-                            '<th>Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="zeek-table-proxy">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div><br>'+
-                '<div>'+
-                    '<div><b style="display:inline;">Worker</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'worker\')">Add worker</button></div>'+
-                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
-                        '<thead>'+
-                            '<th>Name</th>'+
-                            '<th>Host</th>'+
-                            '<th>Interface</th>'+
-                            '<th>Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="zeek-table-worker">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div><br>'+
+                //zeek cluster
+                htmlzeek = htmlzeek +
+                '<div id="cluster-zeek-table" class="cluster" style="display:none;"><br>'+
+                    '<button id="sync-zeek-cluster" class="btn btn-primary float-right" style="font-size: 15px;" onclick="ModalSyncCluster(\''+uuid+'\')">Sync cluster</button>'+
+                    '<div>'+
+                        '<div>'+
+                            '<b style="display:inline;">Manager</b>'+
+                        '</div>'+
+                        '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                            '<thead>'+
+                                '<th>Host</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="zeek-table-manager">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div></br>'+
+                    '<div>'+
+                        '<div>'+
+                            '<b style="display:inline;">Logger</b>'+
+                        '</div>'+
+                        '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                            '<thead>'+
+                                '<th>Host</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="zeek-table-logger">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div></br>'+
+                    '<div>'+
+                        '<div><b style="display:inline;">Proxy</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'proxy\')">Add proxy</button>'+
+                        '</div>'+
+                        '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                            '<thead>'+
+                                '<th>Name</th>'+
+                                '<th>Host</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="zeek-table-proxy">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div></br>'+
+                    '<div>'+
+                        '<div><b style="display:inline;">Worker</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'worker\')">Add worker</button>'+
+                        '</div>'+
+                        '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                            '<thead>'+
+                                '<th>Name</th>'+
+                                '<th>Host</th>'+
+                                '<th>Interface</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="zeek-table-worker">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div><br>'+
+                '</div>'+
             '</div>';
     
     //wazuh
@@ -825,6 +905,23 @@ function ChangeZeekConfigTable(tab){
         document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('zeek-mode-expert').className = 'badge bg-primary align-text-bottom text-white';
+    }
+}
+
+function ChangeZeekStatusTable(tab){
+    if (tab == "zeek-status-tab"){
+        document.getElementById('zeek-status-tab').style.display = 'block';
+        document.getElementById('zeek-configuration-tab').style.display = 'none';
+
+
+        document.getElementById('btn-zeek-node-status').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('btn-zeek-node-configuration').className = 'badge bg-secondary align-text-bottom text-white';
+    } else if (tab == "zeek-configuration-tab") {
+        document.getElementById('zeek-status-tab').style.display = 'none';
+        document.getElementById('zeek-configuration-tab').style.display = 'block';
+
+        document.getElementById('btn-zeek-node-status').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('btn-zeek-node-configuration').className = 'badge bg-primary align-text-bottom text-white';
     }
 }
 
@@ -3171,7 +3268,6 @@ function PingPluginsNode(uuid) {
                         '<td>'+response.data[line]["pid"]+'</td>'+
                         '<td>'+response.data[line]["command"]+'</td>'+
                         '<td>'+
-                            '<span style="cursor: default;" title="Stop Suricata using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="StopSuricataMainConf(\''+response.data[line]["pid"]+'\')">Stop</span> &nbsp '+
                             '<span style="cursor: default;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
                             '<span style="cursor: default;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+response.data[line]["pid"]+'\')">Reload</span>'+
                         '</td>'+

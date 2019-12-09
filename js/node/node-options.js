@@ -57,7 +57,7 @@ function loadPlugins(){
                     '<tbody id="suricata-table-services-command">'+
                     '</tbody>'+
                 '</table>'+
-            '</div>'+
+            '</div>';
 
             //zeek
             var htmlzeek = ""+

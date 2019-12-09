@@ -50,8 +50,8 @@ function loadPlugins(){
                         '</th>'+
                         '<th >Command</th>'+
                         '<th width="20%">Actions &nbsp '+
-                            '<span style="cursor: default;" title="Start Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="StartSuricataMainConf()">Start</span> &nbsp '+
-                            '<span style="cursor: default;" title="Stop Suricata using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="StopSuricataMainConf()">Stop</span> &nbsp '+
+                            '<span style="cursor: pointer;" title="Start Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="StartSuricataMainConf(\''+uuid+'\')">Start</span> &nbsp '+
+                            '<span style="cursor: pointer;" title="Stop Suricata using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="StopSuricataMainConf(\''+uuid+'\')">Stop</span> &nbsp '+
                         '</th>'+
                     '</thead>'+
                     '<tbody id="suricata-table-services-command">'+
@@ -65,17 +65,17 @@ function loadPlugins(){
                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
                 '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp '+
                 '<span id="btn-zeek-node-status" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-status-tab\')">Current status</span> &nbsp '+
-                '<span id="btn-zeek-node-configuration" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-configuration-tab\')">Change Zeek configuration</span>'+
+                '<span id="btn-zeek-node-configuration" class="badge bg-secondary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-configuration-tab\')">Change Zeek configuration</span>'+
             '</div></br>';
 
             // ZEEK STATUS - GLOBAL
             htmlzeek = htmlzeek + ""+
             '<div id="zeek-status-tab" style="display:block;">'+
                 '<span id="zeek-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
-                    '<span style="cursor: default;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white">Stop</span> &nbsp '+
-                    '<span style="cursor: default;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white">Start</span> &nbsp '+
-                    '<span style="cursor: default;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white">Deploy</span> &nbsp '+
-                    '<span style="cursor: default;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white">Status</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'deploy\')">Deploy</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'currentstatus\')">Status</span> &nbsp '+
                 '</span>'+
                 '<div id="status-zeek-table" style="display:block;">'+
                     '</br><b>Current status</b> &nbsp '+
@@ -84,12 +84,12 @@ function loadPlugins(){
                         '<tbody>'+
                             '<tr>'+
                                 '<td width="20%" class="align-middle">Zeek Mode</td>'+
-                                '<td>Standalone / Cluster</td>'+
+                                '<td id="zeek-current-mode"></td>'+
                                 '<td style="color: red;">extra info</td>'+
                             '</tr>'+
                             '<tr>'+
                                 '<td width="20%" class="align-middle">Node Role</td>'+
-                                '<td>node role value</td>'+
+                                '<td id="zeek-role"></td>'+
                                 '<td style="color: red;">extra info</td>'+
                             '</tr>'+
                         '</tbody>'+
@@ -107,21 +107,7 @@ function loadPlugins(){
                             '<th>Started</th>'+
                             '<th>Extra</th>'+
                         '</thead>'+
-                        '<tbody>'+
-                            '<tr>'+
-                                '<td width="20%" class="align-middle">Zeek Mode</td>'+
-                                '<td>Runningg</td>'+
-                                '<td>Worker</td>'+
-                                '<td>eth0</td>'+
-                                '<td>34453</td>'+
-                                '<td>Started</td>'+
-                                '<td style="color: red;">Extra info</td>'+
-                            '</tr>'+
-                            '<tr>'+
-                                '<td width="20%" class="align-middle">Node Role</td>'+
-                                '<td>node role value</td>'+
-                                '<td style="color: red;">extra info</td>'+
-                            '</tr>'+
+                        '<tbody id="zeek-status-details">'+
                         '</tbody>'+
                     '</table>'+
                 '</div>'+
@@ -485,6 +471,7 @@ function loadPlugins(){
     PingPluginsNode(uuid);
     PingCluster(uuid);
     getCurrentRulesetName(uuid);
+    PingZeek(uuid);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
@@ -1444,25 +1431,228 @@ function deployNode(value,uuid,nodeName){
     });
 }
 
+function LaunchZeekMainConf(uuid, param) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/LaunchZeekMainConf';
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    jsonValues["param"] = param;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+        .then(function (response) {
+            if(response.data != null){
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Launch Zeek main conf: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                } 
+            }else{
+                loadPlugins();
+            }
+        })
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Launch Zeek main conf: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+}
+
+//Stop suricata using kill -9 
+function StartSuricataMainConf(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StartSuricataMain';
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+        .then(function (response) {
+            if(response.data != null){
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Start Suricata main conf: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
+            }else{
+                loadPlugins();
+            }
+        })
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Start Suricata main conf: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+}
+
 //Stop suricata using main.conf
 function StopSuricataMainConf(uuid) {
-    console.log("stop suricata using main.conf configuration")
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StopSuricataMain';
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+        .then(function (response) {
+            if(response.data != null){
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Stop Suricata main conf: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                } 
+            }else{
+                loadPlugins();
+            }
+        })
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Stop Suricata main conf: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
 }
 
 //Stop suricata using kill -9 
-function KillSuricataMainConf(uuid) {
-    console.log("kill suricata using main.conf configuration")
+function KillSuricataMainConf(uuid, pid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/KillSuricataMain';
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    jsonValues["pid"] = pid;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+        .then(function (response) {
+            if(response.data != null){
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Kill Suricata main conf: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
+            }else{
+                loadPlugins();
+            }
+        })
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Kill Suricata main conf: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
 }
 
 //Stop suricata using kill -9 
-function ReloadSuricataMainConf(uuid) {
-    console.log("reload suricata using main.conf configuration")
+function ReloadSuricataMainConf(uuid, pid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ReloadSuricataMain';
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    jsonValues["pid"] = pid;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+        .then(function (response) {
+            if(response.data != null){
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Reload Suricata main conf response: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
+            }else{
+                loadPlugins();
+            }
+        })
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Reload Suricata main conf: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
 }
 
-//Stop suricata using kill -9 
-function StartSuricataMainConf() {
-    console.log("start suricata using main.conf configuration")
-}
 
 //Stop suricata system
 function StopSuricata(uuid) {
@@ -2804,36 +2994,34 @@ function PingZeek(uuid) {
         url: nodeurl,
         timeout: 30000
     })
-        .then(function (response) {
-            console.log(response.data);
-            if (!response.data.path && !response.data.bin) {
-                document.getElementById(uuid + '-zeek').className = "badge bg-dark align-text-bottom text-white";
-                document.getElementById(uuid + '-zeek').innerHTML = "N/A";
-                document.getElementById(uuid + '-zeek-icon').className = "fas fa-play-circle";
-                document.getElementById(uuid + '-zeek-icon').onclick = function () { RunZeek(uuid); };
-                document.getElementById(uuid + '-zeek-icon').title = "Run zeek";
-            } else if (response.data.path || response.data.bin) {
-                if (response.data.running) {
-                    document.getElementById(uuid + '-zeek').className = "badge bg-success align-text-bottom text-white";
-                    document.getElementById(uuid + '-zeek').innerHTML = "ON";
-                    document.getElementById(uuid + '-zeek-icon').className = "fas fa-stop-circle";
-                    document.getElementById(uuid + '-zeek-icon').onclick = function () { StopZeek(uuid); };
-                    document.getElementById(uuid + '-zeek-icon').title = "Stop Zeek";
-                } else {
-                    document.getElementById(uuid + '-zeek').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(uuid + '-zeek').innerHTML = "OFF";
-                    document.getElementById(uuid + '-zeek-icon').className = "fas fa-play-circle";
-                    document.getElementById(uuid + '-zeek-icon').onclick = function () { RunZeek(uuid); };
-                    document.getElementById(uuid + '-zeek-icon').title = "Run Zeek";
-                }
+        .then(function (response) {            
+            document.getElementById("zeek-current-mode").innerHTML = response.data["mode"];
+            document.getElementById("zeek-role").innerHTML = response.data["role"];
+
+            var html = '';
+            for(node in response.data.nodes){
+                html = html + '<tr>'+
+                    '<td>'+response.data.nodes[node]["host"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["status"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["type"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["interface"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["pid"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["started"]+'</td>'+
+                    '<td><i class="fas fa-eye"></i></td>'+
+                '</tr>';
             }
-            return true;
+            document.getElementById("zeek-status-details").innerHTML = html;
         })
         .catch(function (error) {
-            document.getElementById(uuid + '-zeek').className = "badge bg-dark align-text-bottom text-white";
-            document.getElementById(uuid + '-zeek').innerHTML = "N/A";
-
-            return false;
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Ping Zeek: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
     return false;
 }
@@ -3143,9 +3331,7 @@ function RunStap(uuid) {
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
-            // setTimeout(function (){
-                loadPlugins();
-            // }, 1500);
+            loadPlugins();
         }
     })
     .catch(function error(error) {
@@ -3268,8 +3454,8 @@ function PingPluginsNode(uuid) {
                         '<td>'+response.data[line]["pid"]+'</td>'+
                         '<td>'+response.data[line]["command"]+'</td>'+
                         '<td>'+
-                            '<span style="cursor: default;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
-                            '<span style="cursor: default;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+response.data[line]["pid"]+'\')">Reload</span>'+
+                            '<span style="cursor: pointer;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
+                            '<span style="cursor: pointer;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Reload</span>'+
                         '</td>'+
 
                     '<tr>';

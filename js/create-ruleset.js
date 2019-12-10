@@ -336,7 +336,7 @@ function modalAddNewRuleset(){
                     $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
                     document.getElementById('progressBar-create-div').style.display="none";
                     document.getElementById('progressBar-create').style.display="none";
-    
+                        
                     lines = JSON.parse(response.data)
                     var html =
                     '<div class="modal-dialog modal-lg">'+
@@ -360,6 +360,9 @@ function modalAddNewRuleset(){
                                             for(values in lines[sid]){
                                                 var cont = true;
                                                 for(data in lines[sid][values]){
+                                                    for(x in lines[sid][values][data]){
+                                                        console.log(data+"     --->     "+lines[sid][values][data][x]);
+                                                    }
                                                     html = html + '<tr>'
                                                     if (cont){
                                                         html = html + 

@@ -75,7 +75,7 @@ function loadPlugins(){
                     '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'deploy\')">Deploy</span> &nbsp '+
-                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'currentstatus\')">Status</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp '+
                 '</span>'+
                 '<div id="status-zeek-table" style="display:block;">'+
                     '</br><b>Current status</b> &nbsp '+
@@ -1432,9 +1432,14 @@ function deployNode(value,uuid,nodeName){
 }
 
 function LaunchZeekMainConf(uuid, param) {
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/LaunchZeekMainConf';
+    
     var jsonValues = {}
     jsonValues["uuid"] = uuid;
     jsonValues["param"] = param;
@@ -1457,8 +1462,12 @@ function LaunchZeekMainConf(uuid, param) {
                         '</button>'+
                     '</div>';
                     setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    progressBar.style.display = "none";
+                    progressBarDiv.style.display = "none";
                 } 
             }else{
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
                 loadPlugins();
             }
         })
@@ -1472,6 +1481,8 @@ function LaunchZeekMainConf(uuid, param) {
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
         });
 }
 
@@ -2986,6 +2997,10 @@ function StopZeek(uuid) {
 }
 
 function PingZeek(uuid) {
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/' + uuid;
@@ -2994,7 +3009,8 @@ function PingZeek(uuid) {
         url: nodeurl,
         timeout: 30000
     })
-        .then(function (response) {            
+        .then(function (response) {        
+            document.getElementById("zeek-status-details").innerHTML = '';
             document.getElementById("zeek-current-mode").innerHTML = response.data["mode"];
             document.getElementById("zeek-role").innerHTML = response.data["role"];
 
@@ -3011,6 +3027,8 @@ function PingZeek(uuid) {
                 '</tr>';
             }
             document.getElementById("zeek-status-details").innerHTML = html;
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -3022,8 +3040,9 @@ function PingZeek(uuid) {
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
         });
-    return false;
 }
 
 //Run Zeek system

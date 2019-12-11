@@ -28,7 +28,12 @@ function loadFileIntoTextarea(){
         }else{
             txtArea.innerHTML = response.data.fileContent;
             if(uuid == "local") {uuidHidden.value = "local"} else {uuidHidden.value = response.data.nodeUUID;}
-            fileHidden.value = response.data.fileName;
+            fileHidden.value = response.data.fileName;            
+            if(file == "node.cfg" || file == "networks.cfg"){
+                $("textarea").prop('disabled', true);
+                $("#save-file-content-btn-top").hide();                
+                $("#save-file-content-btn-bot").hide();                
+            }
         }
     })
     .catch(function (error) {

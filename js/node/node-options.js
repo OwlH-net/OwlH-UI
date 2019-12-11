@@ -120,6 +120,10 @@ function loadPlugins(){
                     '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'standalone-zeek-table\')">Standalone</span> &nbsp '+
                     '<span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
                     '<span id="zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'expert-zeek-table\')">Expert</span>'+
+                '</span> '+
+                '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file &nbsp '+  
+                    '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editAnalyzer(\''+uuid+'\', \'node.cfg\', \''+name+'\')">Node.cfg</span> &nbsp '+
+                    '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editAnalyzer(\''+uuid+'\', \'networks.cfg\', \''+name+'\')">Network.cfg</span> &nbsp '+
                 '</span> ';
                 
                 //zeek expert

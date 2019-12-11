@@ -129,37 +129,76 @@ function loadPlugins(){
                 //zeek expert
                 htmlzeek = htmlzeek +
                 '<div id="expert-zeek-table" style="display:none;">'+
-                    '</br><b>Expert mode</b>'+
+                    '</br><b>Expert mode</b> <button id="add-zeek-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="">Sync</button>'+
                     '<table class="table" id="zeek-cluster-nodes" style="table-layout: fixed"  width="100%">'+
                         '<tbody>';
-                        htmlzeek = htmlzeek +
-                        '<tr>'+
-                            '<td width="20%" class="align-middle">Node.cfg file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Upload node.cfg file"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;"></i></td>'+
-                            '<td>node.cfg path</td>'+
-                            '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek node.cfg...</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td width="20%" class="align-middle">Network.cfg file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Upload node.cfg file"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;"></i></td>'+
-                            '<td>network.cfg path</td>'+
-                            '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek network.cfg...</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditCluster(\''+uuid+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathCluster(\''+uuid+'\')"></i></td>'+
-                            '<td>Master path</td>'+
-                            '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td>Node path</td>'+
-                            '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>'+
-                        '</tr>'+
-                        '<tr id="zeek-edit-row" style="display:none;">'+
-                            '<td>Master: <input class="form-control" id="zeek-cluster-master" value="master"></td>'+
-                            '<td>Node: <input class="form-control" id="zeek-cluster-node" value="node"></td>'+
-                            '<td width="10%">'+
-                                '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+uuid+'\', \'zeek\')">Save</button>'+
-                                '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
-                           '</td>'+
-                        '</tr>'+                                
+                            htmlzeek = htmlzeek +
+                            //node.cfg
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Node.cfg file &nbsp <i class="fas fa-edit" onclick="showEditValues(\'node-edit-row\')" style="color:Dodgerblue; cursor: pointer;" title="Edit Master node.cfg path"></i> </td>'+
+                                '<td>node.cfg path</td>'+
+                                '<td style="color: red;">No Zeek node.cfg...</td>'+
+                            '</tr>'+
+                            '<tr id="node-edit-row" style="display:none;" bgcolor="#f6ddcc">'+
+                                '<td colspan="2"><input class="form-control" id="expert-zeek-path-node-edit"></input></td>'+
+                                '<td class="align-middle">'+
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'nodeConfig\')">Save</button>'+
+                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'node-edit-row\')">Close</button>'+
+                                '</td>'+
+                            '</tr>'+
+                            //networks.cfg
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Networks.cfg file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Upload networks.cfg file" onclick="showEditValues(\'networks-edit-row\')"></i> </td>'+
+                                '<td>network.cfg path</td>'+
+                                '<td id="expert-zeek-path-networks" value="" style="color: red;">No Zeek networks.cfg...</td>'+
+                            '</tr>'+
+                            '<tr id="networks-edit-row" style="display:none;" bgcolor="#f6ddcc">'+
+                                '<td colspan="2"><input class="form-control" id="expert-zeek-path-networks-edit"></input></td>'+
+                                '<td class="align-middle">'+
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'networksConfig\')">Save</button>'+ 
+                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'networks-edit-row\')">Close</button>'+
+                                '</td>'+
+                            '</tr>'+
+                            //policies
+                            '<tr>'+
+                                '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditValues(\'zeek-edit-policies-row\')"></i> </td>'+
+                                '<td>Master path</td>'+
+                                '<td id="expert-zeek-policies-master-path" value="" style="color: red;">No Zeek master path...</td>'+
+                            '</tr>'+
+                            '<tr>'+
+                                '<td>Node path</td>'+
+                                '<td id="expert-zeek-policies-node-path" value="" style="color: red;">No Zeek node path...</td>'+
+                            '</tr>'+
+                            '<tr id="zeek-edit-policies-row" style="display:none;" bgcolor="#f6ddcc">'+
+                                '<td colspan="2">'+
+                                    'Master: <input class="form-control" id="expert-zeek-policies-master">'+
+                                    'Node: <input class="form-control" id="expert-zeek-policies-node">'+
+                                '</td>'+
+                                '<td width="10%">'+
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'policies\')">Save</button>'+
+                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'zeek-edit-policies-row\')">Close</button> &nbsp '+
+                            '</td>'+
+                            '</tr>'+ 
+                            //variables
+                            '<tr>'+
+                                '<td width="20%" class="align-middle" rowspan="2">Variables &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek variables" onclick="showEditValues(\'zeek-edit-variables-row\')"></i> </td>'+
+                                '<td>Variable 1</td>'+
+                                '<td id="expert-zeek-variable1" value="" style="color: red;">No Zeek variable 1...</td>'+
+                            '</tr>'+
+                            '<tr>'+
+                                '<td>Variable 2</td>'+
+                                '<td id="expert-zeek-variable2" value="" style="color: red;">No Zeek variable 2...</td>'+
+                            '</tr>'+
+                            '<tr id="zeek-edit-variables-row" style="display:none;" bgcolor="#f6ddcc">'+
+                                '<td colspan="2">'+
+                                    'Variable 1: <input class="form-control" id="expert-zeek-variables-1">'+
+                                    'Variable 2: <input class="form-control" id="expert-zeek-variables-2">'+
+                                '</td>'+
+                                '<td width="10%">'+
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'variables\')">Save</button>'+
+                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'zeek-edit-variables-row\')">Close</button> &nbsp '+
+                            '</td>'+
+                            '</tr>'+ 
                         '</tbody>'+    
                     '</table>'+
                     //Zeek cluster
@@ -485,8 +524,11 @@ function loadPlugins(){
 }
 
 
-function showEditCluster(uuid){
-    console.log("showEditCluster");
+function hideEditValues(id){
+    $('#'+id).hide();
+}
+function showEditValues(id){
+    $('#'+id).show();
 }
 
 function SyncPathCluster(uuid){
@@ -942,6 +984,116 @@ function ModalSyncCluster(uuid){
   $('#sync-cluster-modal').click(function(){ SyncCluster(uuid); });
   $('#sync-cluster-modal-close').click(function(){ $('#modal-window').modal("hide");});
   $('#sync-cluster-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function saveZeekValues(uuid, param){
+    if(param == "nodeConfig" && document.getElementById('expert-zeek-path-node-edit').value=="" || param == "networksConfig" && document.getElementById('expert-zeek-path-networks-edit').value=="" || param == "policies" && document.getElementById('expert-zeek-policies-master').value=="" ||
+        param == "policies" && document.getElementById('expert-zeek-policies-node').value=="" || param == "variables" && document.getElementById('expert-zeek-variables-1').value=="" || param == "variables" && document.getElementById('expert-zeek-variables-2').value==""){
+            if (param == "nodeConfig" && document.getElementById('expert-zeek-path-node-edit').value == ""){
+                $('#expert-zeek-path-node-edit').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-node-edit').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-path-node-edit').css('border', '2px solid #ced4da');
+            }
+            if (param == "networksConfig" && document.getElementById('expert-zeek-path-networks-edit').value == ""){
+                $('#expert-zeek-path-networks-edit').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-networks-edit').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-path-networks-edit').css('border', '2px solid #ced4da');
+            }
+            if (param == "policies" && document.getElementById('expert-zeek-policies-master').value == ""){
+                $('#expert-zeek-policies-master').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-policies-master').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-policies-master').css('border', '2px solid #ced4da');
+            }
+            if (param == "policies" && document.getElementById('expert-zeek-policies-node').value == ""){
+                $('#expert-zeek-policies-node').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-policies-node').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-policies-node').css('border', '2px solid #ced4da');
+            }
+            if (param == "variables" && document.getElementById('expert-zeek-variables-1').value == ""){
+                $('#expert-zeek-variables-1').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-variables-1').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-variables-1').css('border', '2px solid #ced4da');
+            }
+            if (param == "variables" && document.getElementById('expert-zeek-variables-2').value == ""){
+                $('#expert-zeek-variables-2').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-variables-2').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-variables-2').css('border', '2px solid #ced4da');
+            }
+    }else{
+        //clean input fields
+        $('#expert-zeek-path-node-edit').css('border', '2px solid #ced4da');    $('#expert-zeek-path-node-edit').attr("placeholder", ""); 
+        $('#expert-zeek-path-network-edit').css('border', '2px solid #ced4da'); $('#expert-zeek-path-node-edit').attr("placeholder", ""); 
+        $('#expert-zeek-policies-master').css('border', '2px solid #ced4da');   $('#expert-zeek-policies-master').attr("placeholder", ""); 
+        $('#expert-zeek-policies-node').css('border', '2px solid #ced4da');     $('#expert-zeek-policies-node').attr("placeholder", ""); 
+        $('#expert-zeek-variables-2').css('border', '2px solid #ced4da');       $('#expert-zeek-variables-1').attr("placeholder", ""); 
+        $('#expert-zeek-variables-1').css('border', '2px solid #ced4da');       $('#expert-zeek-variables-2').attr("placeholder", ""); 
+
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/zeek/saveZeekValues';
+    
+        var jsonCluster = {}
+        jsonCluster["uuid"] = uuid;
+        jsonCluster["param"] = param;
+        if(param == "nodeConfig"){
+            jsonCluster["nodeConfig"] = document.getElementById('expert-zeek-path-node-edit').value;
+        }else if(param == "networksConfig"){
+            jsonCluster["networksConfig"] = document.getElementById('expert-zeek-path-networks-edit').value;
+        }else if(param == "policies"){
+            jsonCluster["policiesMaster"] = document.getElementById('expert-zeek-policies-master').value;
+            jsonCluster["policiesNode"] = document.getElementById('expert-zeek-policies-node').value;
+        }else if(param == "variables"){
+            jsonCluster["variables1"] = document.getElementById('expert-zeek-variables-1').value;
+            jsonCluster["variables2"] = document.getElementById('expert-zeek-variables-2').value;
+        }
+        var dataJSON = JSON.stringify(jsonCluster);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            data: dataJSON
+        })
+        .then(function (response) {
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Save Zeek value: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Zeek Value saves successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Save Zeek value: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+    }
 }
 
 function SyncCluster(uuid){

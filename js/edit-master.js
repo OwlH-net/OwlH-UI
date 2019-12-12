@@ -4,13 +4,16 @@ function loadFileIntoTextarea(){
     
     var fileHidden = document.getElementById('file-hidden-text');
     var txtArea = document.getElementById('inputTextToSave');
-    document.getElementById('title-edit').innerHTML = "dispatcher configuration";
+    document.getElementById('title-edit').innerHTML = file;
     document.getElementById('subtitle-edit').innerHTML = "Master file";
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/editFile/'+file;
-        
+    if(file == "nodeConfig" || file == "networksConfig"){
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/editPathFile/'+file;
+    }else{
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/editFile/'+file;
+    }
     axios({
         method: 'get',
         url: nodeurl,
@@ -23,21 +26,24 @@ function loadFileIntoTextarea(){
             txtArea.innerHTML = response.data.fileContent;
             fileHidden.value = response.data.fileName;
         }
-        return true;
     })
     .catch(function (error) {
-        return false;
     });
 }
-// loadFileIntoTextarea();
 
 function saveFileChanged() {
+    var urlData = new URL(window.location.href);
+    var file = urlData.searchParams.get("file");
     var fileHidden = document.getElementById('file-hidden-text');
     var fileContent = document.getElementById('inputTextToSave');
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var masterURL = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/savefile';
+    if(file == "nodeConfig" || file == "networksConfig"){
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/savefilePath';
+    }else{
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/editFile';
+    }
     
     var masterDataEdit = {}
     masterDataEdit["file"] = fileHidden.value;
@@ -45,16 +51,14 @@ function saveFileChanged() {
     var masterJSON = JSON.stringify(masterDataEdit);
     axios({
         method: 'put',
-        url: masterURL,
+        url: nodeurl,
         timeout: 30000,
         data: masterJSON
     })
     .then(function (response) {
         window.history.back();
-        return true;
     })
     .catch(function (error) {
-        return false;
     });
 }
 

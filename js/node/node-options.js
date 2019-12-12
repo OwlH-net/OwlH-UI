@@ -77,6 +77,11 @@ function loadPlugins(){
                     '<span style="cursor: pointer;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'deploy\')">Deploy</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp '+
                 '</span>'+
+                '&nbsp <span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+  
+                    '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
+                    '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'networks.cfg\', \''+name+'\', \'disabled\')">Network.cfg</span> &nbsp '+
+                '</span> '+
+
                 '<div id="status-zeek-table" style="display:block;">'+
                     '</br><b>Current status</b> &nbsp '+
 
@@ -121,23 +126,26 @@ function loadPlugins(){
                     '<span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
                     '<span id="zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'expert-zeek-table\')">Expert</span>'+
                 '</span> '+
-                '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file &nbsp '+  
-                    '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editAnalyzer(\''+uuid+'\', \'node.cfg\', \''+name+'\')">Node.cfg</span> &nbsp '+
-                    '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editAnalyzer(\''+uuid+'\', \'networks.cfg\', \''+name+'\')">Network.cfg</span> &nbsp '+
+                '<span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+  
+                    '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
+                    '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'networks.cfg\', \''+name+'\', \'disabled\')">Network.cfg</span> &nbsp '+
                 '</span> ';
                 
                 //zeek expert
                 htmlzeek = htmlzeek +
                 '<div id="expert-zeek-table" style="display:none;">'+
-                    '</br><b>Expert mode</b> <button id="add-zeek-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="">Sync</button>'+
-                    '<table class="table" id="zeek-cluster-nodes" style="table-layout: fixed"  width="100%">'+
+                    '</br><b>Expert mode</b> <button id="sync-zeek-expert-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="SyncZeekValues(\''+uuid+'\')">Sync</button>'+
+                    '<table class="table" id="zeek-expert-values" style="table-layout: fixed"  width="100%">'+
                         '<tbody>';
                             htmlzeek = htmlzeek +
                             //node.cfg
                             '<tr>'+
-                                '<td width="20%" class="align-middle">Node.cfg file &nbsp <i class="fas fa-edit" onclick="showEditValues(\'node-edit-row\')" style="color:Dodgerblue; cursor: pointer;" title="Edit Master node.cfg path"></i> </td>'+
+                                '<td width="20%" class="align-middle">Node.cfg file &nbsp '+
+                                    '<i class="fas fa-edit" onclick="showEditValues(\'node-edit-row\')" style="color:Dodgerblue; cursor: pointer;" title="Edit Master node.cfg path"></i> &nbsp'+
+                                    '<i class="fas fa-eye" style="color:Dodgerblue; cursor: pointer;" title="Edit Master node.cfg file" onclick="showMasterFile(\'nodeConfig\')"></i> '+
+                                '</td>'+
                                 '<td>node.cfg path</td>'+
-                                '<td style="color: red;">No Zeek node.cfg...</td>'+
+                                '<td style="color: red;" id="zeek-expert-values-node">No Zeek node.cfg...</td>'+
                             '</tr>'+
                             '<tr id="node-edit-row" style="display:none;" bgcolor="#f6ddcc">'+
                                 '<td colspan="2"><input class="form-control" id="expert-zeek-path-node-edit"></input></td>'+
@@ -148,9 +156,12 @@ function loadPlugins(){
                             '</tr>'+
                             //networks.cfg
                             '<tr>'+
-                                '<td width="20%" class="align-middle">Networks.cfg file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Upload networks.cfg file" onclick="showEditValues(\'networks-edit-row\')"></i> </td>'+
+                                '<td width="20%" class="align-middle">Networks.cfg file &nbsp '+
+                                    '<i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Upload networks.cfg file" onclick="showEditValues(\'networks-edit-row\')"></i> &nbsp'+
+                                    '<i class="fas fa-eye" style="color:Dodgerblue; cursor: pointer;" title="Edit Master networks.cfg file" onclick="showMasterFile(\'networksConfig\')"></i> '+
+                                '</td>'+
                                 '<td>network.cfg path</td>'+
-                                '<td id="expert-zeek-path-networks" value="" style="color: red;">No Zeek networks.cfg...</td>'+
+                                '<td id="zeek-expert-values-networks" style="color: red;" >No Zeek networks.cfg...</td>'+
                             '</tr>'+
                             '<tr id="networks-edit-row" style="display:none;" bgcolor="#f6ddcc">'+
                                 '<td colspan="2"><input class="form-control" id="expert-zeek-path-networks-edit"></input></td>'+
@@ -163,16 +174,16 @@ function loadPlugins(){
                             '<tr>'+
                                 '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditValues(\'zeek-edit-policies-row\')"></i> </td>'+
                                 '<td>Master path</td>'+
-                                '<td id="expert-zeek-policies-master-path" value="" style="color: red;">No Zeek master path...</td>'+
+                                '<td style="color: red;" id="zeek-expert-values-policies-master">No Zeek master path...</td>'+
                             '</tr>'+
                             '<tr>'+
                                 '<td>Node path</td>'+
-                                '<td id="expert-zeek-policies-node-path" value="" style="color: red;">No Zeek node path...</td>'+
+                                '<td style="color: red;" id="zeek-expert-values-policies-node">No Zeek node path...</td>'+
                             '</tr>'+
                             '<tr id="zeek-edit-policies-row" style="display:none;" bgcolor="#f6ddcc">'+
                                 '<td colspan="2">'+
-                                    'Master: <input class="form-control" id="expert-zeek-policies-master">'+
-                                    'Node: <input class="form-control" id="expert-zeek-policies-node">'+
+                                    'Master: <input class="form-control" id="expert-zeek-path-policies-master">'+
+                                    'Node: <input class="form-control" id="expert-zeek-path-policies-node">'+
                                 '</td>'+
                                 '<td width="10%">'+
                                     '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'policies\')">Save</button>'+
@@ -183,16 +194,16 @@ function loadPlugins(){
                             '<tr>'+
                                 '<td width="20%" class="align-middle" rowspan="2">Variables &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek variables" onclick="showEditValues(\'zeek-edit-variables-row\')"></i> </td>'+
                                 '<td>Variable 1</td>'+
-                                '<td id="expert-zeek-variable1" value="" style="color: red;">No Zeek variable 1...</td>'+
+                                '<td id="zeek-expert-values-var-1" style="color: red;">No Zeek variable 1...</td>'+
                             '</tr>'+
                             '<tr>'+
                                 '<td>Variable 2</td>'+
-                                '<td id="expert-zeek-variable2" value="" style="color: red;">No Zeek variable 2...</td>'+
+                                '<td id="zeek-expert-values-var-2" style="color: red;">No Zeek variable 2...</td>'+
                             '</tr>'+
                             '<tr id="zeek-edit-variables-row" style="display:none;" bgcolor="#f6ddcc">'+
                                 '<td colspan="2">'+
-                                    'Variable 1: <input class="form-control" id="expert-zeek-variables-1">'+
-                                    'Variable 2: <input class="form-control" id="expert-zeek-variables-2">'+
+                                    'Variable 1: <input class="form-control" id="expert-zeek-path-var-1">'+
+                                    'Variable 2: <input class="form-control" id="expert-zeek-path-var-2">'+
                                 '</td>'+
                                 '<td width="10%">'+
                                     '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'variables\')">Save</button>'+
@@ -393,7 +404,7 @@ function loadPlugins(){
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
                     '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
                     '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
-                    '<td width="25%"><button class="btn btn-primary float-right" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')">Edit Analyzer</button></td>'+
+                    '<td width="25%"><button class="btn btn-primary float-right" title="Edit analyzer" onclick="editFile(\''+uuid+'\', \'analyzer\', \''+name+'\', \'enabled\')">Edit Analyzer</button></td>'+
                 '</tr>'+
                 '<tr>'+
                     '<table class="table table-hover" width="100%" style="table-layout: fixed">'+
@@ -512,6 +523,7 @@ function loadPlugins(){
     GetMainconfData(uuid);
     // PingDataflow(uuid);
     PingPluginsNode(uuid);
+    PingPluginsMaster();
     PingCluster(uuid);
     getCurrentRulesetName(uuid);
     PingZeek(uuid);
@@ -520,9 +532,11 @@ function loadPlugins(){
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
 
-    // console.log( document.getElementById('expert-number-services').innerHTML );
 }
-
+function showMasterFile(param){
+    var ipmaster = document.getElementById('ip-master').value;
+    document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+param;
+}
 
 function hideEditValues(id){
     $('#'+id).hide();
@@ -531,8 +545,67 @@ function showEditValues(id){
     $('#'+id).show();
 }
 
-function SyncPathCluster(uuid){
-    console.log("SyncPathCluster");
+function SyncZeekValues(uuid){
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
+    
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/syncZeekValues';
+
+    var jsonService = {}
+    jsonService["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonService);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Sync Zeek values error: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+        }else{
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Success!</strong> All Zeek Files synchronized successfully.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+        }
+    })
+    .catch(function (error) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Sync Zeek values error: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+    });
 }
 
 function changeSuricataTable(uuid){
@@ -636,6 +709,62 @@ function addNewWazuhPath(uuid){
 
         addWazuhFile(uuid);
     }
+}
+
+function PingPluginsMaster(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/pingPlugins';
+
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> PingPluginsMaster error: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            for(id in response.data){
+                if(id=="zeek"){
+                    //table text
+                    if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-node").innerHTML = response.data[id]["nodeConfig"]; $("#zeek-expert-values-node").css('color', '');}     
+                    if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-networks").innerHTML = response.data[id]["networksConfig"]; $("#zeek-expert-values-networks").css('color', '');}
+                    if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-policies-master").innerHTML = response.data[id]["policiesMaster"]; $("#zeek-expert-values-policies-master").css('color', '');}
+                    if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-policies-node").innerHTML = response.data[id]["policiesNode"]; $("#zeek-expert-values-policies-node").css('color', '');}
+                    if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-1").innerHTML = response.data[id]["variables1"]; $("#zeek-expert-values-var-1").css('color', '');}
+                    if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-2").innerHTML = response.data[id]["variables2"]; $("#zeek-expert-values-var-2").css('color', '');}
+                    //edit fields
+                    document.getElementById("expert-zeek-path-node-edit").innerHTML = response.data[id]["nodeConfig"]            
+                    document.getElementById("expert-zeek-path-networks-edit").innerHTML = response.data[id]["networksConfig"]            
+                    document.getElementById("expert-zeek-path-policies-master").innerHTML = response.data[id]["policiesMaster"]            
+                    document.getElementById("expert-zeek-path-policies-node").innerHTML = response.data[id]["policiesNode"]            
+                    document.getElementById("expert-zeek-path-var-1").innerHTML = response.data[id]["variables1"]            
+                    document.getElementById("expert-zeek-path-var-2").innerHTML = response.data[id]["variables2"]            
+                }
+            }
+        }
+    })
+    .catch(function (error) {
+        console.log(error);
+        $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> PingPluginsMaster error: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
 }
 
 function ChangeZeekMode(uuid, mode){
@@ -987,8 +1116,8 @@ function ModalSyncCluster(uuid){
 }
 
 function saveZeekValues(uuid, param){
-    if(param == "nodeConfig" && document.getElementById('expert-zeek-path-node-edit').value=="" || param == "networksConfig" && document.getElementById('expert-zeek-path-networks-edit').value=="" || param == "policies" && document.getElementById('expert-zeek-policies-master').value=="" ||
-        param == "policies" && document.getElementById('expert-zeek-policies-node').value=="" || param == "variables" && document.getElementById('expert-zeek-variables-1').value=="" || param == "variables" && document.getElementById('expert-zeek-variables-2').value==""){
+    if(param == "nodeConfig" && document.getElementById('expert-zeek-path-node-edit').value=="" || param == "networksConfig" && document.getElementById('expert-zeek-path-networks-edit').value=="" || param == "policies" && document.getElementById('expert-zeek-path-policies-master').value=="" ||
+        param == "policies" && document.getElementById('expert-zeek-path-policies-node').value=="" || param == "variables" && document.getElementById('expert-zeek-path-var-1').value=="" || param == "variables" && document.getElementById('expert-zeek-path-var-2').value==""){
             if (param == "nodeConfig" && document.getElementById('expert-zeek-path-node-edit').value == ""){
                 $('#expert-zeek-path-node-edit').attr("placeholder", "Please, insert value");  
                 $('#expert-zeek-path-node-edit').css('border', '2px solid red');
@@ -1001,42 +1130,42 @@ function saveZeekValues(uuid, param){
             }else{
                 $('#expert-zeek-path-networks-edit').css('border', '2px solid #ced4da');
             }
-            if (param == "policies" && document.getElementById('expert-zeek-policies-master').value == ""){
-                $('#expert-zeek-policies-master').attr("placeholder", "Please, insert value");  
-                $('#expert-zeek-policies-master').css('border', '2px solid red');
+            if (param == "policies" && document.getElementById('expert-zeek-path-policies-master').value == ""){
+                $('#expert-zeek-path-policies-master').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-policies-master').css('border', '2px solid red');
             }else{
-                $('#expert-zeek-policies-master').css('border', '2px solid #ced4da');
+                $('#expert-zeek-path-policies-master').css('border', '2px solid #ced4da');
             }
-            if (param == "policies" && document.getElementById('expert-zeek-policies-node').value == ""){
-                $('#expert-zeek-policies-node').attr("placeholder", "Please, insert value");  
-                $('#expert-zeek-policies-node').css('border', '2px solid red');
+            if (param == "policies" && document.getElementById('expert-zeek-path-policies-node').value == ""){
+                $('#expert-zeek-path-policies-node').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-policies-node').css('border', '2px solid red');
             }else{
-                $('#expert-zeek-policies-node').css('border', '2px solid #ced4da');
+                $('#expert-zeek-path-policies-node').css('border', '2px solid #ced4da');
             }
-            if (param == "variables" && document.getElementById('expert-zeek-variables-1').value == ""){
-                $('#expert-zeek-variables-1').attr("placeholder", "Please, insert value");  
-                $('#expert-zeek-variables-1').css('border', '2px solid red');
+            if (param == "variables" && document.getElementById('expert-zeek-path-var-1').value == ""){
+                $('#expert-zeek-path-var-1').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-var-1').css('border', '2px solid red');
             }else{
-                $('#expert-zeek-variables-1').css('border', '2px solid #ced4da');
+                $('#expert-zeek-path-var-1').css('border', '2px solid #ced4da');
             }
-            if (param == "variables" && document.getElementById('expert-zeek-variables-2').value == ""){
-                $('#expert-zeek-variables-2').attr("placeholder", "Please, insert value");  
-                $('#expert-zeek-variables-2').css('border', '2px solid red');
+            if (param == "variables" && document.getElementById('expert-zeek-path-var-2').value == ""){
+                $('#expert-zeek-path-var-2').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-var-2').css('border', '2px solid red');
             }else{
-                $('#expert-zeek-variables-2').css('border', '2px solid #ced4da');
+                $('#expert-zeek-path-var-2').css('border', '2px solid #ced4da');
             }
     }else{
         //clean input fields
-        $('#expert-zeek-path-node-edit').css('border', '2px solid #ced4da');    $('#expert-zeek-path-node-edit').attr("placeholder", ""); 
-        $('#expert-zeek-path-network-edit').css('border', '2px solid #ced4da'); $('#expert-zeek-path-node-edit').attr("placeholder", ""); 
-        $('#expert-zeek-policies-master').css('border', '2px solid #ced4da');   $('#expert-zeek-policies-master').attr("placeholder", ""); 
-        $('#expert-zeek-policies-node').css('border', '2px solid #ced4da');     $('#expert-zeek-policies-node').attr("placeholder", ""); 
-        $('#expert-zeek-variables-2').css('border', '2px solid #ced4da');       $('#expert-zeek-variables-1').attr("placeholder", ""); 
-        $('#expert-zeek-variables-1').css('border', '2px solid #ced4da');       $('#expert-zeek-variables-2').attr("placeholder", ""); 
+        $('#expert-zeek-path-node-edit').css('border', '2px solid #ced4da');        $('#expert-zeek-path-node-edit').attr("placeholder", "");           hideEditValues('node-edit-row');
+        $('#expert-zeek-path-network-edit').css('border', '2px solid #ced4da');     $('#expert-zeek-path-network-edit').attr("placeholder", "");        hideEditValues('networks-edit-row');
+        $('#expert-zeek-path-policies-master').css('border', '2px solid #ced4da');  $('#expert-zeek-path-policies-master').attr("placeholder", "");     hideEditValues('zeek-edit-policies-row');
+        $('#expert-zeek-path-policies-node').css('border', '2px solid #ced4da');    $('#expert-zeek-path-policies-node').attr("placeholder", "");       hideEditValues('zeek-edit-policies-row');
+        $('#expert-zeek-path-var-2').css('border', '2px solid #ced4da');            $('#expert-zeek-path-var-1').attr("placeholder", "");               hideEditValues('zeek-edit-variables-row'); 
+        $('#expert-zeek-path-var-1').css('border', '2px solid #ced4da');            $('#expert-zeek-path-var-2').attr("placeholder", "");               hideEditValues('zeek-edit-variables-row'); 
 
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
-        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/zeek/saveZeekValues';
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/zeek/saveZeekValues';
     
         var jsonCluster = {}
         jsonCluster["uuid"] = uuid;
@@ -1046,11 +1175,11 @@ function saveZeekValues(uuid, param){
         }else if(param == "networksConfig"){
             jsonCluster["networksConfig"] = document.getElementById('expert-zeek-path-networks-edit').value;
         }else if(param == "policies"){
-            jsonCluster["policiesMaster"] = document.getElementById('expert-zeek-policies-master').value;
-            jsonCluster["policiesNode"] = document.getElementById('expert-zeek-policies-node').value;
+            jsonCluster["policiesMaster"] = document.getElementById('expert-zeek-path-policies-master').value;
+            jsonCluster["policiesNode"] = document.getElementById('expert-zeek-path-policies-node').value;
         }else if(param == "variables"){
-            jsonCluster["variables1"] = document.getElementById('expert-zeek-variables-1').value;
-            jsonCluster["variables2"] = document.getElementById('expert-zeek-variables-2').value;
+            jsonCluster["variables1"] = document.getElementById('expert-zeek-path-var-1').value;
+            jsonCluster["variables2"] = document.getElementById('expert-zeek-path-var-2').value;
         }
         var dataJSON = JSON.stringify(jsonCluster);
         axios({
@@ -1080,6 +1209,8 @@ function saveZeekValues(uuid, param){
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
+
+                PingPluginsMaster();
             }
         })
         .catch(function (error) {
@@ -1477,9 +1608,9 @@ function loadEditURL(uuid, nodeName){
     document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+nodeName+'&node='+nodeName;
 }
 
-function editAnalyzer(uuid, file, nodeName){
+function editFile(uuid, file, nodeName, status){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&status='+status;
 }
 
 function ChangeAnalyzerStatus(uuid){

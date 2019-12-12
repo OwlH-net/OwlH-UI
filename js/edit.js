@@ -3,6 +3,7 @@ function loadFileIntoTextarea(){
     var uuid = urlData.searchParams.get("uuid");
     var file = urlData.searchParams.get("file");
     var node = urlData.searchParams.get("node");
+    var status = urlData.searchParams.get("status");
 
     var uuidHidden = document.getElementById('uuid-hidden-text');
     var fileHidden = document.getElementById('file-hidden-text');
@@ -29,7 +30,7 @@ function loadFileIntoTextarea(){
             txtArea.innerHTML = response.data.fileContent;
             if(uuid == "local") {uuidHidden.value = "local"} else {uuidHidden.value = response.data.nodeUUID;}
             fileHidden.value = response.data.fileName;            
-            if(file == "node.cfg" || file == "networks.cfg"){
+            if(status == "disabled"){
                 $("textarea").prop('disabled', true);
                 $("#save-file-content-btn-top").hide();                
                 $("#save-file-content-btn-bot").hide();                

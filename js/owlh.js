@@ -469,10 +469,10 @@ function showServicesConfig(uuid, name){
     document.location.href = 'https://' + ipmaster + '/node-options.html?uuid='+uuid+'&node='+name;
 }
 
-function showMasterFile(file){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
-}
+// function showMasterFile(file){
+//     var ipmaster = document.getElementById('ip-master').value;
+//     document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
+// }
 
 function editAnalyzer(uuid, file, nodeName){
     var ipmaster = document.getElementById('ip-master').value;

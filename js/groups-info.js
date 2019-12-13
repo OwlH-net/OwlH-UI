@@ -34,7 +34,10 @@ function GetGroupsDetails(){
         timeout: 30000
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
+        if (response.data == null) {
+            console.log(response.data);
+            resultnodes.innerHTML= '<div style="text-align:center"><h3">No data retrieved</h3></div>';
+        }else if (response.data.ack == "false") {
             resultnodes.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving group data</h3></div>';
         }else{
             var html = "";
@@ -42,6 +45,7 @@ function GetGroupsDetails(){
             var htmlsuricata = "";
             var htmlzeek = "";
             var htmlanalyzer = "";
+            // for(x in response.data){
             for(x=0; x<response.data.length; x++){
                 var groups = response.data[x];
                 if(groups['guuid'] == uuid){
@@ -72,7 +76,13 @@ function GetGroupsDetails(){
                         htmlnodes = htmlnodes + '</table></div>';
                         //suricata table
                         htmlsuricata = "<div>" +
-                        '<b>Suricata</b>'+
+                        '<b>Suricata</b> '+
+                        '<span id="zeek-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
+                            '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="">Stop</span> &nbsp '+
+                            '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="">Start</span> &nbsp '+
+                        '</span>'+
+                        '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+
+
                         '<table class="table" id="suricata-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                                                         
                             '<tbody>'+     
                                 '<tr>'+                           
@@ -187,7 +197,7 @@ function GetGroupsDetails(){
                         '</table></div>';
 
                         //analyzer table
-                        htmlanalyzer = "<div"+
+                        htmlanalyzer = "<div>"+
                         '<b>Analyzer</b>'+
                         '<table class="table" id="cluster-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+                          
                             '<tbody>'+
@@ -458,10 +468,10 @@ function syncAllGroupElements(uuid){
 }
 
 function changePaths(guuid, type){
-    if(document.getElementById("suricata-group-master-"+guuid).value == "" || 
-            document.getElementById("suricata-group-node-"+guuid).value == "" ||
-            document.getElementById("zeek-group-master-"+guuid).value == "" ||
-            document.getElementById("zeek-group-node-"+guuid).value == ""
+    if(type=="suricata" && document.getElementById("suricata-group-master-"+guuid).value == "" || 
+    type=="suricata" && document.getElementById("suricata-group-node-"+guuid).value == "" ||
+    type=="zeek" && document.getElementById("zeek-group-master-"+guuid).value == "" ||
+    type=="zeek" && document.getElementById("zeek-group-node-"+guuid).value == ""
     ){
         if(type == "suricata"){
             if(document.getElementById("suricata-group-master-"+guuid).value == ""){
@@ -491,7 +501,7 @@ function changePaths(guuid, type){
                 $('#zeek-group-node-'+guuid).css('border', '2px solid #ced4da');
             }
         }
-    }else{        
+    }else{      
         hideEditGroup(type);
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
@@ -700,6 +710,27 @@ function modalLoadRuleset(group){
         })
         .catch(function (error) {
             document.getElementById('group-ruleset-values').innerHTML = '<p>Error retrieving rules</p>';
+        }); 
+}
+
+function syncAllSuricataGroup(guuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/syncAllSuricataGroup';
+
+    var groupjson = {}
+    groupjson["uuid"] = guuid;
+    var grJSON = JSON.stringify(groupjson);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: grJSON
+        })
+        .then(function (response) {
+            console.log(response.data);
+        })
+        .catch(function (error) {
         }); 
 }
 
@@ -930,7 +961,7 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         })
         .then(function (response) {
             document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
-            // GetGroupsDetails();
+            document.getElementById('ruleset-group-'+group).style.color = "black";
         })
         .catch(function (error) {
         }); 

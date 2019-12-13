@@ -743,18 +743,17 @@ function PingPluginsMaster(){
                     if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-1").innerHTML = response.data[id]["variables1"]; $("#zeek-expert-values-var-1").css('color', '');}
                     if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-2").innerHTML = response.data[id]["variables2"]; $("#zeek-expert-values-var-2").css('color', '');}
                     //edit fields
-                    document.getElementById("expert-zeek-path-node-edit").innerHTML = response.data[id]["nodeConfig"]            
-                    document.getElementById("expert-zeek-path-networks-edit").innerHTML = response.data[id]["networksConfig"]            
-                    document.getElementById("expert-zeek-path-policies-master").innerHTML = response.data[id]["policiesMaster"]            
-                    document.getElementById("expert-zeek-path-policies-node").innerHTML = response.data[id]["policiesNode"]            
-                    document.getElementById("expert-zeek-path-var-1").innerHTML = response.data[id]["variables1"]            
-                    document.getElementById("expert-zeek-path-var-2").innerHTML = response.data[id]["variables2"]            
+                    document.getElementById("expert-zeek-path-node-edit").value = response.data[id]["nodeConfig"]            
+                    document.getElementById("expert-zeek-path-networks-edit").value = response.data[id]["networksConfig"]            
+                    document.getElementById("expert-zeek-path-policies-master").value = response.data[id]["policiesMaster"]            
+                    document.getElementById("expert-zeek-path-policies-node").value = response.data[id]["policiesNode"]            
+                    document.getElementById("expert-zeek-path-var-1").value = response.data[id]["variables1"]            
+                    document.getElementById("expert-zeek-path-var-2").value = response.data[id]["variables2"]            
                 }
             }
         }
     })
     .catch(function (error) {
-        console.log(error);
         $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -3310,7 +3309,7 @@ function PingZeek(uuid) {
                     '<td>'+response.data.nodes[node]["interface"]+'</td>'+
                     '<td>'+response.data.nodes[node]["pid"]+'</td>'+
                     '<td>'+response.data.nodes[node]["started"]+'</td>'+
-                    '<td><i class="fas fa-eye"></i></td>'+
+                    '<td style="color: red;">extra info</td>'+
                 '</tr>';
             }
             document.getElementById("zeek-status-details").innerHTML = html;
@@ -3862,11 +3861,11 @@ function PingPluginsNode(uuid) {
                         tableZeek = tableZeek + '</td>'+
                     '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
-                        if(response.data[line]["status"]=="enabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
-                        }else if (response.data[line]["status"]=="disabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
-                        }
+                        // if(response.data[line]["status"]=="enabled"){
+                        //     tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                        // }else if (response.data[line]["status"]=="disabled"){
+                        //     tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                        // }
                         tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                         '<i class="fas fa-trash-alt" style="color: red; cursor: pointer;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                     '</td>'+

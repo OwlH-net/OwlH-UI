@@ -35,7 +35,6 @@ function GetGroupsDetails(){
     })
     .then(function (response) {
         if (response.data == null) {
-            console.log(response.data);
             resultnodes.innerHTML= '<div style="text-align:center"><h3">No data retrieved</h3></div>';
         }else if (response.data.ack == "false") {
             resultnodes.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving group data</h3></div>';
@@ -75,91 +74,124 @@ function GetGroupsDetails(){
                             }
                         htmlnodes = htmlnodes + '</table></div>';
                         //suricata table
-                        htmlsuricata = "<div>" +
-                        '<b>Suricata</b> '+
-                        '<span id="zeek-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
-                            '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="">Stop</span> &nbsp '+
-                            '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="">Start</span> &nbsp '+
-                        '</span>'+
-                        '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+
+                        htmlsuricata =             
+                            '<b>Suricata</b> &nbsp'+
+                            '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Mode: &nbsp '+  
+                                '<span id="suricata-group-mode-default" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'default-suricata-group-table\')">Status</span> &nbsp'+
+                                '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'standalone-suricata-group-table\')">Standalon</span> &nbsp '+
+                                '<span id="suricata-group-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'expert-suricata-group-table\')">Expert</span>'+
+                            '</span> &nbsp'+ 
+                            '<span id="suricata-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
+                                '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="SuricataGroupService(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
+                                '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="SuricataGroupService(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
+                            '</span>'+
+                            '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+
+                            
+                            //Suricata default
+                            '<div id="default-suricata-group-table">'+
+                                '<table class="table" style="table-layout: fixed" width="100%">'+        
+                                    '<tbody>'+     
+                                        '<tr>'+                           
+                                            '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
+                                            if(groups['gruleset']  != ""){
+                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
+                                            }
+                                            htmlsuricata = htmlsuricata + '<td></td>'+
+                                        '</tr>'+
+                                    '</tbody>'+  
+                                '</table>'+
+                                '<br>'+
+                                '<table class="table" style="table-layout: fixed" width="100%">'+
+                                    '<thead>'+
+                                        '<th>Node name</th>'+                                            
+                                        '<th>status</th>'+                                            
+                                        '<th>interface</th>'+                                            
+                                        '<th>Actions</th>'+                                            
+                                    '</thead>'+
+                                    '<tbody id="group-suricata-list">'+
+                                    '</tbody>'+
+                                '</table>'+
+                            '</div>'+
+                            
+                            //Suricata expert
+                            '<div id="expert-suricata-group-table" style="display: none;">'+
+                                '<table class="table" style="table-layout: fixed" width="100%">'+                                                         
+                                    '<tbody>'+  
+                                        '<tr>'+                           
+                                            '<td>Node path:</td>';
+                                            if(groups["nodesuricata"] == ""){
+                                                htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-node-path" value="">No Suricata node path...</td>';
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="group-suricata-node-path" value="'+groups["nodesuricata"]+'">'+groups["nodesuricata"]+'</td>';
+                                            }
+                                        htmlsuricata = htmlsuricata + '</tr>'+   
+                                        '<tr>'+
+                                            '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
+                                            '<td>Master path:</td>';
+                                            if(groups["mastersuricata"] == ""){
+                                                htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="group-suricata-master-path" value="'+groups["mastersuricata"]+'">'+groups["mastersuricata"]+'</td>';
+                                            }
+                                        htmlsuricata = htmlsuricata + '</tr>'+
+                                    '</tbody>'+
+                                '</table>'+
+                            '</div>'+
 
-                        '<table class="table" id="suricata-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                                                         
-                            '<tbody>'+     
-                                '<tr>'+                           
-                                    '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
-                                    if(groups['gruleset']  != ""){
-                                        htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
-                                    }else{
-                                        htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
-                                    }
-                                    htmlsuricata = htmlsuricata + '<td></td>'+
-                                '</tr>'+
+                            //Suricata expert
+                            '<div id="standalone-suricata-group-table">'+
+                                '<table class="table" style="table-layout: fixed" width="100%">'+  
+                                    '<tr id="suricata-edit-row" style="display:none;">'+
+                                        '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
+                                        '<td>Node path: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
+                                        '<td width="10%">'+
+                                            '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'suricata\')">Save</button>'+
+                                            '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
+                                        '</td>'+
+                                    '</tr>'+
+                                    '<tr>'+
+                                        '<td class="align-middle" rowspan="5">Services &nbsp <i class="fas fa-sync-alt" title="Sync Suricata files to all group node" style="color:Dodgerblue; cursor: pointer;" onclick="syncSuricataGroupService(\''+uuid+'\')"></i></td>'+
+                                        '<td>Interface &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select an interface" onclick="modalEditGroupService(\''+uuid+'\', \'interface\', \'interface\')"></i></td>';
+                                        if(groups["interface"] == ""){
+                                            htmlsuricata = htmlsuricata + '<td id="service-interface" value="" style="color: red;">No interface selected...</td>';
+                                        }else{
+                                            htmlsuricata = htmlsuricata + '<td id="service-interface" value="'+groups["interface"]+'">'+groups["interface"]+'</td>';}
+                                    htmlsuricata = htmlsuricata + '</tr>'+
+                                    '<tr>'+
+                                        '<td>BPF file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF file path" onclick="modalEditGroupService(\''+uuid+'\', \'BPFfile\', \'BPF file\')"></i></td>';
+                                        if(groups["BPFfile"] == ""){
+                                            htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="" style="color: red;">No BPF file selected...</td>';
+                                        }else{
+                                            htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="'+groups["BPFfile"]+'">'+groups["BPFfile"]+'</td>';}
+                                    htmlsuricata = htmlsuricata + '</tr>'+
+                                    '<tr>'+
+                                        '<td>BPF rule &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF rule" onclick="modalEditGroupService(\''+uuid+'\', \'BPFrule\', \'BPF rule\')"></i></td>';
+                                        if(groups["BPFrule"] == ""){
+                                            htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="" style="color: red;">No BPF rule selected...</td>';
+                                        }else{
+                                            htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="'+groups["BPFrule"]+'">'+groups["BPFrule"]+'</td>';}
+                                    htmlsuricata = htmlsuricata + '</tr>'+
+                                    '<tr>'+
+                                        '<td>Config file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a config file path" onclick="modalEditGroupService(\''+uuid+'\', \'configFile\', \'config file\')"></i></td>';
+                                        if(groups["configFile"] == ""){
+                                            htmlsuricata = htmlsuricata + '<td id="service-configfile" value="" style="color: red;">No config file selected...</td>';
+                                        }else{
+                                            htmlsuricata = htmlsuricata + '<td id="service-configfile" value="'+groups["configFile"]+'">'+groups["configFile"]+'</td>';
+                                        }
+                                    htmlsuricata = htmlsuricata + '</tr>'+
+                                    '<tr>'+
+                                    '<td>Command line &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Command line" onclick="modalEditGroupService(\''+uuid+'\', \'commandLine\', \'command line\')"></i></td>';
+                                        if(groups["commandLine"] == ""){
+                                            htmlsuricata = htmlsuricata + '<td id="service-commandline" value="" style="color: red;">No command line selected...</td>';
+                                        }else{
+                                            htmlsuricata = htmlsuricata + '<td id="service-commandline" value="'+groups["commandLine"]+'">'+groups["commandLine"]+'</td>';}
+                                    htmlsuricata = htmlsuricata + '</tr>'+
+                                '</table>'+
+                            '</div>';
 
-                                '<tr>'+
-                                    '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
-                                    '<td>Master path:</td>';
-                                    if(groups["mastersuricata"] == ""){
-                                        htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
-                                    }else{
-                                        htmlsuricata = htmlsuricata + '<td id="group-suricata-master-path" value="'+groups["mastersuricata"]+'">'+groups["mastersuricata"]+'</td>';
-                                    }
-                                htmlsuricata = htmlsuricata + '</tr>'+
-
-                                '<tr>'+                           
-                                    '<td>Node path:</td>';
-                                    if(groups["nodesuricata"] == ""){
-                                        htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-node-path" value="">No Suricata node path...</td>';
-                                    }else{
-                                        htmlsuricata = htmlsuricata + '<td id="group-suricata-node-path" value="'+groups["nodesuricata"]+'">'+groups["nodesuricata"]+'</td>';
-                                    }
-                                htmlsuricata = htmlsuricata + '</tr>'+
-                                '<tr id="suricata-edit-row" style="display:none;">'+
-                                    '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
-                                    '<td>Node path: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
-                                    '<td width="10%">'+
-                                        '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'suricata\')">Save</button>'+
-                                        '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
-                                    '</td>'+
-                                '</tr>'+
-                                '<tr>'+
-                                    '<td class="align-middle" rowspan="5">Services &nbsp <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick=""></i></td>'+
-                                    '<td>Interface &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select an interface" onclick="modalEditGroupService(\''+uuid+'\', \'interface\', \'interface\')"></i></td>';
-                                    if(groups["interface"] == ""){
-                                        htmlsuricata = htmlsuricata + '<td id="service-interface" value="" style="color: red;">No interface selected...</td>';
-                                    }else{
-                                        htmlsuricata = htmlsuricata + '<td id="service-interface" value="'+groups["interface"]+'">'+groups["interface"]+'</td>';}
-                                htmlsuricata = htmlsuricata + '</tr>'+
-                                '<tr>'+
-                                    '<td>BPF file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF file path" onclick="modalEditGroupService(\''+uuid+'\', \'BPFfile\', \'BPF file\')"></i></td>';
-                                    if(groups["BPFfile"] == ""){
-                                        htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="" style="color: red;">No BPF file selected...</td>';
-                                    }else{
-                                        htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="'+groups["BPFfile"]+'">'+groups["BPFfile"]+'</td>';}
-                                htmlsuricata = htmlsuricata + '</tr>'+
-                                '<tr>'+
-                                    '<td>BPF rule &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF rule" onclick="modalEditGroupService(\''+uuid+'\', \'BPFrule\', \'BPF rule\')"></i></td>';
-                                    if(groups["BPFrule"] == ""){
-                                        htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="" style="color: red;">No BPF rule selected...</td>';
-                                    }else{
-                                        htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="'+groups["BPFrule"]+'">'+groups["BPFrule"]+'</td>';}
-                                htmlsuricata = htmlsuricata + '</tr>'+
-                                '<tr>'+
-                                    '<td>Config file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a config file path" onclick="modalEditGroupService(\''+uuid+'\', \'configFile\', \'config file\')"></i></td>';
-                                    if(groups["configFile"] == ""){
-                                        htmlsuricata = htmlsuricata + '<td id="service-configfile" value="" style="color: red;">No config file selected...</td>';
-                                    }else{
-                                        htmlsuricata = htmlsuricata + '<td id="service-configfile" value="'+groups["configFile"]+'">'+groups["configFile"]+'</td>';
-                                    }
-                                htmlsuricata = htmlsuricata + '</tr>'+
-                                '<tr>'+
-                                '<td>Command line &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Command line" onclick="modalEditGroupService(\''+uuid+'\', \'commandLine\', \'command line\')"></i></td>';
-                                    if(groups["commandLine"] == ""){
-                                        htmlsuricata = htmlsuricata + '<td id="service-commandline" value="" style="color: red;">No command line selected...</td>';
-                                    }else{
-                                        htmlsuricata = htmlsuricata + '<td id="service-commandline" value="'+groups["commandLine"]+'">'+groups["commandLine"]+'</td>';}
-                                htmlsuricata = htmlsuricata + '</tr>'+
-                            '</tbody>'+                           
-                        '</table></div>';
+                        // '</div>';
                         //zeek table
                         htmlzeek = "<div>"+
                         '<b>Zeek</b> <button class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddCluster(\''+uuid+'\')">Add Cluster</button>'+
@@ -229,6 +261,7 @@ function GetGroupsDetails(){
         $('#group-disable-all-analyzer').click(function(){ ChangeAnalyzerStatus(allNodes, "Disabled"); });
         LoadAnalyzerNodeStatus(allNodes);
         GetAllClusterFiles(uuid);
+        SuricataNodesStatus(uuid);
     })
     .catch(function (error) {
         resultnodes.innerHTML = '<h3 align="center">No connection</h3>';
@@ -326,6 +359,95 @@ function editAnalyzer(node, type, name){
     }
 }
 
+function SuricataNodesStatus(guuid){
+    var suricatas = document.getElementById('group-suricata-list');
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/group/suricata/status/'+guuid;
+
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000
+    })
+    .then(function (response) {
+        var html = '';
+        for(x in response.data){
+            if(response.data[x]["type"] == "suricata"){
+                console.log(response.data[x]);
+                html = html + '<tr>'+
+                    '<td>'+response.data[x]["nodeName"]+'</td>'+
+                    '<td>';
+                        if(response.data[x]["status"] == "enabled"){
+                            html = html + '<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
+                        }else if(response.data[x]["status"] == "disabled"){
+                            html = html + '<span class="badge badge-pill bg-danger align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
+                        } 
+                    html = html + '</td>'+
+                    '<td>'+response.data[x]["interface"]+'</td>'+
+                    '<td> <i class="fas fa-info" style="color: dodgerblue;"></i> </td>'+
+                '</tr>';
+            }
+        }
+        suricatas.innerHTML = html;
+    })
+    .catch(function (error) {
+    });
+}
+
+function SuricataGroupService(uuid,action){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/group/suricata/';
+
+    var jsonGroup = {}
+    jsonGroup["uuid"] = uuid;
+    jsonGroup["action"] = action;
+    var dataJSON = JSON.stringify(jsonGroup);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: dataJSON
+    })
+    .then(function (response) {
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+action+' Suricata: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Success!</strong> Suricata '+action+' successfully.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> '+action+' Suricata: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+    GetGroupsDetails();
+}
+
 async function syncAnalyzer(nodes){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -372,7 +494,7 @@ async function syncAnalyzer(nodes){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Error!</strong> All analyzers synchronized successfully.'+
+                '<strong>Success!</strong> All analyzers synchronized successfully.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -391,7 +513,6 @@ async function syncAnalyzer(nodes){
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
-    // }
     GetGroupsDetails();
 }
 
@@ -714,6 +835,12 @@ function modalLoadRuleset(group){
 }
 
 function syncAllSuricataGroup(guuid){
+    syncSuricataGroupService(guuid)
+    SyncPathGroup(guuid, "suricata");
+    SyncRulesetToAllGroupNodes(guuid);
+}
+
+function syncSuricataGroupService(guuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/syncAllSuricataGroup';
@@ -728,9 +855,38 @@ function syncAllSuricataGroup(guuid){
         data: grJSON
         })
         .then(function (response) {
-            console.log(response.data);
+            if(response.data.acke == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Sync group: '+error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Group synchronized successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         })
         .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Sync group: '+error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }); 
 }
 
@@ -1108,7 +1264,7 @@ function checkStatus() {
     document.getElementById('check-status-config').href = nodeurl;
 }
 
-function SyncRulesetToAllGroupNodes(groupID){
+function SyncRulesetToAllGroupNodes(guuid){
     document.getElementById('progressBar-create-div').style.display="block";
     document.getElementById('progressBar-create').style.display="block"; 
 
@@ -1117,7 +1273,7 @@ function SyncRulesetToAllGroupNodes(groupID){
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/syncGroups';
 
     var jsonRuleUID = {}
-    jsonRuleUID["uuid"] = groupID;
+    jsonRuleUID["uuid"] = guuid;
     var dataJSON = JSON.stringify(jsonRuleUID);
     axios({
         method: 'put',
@@ -1329,6 +1485,34 @@ function addCluster(uuid, path){
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 } 
+
+function ChangeSuricataConfigTable(tab){
+    if (tab == "standalone-suricata-group-table"){
+        document.getElementById('standalone-suricata-group-table').style.display = 'block';
+        document.getElementById('cluster-zeek-table').style.display = 'none';
+        document.getElementById('default-suricata-group-table').style.display = 'none';
+
+        document.getElementById('suricata-group-mode-default').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
+    } else if (tab == "expert-suricata-group-table") {
+        document.getElementById('standalone-suricata-group-table').style.display = 'none';
+        document.getElementById('cluster-zeek-table').style.display = 'block';
+        document.getElementById('default-suricata-group-table').style.display = 'none';
+
+        document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
+    } else if (tab == "default-suricata-group-table") {
+        document.getElementById('standalone-suricata-group-table').style.display = 'none';
+        document.getElementById('cluster-zeek-table').style.display = 'none';
+        document.getElementById('default-suricata-group-table').style.display = 'block';
+
+        document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-expert').className = 'badge bg-primary align-text-bottom text-white';
+    }
+}
 
 // function InsertCluster(uuid){
 //     var ipmaster = document.getElementById('ip-master').value;

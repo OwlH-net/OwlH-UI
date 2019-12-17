@@ -5,8 +5,8 @@ function loadJSONdata(){
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
         loadTitleJSONdata();
-        document.getElementById('progressBar-create-div').style.display="none";
-        document.getElementById('progressBar-create').style.display="none"; 
+        document.getElementById('progressBar-options-div').style.display="none";
+        document.getElementById('progressBar-options').style.display="none"; 
         GetGroupsDetails();
     });
 }
@@ -77,13 +77,13 @@ function GetGroupsDetails(){
                         htmlsuricata =             
                             '<b>Suricata</b> &nbsp'+
                             '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Mode: &nbsp '+  
-                                '<span id="suricata-group-mode-default" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'default-suricata-group-table\')">Status</span> &nbsp'+
+                                '<span id="suricata-group-mode-default" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'default-suricata-group-table\')">Default</span> &nbsp'+
                                 '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'standalone-suricata-group-table\')">Standalon</span> &nbsp '+
                                 '<span id="suricata-group-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'expert-suricata-group-table\')">Expert</span>'+
                             '</span> &nbsp'+ 
                             '<span id="suricata-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
-                                '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="SuricataGroupService(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
-                                '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="SuricataGroupService(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
+                                '<span style="cursor: pointer;" title="Stop Suricata" class="badge bg-danger align-text-bottom text-white" onclick="ChangeSuricataGroupService(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
+                                '<span style="cursor: pointer;" title="Start Suricata" class="badge bg-primary align-text-bottom text-white" onclick="ChangeSuricataGroupService(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
                             '</span>'+
                             '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+
                             
@@ -118,15 +118,7 @@ function GetGroupsDetails(){
                             //Suricata expert
                             '<div id="expert-suricata-group-table" style="display: none;">'+
                                 '<table class="table" style="table-layout: fixed" width="100%">'+                                                         
-                                    '<tbody>'+  
-                                        '<tr>'+                           
-                                            '<td>Node path:</td>';
-                                            if(groups["nodesuricata"] == ""){
-                                                htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-node-path" value="">No Suricata node path...</td>';
-                                            }else{
-                                                htmlsuricata = htmlsuricata + '<td id="group-suricata-node-path" value="'+groups["nodesuricata"]+'">'+groups["nodesuricata"]+'</td>';
-                                            }
-                                        htmlsuricata = htmlsuricata + '</tr>'+   
+                                    '<tbody>'+                                          
                                         '<tr>'+
                                             '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
                                             '<td>Master path:</td>';
@@ -136,12 +128,20 @@ function GetGroupsDetails(){
                                                 htmlsuricata = htmlsuricata + '<td id="group-suricata-master-path" value="'+groups["mastersuricata"]+'">'+groups["mastersuricata"]+'</td>';
                                             }
                                         htmlsuricata = htmlsuricata + '</tr>'+
+                                        '<tr>'+                           
+                                            '<td>Node path:</td>';
+                                            if(groups["nodesuricata"] == ""){
+                                                htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-node-path" value="">No Suricata node path...</td>';
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="group-suricata-node-path" value="'+groups["nodesuricata"]+'">'+groups["nodesuricata"]+'</td>';
+                                            }
+                                        htmlsuricata = htmlsuricata + '</tr>'+   
                                     '</tbody>'+
                                 '</table>'+
                             '</div>'+
 
                             //Suricata expert
-                            '<div id="standalone-suricata-group-table">'+
+                            '<div id="standalone-suricata-group-table" style="display: none;">'+
                                 '<table class="table" style="table-layout: fixed" width="100%">'+  
                                     '<tr id="suricata-edit-row" style="display:none;">'+
                                         '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
@@ -371,11 +371,11 @@ function SuricataNodesStatus(guuid){
         timeout: 30000
     })
     .then(function (response) {
+        console.log(response.data);
         var html = '';
         for(x in response.data){
             if(response.data[x]["type"] == "suricata"){
-                console.log(response.data[x]);
-                html = html + '<tr>'+
+                html = html + '<tr bpf="'+response.data[x]["bpf"]+'" guuid="'+x+'" uuid="'+response.data[x]["node"]+'" interface="'+response.data[x]["interface"]+'">'+
                     '<td>'+response.data[x]["nodeName"]+'</td>'+
                     '<td>';
                         if(response.data[x]["status"] == "enabled"){
@@ -395,15 +395,38 @@ function SuricataNodesStatus(guuid){
     });
 }
 
-function SuricataGroupService(uuid,action){
+function ChangeSuricataGroupService(uuid,action){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/group/suricata/';
 
-    var jsonGroup = {}
-    jsonGroup["uuid"] = uuid;
-    jsonGroup["action"] = action;
-    var dataJSON = JSON.stringify(jsonGroup);
+    $('#group-suricata-list > tr').each(function() {
+        if(action == "start"){
+            ChangeServiceStatus($(this).attr('uuid'), $(this).attr('guuid'), 'status', 'enabled', $(this).attr('interface'), $(this).attr('bpf'), 'suricata');
+        }else{
+            ChangeServiceStatus($(this).attr('uuid'), $(this).attr('guuid'), 'status', 'disabled', $(this).attr('interface'), $(this).attr('bpf'), 'suricata');
+        }
+    });
+}
+function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type){
+    //desplegar load bar
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ChangeServiceStatus';
+
+    var jsonChangeService = {}
+    jsonChangeService["uuid"] = uuid;
+    jsonChangeService["status"] = status;
+    jsonChangeService["param"] = param;
+    jsonChangeService["service"] = service;
+    jsonChangeService["type"] = type;
+    jsonChangeService["bpf"] = bpf;
+    jsonChangeService["interface"] = interface;
+    var dataJSON = JSON.stringify(jsonChangeService);
 
     axios({
         method: 'put',
@@ -416,36 +439,32 @@ function SuricataGroupService(uuid,action){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+action+' Suricata: '+response.data.error+'.'+
+                '<strong>Error!</strong> Change group service status: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
         }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> Suricata '+action+' successfully.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            GetGroupsDetails();
         }
     })
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> '+action+' Suricata: '+error+'.'+
+            '<strong>Error!</strong> Change group service status: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
     });
-    GetGroupsDetails();
+    
 }
 
 async function syncAnalyzer(nodes){
@@ -1265,8 +1284,8 @@ function checkStatus() {
 }
 
 function SyncRulesetToAllGroupNodes(guuid){
-    document.getElementById('progressBar-create-div').style.display="block";
-    document.getElementById('progressBar-create').style.display="block"; 
+    document.getElementById('progressBar-options-div').style.display="block";
+    document.getElementById('progressBar-options').style.display="block"; 
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -1282,8 +1301,8 @@ function SyncRulesetToAllGroupNodes(guuid){
         data: dataJSON
     })
     .then(function (response) {
-        document.getElementById('progressBar-create-div').style.display="none";
-        document.getElementById('progressBar-create').style.display="none"; 
+        document.getElementById('progressBar-options-div').style.display="none";
+        document.getElementById('progressBar-options').style.display="none"; 
 
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
@@ -1308,8 +1327,8 @@ function SyncRulesetToAllGroupNodes(guuid){
         }
     })
     .catch(function (error) {
-        document.getElementById('progressBar-create-div').style.display="none";
-        document.getElementById('progressBar-create').style.display="none"; 
+        document.getElementById('progressBar-options-div').style.display="none";
+        document.getElementById('progressBar-options').style.display="none"; 
 
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
@@ -1489,28 +1508,28 @@ function addCluster(uuid, path){
 function ChangeSuricataConfigTable(tab){
     if (tab == "standalone-suricata-group-table"){
         document.getElementById('standalone-suricata-group-table').style.display = 'block';
-        document.getElementById('cluster-zeek-table').style.display = 'none';
+        document.getElementById('expert-suricata-group-table').style.display = 'none';
         document.getElementById('default-suricata-group-table').style.display = 'none';
 
-        document.getElementById('suricata-group-mode-default').className = 'badge bg-primary align-text-bottom text-white';
-        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
     } else if (tab == "expert-suricata-group-table") {
         document.getElementById('standalone-suricata-group-table').style.display = 'none';
-        document.getElementById('cluster-zeek-table').style.display = 'block';
+        document.getElementById('expert-suricata-group-table').style.display = 'block';
         document.getElementById('default-suricata-group-table').style.display = 'none';
-
-        document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
-        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-primary align-text-bottom text-white';
-        document.getElementById('suricata-group-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
-    } else if (tab == "default-suricata-group-table") {
-        document.getElementById('standalone-suricata-group-table').style.display = 'none';
-        document.getElementById('cluster-zeek-table').style.display = 'none';
-        document.getElementById('default-suricata-group-table').style.display = 'block';
 
         document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-expert').className = 'badge bg-primary align-text-bottom text-white';
+    } else if (tab == "default-suricata-group-table") {
+        document.getElementById('standalone-suricata-group-table').style.display = 'none';
+        document.getElementById('expert-suricata-group-table').style.display = 'none';
+        document.getElementById('default-suricata-group-table').style.display = 'block';
+
+        document.getElementById('suricata-group-mode-default').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
     }
 }
 

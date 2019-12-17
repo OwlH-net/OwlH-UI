@@ -4463,10 +4463,10 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
                 loadPlugins();
             }
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);

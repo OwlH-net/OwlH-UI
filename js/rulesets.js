@@ -52,7 +52,8 @@ function generateAllRulesetsHTMLOutput(response) {
                         '<i class="far fa-clipboard" title="Scheduler LOG" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else if(ruleset[uuid]["status"]=="disabled"){
                         html = html + '<i class="fas fa-stopwatch" style="color:red;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
-                        '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
+                        // '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
+                        '<i class="far fa-clipboard" title="Scheduler LOG" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else{
                         html = html + '<i class="fas fa-stopwatch" style="color:grey;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp';                        
                     }

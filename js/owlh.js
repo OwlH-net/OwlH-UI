@@ -20,10 +20,10 @@ function showConfig(oip, oname, oport, ouuid){
     var ip = document.getElementById('cfgnodeip');
     var port = document.getElementById('cfgnodeport');
     var uuid = document.getElementById('cfgnodeid');
-    port.value = oport;
-    name.value = oname;
-    ip.value = oip;
-    uuid.value = ouuid;
+    port.value = oport.trim();
+    name.value = oname.trim();
+    ip.value = oip.trim();
+    uuid.value = ouuid.trim();
 }
 
 // function DisableOfflineNodes() {

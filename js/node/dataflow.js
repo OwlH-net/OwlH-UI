@@ -284,10 +284,10 @@ function SaveVxLAN(uuid){
 
         var jsonValues = {}
         jsonValues["uuid"] = uuid;
-        jsonValues["interface"] = document.getElementById('ifaceNameVxLAN').value;
-        jsonValues["lanIp"] = document.getElementById('VxLANid').value;
-        jsonValues["localIp"] = document.getElementById('locaIPVxLAN').value;
-        jsonValues["portIp"] = document.getElementById('portVxLAN').value;
+        jsonValues["interface"] = document.getElementById('ifaceNameVxLAN').value.trim();
+        jsonValues["lanIp"] = document.getElementById('VxLANid').value.trim();
+        jsonValues["localIp"] = document.getElementById('locaIPVxLAN').value.trim();
+        jsonValues["portIp"] = document.getElementById('portVxLAN').value.trim();
         jsonValues["type"] = "networkvxlan";
         jsonValues["baseInterface"] = valueSelected;
         var dataJSON = JSON.stringify(jsonValues);
@@ -461,8 +461,8 @@ function SaveNewLocal(uuid){
 
         var jsonValues = {}
         jsonValues["uuid"] = uuid;
-        jsonValues["name"] = document.getElementById('InterfaceNameNewLocal').value;
-        jsonValues["mtu"] = document.getElementById('mtuNewLocal').value;
+        jsonValues["name"] = document.getElementById('InterfaceNameNewLocal').value.trim();
+        jsonValues["mtu"] = document.getElementById('mtuNewLocal').value.trim();
         var dataJSON = JSON.stringify(jsonValues);
         axios({
             method: 'put',
@@ -773,10 +773,10 @@ function saveSocketToNetwork(uuid){
         });
 
         var jsonSave = {}
-        jsonSave["name"] = document.getElementById('socketName').value;
-        jsonSave["cert"] = document.getElementById('certificate').value;
+        jsonSave["name"] = document.getElementById('socketName').value.trim();
+        jsonSave["cert"] = document.getElementById('certificate').value.trim();
         jsonSave["interface"] = valueSelected;
-        jsonSave["port"] = document.getElementById('listenPort').value;
+        jsonSave["port"] = document.getElementById('listenPort').value.trim();
         jsonSave["uuid"] = uuid;
         var dataJSON = JSON.stringify(jsonSave);
         axios({

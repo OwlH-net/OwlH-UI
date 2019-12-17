@@ -323,7 +323,7 @@ function getRuleNote(elementID, fileuuid, sid) {
 
 
 function rulesetNotes(sid, fileuuid) {
-    var textAreaNote = document.getElementById('ruleset-notes').value;
+    var textAreaNote = document.getElementById('ruleset-notes').value.trim();
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/note';

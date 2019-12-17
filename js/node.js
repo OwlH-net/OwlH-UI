@@ -1,7 +1,7 @@
 function addNode() {
-    var nname = document.getElementById('nodename').value;
-    var nip = document.getElementById('nodeip').value;
-    var nport = document.getElementById('nodeport').value;
+    var nname = document.getElementById('nodename').value.trim();
+    var nip = document.getElementById('nodeip').value.trim();
+    var nport = document.getElementById('nodeport').value.trim();
     if(nname=="" || nip=="" || nport==""){
 		$('html,body').scrollTop(0);
 		var alert = document.getElementById('floating-alert');
@@ -55,7 +55,7 @@ function addNode() {
 		.catch(function (error) {
 			$('html,body').scrollTop(0);
 			var alert = document.getElementById('floating-alert');
-			alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+			alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
 				'<strong>Error adding node!</strong> '+error+'.'+
 				'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 					'<span aria-hidden="true">&times;</span>'+

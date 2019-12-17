@@ -100,7 +100,7 @@ function AddMonitorFileModal(uuid){
       '</div>'+
     '</div>';
     $('#modal-window').modal("show");
-    $('#add-file-modal').click(function(){ AddMonitorFile(uuid, document.getElementById('new-file-path').value); });
+    $('#add-file-modal').click(function(){ AddMonitorFile(uuid, document.getElementById('new-file-path').value.trim()); });
     $('#add-file-modal-close').click(function(){ $('#modal-window').modal("hide");});
     $('#add-file-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }

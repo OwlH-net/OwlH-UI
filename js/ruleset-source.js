@@ -16,9 +16,9 @@ function formAddRulesetSource(){
 }
 
 function addRulesetSource() {
-    var formName = document.getElementById('ruleset-source-name').value;
-    var formDesc = document.getElementById('ruleset-source-desc').value;
-    var formUrl = document.getElementById('ruleset-source-url').value;
+    var formName = document.getElementById('ruleset-source-name').value.trim();
+    var formDesc = document.getElementById('ruleset-source-desc').value.trim();
+    var formUrl = document.getElementById('ruleset-source-url').value.trim();
     var fileName = formUrl.split(/[\s/]+/);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -383,14 +383,14 @@ function editRulesetSourceData(){
             $('#ruleset-source-edit-url').css('border', '2px solid #ced4da');
         }
     }else{
-        var sourceUUID = document.getElementById('ruleset-source-uuid').value;
+        var sourceUUID = document.getElementById('ruleset-source-uuid').value.trim();
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/EditRulesetSource';
         var nodejson = {}
-        nodejson["name"] = name.value;
-        nodejson["desc"] = desc.value;
-        nodejson["url"] = url.value;
+        nodejson["name"] = name.value.trim();
+        nodejson["desc"] = desc.value.trim();
+        nodejson["url"] = url.value.trim();
         nodejson["uuid"] = sourceUUID;
         var nodeJSON = JSON.stringify(nodejson);
         axios({
@@ -411,7 +411,6 @@ function editRulesetSourceData(){
 function deleteRulesetSource(sourceUUID,sourceType){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    // var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/DeleteRulesetSource/' + sourceUUID;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/DeleteRulesetSource';
 
     var nodejson = {}

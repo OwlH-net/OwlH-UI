@@ -742,15 +742,15 @@ function saveStapChanges(type, uuid){
     jsonDeployService["uuid"] = uuid;
     jsonDeployService["type"] = type;
     if (type == "socket-network"){
-        jsonDeployService["name"] = document.getElementById('socket-network-name-'+uuid).value;
-        jsonDeployService["port"] = document.getElementById('socket-network-port-'+uuid).value;
-        jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+uuid).value;
+        jsonDeployService["name"] = document.getElementById('socket-network-name-'+uuid).value.trim();
+        jsonDeployService["port"] = document.getElementById('socket-network-port-'+uuid).value.trim();
+        jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+uuid).value.trim();
     }else if (type == "socket-pcap"){        
-        jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+uuid).value;
-        jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+uuid).value;
-        jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+uuid).value;
-        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+uuid).value;
-        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+uuid).value;
+        jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+uuid).value.trim();
+        jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+uuid).value.trim();
+        jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+uuid).value.trim();
+        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+uuid).value.trim();
+        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+uuid).value.trim();
     }
     var dataJSON = JSON.stringify(jsonDeployService);
 
@@ -1256,12 +1256,12 @@ function saveSoftwareTAP(type){
         });
 
         var jsonSave = {}
-        jsonSave["name"] = document.getElementById('soft-tap-name-master').value;
+        jsonSave["name"] = document.getElementById('soft-tap-name-master').value.trim();
         jsonSave["type"] = type;
-        jsonSave["cert"] = document.getElementById('soft-tap-cert-master').value;
-        jsonSave["port"] = document.getElementById('soft-tap-port-master').value;
+        jsonSave["cert"] = document.getElementById('soft-tap-cert-master').value.trim();
+        jsonSave["port"] = document.getElementById('soft-tap-port-master').value.trim();
         jsonSave["interface"] = valueSelected;
-        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path-master').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix-master').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-master').value;}
+        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path-master').value.trim(); jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix-master').value.trim(); jsonSave["bpf"] = document.getElementById('soft-tap-bpf-master').value.trim();}
         var dataJSON = JSON.stringify(jsonSave);
         axios({
             method: 'put',

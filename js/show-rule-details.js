@@ -35,12 +35,12 @@ function disableRow(count){
 }
 
 function saveNewMatchValue(type){   
-    document.getElementById(type+'-match-value').innerHTML = document.getElementById(type+'-input-value').value;
+    document.getElementById(type+'-match-value').innerHTML = document.getElementById(type+'-input-value').value.trim();
     $('#'+type+'-match').hide();
 }
 
 function saveNewValue(type){    
-    document.getElementById(type+'-value-data').innerHTML = document.getElementById(type+'-value-displayed').value;
+    document.getElementById(type+'-value-data').innerHTML = document.getElementById(type+'-value-displayed').value.trim();
     $('#'+type+'-line').hide();
 }
 

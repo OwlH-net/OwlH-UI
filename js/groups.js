@@ -42,8 +42,8 @@ function modalAddGroup(){
 }
 
 function addGroup() {
-    var nameInput = document.getElementById('recipient-name-group').value;
-    var descInput = document.getElementById('recipient-desc-group').value;
+    var nameInput = document.getElementById('recipient-name-group').value.trim();
+    var descInput = document.getElementById('recipient-desc-group').value.trim();
     if(nameInput == "" || descInput == ""){
         if(nameInput == ""){
             $("#recipient-name-group").css('border', '2px solid red');
@@ -57,8 +57,8 @@ function addGroup() {
         }
     }else{
         $('#modal-groups').modal("hide");
-        var groupname = document.getElementById('recipient-name-group').value;
-        var groupdesc = document.getElementById('recipient-desc-group').value;
+        var groupname = document.getElementById('recipient-name-group').value.trim();
+        var groupdesc = document.getElementById('recipient-desc-group').value.trim();
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var groupurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/';
@@ -537,8 +537,8 @@ function hideEditGroup(uuid){
 }
 
 function EditGroupData(uuid){    
-    var name = document.getElementById('edit-group-name-'+uuid).value;
-    var desc = document.getElementById('edit-group-desc-'+uuid).value;    
+    var name = document.getElementById('edit-group-name-'+uuid).value.trim();
+    var desc = document.getElementById('edit-group-desc-'+uuid).value.trim();    
 
     if(name == ""  || desc == ""){
         if(name == ""){

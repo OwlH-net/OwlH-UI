@@ -230,8 +230,8 @@ function modalAddNewRuleset(){
             newRuleset[uuid]["sourceName"] = document.getElementById('nameNewRuleset-'+uuid+'').innerHTML;
             newRuleset[uuid]["fileName"] = document.getElementById('fileNewRuleset-'+uuid+'').innerHTML;
             newRuleset[uuid]["filePath"] = document.getElementById('pathNewRuleset-'+uuid+'').innerHTML;
-            newRuleset[uuid]["rulesetName"] = document.getElementById('new-ruleset-name-input').value;
-            newRuleset[uuid]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value;
+            newRuleset[uuid]["rulesetName"] = document.getElementById('new-ruleset-name-input').value.trim();
+            newRuleset[uuid]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value.trim();
             newRuleset[uuid]["sourceType"] = document.getElementById('source-type-'+uuid).innerHTML;
             length++;
         }

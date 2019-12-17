@@ -696,7 +696,7 @@ function addNewWazuhPath(uuid){
         var html = ""
         document.getElementById("wazuh-count-table-value").value++;
         var count = document.getElementById("wazuh-count-table-value").value;
-        var contentInput = document.getElementById("wazuh-add-line").value;
+        var contentInput = document.getElementById("wazuh-add-line").value.trim();
         html = html + '<tr>'+
             '<td id="'+count+'-wazuh-files">'+contentInput+'</td>'+
             '<td><span class="badge badge-pill bg-success align-text-bottom text-white">ON</span></td>'+
@@ -743,12 +743,12 @@ function PingPluginsMaster(){
                     if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-1").innerHTML = response.data[id]["variables1"]; $("#zeek-expert-values-var-1").css('color', '');}
                     if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-2").innerHTML = response.data[id]["variables2"]; $("#zeek-expert-values-var-2").css('color', '');}
                     //edit fields
-                    document.getElementById("expert-zeek-path-node-edit").value = response.data[id]["nodeConfig"]            
-                    document.getElementById("expert-zeek-path-networks-edit").value = response.data[id]["networksConfig"]            
-                    document.getElementById("expert-zeek-path-policies-master").value = response.data[id]["policiesMaster"]            
-                    document.getElementById("expert-zeek-path-policies-node").value = response.data[id]["policiesNode"]            
-                    document.getElementById("expert-zeek-path-var-1").value = response.data[id]["variables1"]            
-                    document.getElementById("expert-zeek-path-var-2").value = response.data[id]["variables2"]            
+                    document.getElementById("expert-zeek-path-node-edit").value = response.data[id]["nodeConfig"].trim();            
+                    document.getElementById("expert-zeek-path-networks-edit").value = response.data[id]["networksConfig"].trim();            
+                    document.getElementById("expert-zeek-path-policies-master").value = response.data[id]["policiesMaster"].trim();            
+                    document.getElementById("expert-zeek-path-policies-node").value = response.data[id]["policiesNode"].trim();            
+                    document.getElementById("expert-zeek-path-var-1").value = response.data[id]["variables1"].trim();            
+                    document.getElementById("expert-zeek-path-var-2").value = response.data[id]["variables2"].trim();            
                 }
             }
         }
@@ -1036,7 +1036,7 @@ function ModalAddClusterValue(uuid, type){
     
     document.getElementById('modal-window').innerHTML = html;
     $('#modal-window').modal("show");
-    $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value, document.getElementById('new-cluster-interface').value); });
+    $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value.trim(), document.getElementById('new-cluster-interface').value.trim()); });
     $('#add-cluster-modal-close').click(function(){ $('#modal-window').modal("hide");});
     $('#add-cluster-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
@@ -2016,7 +2016,7 @@ function AddServiceModal(uuid, type){
     '</div>'+
   '</div>';
   $('#modal-window').modal("show");
-  $('#add-service-modal').click(function(){ AddPluginService(uuid, document.getElementById('new-service-name').value, type); });
+  $('#add-service-modal').click(function(){ AddPluginService(uuid, document.getElementById('new-service-name').value.trim(), type); });
   $('#add-service-modal-close').click(function(){ $('#modal-window').modal("hide");});
   $('#add-service-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
@@ -2217,13 +2217,13 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
 
         var jsonSave = {}
         jsonSave["uuid"] = uuid;
-        jsonSave["name"] = document.getElementById('soft-tap-name').value;
+        jsonSave["name"] = document.getElementById('soft-tap-name').value.trim();
         jsonSave["type"] = type;
-        jsonSave["cert"] = document.getElementById('soft-tap-cert').value;
-        jsonSave["port"] = document.getElementById('soft-tap-port').value;
+        jsonSave["cert"] = document.getElementById('soft-tap-cert').value.trim();
+        jsonSave["port"] = document.getElementById('soft-tap-port').value.trim();
         jsonSave["interface"] = valueSelected;
-        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf').value;}
-        if (type == "network-socket"){ jsonSave["collector"] = document.getElementById('soft-tap-collector').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-socket').value;}
+        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path').value.trim(); jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix').value.trim(); jsonSave["bpf"] = document.getElementById('soft-tap-bpf').value.trim();}
+        if (type == "network-socket"){ jsonSave["collector"] = document.getElementById('soft-tap-collector').value.trim(); jsonSave["bpf"] = document.getElementById('soft-tap-bpf-socket').value.trim();}
         var dataJSON = JSON.stringify(jsonSave);
         axios({
             method: 'post',
@@ -4187,28 +4187,28 @@ function saveStapChanges(uuid, type, service){
     jsonDeployService["service"] = service;
     jsonDeployService["type"] = type;
     if (type == "socket-network"){
-        jsonDeployService["name"] = document.getElementById('socket-network-name-'+service).value;
-        jsonDeployService["port"] = document.getElementById('socket-network-port-'+service).value;
-        jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+service).value;
-        jsonDeployService["interface"] = document.getElementById('socket-network-interface-'+service).value;
+        jsonDeployService["name"] = document.getElementById('socket-network-name-'+service).value.trim();
+        jsonDeployService["port"] = document.getElementById('socket-network-port-'+service).value.trim();
+        jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+service).value.trim();
+        jsonDeployService["interface"] = document.getElementById('socket-network-interface-'+service).value.trim();
     }else if (type == "suricata"){
-        jsonDeployService["name"] = document.getElementById('suricata-name-'+service).value;      
+        jsonDeployService["name"] = document.getElementById('suricata-name-'+service).value.trim();      
     }else if (type == "zeek"){
-        jsonDeployService["name"] = document.getElementById('zeek-name-'+service).value;      
+        jsonDeployService["name"] = document.getElementById('zeek-name-'+service).value.trim();      
     }else if (type == "socket-pcap"){        
-        jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+service).value;
-        jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+service).value;
-        jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+service).value;
-        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+service).value;
-        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+service).value;
-        jsonDeployService["bpf"] = document.getElementById('socket-pcap-bpf-'+service).value;
+        jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+service).value.trim();
+        jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+service).value.trim();
+        jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+service).value.trim();
+        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+service).value.trim();
+        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+service).value.trim();
+        jsonDeployService["bpf"] = document.getElementById('socket-pcap-bpf-'+service).value.trim();
     }else if (type == "network-socket"){
-        jsonDeployService["name"] = document.getElementById('network-socket-name-'+service).value;
-        jsonDeployService["port"] = document.getElementById('network-socket-port-'+service).value;
-        jsonDeployService["cert"] = document.getElementById('network-socket-cert-'+service).value;
-        jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value;
-        jsonDeployService["interface"] = document.getElementById('network-socket-interface-'+service).value;
-        jsonDeployService["bpf"] = document.getElementById('network-socket-bpf-'+service).value;
+        jsonDeployService["name"] = document.getElementById('network-socket-name-'+service).value.trim();
+        jsonDeployService["port"] = document.getElementById('network-socket-port-'+service).value.trim();
+        jsonDeployService["cert"] = document.getElementById('network-socket-cert-'+service).value.trim();
+        jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value.trim();
+        jsonDeployService["interface"] = document.getElementById('network-socket-interface-'+service).value.trim();
+        jsonDeployService["bpf"] = document.getElementById('network-socket-bpf-'+service).value.trim();
     }    
     var dataJSON = JSON.stringify(jsonDeployService);
 

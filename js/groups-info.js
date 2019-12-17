@@ -136,6 +136,14 @@ function GetGroupsDetails(){
                                                 htmlsuricata = htmlsuricata + '<td id="group-suricata-node-path" value="'+groups["nodesuricata"]+'">'+groups["nodesuricata"]+'</td>';
                                             }
                                         htmlsuricata = htmlsuricata + '</tr>'+   
+                                        '<tr id="suricata-edit-row" style="display:none;">'+
+                                            '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
+                                            '<td>Node path: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
+                                            '<td width="10%">'+
+                                                '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'suricata\')">Save</button>'+
+                                                '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
+                                            '</td>'+
+                                        '</tr>'+
                                     '</tbody>'+
                                 '</table>'+
                             '</div>'+
@@ -650,11 +658,11 @@ function changePaths(guuid, type){
         groupjson["uuid"] = guuid;
         groupjson["type"] = type;
         if(type == "suricata"){
-            groupjson["mastersuricata"] = document.getElementById('suricata-group-master-'+guuid).value;
-            groupjson["nodesuricata"] = document.getElementById('suricata-group-node-'+guuid).value;
+            groupjson["mastersuricata"] = document.getElementById('suricata-group-master-'+guuid).value.trim();
+            groupjson["nodesuricata"] = document.getElementById('suricata-group-node-'+guuid).value.trim();
         }else{
-            groupjson["masterzeek"] = document.getElementById('zeek-group-master-'+guuid).value;
-            groupjson["nodezeek"] = document.getElementById('zeek-group-node-'+guuid).value;
+            groupjson["masterzeek"] = document.getElementById('zeek-group-master-'+guuid).value.trim();
+            groupjson["nodezeek"] = document.getElementById('zeek-group-node-'+guuid).value.trim();
         }
         var grJSON = JSON.stringify(groupjson);
         axios({
@@ -1367,7 +1375,7 @@ function modalEditGroupService(uuid, type, editField){
     $('#modal-groups').modal("show");
     $('#update-node-group-close').click(function(){ $('#modal-groups').modal("hide");});
     $('#update-node-group-cross').click(function(){ $('#modal-groups').modal("hide");});
-    $('#update-node-group').click(function(){ $('#modal-groups').modal("hide"); updateGroupService(uuid, type, document.getElementById("suricata-group-service-value").value); });
+    $('#update-node-group').click(function(){ $('#modal-groups').modal("hide"); updateGroupService(uuid, type, document.getElementById("suricata-group-service-value").value.trim()); });
 }
 
 function updateGroupService(uuid, type, value){

@@ -44,6 +44,8 @@ function generateAllRuleDataHTMLOutput(sources) {
     var html = "";
     var isEmpty = true;
     var arrayRulesets = new Array();
+    var ids = new Array();
+    var rulesetsIds = new Array();
 
     if (sources.ack == "false") {
         return '<div style="text-align:center"><h3 style="color:red;">Error creating ruleset</h3></div>';
@@ -70,11 +72,13 @@ function generateAllRuleDataHTMLOutput(sources) {
     '<h5>Select rulesets</h5>'+
     '<div class="form-check">';
     for (source in sources) {
+        // ids.push(source);
         if(sources[source]["type"] == "source"){            
             if(!arrayRulesets.includes(sources[source]["name"])){
                 arrayRulesets.push(sources[source]["name"]);
+                rulesetsIds.push(sources[source]["sourceUUID"]);
                 html = html +'<ul class="checkbox-grid">'+
-                ' <li style="display: block; float: left; width: 25%"><input class="ruleset-input" type="checkbox" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked/><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
+                ' <li style="display: block; float: left; width: 25%"><input class="ruleset-input" type="checkbox" sourceUUID="'+sources[source]["sourceUUID"]+'" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked/><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
                 '</ul>';
                 
             }
@@ -91,7 +95,7 @@ function generateAllRuleDataHTMLOutput(sources) {
             '<div class="input-group-prepend">'+
                 '<span class="input-group-text">Search rule file</span>'+
             '</div>'+
-            '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\')"'+
+            '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')"'+
                 'placeholder="Search for rule file name..." title="Insert a ruleset name for search">'+
         '</div>'+
     '</div>'+
@@ -110,31 +114,32 @@ function generateAllRuleDataHTMLOutput(sources) {
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody id="create-ruleset-table-body">' ;
-    for (source in sources) {        
-        if(sources[source]["type"]){
-            if(sources[source]["exists"]=="true"){
-                isEmpty = false;
-                html = html + '<tr name="'+sources[source]["name"]+'" id="row-'+source+'"><td style="width: 100%; word-wrap: break-word;" align="center">'+
-                        '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'" value="'+sources[source]["sourceType"]+'">'+                 
-                        sources[source]["name"]+
-                    '</td><td style="word-wrap: break-word;" id="fileNewRuleset-'+source+'">'+
-                        sources[source]["file"]+
-                    '</td><td style="word-wrap: break-word;" id="pathNewRuleset-'+source+'">'+
-                        sources[source]["path"]+
-                    '</td><td style="word-wrap: break-word;" style="display:none;" id="source-type-'+source+'">';
-                        if (sources[source]["sourceType"]){
-                            html = html + sources[source]["sourceType"];
-                        }else{
-                            html = html + sources[source]["type"];
-                        }
-                    html = html + '</td></tr>';
+            for (source in sources) {        
+                if(sources[source]["type"]){
+                    if(sources[source]["exists"]=="true"){
+                        isEmpty = false;
+                        html = html + '<tr id="row-'+source+'" rulesetname="'+sources[source]["name"]+'" sourceUUID="'+sources[source]["sourceUUID"]+'">'+
+                            '<td style="width: 100%; word-wrap: break-word;" align="center">'+
+                                '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'" value="'+sources[source]["sourceType"]+'">'+                 
+                                sources[source]["name"]+
+                            '</td><td class="fileName" style="word-wrap: break-word;" id="fileNewRuleset-'+source+'">'+
+                                sources[source]["file"]+
+                            '</td><td style="word-wrap: break-word;" id="pathNewRuleset-'+source+'">'+
+                                sources[source]["path"]+
+                            '</td><td style="word-wrap: break-word;" style="display:none;" id="source-type-'+source+'">';
+                                if (sources[source]["sourceType"]){
+                                    html = html + sources[source]["sourceType"];
+                                }else{
+                                    html = html + sources[source]["type"];
+                                }
+                            html = html + '</td></tr>';
+                    }
+                }else{
+                    continue;
+                }
             }
-        }else{
-            continue;
-        }
-    }
     html = html + '</tbody></table>'+
     '<br><button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
 
@@ -187,31 +192,29 @@ function addRulesetFilesToTable(sources){
     });
 }
 
-function searchRuleset(rulesets){
+function searchRuleset(rulesetNames, checkboxIds){
+    var boxes = checkboxIds.split(",");
+
     var input, filter, table, tr, td, i, txtValue;
     input = document.getElementById("ruleset-search-input");
     filter = input.value.toUpperCase();
     table = document.getElementById("create-ruleset-table");
     tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[2];
-        if (td) {
-        // if (rulesets.incledes(tr[i].name)) {
-
-            // $('.ruleset-input').each(function() {
-            //     if($(this).prop('checked') == "true"){
-            //         if (rulesets.incledes(tr[i].name)) {
-                        txtValue = td.textContent || td.innerText;
-                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                            tr[i].style.display = "";
-                        } else {
-                            tr[i].style.display = "none";
-                        }
-                    // }
-                // }
-            // });
+    $.each( boxes, function( key, value ) {
+        if($('#checkbox-'+value).is(':checked')){
+            $('#create-ruleset-table-body tr').each(function () {
+                if($(this).attr('sourceUUID') == value){
+                    var tdContent = $(this).find(".fileName").html();
+                    if(tdContent.toUpperCase().includes(filter)){
+                    // if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                }
+            });
         }
-    }
+    });
 }
 
 function modalAddNewRuleset(){   
@@ -359,10 +362,7 @@ function modalAddNewRuleset(){
                                         for (sid in lines){
                                             for(values in lines[sid]){
                                                 var cont = true;
-                                                for(data in lines[sid][values]){
-                                                    for(x in lines[sid][values][data]){
-                                                        console.log(data+"     --->     "+lines[sid][values][data][x]);
-                                                    }
+                                                for(data in lines[sid][values]){                                                    
                                                     html = html + '<tr>'
                                                     if (cont){
                                                         html = html + 

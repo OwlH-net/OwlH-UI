@@ -203,15 +203,15 @@ function generateAllRulesetSourceHTMLOutput(response) {
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">';
                     if(sources[source]['sourceType'] != "custom"){
-                        html = html +'<i class="fas fa-download" title="Download file" onclick="downloadFile(\''+sources[source]['name']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
+                        html = html +'<i class="fas fa-download" style="cursor: pointer;" title="Download file" onclick="downloadFile(\''+sources[source]['name']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
                     }
-                    html = html + '<i class="fas fa-edit" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
+                    html = html + '<i class="fas fa-edit" style="cursor: pointer;" title="Edit source" onclick="showEditRulesetSource(\''+sources[source]['name']+'\',\''+sources[source]['desc']+'\',\''+sources[source]['path']+'\',\''+sources[source]['url']+'\',\''+source+'\')"></i> &nbsp;';
                     if(sources[source]['sourceType'] == "custom"){
-                        html = html + '<i class="fas fa-info-circle" id="customRuleDetails-'+source+'" title="Custom rule details" onclick="loadCustomRulesetRules(\''+source+'\',\''+sources[source]['path']+'\',\'custom\')"></i>';
+                        html = html + '<i class="fas fa-info-circle" style="cursor: pointer;" id="customRuleDetails-'+source+'" title="Custom rule details" onclick="loadCustomRulesetRules(\''+source+'\',\''+sources[source]['path']+'\',\'custom\')"></i>';
                     }else{
-                        html = html + '<i class="fas fa-info-circle" id="SourceDetails-'+source+'" title="Details" onclick="loadRulesetSourceDetails(\'source\',\''+sources[source]['name']+'\',\''+source+'\')"></i>';
+                        html = html + '<i class="fas fa-info-circle" style="cursor: pointer;" id="SourceDetails-'+source+'" title="Details" onclick="loadRulesetSourceDetails(\'source\',\''+sources[source]['name']+'\',\''+source+'\')"></i>';
                     }          
-                    html = html + ' | <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\', \''+sources[source]['sourceType']+'\')"></i> &nbsp;'+
+                    html = html + ' | <i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\', \''+sources[source]['sourceType']+'\')"></i> &nbsp;'+
                 '</span>'+
             '</td></tr>';
     }

@@ -71,9 +71,11 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid){
                             if(files[file]["existsSourceFile"] == "false"){
                                 html = html + ' | <i class="fas fa-times-circle" style="color: red;" title="Source file don\'t exist"></i>';
                             }else if(files[file]["isUpdated"] == "true"){
-                                html = html + ' | <i class="fas fa-recycle" title="Overwrite file" style="color: green; cursor: pointer;" data-toggle="modal" data-target="#modal-detail" onclick="modalOverwriteRuleFile(\''+file+'\',\''+files[file]["file"]+'\')"></i> '+
-                                '  <i class="far fa-plus-square" title="Add only new SIDs" style="color: LimeGreen; cursor: pointer;" data-toggle="modal" data-target="#modal-detail" onclick="modalAddNewLines(\''+file+'\', \''+files[file]["file"]+'\')"></i>'+
-                                '  <i class="fas fa-info-circle" title="View differences" style="cursor: pointer;" onclick="viewDifferences(\''+file+'\', \''+files[file]["file"]+'\')"></i>';
+                                html = html + ' | <i class="fas fa-recycle" title="Overwrite file" style="color: green; cursor: pointer;" data-toggle="modal" data-target="#modal-detail" onclick="modalOverwriteRuleFile(\''+file+'\',\''+files[file]["file"]+'\')"></i> ';
+                                if(files[file]["linesAdded"] == "false"){
+                                    html = html + '  <i class="far fa-plus-square" title="Add only new SIDs" style="color: LimeGreen; cursor: pointer;" data-toggle="modal" data-target="#modal-detail" onclick="modalAddNewLines(\''+file+'\', \''+files[file]["file"]+'\')"></i>';
+                                }                                    
+                                html = html + '  <i class="fas fa-info-circle" title="View differences" style="cursor: pointer;" onclick="viewDifferences(\''+file+'\', \''+files[file]["file"]+'\')"></i>';
                             }
                         }else{
                             html = html + '<i class="fas fa-file-alt" style="color: grey;" title="File do not exists"></i> '+
@@ -122,7 +124,6 @@ function loadRulesetBySearch(uuid, rulesetName){
 }
 
 function addNewLines(uuid){
-    console.log(uuid);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/AddNewLinesToRuleset/' + uuid;

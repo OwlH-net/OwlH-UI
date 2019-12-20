@@ -173,8 +173,8 @@ function GetAllGroups(){
                             '<td id="edit-group-row-'+groups['guuid']+'" colspan="3" style="display:none;">'+
                                 '<table class="table" style="table-layout: fixed" width="100%">'+
                                     '<tr>'+
-                                        '<td width="40%">Name: <input class="form-control" id="edit-group-name-'+groups['guuid']+'"></td>'+
-                                        '<td width="50%">Description: <input class="form-control" id="edit-group-desc-'+groups['guuid']+'"></td>'+
+                                        '<td width="40%">Name: <input class="form-control" id="edit-group-name-'+groups['guuid']+'" value="'+groups['gname']+'"></td>'+
+                                        '<td width="50%">Description: <input class="form-control" id="edit-group-desc-'+groups['guuid']+'" value="'+groups['gdesc']+'"></td>'+
                                         '<td width="10%">'+
                                             '<a class="btn btn-secondary float-right text-decoration-none text-white my-2" onclick="hideEditGroup(\''+groups['guuid']+'\')">Cancel</a>'+
                                             '<a class="btn btn-primary float-right text-decoration-none text-white my-2" id="edit-group-save" onclick="EditGroupData(\''+groups['guuid']+'\')">Modify</a>'+

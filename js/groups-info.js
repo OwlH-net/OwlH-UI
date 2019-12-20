@@ -76,16 +76,19 @@ function GetGroupsDetails(){
                         //suricata table
                         htmlsuricata =             
                             '<b>Suricata</b> &nbsp'+
-                            '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Mode: &nbsp '+  
-                                '<span id="suricata-group-mode-default" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'default-suricata-group-table\')">Default</span> &nbsp'+
-                                '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'standalone-suricata-group-table\')">Standalon</span> &nbsp '+
-                                '<span id="suricata-group-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeSuricataConfigTable(\'expert-suricata-group-table\')">Expert</span>'+
-                            '</span> &nbsp'+ 
+                            '<span id="suricata-group-mode-default" style="cursor:pointer;" class="badge bg-primary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'default-suricata-group-table\')">Current status</span>&nbsp'+  
+                            '<span id="suricata-mode" style="cursor:pointer;" class="badge bg-secondary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'suricata-mode\')">Mode</span>'+  
+                            '&nbsp'+
                             '<span id="suricata-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
                                 '<span style="cursor: pointer;" title="Stop Suricata" class="badge bg-danger align-text-bottom text-white" onclick="ChangeSuricataGroupService(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
                                 '<span style="cursor: pointer;" title="Start Suricata" class="badge bg-primary align-text-bottom text-white" onclick="ChangeSuricataGroupService(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
                             '</span>'+
-                            '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+
+                            '<br><br>'+
+                            '<span id="suricata-configure" class="badge badge-pill bg-dark align-text-bottom text-white" style="display:none;">Mode: &nbsp '+  
+                                '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'standalone-suricata-group-table\')">Standalon</span> &nbsp '+
+                                '<span id="suricata-group-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'expert-suricata-group-table\')">Expert</span>'+
+                            '</span> &nbsp'+ 
+                            '<button id="group-suricata-sync-btn" class="btn btn-primary float-right text-decoration-none text-white" style="display:none;" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+
                             
                             //Suricata default
                             '<div id="default-suricata-group-table">'+
@@ -118,7 +121,16 @@ function GetGroupsDetails(){
                             //Suricata expert
                             '<div id="expert-suricata-group-table" style="display: none;">'+
                                 '<table class="table" style="table-layout: fixed" width="100%">'+                                                         
-                                    '<tbody>'+                                          
+                                    '<tbody>'+   
+                                        '<tr>'+                           
+                                            '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
+                                            if(groups['gruleset']  != ""){
+                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
+                                            }
+                                            htmlsuricata = htmlsuricata + '<td></td>'+
+                                        '</tr>'+                                       
                                         '<tr>'+
                                             '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
                                             '<td>Master path:</td>';
@@ -151,6 +163,15 @@ function GetGroupsDetails(){
                             //Suricata expert
                             '<div id="standalone-suricata-group-table" style="display: none;">'+
                                 '<table class="table" style="table-layout: fixed" width="100%">'+  
+                                    '<tr>'+                           
+                                        '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
+                                        if(groups['gruleset']  != ""){
+                                            htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                        }else{
+                                            htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
+                                        }
+                                        htmlsuricata = htmlsuricata + '<td></td>'+
+                                    '</tr>'+
                                     '<tr id="suricata-edit-row" style="display:none;">'+
                                         '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
                                         '<td>Node path: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
@@ -199,42 +220,52 @@ function GetGroupsDetails(){
                                 '</table>'+
                             '</div>';
 
-                        // '</div>';
                         //zeek table
                         htmlzeek = "<div>"+
-                        '<b>Zeek</b> <button class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddCluster(\''+uuid+'\')">Add Cluster</button>'+
-                        '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
-                            '<tbody>';      
-                                htmlzeek = htmlzeek + '<tr>'+                           
-                                    '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
-                                    '<td>Master path</td>';
-                                    if(groups["masterzeek"] == ""){
-                                        htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
-                                    }else{
-                                        htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="'+groups["masterzeek"]+'">'+groups["masterzeek"]+'</td>';
-                                    }
-                                htmlzeek = htmlzeek + '</tr>'+
-                                '<tr>'+                           
-                                    '<td>Node path</td>';
-                                    if(groups["nodezeek"] == ""){
-                                        htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>';
-                                    }else{
-                                        htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="'+groups["nodezeek"]+'">'+groups["nodezeek"]+'</td>';
-                                    }                                            
+                        '<b>Zeek</b> '+
+                        '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Edit Configuration &nbsp '+  
+                            '<span id="group-zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'expert-zeek-table\')">Expert</span> &nbsp'+
+                            '<span id="group-zeek-mode-cluster" class="badge bg-secondary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
+                        '</span> '+
+
+                        '<button id="group-zeek-add-cluster-btn" style="display:none;" class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddCluster(\''+uuid+'\')">Add Cluster</button>'+
+                        //zeek expert
+                        '<div id="group-zeek-expert">'+
+                            '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
+                                '<tbody>';      
+                                    htmlzeek = htmlzeek + '<tr>'+                           
+                                        '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
+                                        '<td>Master path</td>';
+                                        if(groups["masterzeek"] == ""){
+                                            htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
+                                        }else{
+                                            htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="'+groups["masterzeek"]+'">'+groups["masterzeek"]+'</td>';
+                                        }
                                     htmlzeek = htmlzeek + '</tr>'+
-                                '<tr id="zeek-edit-row" style="display:none;">'+
-                                    '<td>Master: <input class="form-control" id="zeek-group-master-'+groups['guuid']+'" value="'+groups["masterzeek"]+'"></td>'+
-                                    '<td>Node: <input class="form-control" id="zeek-group-node-'+groups['guuid']+'" value="'+groups["nodezeek"]+'"></td>'+
-                                    '<td width="10%">'+
-                                        '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'zeek\')">Save</button>'+
-                                        '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
-                                    '</td>'+
-                                '</tr>'+                                
-                            '</tbody>'+    
-                        '</table>'+
-                        //Zeek cluster
-                        '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
-                        '</table></div>';
+                                    '<tr>'+                           
+                                        '<td>Node path</td>';
+                                        if(groups["nodezeek"] == ""){
+                                            htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>';
+                                        }else{
+                                            htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="'+groups["nodezeek"]+'">'+groups["nodezeek"]+'</td>';
+                                        }                                            
+                                        htmlzeek = htmlzeek + '</tr>'+
+                                    '<tr id="zeek-edit-row" style="display:none;">'+
+                                        '<td>Master: <input class="form-control" id="zeek-group-master-'+groups['guuid']+'" value="'+groups["masterzeek"]+'"></td>'+
+                                        '<td>Node: <input class="form-control" id="zeek-group-node-'+groups['guuid']+'" value="'+groups["nodezeek"]+'"></td>'+
+                                        '<td width="10%">'+
+                                            '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'zeek\')">Save</button>'+
+                                            '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
+                                        '</td>'+
+                                    '</tr>'+                                
+                                '</tbody>'+    
+                            '</table>'+
+                        '</div>'+
+                        //zeek cluster
+                        '<div id="group-zeek-cluster" style="display:none;">'+
+                            '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
+                            '</table>';
+                        '</div>';
 
                         //analyzer table
                         htmlanalyzer = "<div>"+
@@ -1513,11 +1544,17 @@ function addCluster(uuid, path){
         });
 } 
 
-function ChangeSuricataConfigTable(tab){
-    if (tab == "standalone-suricata-group-table"){
+function ChangeGroupConfigTable(tab){
+    if (tab == "suricata-mode"){
+        $("#suricata-configure").show();
+        document.getElementById('suricata-mode').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('group-suricata-sync-btn').style.display = 'none';
+    }else if (tab == "standalone-suricata-group-table"){
         document.getElementById('standalone-suricata-group-table').style.display = 'block';
         document.getElementById('expert-suricata-group-table').style.display = 'none';
         document.getElementById('default-suricata-group-table').style.display = 'none';
+        document.getElementById('group-suricata-sync-btn').style.display = 'none';
 
         document.getElementById('suricata-group-mode-standalone').className = 'badge bg-primary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
@@ -1526,18 +1563,34 @@ function ChangeSuricataConfigTable(tab){
         document.getElementById('standalone-suricata-group-table').style.display = 'none';
         document.getElementById('expert-suricata-group-table').style.display = 'block';
         document.getElementById('default-suricata-group-table').style.display = 'none';
+        document.getElementById('group-suricata-sync-btn').style.display = 'block';
 
         document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-expert').className = 'badge bg-primary align-text-bottom text-white';
     } else if (tab == "default-suricata-group-table") {
+        $("#suricata-configure").hide();
         document.getElementById('standalone-suricata-group-table').style.display = 'none';
         document.getElementById('expert-suricata-group-table').style.display = 'none';
         document.getElementById('default-suricata-group-table').style.display = 'block';
+        document.getElementById('group-suricata-sync-btn').style.display = 'none';
 
         document.getElementById('suricata-group-mode-default').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('suricata-mode').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
+    }else if (tab == "expert-zeek-table") {
+        $("#group-zeek-add-cluster-btn").hide();
+        $("#group-zeek-cluster").hide();
+        $("#group-zeek-expert").show();
+        document.getElementById('group-zeek-mode-expert').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('group-zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white';
+    }else if (tab == "cluster-zeek-table") {
+        $("#group-zeek-add-cluster-btn").show();
+        $("#group-zeek-cluster").show();
+        $("#group-zeek-expert").hide();
+        document.getElementById('group-zeek-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('group-zeek-mode-cluster').className = 'badge bg-primary align-text-bottom text-white';
     }
 }
 

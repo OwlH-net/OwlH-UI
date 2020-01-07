@@ -80,6 +80,7 @@ function loadPlugins(){
                 '&nbsp <span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+  
                     '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
                     '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'networks.cfg\', \''+name+'\', \'disabled\')">Network.cfg</span> &nbsp '+
+                    '<span id="zeek-ctl-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'zeekctl.cfg\', \''+name+'\', \'disabled\')">Zeekctl.cfg</span> &nbsp '+
                 '</span> '+
 
                 '<div id="status-zeek-table" style="display:block;">'+
@@ -129,6 +130,7 @@ function loadPlugins(){
                 '<span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+  
                     '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
                     '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'networks.cfg\', \''+name+'\', \'disabled\')">Network.cfg</span> &nbsp '+
+                    '<span id="zeek-ctl-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'zeekctl.cfg\', \''+name+'\', \'disabled\')">Zeekctl.cfg</span> &nbsp '+
                 '</span> ';
                 
                 //zeek expert

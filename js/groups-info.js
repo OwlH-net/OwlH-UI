@@ -13,6 +13,9 @@ function loadJSONdata(){
 loadJSONdata();
 
 function GetGroupsDetails(){
+    document.getElementById('progressBar-options-div').style.display="block";
+    document.getElementById('progressBar-options').style.display="block"; 
+
     var urlWeb = new URL(window.location.href);
     var uuid = urlWeb.searchParams.get("uuid");
     var gname = urlWeb.searchParams.get("gname");
@@ -34,6 +37,8 @@ function GetGroupsDetails(){
         timeout: 30000
     })
     .then(function (response) {
+        document.getElementById('progressBar-options-div').style.display="none";
+        document.getElementById('progressBar-options').style.display="none"; 
         if (response.data == null) {
             resultnodes.innerHTML= '<div style="text-align:center"><h3">No data retrieved</h3></div>';
         }else if (response.data.ack == "false") {
@@ -44,7 +49,7 @@ function GetGroupsDetails(){
             var htmlsuricata = "";
             var htmlzeek = "";
             var htmlanalyzer = "";
-            // for(x in response.data){
+
             for(x=0; x<response.data.length; x++){
                 var groups = response.data[x];
                 if(groups['guuid'] == uuid){
@@ -303,6 +308,8 @@ function GetGroupsDetails(){
         SuricataNodesStatus(uuid);
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options-div').style.display="none";
+        document.getElementById('progressBar-options').style.display="none"; 
         resultnodes.innerHTML = '<h3 align="center">No connection</h3>';
     });
 }
@@ -410,27 +417,47 @@ function SuricataNodesStatus(guuid){
         timeout: 30000
     })
     .then(function (response) {
-        console.log(response.data);
-        var html = '';
-        for(x in response.data){
-            if(response.data[x]["type"] == "suricata"){
-                html = html + '<tr bpf="'+response.data[x]["bpf"]+'" guuid="'+x+'" uuid="'+response.data[x]["node"]+'" interface="'+response.data[x]["interface"]+'">'+
-                    '<td>'+response.data[x]["nodeName"]+'</td>'+
-                    '<td>';
-                        if(response.data[x]["status"] == "enabled"){
-                            html = html + '<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
-                        }else if(response.data[x]["status"] == "disabled"){
-                            html = html + '<span class="badge badge-pill bg-danger align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
-                        } 
-                    html = html + '</td>'+
-                    '<td>'+response.data[x]["interface"]+'</td>'+
-                    '<td> <i class="fas fa-info" style="color: dodgerblue;"></i> </td>'+
-                '</tr>';
+        if(response.data.ack == "false"){
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error Suricata: </strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            var html = '';
+            for(x in response.data){
+                if(response.data[x]["type"] == "suricata"){
+                    html = html + '<tr bpf="'+response.data[x]["bpf"]+'" guuid="'+x+'" uuid="'+response.data[x]["node"]+'" interface="'+response.data[x]["interface"]+'">'+
+                        '<td>'+response.data[x]["nodeName"]+'</td>'+
+                        '<td>';
+                            if(response.data[x]["status"] == "enabled"){
+                                html = html + '<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
+                            }else if(response.data[x]["status"] == "disabled"){
+                                html = html + '<span class="badge badge-pill bg-danger align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
+                            } 
+                        html = html + '</td>'+
+                        '<td>'+response.data[x]["interface"]+'</td>'+
+                        '<td> <i class="fas fa-info" style="color: dodgerblue;"></i> </td>'+
+                    '</tr>';
+                }
             }
+            suricatas.innerHTML = html;
         }
-        suricatas.innerHTML = html;
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error Suricata: </strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
 
@@ -1276,15 +1303,36 @@ function deleteNodeForGroup(uuid){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/deleteNodeGroup/' + uuid;
     axios({
-        method: 'put',
+        method: 'delete',
         url: nodeurl,
         timeout: 30000,
     })
-        .then(function (response) {
+    .then(function (response) {
+        if(response.data.ack == "false"){
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Delete group error!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
             GetGroupsDetails();
-        })
-        .catch(function error() {
-        });
+        }
+    })
+    .catch(function error(error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Delete group error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
 }
 
 function modalDeleteNodeForGroup(uuid, nname){

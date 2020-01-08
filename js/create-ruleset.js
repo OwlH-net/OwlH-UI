@@ -316,7 +316,8 @@ function modalAddNewRuleset(){
                 timeout: 30000,
                 data: nodeJSON
             })
-            .then(function (response) {
+            .then(function (response) {   
+                console.log(response.data);             
                 if (response.data.ack == "true"){                
                     document.getElementById('progressBar-create-div').style.display="none";
                     document.getElementById('progressBar-create').style.display="none";
@@ -336,60 +337,72 @@ function modalAddNewRuleset(){
                     '</div>';
                     setTimeout(function() {$(".alert").alert('close')}, 5000);                    
                 }else{
-                    $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
-                    document.getElementById('progressBar-create-div').style.display="none";
-                    document.getElementById('progressBar-create').style.display="none";
+                    // var enabled = true;
+                    // for(sid in response.data){
+                    //     if(response.data[sid]["enabled"] != "Enabled"){
+                    //         enabled = false;
+                    //     }
+                    // }
+                    // if (enabled){
+                        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                        document.getElementById('progressBar-create-div').style.display="none";
+                        document.getElementById('progressBar-create').style.display="none";
+                            
+                        lines = JSON.parse(response.data)
+                        var html =
+                        '<div class="modal-dialog modal-lg">'+
+                            '<div class="modal-content">'+
                         
-                    lines = JSON.parse(response.data)
-                    var html =
-                    '<div class="modal-dialog modal-lg">'+
-                        '<div class="modal-content">'+
-                    
-                            '<div class="modal-header">'+
-                                '<h4 class="modal-title">Lines duplicated</h4>'+
-                                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                            '</div>'+
-                    
-                            '<div class="modal-body">'+
-                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                                    '<thead>                                                      ' +
-                                        '<tr>                                                         ' +
-                                        '<th>SID</th>                                                ' +
-                                        '<th>Files</th>                                         ' +
-                                        '</tr>                                                        ' +
-                                    '</thead>                                                     ' +
-                                    '<tbody>                                                     '
-                                        for (sid in lines){
-                                            for(values in lines[sid]){
-                                                var cont = true;
-                                                for(data in lines[sid][values]){                                                    
-                                                    html = html + '<tr>'
-                                                    if (cont){
+                                '<div class="modal-header">'+
+                                    '<h4 class="modal-title">Lines duplicated</h4>'+
+                                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                                '</div>'+
+                        
+                                '<div class="modal-body">'+
+                                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                        '<thead>                                                      ' +
+                                            '<tr>                                                         ' +
+                                            '<th>SID</th>                                                ' +
+                                            '<th>Files</th>                                         ' +
+                                            '</tr>                                                        ' +
+                                        '</thead>                                                     ' +
+                                        '<tbody>                                                     '
+                                            for (sid in lines){
+                                                for(values in lines[sid]){
+                                                    var cont = true;
+                                                    for(data in lines[sid][values]){                                                    
+                                                        html = html + '<tr>'
+                                                        if (cont){
+                                                            html = html + 
+                                                            '<th rowspan="'+lines[sid]["counter"]+'">' +
+                                                                sid +
+                                                            '</th>'
+                                                            cont = false;
+                                                        }
                                                         html = html + 
-                                                        '<th rowspan="'+lines[sid]["counter"]+'">' +
-                                                            sid +
-                                                        '</th>'
-                                                        cont = false;
+                                                        '<td style="word-wrap: break-word;">'+
+                                                            lines[sid][values][data]["fileName"] +
+                                                        '</td></tr>'
                                                     }
-                                                    html = html + 
-                                                    '<td style="word-wrap: break-word;">'+
-                                                        lines[sid][values][data]["fileName"] +
-                                                    '</td></tr>'
                                                 }
                                             }
-                                        }
-                                    html = html + '</tbody></table>'+
+                                        html = html + '</tbody></table>'+
+                                '</div>'+
+                        
+                                '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                                    '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                                '</div>'+
+                        
                             '</div>'+
-                    
-                            '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
-                                '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                            '</div>'+
-                    
-                        '</div>'+
-                    '</div>';
-            
-                    document.getElementById('modal-window').innerHTML = html;
-                    $('#modal-window').modal('show')     
+                        '</div>';
+                
+                        document.getElementById('modal-window').innerHTML = html;
+                        $('#modal-window').modal('show')     
+                    // }else{
+                    //     document.getElementById('progressBar-create-div').style.display="none";
+                    //     document.getElementById('progressBar-create').style.display="none";
+                    //     document.location.href = 'https://' + ipmaster + '/rulesets.html';
+                    // }
                 }
             })
             .catch(function (error) {

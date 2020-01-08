@@ -130,9 +130,9 @@ function GetGroupsDetails(){
                                         '<tr>'+                           
                                             '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
                                             if(groups['gruleset']  != ""){
-                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-expert-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
                                             }else{
-                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
+                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-expert-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
                                             }
                                             htmlsuricata = htmlsuricata + '<td></td>'+
                                         '</tr>'+                                       
@@ -165,15 +165,15 @@ function GetGroupsDetails(){
                                 '</table>'+
                             '</div>'+
 
-                            //Suricata expert
+                            //Suricata standalone
                             '<div id="standalone-suricata-group-table" style="display: none;">'+
                                 '<table class="table" style="table-layout: fixed" width="100%">'+  
                                     '<tr>'+                           
                                         '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
                                         if(groups['gruleset']  != ""){
-                                            htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                            htmlsuricata = htmlsuricata + '<td id="ruleset-group-standalone-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
                                         }else{
-                                            htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
+                                            htmlsuricata = htmlsuricata + '<td id="ruleset-group-standalone-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
                                         }
                                         htmlsuricata = htmlsuricata + '<td></td>'+
                                     '</tr>'+
@@ -1203,6 +1203,10 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         .then(function (response) {
             document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
             document.getElementById('ruleset-group-'+group).style.color = "black";
+            document.getElementById('ruleset-group-standalone-'+group).innerHTML = ruleset;
+            document.getElementById('ruleset-group-standalone-'+group).style.color = "black";
+            document.getElementById('ruleset-group-expert-'+group).innerHTML = ruleset;
+            document.getElementById('ruleset-group-expert-'+group).style.color = "black";
         })
         .catch(function (error) {
         }); 

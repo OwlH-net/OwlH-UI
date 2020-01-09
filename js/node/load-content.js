@@ -39,17 +39,28 @@ function LoadFileLastLines(uuid, line, path) {
         data: dataJSON
     })
         .then(function (response) {
-
-            if (line != "none") {
+            console.log(response.data);
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else if (line != "none") {
                 document.getElementById('inputTextTailLines').disabled='true';
                 document.getElementById('inputTextTailLines').style.backgroundColor='white';
                 document.getElementById('upper-buttons-file').innerHTML = '<button type="button" class="btn btn-secondary" onclick="closeCurrentFile()">Close</button>'; 
                 document.getElementById('lower-buttons-file').innerHTML = '<button type="button" class="btn btn-secondary" onclick="closeCurrentFile()">Close</button>'; 
+                document.getElementById('inputTextTailLines').value = response.data["result"];
             }else{
                 document.getElementById('upper-buttons-file').innerHTML = '<button type="button" class="btn btn-secondary" onclick="closeCurrentFile()">Close</button>  &nbsp <button type="button" class="btn btn-primary" onclick="saveCurrentContent()">Save</button>'; 
                 document.getElementById('lower-buttons-file').innerHTML = '<button type="button" class="btn btn-secondary" onclick="closeCurrentFile()">Close</button>  &nbsp <button type="button" class="btn btn-primary" onclick="saveCurrentContent()">Save</button>'; 
+                document.getElementById('inputTextTailLines').value = response.data["result"];
             }
-            document.getElementById('inputTextTailLines').value = response.data["result"];
         })
         .catch(function (error) {
 

@@ -18,6 +18,9 @@ function addNode() {
 		nodejson["name"] = nname;
 		nodejson["port"] = nport;
 		nodejson["ip"] = nip;
+		nodejson["jwt_header"] = jwt_header;
+		nodejson["jwt_payload"] = jwt_payload;
+		nodejson["jwt_signature"] = jwt_signature;
 		var nodeJSON = JSON.stringify(nodejson);
 		var ipmaster = document.getElementById('ip-master').value;
 		var portmaster = document.getElementById('port-master').value;
@@ -337,7 +340,45 @@ function loadJSONdata(){
     var portLoad = document.getElementById('port-master');
     portLoad.value = data.master.port;
     loadTitleJSONdata();
-    loadRuleset();   
+    loadRuleset();  
+    
+    //create jwt
+    //create jwt
+    //create jwt
+    var header = {"alg": "HS256","typ": "JWT"};
+    var data = {"id": "1337","username": "john.doe"};
+    var secret = "42isTheAnswer";
+    //header
+    console.log("JWT");
+    var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));
+    var encodedHeader = base64url(stringifiedHeader);
+    //data
+    var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data));
+    var encodedData = base64url(stringifiedData);
+    //signature
+    var signature = encodedHeader + "." + encodedData;
+    signature = CryptoJS.HmacSHA256(signature, secret);
+
+    jwt_header = encodedHeader;
+    jwt_payload = encodedData;
+    jwt_signature = signature;
   });
 }
+var jwt_header = "";
+var jwt_payload = "";
+var jwt_signature = "";
 loadJSONdata();
+
+function base64url(source) {
+  // Encode in classical base64
+  encodedSource = CryptoJS.enc.Base64.stringify(source);
+  
+  // Remove padding equal characters
+  encodedSource = encodedSource.replace(/=+$/, '');
+  
+  // Replace characters according to base64url specifications
+  encodedSource = encodedSource.replace(/\+/g, '-');
+  encodedSource = encodedSource.replace(/\//g, '_');
+  
+  return encodedSource;
+}

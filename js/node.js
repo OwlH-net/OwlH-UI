@@ -21,6 +21,7 @@ function addNode() {
 		nodejson["jwt_header"] = jwt_header;
 		nodejson["jwt_payload"] = jwt_payload;
 		nodejson["jwt_signature"] = jwt_signature;
+		nodejson["jwt"] = jwt_header+"."+jwt_payload+"."+jwt_signature;
 		var nodeJSON = JSON.stringify(nodejson);
 		var ipmaster = document.getElementById('ip-master').value;
 		var portmaster = document.getElementById('port-master').value;

@@ -183,6 +183,8 @@ function GetAllNodes() {
     // });
 
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/node', {
+            headers:
+                {'token': 'hola token'},
             params: { 
                 // rejectUnauthorized: false 
             }

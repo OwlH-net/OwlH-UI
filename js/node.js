@@ -347,7 +347,7 @@ function loadJSONdata(){
     //create jwt
     //create jwt
     var header = {"alg": "HS256","typ": "JWT"};
-    var data = {"id": "1337","username": "john.doe"};
+    var data = {"userName": "testing","password": "new.pass"};
     var secret = "42isTheAnswer";
     //header
     console.log("JWT");
@@ -359,10 +359,12 @@ function loadJSONdata(){
     //signature
     var signature = encodedHeader + "." + encodedData;
     signature = CryptoJS.HmacSHA256(signature, secret);
-
+    
+    
     jwt_header = encodedHeader;
     jwt_payload = encodedData;
     jwt_signature = signature;
+    console.log(jwt_header+"."+jwt_payload+"."+jwt_signature);
   });
 }
 var jwt_header = "";

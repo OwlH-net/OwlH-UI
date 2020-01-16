@@ -1,10 +1,10 @@
-
 function loadJSONdata() {
     $.getJSON('../conf/ui.conf', function (data) {
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
+        console.log(document.cookie);
     });
 }
 loadJSONdata();
@@ -23,9 +23,15 @@ function Login() {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        data: userLogin
+        withCredentials: true,
+        data: userLogin,
+        header:{'token': 'Login token'}
     })
         .then(function (response) {
+            if(response.data.ack != "false"){
+                document.cookie = 'token='+response.data;            
+                document.location.href='https://'+ipmaster;
+            }
         })
         .catch(function (error) {
         });   

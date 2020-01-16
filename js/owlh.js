@@ -1,6 +1,14 @@
 
+var payload = "";
+loadJSONdata();
+
 //load json data from local file
 function loadJSONdata() {
+    //get token payload
+    var tokens = document.cookie.split(".");
+    payload = JSON.parse(atob(tokens[1])); 
+
+    //get ui.conf file content
     $.getJSON('../conf/ui.conf', function (data) {
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
@@ -10,7 +18,6 @@ function loadJSONdata() {
         GetAllNodes();
     });
 }
-loadJSONdata();
 
 function showConfig(oip, oname, oport, ouuid){
     document.getElementById('divconfigform').style.display = "block";
@@ -82,7 +89,7 @@ async function PingNode(uuid) {
                 document.getElementById('node-row-'+uuid).setAttribute("status", "offline");
             }  
             if(document.getElementById('node-row-'+uuid).getAttribute == "offline"){
-                console.log("not a number");
+                // console.log("not a number");
             }    
         })
         .catch(function (error) {
@@ -181,13 +188,14 @@ function GetAllNodes() {
     //         rejectUnauthorized: false   
     //     })
     // });
-
+    console.log(payload);
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/node', {
-            headers:
-                {'token': 'hola token'},
-            params: { 
-                // rejectUnauthorized: false 
-            }
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }//Authorization
+            // params: { token: document.cookie}// rejectUnauthorized: false }
         })
         .then(function (response) {
             var nodes = response.data;

@@ -1,13 +1,25 @@
 function loadJSONdata(){
 	$.getJSON('../conf/ui.conf', function(data) {
-	var ipLoad = document.getElementById('ip-master'); 
-	ipLoad.value = data.master.ip;
-	var portLoad = document.getElementById('port-master');
-	portLoad.value = data.master.port;
-	loadTitleJSONdata();
-	getRulesetsBySearch();
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+data.master.ip+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+                 
+        var ipLoad = document.getElementById('ip-master'); 
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        loadTitleJSONdata();
+        getRulesetsBySearch();
 	});
 }
+var payload = "";
 loadJSONdata();
 
 function getRulesetsBySearch(){

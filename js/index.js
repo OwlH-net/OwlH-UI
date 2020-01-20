@@ -1,15 +1,23 @@
 
 function loadJSONdata() {
     $.getJSON('../conf/ui.conf', function (data) {
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+data.master.ip+'/login.html';
+        }
+
         var ipmaster = document.getElementById('ip-master');
         ipmaster.value = data.master.ip;
         var portmaster = document.getElementById('port-master');
         portmaster.value = data.master.port;
-        if (document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
-        }
+        loadTitleJSONdata();
     });
 }
+var payload = "";
 loadJSONdata();
 
 function LoadNodes() {

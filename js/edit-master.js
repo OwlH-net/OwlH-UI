@@ -21,7 +21,6 @@ function loadFileIntoTextarea(){
     })
     .then(function (response) {
         if (response.data.ack == "false") {
-            console.log(response.data);
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -78,12 +77,24 @@ function closeFileChanged(){
 
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
-      var ipLoad = document.getElementById('ip-master'); 
-      ipLoad.value = data.master.ip;
-      var portLoad = document.getElementById('port-master');
-      portLoad.value = data.master.port;
-      loadTitleJSONdata();
-      loadFileIntoTextarea();   
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+data.master.ip+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+                
+        var ipLoad = document.getElementById('ip-master'); 
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        loadTitleJSONdata();
+        loadFileIntoTextarea();   
     });
   }
+  var payload = "";
   loadJSONdata();

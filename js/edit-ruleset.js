@@ -68,6 +68,17 @@ function closeFileChanged(){
 
 function loadJSONdata() {
     $.getJSON('../conf/ui.conf', function (data) {
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+data.master.ip+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+                 
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
@@ -76,4 +87,5 @@ function loadJSONdata() {
         loadRulesetContent();
     });
 }
+var payload = "";
 loadJSONdata();

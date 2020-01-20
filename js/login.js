@@ -4,7 +4,6 @@ function loadJSONdata() {
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
-        console.log(document.cookie);
     });
 }
 loadJSONdata();
@@ -29,7 +28,7 @@ function Login() {
     })
         .then(function (response) {
             if(response.data.ack != "false"){
-                document.cookie = 'token='+response.data;            
+                document.cookie = response.data;            
                 document.location.href='https://'+ipmaster;
             }
         })

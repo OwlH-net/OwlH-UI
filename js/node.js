@@ -24,7 +24,12 @@ function addNode() {
 		var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
 		axios({
 			method: 'post',
-			url: nodeurl,
+      url: nodeurl,
+      headers:{
+        'token': document.cookie,
+        'user': payload.user,
+        'uuid': payload.uuid,
+    },
 			timeout: 30000,
 			data: nodeJSON
 		})
@@ -89,6 +94,11 @@ function modifyNodeInformation() {
 
       axios({
         method: 'put',
+        headers:{
+          'token': document.cookie,
+          'user': payload.user,
+          'uuid': payload.uuid,
+      },
         url: nodeurl,
         timeout: 30000,
         data: newValues
@@ -147,6 +157,11 @@ function loadBPF(nid, name){
   var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+nid+'/bpf';
   axios({
     method: 'get',
+    headers:{
+      'token': document.cookie,
+      'user': payload.user,
+      'uuid': payload.uuid,
+  },
     url: nodeurl,
     timeout: 3000
   })
@@ -177,6 +192,11 @@ function saveBPF(nid){
 
   axios({
     method: 'put',
+    headers:{
+      'token': document.cookie,
+      'user': payload.user,
+      'uuid': payload.uuid,
+  },
     url: nodeurl,
     timeout: 30000,
     data: bpfjson
@@ -212,7 +232,14 @@ function loadRuleset(nid){
   var resultElement = document.getElementById('ruleset-manager-footer-table');
   var ipmaster = document.getElementById('ip-master').value;
   var portmaster = document.getElementById('port-master').value;
-  axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
+  axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
+    headers:{
+      'token': document.cookie,
+      'user': payload.user,
+      'uuid': payload.uuid,
+    },
+  })
+
     .then(function (response) {
         if (typeof response.data.error != "undefined"){
             resultElement.innerHTML = '<p>No rules available...</p>';
@@ -270,6 +297,11 @@ function saveRuleSelected(rule, nid){
     axios({
         method: 'put',
         url: urlSetRuleset,
+        headers:{
+          'token': document.cookie,
+          'user': payload.user,
+          'uuid': payload.uuid,
+      },
         timeout: 30000,
         data: uidJSON
     })
@@ -332,52 +364,24 @@ function syncRulesetModal(node, name){
 
 function loadJSONdata(){
   $.getJSON('../conf/ui.conf', function(data) {
-    var ipLoad = document.getElementById('ip-master'); 
-    ipLoad.value = data.master.ip;
-    var portLoad = document.getElementById('port-master');
-    portLoad.value = data.master.port;
-    loadTitleJSONdata();
-    loadRuleset();  
-    
-    // //create jwt
-    // //create jwt
-    // //create jwt
-    // var header = {"alg": "HS256","typ": "JWT"};
-    // var data = {"userName": "testing","password": "new.pass"};
-    // var secret = "42isTheAnswer";
-    // //header
-    // console.log("JWT");
-    // var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));
-    // var encodedHeader = base64url(stringifiedHeader);
-    // //data
-    // var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data));
-    // var encodedData = base64url(stringifiedData);
-    // //signature
-    // var signature = encodedHeader + "." + encodedData;
-    // signature = CryptoJS.HmacSHA256(signature, secret);
-    
-    
-    // jwt_header = encodedHeader;
-    // jwt_payload = encodedData;
-    // jwt_signature = signature;
-    // console.log(jwt_header+"."+jwt_payload+"."+jwt_signature);
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+data.master.ip+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+             
+        var ipLoad = document.getElementById('ip-master'); 
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        loadTitleJSONdata();
+        loadRuleset();  
   });
 }
-// var jwt_header = "";
-// var jwt_payload = "";
-// var jwt_signature = "";
+var payload = "";
 loadJSONdata();
-
-// function base64url(source) {
-//   // Encode in classical base64
-//   encodedSource = CryptoJS.enc.Base64.stringify(source);
-  
-//   // Remove padding equal characters
-//   encodedSource = encodedSource.replace(/=+$/, '');
-  
-//   // Replace characters according to base64url specifications
-//   encodedSource = encodedSource.replace(/\+/g, '-');
-//   encodedSource = encodedSource.replace(/\//g, '_');
-  
-//   return encodedSource;
-// }

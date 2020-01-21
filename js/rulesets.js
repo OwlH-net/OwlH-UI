@@ -6,9 +6,15 @@ function GetAllRulesets() {
     axios({
         method: 'get',
         url: urlAllRules,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
         })
         .catch(function (error) {
@@ -93,9 +99,15 @@ function modalShowLog(uuid, name){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             var ruleset = response.data;
             html = 
             '<div class="modal-dialog modal-lg">'+
@@ -415,9 +427,15 @@ function timeSchedule(uuid, status){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: schedulejson
     })
-        .then(function (response) {            
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}            
             GetAllRulesets();
         })
         .catch(function (error) {
@@ -539,9 +557,15 @@ function synchronizeAllRulesets() {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "true"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -589,9 +613,15 @@ function deleteRuleset(name, uuid) {
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: bpfjson
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false"){
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
@@ -640,9 +670,15 @@ function deleteRuleset(name, uuid) {
 //             method: 'put',
 //             url: nodeurl,
 //             timeout: 30000,
+        // headers:{
+        //     'token': document.cookie,
+        //     'user': payload.user,
+        //     'uuid': payload.uuid,
+        // },
 //             data: bpfjson
 //         })
 //             .then(function (response) {
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
 //                 GetAllRulesets();
 //             })
 //             .catch(function (error) {
@@ -665,9 +701,15 @@ function syncRuleset(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: dataJSON
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "true"){
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);

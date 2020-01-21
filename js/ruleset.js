@@ -13,6 +13,7 @@ function GetAllRuleset() {
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid)
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             resultElement.innerHTML = generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, rule, type, rulesetuuid);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
@@ -150,9 +151,15 @@ function getToCustomRuleset(rulesetuuid){
         axios({
             method: 'get',
             url: customRulesetsURL,
-            timeout: 30000
+            timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
         })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             var customRulesets = response.data;
             var customRulesetModal = document.getElementById('modal-window-ruleset');
             var html =
@@ -220,9 +227,15 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: bpfjson
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             $('#modal-window-ruleset').modal('hide')   
             GetAllRuleset();         
         })
@@ -255,9 +268,15 @@ function changeRulesetStatus(sid, fileuuid, action) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: bpfjson
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (action == "Disable") {
                 document.getElementById(sid + '-rule-status').innerHTML = '<i class="fas fa-times-circle" style="color:red;"></i>';
                 document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, fileuuid, "Enable"); };
@@ -306,9 +325,15 @@ function getRuleNote(elementID, fileuuid, sid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (typeof (response.data) === 'object') {
                 loadNote.value = '';
             } else {
@@ -336,9 +361,15 @@ function rulesetNotes(sid, fileuuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: bpfjson
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             document.getElementById(sid + '-note').innerHTML = '<p>' + textAreaNote + '</p>';
             return true
         })

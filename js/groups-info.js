@@ -46,9 +46,11 @@ function GetGroupsDetails(){
     axios({
         method: 'get',
         url: groupurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('progressBar-options-div').style.display="none";
         document.getElementById('progressBar-options').style.display="none"; 
         if (response.data == null) {
@@ -364,14 +366,17 @@ async function ChangeAnalyzerStatus(nodes, status){
         jsonAnalyzer["status"] = status;
         var dataJSON = JSON.stringify(jsonAnalyzer);
     
-        // let response = await axios.put('https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer',{timeout: 30000, data: dataJSON});
+        // let response = await axios.put('https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer',{timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}, data: dataJSON});
         await axios({
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
             data: dataJSON
         })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -426,9 +431,11 @@ function SuricataNodesStatus(guuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if(response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -510,9 +517,11 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -558,9 +567,11 @@ async function syncAnalyzer(nodes){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         for(x in response.data){
             if(response.data[x]["status"] == "error"){
                 errorNodes = errorNodes + response.data[x]["name"]+" "; 
@@ -645,10 +656,12 @@ function syncAllGroupElements(uuid){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 300000,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}0,
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -739,9 +752,11 @@ function changePaths(guuid, type){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
             data: grJSON
             })
-            .then(function (response) {           
+            .then(function (response) {
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}           
                 if (response.data.ack == "true") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -816,9 +831,11 @@ function SyncPathGroup(guuid, type){
             method: 'post',
             url: nodeurl,
             timeout: 30000,
+            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
             data: grJSON
         })
-        .then(function (response) {      
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}      
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -905,6 +922,7 @@ function modalLoadRuleset(group){
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (typeof response.data.error != "undefined"){
                 document.getElementById('group-ruleset-values').innerHTML = '<p>No rules available...</p>';
             }else{
@@ -949,9 +967,11 @@ function syncSuricataGroupService(guuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: grJSON
         })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.acke == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -995,9 +1015,11 @@ function GetAllClusterFiles(guuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
         })
         .then(function (response) {
+          if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             var html = '<tr>'+
                     '<td id="cluster-row-span" rowspan="2" class="align-middle" width="20%">Cluster <i class="fas fa-sync" style="color:dodgerblue; cursor:pointer" onclick="SyncClusterFile(\''+guuid+'\', \'all\')"></i> </td>'+
                     '<th>Cluster path</td>'+
@@ -1049,9 +1071,11 @@ function SyncClusterFile(uuid, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: grJSON
     })
         .then(function (response) {
+           if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1107,9 +1131,11 @@ function changeClusterValue(guuid, uuid){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
             data: grJSON
         })
             .then(function (response) {
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1186,9 +1212,11 @@ function deleteCluster(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: grJSON
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetGroupsDetails();
         })
         .catch(function error() {
@@ -1210,9 +1238,11 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: grJSON
         })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
             document.getElementById('ruleset-group-'+group).style.color = "black";
             document.getElementById('ruleset-group-standalone-'+group).innerHTML = ruleset;
@@ -1231,9 +1261,11 @@ function modalSelectNodeGroup(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             var modalWindowDelete = document.getElementById('modal-groups');
             var html = '<div class="modal-dialog">'+
                 '<div class="modal-content">'+
@@ -1304,9 +1336,11 @@ function addNodesToGroup(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: nodeJSON
         })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetGroupsDetails();
         })
         .catch(function (error) {
@@ -1322,8 +1356,10 @@ function deleteNodeForGroup(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if(response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1400,10 +1436,12 @@ function SyncRulesetToAllGroupNodes(guuid){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 300000,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}0,
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('progressBar-options-div').style.display="none";
         document.getElementById('progressBar-options').style.display="none"; 
 
@@ -1488,9 +1526,11 @@ function updateGroupService(uuid, type, value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: grJSON
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1569,9 +1609,11 @@ function addCluster(uuid, path){
         method: 'post',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: grJSON
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1673,9 +1715,11 @@ function ChangeGroupConfigTable(tab){
 //         method: 'post',
 //         url: nodeurl,
 //         timeout: 30000,
+            // headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
 //         data: grJSON
 //     })
 //         .then(function (response) {
+                // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
 //             if(response.data.ack == "false"){
 //                 $('html,body').scrollTop(0);
 //                 var alert = document.getElementById('floating-alert');

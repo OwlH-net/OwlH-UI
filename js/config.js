@@ -15,9 +15,11 @@ function saveFileChanged() {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: fileContent
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         location.reload(true);        
     })
     .catch(function (error) {

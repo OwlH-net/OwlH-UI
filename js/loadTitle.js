@@ -20,7 +20,7 @@ function loadTitleJSONdata(){
         url: urlSetRuleset,
         timeout: 30000
     })
-    .then(function (response) {
+   .then(function (response) {
         title.innerHTML = response.data;
         return true;
     })

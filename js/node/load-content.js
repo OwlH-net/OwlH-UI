@@ -48,9 +48,15 @@ function LoadFileLastLines(uuid, line, path) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -98,9 +104,15 @@ function saveCurrentContent() {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         LoadFileLastLines(uuid, "none", path);
     })
     .catch(function (error) {

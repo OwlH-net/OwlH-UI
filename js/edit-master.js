@@ -17,9 +17,11 @@ function loadFileIntoTextarea(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -62,9 +64,11 @@ function saveFileChanged() {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: masterJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         window.history.back();
     })
     .catch(function (error) {

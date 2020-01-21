@@ -174,7 +174,8 @@ function loadPlugins(){
     // '</div>';
 
     // axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/showMasterCollector')
-    // .then(function (response) {
+    //.then(function (response) {
+    //    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
     //     if (response.data.ack){
     //         document.getElementById('ports-table').innerHTML = "No remote systems yet";
     //     }else if(response.data){
@@ -252,9 +253,11 @@ function deployMaster(value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -288,9 +291,11 @@ function loadNetworkValues(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         var html = '<div class="modal-dialog modal-sm">'+
             '<div class="modal-content">'+
         
@@ -354,9 +359,11 @@ function loadNetworkStapValues(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         var html = '<div class="modal-dialog modal-sm">'+
             '<div class="modal-content">'+
         
@@ -427,9 +434,11 @@ function updateMasterStapInterface(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         $('#modal-master').modal('hide');
         PingPlugins();
     })
@@ -457,9 +466,11 @@ function updateMasterNetworkInterface(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {        
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}        
         $('#modal-master').modal('hide');
     })
     .catch(function (error) {
@@ -473,9 +484,11 @@ function DeployServiceMaster(){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "true"){
             document.getElementById('owlhMasterService').style.display = "none";
         }else {
@@ -493,9 +506,11 @@ function PingServiceMaster(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {        
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}        
         if (response.data.ack == "true"){
             document.getElementById('owlhMasterService').style.display = "none";
         }else {
@@ -514,9 +529,11 @@ function LoadMasterNetworkValuesSelected(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('net-value-'+response.data["interface"]["value"]).checked = "true"
     })
     .catch(function (error) {
@@ -530,7 +547,8 @@ function PingDataflow(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     }).then(function (response) {
         var flows = response.data;
         for (flow in flows){
@@ -550,9 +568,11 @@ function PingPlugins(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {   
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}   
         for (line in response.data){
             if (line == "dispatcher"){
                 if (response.data[line]["status"] == "enabled"){
@@ -757,9 +777,11 @@ function saveStapChanges(type, uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -806,12 +828,14 @@ function saveBPF(uuid, value){
     var bpfjson = JSON.stringify(jsonbpfdata);
 
     axios({
-      method: 'put',
-      url: nodeurl,
-      timeout: 30000,
-      data: bpfjson
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        data: bpfjson
     })
-      .then(function (response) {
+     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('socket-pcap-bpf-'+uuid).value = value;
         document.getElementById('socket-pcap-bpf-default-'+uuid).innerHTML = value;
         //   loadPlugins();
@@ -861,9 +885,11 @@ function deleteServiceMaster(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -885,9 +911,11 @@ function changePluginStatus(uuid,param,value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -909,9 +937,11 @@ function changeDataflowStatus(uuid,param,value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -928,9 +958,11 @@ function PingCollector(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -959,9 +991,11 @@ function playMasterCollector(){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -987,9 +1021,11 @@ function stopMasterCollector(){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1016,9 +1052,11 @@ function showMasterCollector(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1140,7 +1178,8 @@ function AddSTAPModal(type){
                     '</tbody>'+
                 '</table>';   
                 axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface')
-                .then(function (response) {
+               .then(function (response) {
+                    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
                     var isChecked = false;
                     var inner = "";
                     for (net in response.data){
@@ -1266,9 +1305,11 @@ function saveSoftwareTAP(type){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
             data: dataJSON
         })
-        .then(function (response) {
+       .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1324,9 +1365,11 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1368,9 +1411,11 @@ function StopStapServiceMaster(uuid, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -1400,9 +1445,11 @@ function loadNetworkValuesService(name, service){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {        
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}        
         var html = '<div class="modal-dialog" id="network-modal-master">'+
           '<div class="modal-content">'+
 
@@ -1482,9 +1529,11 @@ function SaveStapInterface(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         // loadPlugins();
         document.getElementById('socket-network-interface-default-'+uuid).innerHTML = valueSelected;
         document.getElementById('socket-network-interface-'+uuid).value = valueSelected;

@@ -22,15 +22,15 @@ function addRulesetSource() {
     var fileName = formUrl.split(/[\s/]+/);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    
+
     var sourceType;
     var sourceURL;
     var alert = document.getElementById('floating-alert');
-    
+
     $('input:radio:checked').each(function() {
         sourceType = $(this).prop("value");
     });
-    
+
     if ((sourceType == "url" || sourceType == "threat") && (formName == "" || formDesc == "" || formUrl == "")){
         if(formName == ""){
             document.getElementById('ruleset-source-name').placeholder = "Please, insert a valid name.";
@@ -56,7 +56,7 @@ function addRulesetSource() {
         }
     }else{
         if (sourceType == "url" || sourceType == "threat"){
-            sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';        
+            sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
         }else  if (sourceType == "custom"){
             sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/custom';
         }
@@ -76,9 +76,15 @@ function addRulesetSource() {
             method: 'post',
             url: sourceURL,
             timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: nodeJSON
         })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -90,7 +96,7 @@ function addRulesetSource() {
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
                 GetAllRulesetSource();
-            }            
+            }
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -101,12 +107,12 @@ function addRulesetSource() {
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
-        });   
-        GetAllRulesetSource(); 
+        });
+        GetAllRulesetSource();
     }
 }
 
-function GetAllRulesetSource(){    
+function GetAllRulesetSource(){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var result = document.getElementById('list-ruleset-source');
@@ -130,9 +136,15 @@ function GetAllRulesetSource(){
     axios({
         method: 'get',
         url: sourceurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('ruleset-source-text-top').style.display ="block";
         document.getElementById('ruleset-source-text-bot').style.display ="block";
         result.innerHTML = generateAllRulesetSourceHTMLOutput(response);
@@ -175,7 +187,7 @@ function changeIconAttributes(sources){
 function generateAllRulesetSourceHTMLOutput(response) {
     if (response.data.ack == "false") {
         return '<div style="text-align:center"><h3 style="color:red;">Error retrieving data for ruleset source</h3></div>';
-    }  
+    }
     var isEmpty = true;
     var sources = response.data;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
@@ -188,7 +200,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
         '<th style="width: 20%">Actions</th>                                ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
-        '<tbody>                                                      ' 
+        '<tbody>                                                      '
     for (source in sources) {
         isEmpty = false;
         html = html + '<tr><td style="word-wrap: break-word;">'+
@@ -210,7 +222,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
                         html = html + '<i class="fas fa-info-circle" style="cursor: pointer;" id="customRuleDetails-'+source+'" title="Custom rule details" onclick="loadCustomRulesetRules(\''+source+'\',\''+sources[source]['path']+'\',\'custom\')"></i>';
                     }else{
                         html = html + '<i class="fas fa-info-circle" style="cursor: pointer;" id="SourceDetails-'+source+'" title="Details" onclick="loadRulesetSourceDetails(\'source\',\''+sources[source]['name']+'\',\''+source+'\')"></i>';
-                    }          
+                    }
                     html = html + ' | <i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete source" data-toggle="modal" data-target="#modal-delete-source" onclick="modalDeleteRulesetSource(\''+sources[source]['name']+'\',\''+source+'\', \''+sources[source]['sourceType']+'\')"></i> &nbsp;'+
                 '</span>'+
             '</td></tr>';
@@ -223,7 +235,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
     }
 }
 
-function loadRulesetSourceDetails(type, name, uuid){    
+function loadRulesetSourceDetails(type, name, uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var isDownloaded = document.getElementById('download-status-'+uuid).value;
     if (isDownloaded == "true"){
@@ -240,9 +252,15 @@ function loadCustomRulesetRules(uuid,path,type){
     axios({
         method: 'get',
         url: sourceurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.location.href = 'https://' + ipmaster + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
     })
     .catch(function (error) {
@@ -255,24 +273,24 @@ function loadCustomRulesetRules(uuid,path,type){
 
 // function modalSyncRulesetSource(name, uuid){
 //     var modalWindow = document.getElementById('modal-ruleset');
-//     modalWindow.innerHTML = 
+//     modalWindow.innerHTML =
 //     '<div class="modal-dialog">'+
 //         '<div class="modal-content">'+
-    
+
 //             '<div class="modal-header">'+
 //                 '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Ruleset</h4>'+
 //                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
 //             '</div>'+
-    
-//             '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+ 
+
+//             '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+
 //                 '<p>Do you want to synchronize <b>'+name+'</b> ruleset source?</p>'+
 //             '</div>'+
-    
+
 //             '<div class="modal-footer" id="modal-ruleset-sync-ruleset-footer-btn">'+
 //                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
 //                 '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-modal-ruleset-sync-ruleset" onclick="syncRulesetSource(\''+uuid+'\')">Sync</button>'+
 //             '</div>'+
-  
+
 //         '</div>'+
 //     '</div>';
 // }
@@ -291,9 +309,15 @@ function loadCustomRulesetRules(uuid,path,type){
 //         method: 'put',
 //         url: nodeurl,
 //         timeout: 30000,
+        // headers:{
+        //     'token': document.cookie,
+        //     'user': payload.user,
+        //     'uuid': payload.uuid,
+        // },
 //         data: dataJSON
 //     })
 //         .then(function (response) {
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
 //         })
 //         .catch(function (error) {
 //         });
@@ -312,34 +336,40 @@ function loadCustomRulesetRules(uuid,path,type){
 //         method: 'put',
 //         url: nodeurl,
 //         timeout: 30000,
+        // headers:{
+        //     'token': document.cookie,
+        //     'user': payload.user,
+        //     'uuid': payload.uuid,
+        // },
 //         data: nodeJSON
 //         })
 //         .then(function (response) {
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
 //         })
 //         .catch(function (error) {
-//         });   
+//         });
 // }
 
 function modalDeleteRulesetSource(name, sourceUUID, sourceType){
     var modalWindowDelete = document.getElementById('modal-delete-source');
-    modalWindowDelete.innerHTML = 
+    modalWindowDelete.innerHTML =
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+
-    
+
             '<div class="modal-header">'+
                 '<h4 class="modal-title">Groups</h4>'+
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
-    
-            '<div class="modal-body">'+ 
+
+            '<div class="modal-body">'+
                 '<p>Do you want to delete source <b>'+name+'</b>?</p>'+
             '</div>'+
-    
+
             '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
                 '<button type="submit" class="btn btn-danger" data-dismiss="modal" onclick="deleteRulesetSource(\''+sourceUUID+'\', \''+sourceType+'\')">Delete</button>'+
             '</div>'+
-    
+
         '</div>'+
     '</div>';
 }
@@ -365,19 +395,19 @@ function editRulesetSourceData(){
     var url = document.getElementById('ruleset-source-edit-url');
     if(name.value=="" || desc.value == "" || url.value == ""){
         if(name.value==""){
-            $('#ruleset-source-name-edit').attr("placeholder", "Please, insert a valid name");  
+            $('#ruleset-source-name-edit').attr("placeholder", "Please, insert a valid name");
             $('#ruleset-source-name-edit').css('border', '2px solid red');
         }else{
             $('#ruleset-source-name-edit').css('border', '2px solid #ced4da');
         }
         if(desc.value==""){
-            $('#ruleset-source-edit-desc').attr("placeholder", "Please, insert a valid description");  
+            $('#ruleset-source-edit-desc').attr("placeholder", "Please, insert a valid description");
             $('#ruleset-source-edit-desc').css('border', '2px solid red');
         }else{
             $('#ruleset-source-edit-desc').css('border', '2px solid #ced4da');
         }
         if(url.value==""){
-            $('#ruleset-source-edit-url').attr("placeholder", "Please, insert a valid url");  
+            $('#ruleset-source-edit-url').attr("placeholder", "Please, insert a valid url");
             $('#ruleset-source-edit-url').css('border', '2px solid red');
         }else{
             $('#ruleset-source-edit-url').css('border', '2px solid #ced4da');
@@ -397,13 +427,19 @@ function editRulesetSourceData(){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: nodeJSON
             })
             .then(function (response) {
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
                 GetAllRulesetSource();
             })
             .catch(function (error) {
-            });   
+            });
             document.getElementById('edit-ruleset-source').style.display = "none";
     }
 }
@@ -422,16 +458,22 @@ function deleteRulesetSource(sourceUUID,sourceType){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: nodeJSON
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetAllRulesetSource();
         })
         .catch(function error() {
         });
 }
 
-function downloadFile(name, path, url, sourceUUID){    
+function downloadFile(name, path, url, sourceUUID){
     var downloadStatus = document.getElementById('download-status-'+sourceUUID);
     var icon = document.getElementById('SourceDetails-'+sourceUUID);
     if (downloadStatus.value == "true"){
@@ -448,14 +490,20 @@ function downloadFile(name, path, url, sourceUUID){
         nodejson["path"] = path;
         nodejson["uuid"] = sourceUUID;
         var nodeJSON = JSON.stringify(nodejson);
-    
+
         axios({
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: nodeJSON
         })
             .then(function (response) {
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
                 if (response.data.ack == "true") {
                     var alert = document.getElementById('floating-alert');
                     $('html,body').scrollTop(0);
@@ -466,9 +514,9 @@ function downloadFile(name, path, url, sourceUUID){
                         '</button>'+
                     '</div>';
                     icon.style.color="Dodgerblue";
-                    downloadStatus.value = "true";  
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);        
-                    
+                    downloadStatus.value = "true";
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+
                     document.getElementById('progressBar-create').style.display = "none";
                     document.getElementById('progressBar-create-div').style.display = "none";
                 }else{
@@ -482,7 +530,7 @@ function downloadFile(name, path, url, sourceUUID){
                     '</div>';
                     downloadStatus.value = "false";
                     setTimeout(function() {$(".alert").alert('close')}, 5000);
-                    
+
                     document.getElementById('progressBar-create').style.display = "none";
                     document.getElementById('progressBar-create-div').style.display = "none";
                 }
@@ -498,7 +546,7 @@ function downloadFile(name, path, url, sourceUUID){
                 '</div>';
                 downloadStatus.value = "false";
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
-                
+
                 document.getElementById('progressBar-create').style.display = "none";
                 document.getElementById('progressBar-create-div').style.display = "none";
         });
@@ -507,28 +555,28 @@ function downloadFile(name, path, url, sourceUUID){
 
 function modalOverwriteDownload(name,path, url, sourceUUID){
     var modalWindowDelete = document.getElementById('modal-delete-source');
-    modalWindowDelete.innerHTML = 
+    modalWindowDelete.innerHTML =
     '<div class="modal-dialog">'+
         '<div class="modal-content">'+
-    
+
             '<div class="modal-header">'+
                 '<h4 class="modal-title">Download</h4>'+
                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
-    
-            '<div class="modal-body">'+ 
+
+            '<div class="modal-body">'+
                 '<p>The file has been downloaded yet. Do you want to overwrite the file downloaded?</p>'+
             '</div>'+
-    
+
             '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
                 '<button type="submit" class="btn btn-danger" data-dismiss="modal" onclick="overwriteDownload(\''+name+'\', \''+path+'\', \''+url+'\', \''+sourceUUID+'\')">Overwrite</button>'+
             '</div>'+
-    
+
         '</div>'+
     '</div>';
 
-    $('#modal-delete-source').modal('show');     
+    $('#modal-delete-source').modal('show');
 }
 
 function overwriteDownload(name, path, url, uuid){
@@ -551,9 +599,15 @@ function overwriteDownload(name, path, url, uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: nodeJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
@@ -565,7 +619,7 @@ function overwriteDownload(name, path, url, uuid){
             icon.style.color="Dodgerblue";
             downloadStatus.value = "true";
             setTimeout(function() {$(".alert").alert('close')}, 5000);
-            
+
             document.getElementById('progressBar-create').style.display = "none";
             document.getElementById('progressBar-create-div').style.display = "none";
         }else{
@@ -579,7 +633,7 @@ function overwriteDownload(name, path, url, uuid){
             // icon.style.color="Grey";
             // downloadStatus.value = "false";
             setTimeout(function() {$(".alert").alert('close')}, 5000);
-            
+
             document.getElementById('progressBar-create').style.display = "none";
             document.getElementById('progressBar-create-div').style.display = "none";
         }
@@ -595,7 +649,7 @@ function overwriteDownload(name, path, url, uuid){
         // icon.style.color="Grey";
         // downloadStatus.value = "false";
         setTimeout(function() {$(".alert").alert('close')}, 5000);
-        
+
         document.getElementById('progressBar-create').style.display = "none";
         document.getElementById('progressBar-create-div').style.display = "none";
     });
@@ -620,8 +674,8 @@ function loadJSONdata(){
         }
         try {payload = JSON.parse(atob(tokens[1]));}
         catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
-                 
-        var ipLoad = document.getElementById('ip-master'); 
+
+        var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;

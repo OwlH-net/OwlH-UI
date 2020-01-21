@@ -45,9 +45,11 @@ function loadControlData(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if(response.data.ack == "false"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";

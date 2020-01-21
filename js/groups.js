@@ -97,9 +97,11 @@ function addGroup() {
             method: 'post',
             url: groupurl,
             timeout: 30000,
+            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
             data: nodeJSON
         })
-        .then(function (response) {
+       .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -148,9 +150,15 @@ function GetAllGroups(){
     axios({
         method: 'get',
         url: groupurl,
-        timeout: 60000
+        timeout: 60000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none"; 
 
@@ -303,7 +311,8 @@ function modalLoadRuleset(group){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
-        .then(function (response) {
+       .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (typeof response.data.error != "undefined"){
                 document.getElementById('group-ruleset-values').innerHTML = '<p>No rules available...</p>';
             }else{
@@ -355,9 +364,11 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: grJSON
         })
-        .then(function (response) {
+       .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -392,9 +403,11 @@ function modalSelectNodeGroup(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-        .then(function (response) {
+       .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -487,9 +500,11 @@ function addNodesToGroup(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: nodeJSON
         })
-        .then(function (response) {
+       .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -584,9 +599,11 @@ function EditGroupData(uuid){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
             data: nodeJSON
             })
-            .then(function (response) {
+           .then(function (response) {
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -624,8 +641,10 @@ function deleteGroup(groupID){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
     })
-        .then(function (response) {
+       .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -662,8 +681,10 @@ function deleteNodeForGroup(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-        .then(function (response) {
+       .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -745,10 +766,12 @@ function SyncRulesetToAllGroupNodes(groupID){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 300000,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none"; 
 

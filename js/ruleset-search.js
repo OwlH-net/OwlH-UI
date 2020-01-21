@@ -50,10 +50,16 @@ function getRulesetsBySearch(){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 10000,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: searchJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";

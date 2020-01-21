@@ -576,9 +576,15 @@ function SyncZeekValues(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -658,10 +664,16 @@ function changeSuricataTable(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
         if (response.data.ack == "false") {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -733,9 +745,15 @@ function PingPluginsMaster(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -797,9 +815,15 @@ function ChangeZeekMode(uuid, mode){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -859,9 +883,15 @@ function ChangeMainServiceStatus(uuid, param, service){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -900,10 +930,21 @@ function getCurrentRulesetName(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
         })
         .then(function (response2) {
             if(response2.data.ack){                
@@ -913,8 +954,15 @@ function getCurrentRulesetName(uuid) {
                 document.getElementById('current-ruleset').style.color = "red";
             }else{
                 document.getElementById('current-ruleset-options').innerHTML = response2.data;
-                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid)
+                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid, {
+                    headers:{
+                        'token': document.cookie,
+                        'user': payload.user,
+                        'uuid': payload.uuid,
+                    }
+                })
                 .then(function (response) {
+                    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
                     for (line in response.data){
                         if (response.data[line]["type"] == "suricata"){
                             document.getElementById('suricata-ruleset-'+line).innerHTML = response2.data;                            
@@ -940,8 +988,15 @@ async function GetMainconfData(uuid){
     var portmaster = document.getElementById('port-master').value;
 
     var count = 0;
-    await axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid)
+    await axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid, {
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         for (line in response.data){
             if(response.data[line]["command"]){count++;}
         }
@@ -956,9 +1011,15 @@ async function GetMainconfData(uuid){
     await axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {  
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         for (service in response.data){
             if(service == "suricata"){
                 document.getElementById('managed-expert-span').innerHTML = 'To expert ('+count+')';
@@ -1199,9 +1260,15 @@ function saveZeekValues(uuid, param){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1253,9 +1320,15 @@ function SyncCluster(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1329,9 +1402,15 @@ function AddClusterValue(uuid, type, host, interface){
             method: 'post',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1367,9 +1446,15 @@ function PingCluster(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1518,9 +1603,15 @@ function EditClusterValue(uuid, type, host, interface, cluster){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1563,9 +1654,15 @@ function DeleteClusterValue(uuid, type){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1600,9 +1697,15 @@ function PingDataflow(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
         document.getElementById('analysis-'+response.data["analysis"]["value"]).checked = "true";
         document.getElementById('transport-'+response.data["transport"]["value"]).checked = "true";
@@ -1646,9 +1749,15 @@ function ChangeAnalyzerStatus(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1703,9 +1812,15 @@ function deployNode(value,uuid,nodeName){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1748,9 +1863,15 @@ function LaunchZeekMainConf(uuid, param) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data != null){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
@@ -1798,9 +1919,15 @@ function StartSuricataMainConf(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data != null){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
@@ -1842,9 +1969,15 @@ function StopSuricataMainConf(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data != null){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
@@ -1887,9 +2020,15 @@ function KillSuricataMainConf(uuid, pid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data != null){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
@@ -1932,9 +2071,15 @@ function ReloadSuricataMainConf(uuid, pid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if(response.data != null){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
@@ -1974,8 +2119,14 @@ function StopSuricata(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2075,8 +2226,15 @@ function AddSTAPModal(uuid, type){
                 '<tbody id="socket-network-modal-table">' +
                 '</tbody>'+
             '</table>';   
-            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
+            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid, {
+                headers:{
+                    'token': document.cookie,
+                    'user': payload.user,
+                    'uuid': payload.uuid,
+                }
+            })
             .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
                 var isChecked = false;
                 var inner = "";
                 for (net in response.data){
@@ -2243,9 +2401,15 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
             method: 'post',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2300,9 +2464,15 @@ function AddPluginService(uuid, name, type){
             method: 'post',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataMap
         })
-        .then(function (response) {            
+        .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}            
             $('#modal-window').modal("hide");
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
@@ -2348,9 +2518,15 @@ function AddPluginService(uuid, name, type){
 //     axios({
 //         method: 'get',
 //         url: nodeurl,
-//         timeout: 30000
+//         timeout: 30000,
+        // headers:{
+        //         'token': document.cookie,
+        //         'user': payload.user,
+        //         'uuid': payload.uuid,
+        //     }
 //     })
 //     .then(function (response) {
+        // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
 //     })
 //     .catch(function (error) {
 //     });
@@ -2436,9 +2612,15 @@ function saveBPF(uuid, value, service, type){
       method: 'put',
       url: nodeurl,
       timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
       data: bpfjson
     })
       .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.error == "false"){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
@@ -2489,8 +2671,15 @@ function loadRuleset(uuid, source, service){
     var resultElement = document.getElementById('ruleset-manager-footer-table');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
+    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
       .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
           if (typeof response.data.error != "undefined"){
               resultElement.innerHTML = '<p>No rules available...</p>';
           }else{
@@ -2534,9 +2723,15 @@ function deployZeek(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -2609,9 +2804,15 @@ function saveRuleSelected(rule, nid, source, name, service){
         method: 'put',
         url: urlSetRuleset,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: uidJSON
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2654,9 +2855,15 @@ function playCollector(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
         document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
         return true;
@@ -2673,9 +2880,15 @@ function stopCollector(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
         document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";
         return true;
@@ -2692,9 +2905,15 @@ function showCollector(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         showModalCollector(response);
 
     })
@@ -2772,9 +2991,15 @@ function PingCollector(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data != ""){
             document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
             document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
@@ -2795,9 +3020,15 @@ function PingPorts(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             for(line in response.data){
                 if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
@@ -2839,9 +3070,15 @@ function ChangeStatus(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -2889,9 +3126,15 @@ function ChangeMode(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -2926,9 +3169,15 @@ function showPorts(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         showModalPorts(response, uuid);
     })
     .catch(function (error) {
@@ -3013,8 +3262,14 @@ function deletePorts(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: nodeJSON
         }).then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
 
         }).catch(function (error) {
 
@@ -3029,8 +3284,14 @@ function deleteAllPorts(uuid){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     }).then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
 
     }).catch(function (error) {
 
@@ -3051,9 +3312,15 @@ function sendRulesetToNode(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -3098,9 +3365,15 @@ function RunSuricata(uuid) {
         method: 'put',
         url: nodeurl,
         //httpsAgent: agent,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -3140,8 +3413,14 @@ function StopSuricata(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3179,9 +3458,15 @@ function PingSuricata(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (!response.data.path && !response.data.bin) {
                 document.getElementById(uuid + '-suricata').className = "badge bg-dark align-text-bottom text-white";
                 document.getElementById(uuid + '-suricata').innerHTML = "N/A";
@@ -3222,9 +3507,15 @@ function RunZeek(uuid) {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -3263,8 +3554,14 @@ function StopZeek(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -3307,9 +3604,15 @@ function PingZeek(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
-        .then(function (response) {        
+        .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}        
             document.getElementById("zeek-status-details").innerHTML = '';
             document.getElementById("zeek-current-mode").innerHTML = response.data["mode"];
             document.getElementById("zeek-role").innerHTML = response.data["role"];
@@ -3353,9 +3656,15 @@ function RunWazuh(uuid) {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3396,8 +3705,14 @@ function StopWazuh(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -3447,9 +3762,15 @@ function addWazuhFile(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -3507,9 +3828,15 @@ function DeleteWazuhFile(uuid, count){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -3524,8 +3851,14 @@ function PingWazuhFiles(uuid) {
         method: 'get',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -3594,9 +3927,15 @@ function PingWazuh(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (!response.data.path && !response.data.bin) {
                 document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
                 document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
@@ -3636,9 +3975,15 @@ function RunStap(uuid) {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -3675,8 +4020,14 @@ function StopStap(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -3713,9 +4064,15 @@ function PingStap(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (!response.data.stapStatus) {
                 document.getElementById(uuid + '-stap').className = "badge bg-danger align-text-bottom text-white";
                 document.getElementById(uuid + '-stap').innerHTML = "OFF";
@@ -3751,9 +4108,15 @@ function PingPluginsNode(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         for(line in response.data){
             // if (line == "knownports"){
             //     if (response.data[line]["status"] == "Enabled"){
@@ -4137,8 +4500,15 @@ function PingPluginsNode(uuid) {
             document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;           
         }
 
-        axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid)
+        axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid, {
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
+        })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -4230,9 +4600,15 @@ function saveStapChanges(uuid, type, service){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -4310,9 +4686,15 @@ function deployStapService(uuid, service, collector,port,interface, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -4355,9 +4737,15 @@ function stopStapService(uuid, service, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -4399,9 +4787,15 @@ function deleteService(uuid, service){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -4463,9 +4857,15 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -4505,9 +4905,15 @@ function PingAnalyzer(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data["status"] == "Enabled"){
             document.getElementById('analyzer-status-'+uuid).innerHTML = "ON";
             document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-stop-circle";
@@ -4549,9 +4955,15 @@ function ReloadFilesData(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         var wazuhCount = document.getElementById('wazuh-count-table-value').value;
         for (file in response.data){
             if (file == "analyzer"){
@@ -4618,9 +5030,15 @@ function loadNetworkValuesService(uuid, name, service, type){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         var html = '<div class="modal-dialog" id="network-modal-window">'+
           '<div class="modal-content">'+
 
@@ -4709,9 +5127,15 @@ function updateNetworkInterface(uuid, type, service){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         // loadPlugins();
     })
     .catch(function (error) {
@@ -4752,9 +5176,15 @@ function saveSuricataInterface(uuid, name, service, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         // loadPlugins();
     })
     .catch(function (error) {

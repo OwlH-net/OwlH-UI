@@ -30,10 +30,16 @@ function addServerToNode() {
     axios({
         method: 'post',
         url: urlServer,
-        timeout: 3000,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: nodeJSON
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetAllServers();
             return true;
         })
@@ -55,9 +61,15 @@ function GetAllServers() {
     axios({
         method: 'get',
         url: urlServer,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         tableServer.innerHTML = generateAllServerHTMLOutput(response);
         return true;
     })
@@ -166,9 +178,15 @@ function generateAllServerHTMLOutput(response) {
     axios({
         method: 'get',
         url: urlServer,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         var htmDetails =
         '<div>'+
             '<h3 class="mb-0 low-blue lh-100" style="display: inline-block;">Values for server: '+response.data[server]['name']+'</h3>                '+
@@ -282,9 +300,15 @@ function EditStapServer(server, param){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: nodeJSON
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             //GetAllServers();
             loadServerDetails(server);
         })
@@ -301,9 +325,15 @@ function RunStapServer(server) {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetAllServers();
         })
         .catch(function error() {
@@ -321,8 +351,14 @@ function StopStapServer(server) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetAllServers();
         })
         .catch(function error() {
@@ -340,8 +376,14 @@ function DeleteStapServer(server) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetAllServers();
         })
         .catch(function error() {

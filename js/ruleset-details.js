@@ -12,9 +12,15 @@ function GetAllRulesetDetails(){
     axios({
         method: 'get',
         url: sourceurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         if (response.data.ack){
             result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
         }else{
@@ -130,9 +136,15 @@ function addNewLines(uuid){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetAllRulesetDetails();
         })
         .catch(function error() {
@@ -204,9 +216,15 @@ function overwriteRuleFile(uuid){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetAllRulesetDetails();
         })
         .catch(function error() {
@@ -220,9 +238,15 @@ function deleteRulesetDetails(uuid){
     axios({
         method: 'delete',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             GetAllRulesetDetails();
         })
         .catch(function error() {

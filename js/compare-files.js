@@ -12,9 +12,11 @@ function compareFiles(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
         })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
             resultElement.innerHTML = generateAllLinesHTMLOutput (response);
         })
         .catch(function (error) {
@@ -112,9 +114,11 @@ function generateAllLinesHTMLOutput (response){
 //         method: 'post',
 //         url: nodeurl,
 //         timeout: 30000,
+        // headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
 //         data: nodeJSON
 //         })
 //         .then(function (response) {
+        // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
 //         })
 //         .catch(function (error) {
 //         }); 

@@ -32,9 +32,11 @@ function loadRulesData(){
     axios({
         method: 'get',
         url: sourceurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
         result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
         $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
         for (source in response.data){
@@ -326,9 +328,11 @@ function modalAddNewRuleset(){
                 method: 'put',
                 url: sourceurl,
                 timeout: 30000,
+                headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
                 data: nodeJSON
             })
-            .then(function (response) {               
+            .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}               
                 if (response.data.ack == "true"){                
                     document.getElementById('progressBar-create-div').style.display="none";
                     document.getElementById('progressBar-create').style.display="none";

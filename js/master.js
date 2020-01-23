@@ -1177,7 +1177,7 @@ function AddSTAPModal(type){
                     '<tbody id="socket-network-modal-table-master">' +
                     '</tbody>'+
                 '</table>';   
-                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface')
+                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
                .then(function (response) {
                     if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
                     var isChecked = false;

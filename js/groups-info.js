@@ -367,7 +367,7 @@ async function ChangeAnalyzerStatus(nodes, status){
         var dataJSON = JSON.stringify(jsonAnalyzer);
     
         // let response = await axios.put('https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer',{timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}, data: dataJSON});
+        // headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}, data: dataJSON});
         await axios({
             method: 'put',
             url: nodeurl,
@@ -657,7 +657,7 @@ function syncAllGroupElements(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}0,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
     .then(function (response) {
@@ -1437,7 +1437,7 @@ function SyncRulesetToAllGroupNodes(guuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}0,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
     .then(function (response) {

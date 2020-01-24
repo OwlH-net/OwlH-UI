@@ -44,18 +44,6 @@ function showConfig(oip, oname, oport, ouuid){
     uuid.value = ouuid.trim();
 }
 
-// function DisableOfflineNodes() {
-//     $('#node-table-tbody tr').each(function(){
-//         console.log($(this));
-//         console.log($(this).attr('status'));
-//         // if ($(this).attr('status') == "online"){
-//         //     console.log("online");
-//         // }else if ($(this).attr('status') == "offline"){
-//         //     console.log("not...");
-//         // }
-//     });
-// }
-
 async function PingNode(uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -72,6 +60,7 @@ async function PingNode(uuid) {
             }
     })
         .then(function (response) {
+            console.log(response.data);
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}            
             if (response.data.ping=='pong') {
                 document.getElementById('node-actions-'+uuid).style.color = "Dodgerblue";
@@ -81,7 +70,6 @@ async function PingNode(uuid) {
 
                 PingMonitor(uuid);
                 var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
-                // sortTableName();
             } else {
                 document.getElementById('node-monitor-'+uuid).onclick = "";
                 document.getElementById('node-services-'+uuid).onclick = "";
@@ -101,13 +89,15 @@ async function PingNode(uuid) {
                 document.getElementById('node-incident-'+uuid).style.cursor = "default";
                 document.getElementById('node-actions-'+uuid).style.cursor = "default";
 
-                document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
-                document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
+                if(response.data.nodeToken=='none'){
+                    document.getElementById(uuid+'-online').className = "badge bg-dark align-text-bottom text-white";
+                    document.getElementById(uuid+'-online').innerHTML = "NOT AVAILABLE";
+                }else{
+                    document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
+                    document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
+                }
                 document.getElementById('node-row-'+uuid).setAttribute("status", "offline");
-            }  
-            if(document.getElementById('node-row-'+uuid).getAttribute == "offline"){
-                // console.log("not a number");
-            }    
+            }   
         })
         .catch(function (error) {
             document.getElementById('node-monitor-'+uuid).onclick = "";
@@ -214,8 +204,13 @@ function GetAllNodes() {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var resultElement = document.getElementById('nodes-table');
+    //hide buttons
     document.getElementById('add-nid-bottom').style.display = "none";
     document.getElementById('add-nid-top').style.display = "none";
+    document.getElementById('search-node-details').style.display = "none";
+    document.getElementById('node-search-value').style.display = "none";
+    document.getElementById('progressBar-node').style.display = "block";
+    document.getElementById('progressBar-node-div').style.display = "block";
 
     //    var instance = axios.create({
     //     baseURL: 'https://' + ipmaster + ':' + portmaster + '/v1/node',
@@ -231,22 +226,27 @@ function GetAllNodes() {
             }//Authorization
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
-        .then(function (response) {
+        .then(function (response) {            
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
-            
-            var nodes = response.data;
-            document.getElementById('add-nid-bottom').style.display = "block";
-            document.getElementById('add-nid-top').style.display = "block";
 
             if (response.data.ack == "false") {
                 document.getElementById('add-nid-bottom').style.display = "none";
                 document.getElementById('add-nid-top').style.display = "none";
                 document.getElementById('search-node-details').style.display = "none";
                 document.getElementById('node-search-value').style.display = "none";
+                document.getElementById('progressBar-node').style.display = "none";
+                document.getElementById('progressBar-node-div').style.display = "none";
                 resultElement.innerHTML =  '<div style="text-align:center"><h3 style="color:red;">Error retrieving nodes</h3></div>';
             }else{
-                var isEmpty = true;
+                document.getElementById('add-nid-bottom').style.display = "block";
+                document.getElementById('add-nid-top').style.display = "block";
+                document.getElementById('search-node-details').style.display = "block";
+                document.getElementById('node-search-value').style.display = "block";
+                document.getElementById('progressBar-node').style.display = "none";
+                document.getElementById('progressBar-node-div').style.display = "none";
                 
+                var nodes = response.data;
+                var isEmpty = true;                
                 var html =  
                 '<div>'+
                     '<span id="show-nodes-online" onclick="showNodes(\'online\')" class="badge bg-success align-text-bottom text-white float-right" style="cursor:pointer;" title="Show only online nodes">ON LINE</span>'+
@@ -331,9 +331,24 @@ function GetAllNodes() {
             }            
             // $('#node-table').click(function(){sortTable(); });
             // DisableOfflineNodes();
+            
+            //hide progressBar when nodes have finished loading
+            document.getElementById('progressBar-node').style.display = "none";
+            document.getElementById('progressBar-node-div').style.display = "none";
         })
         .catch(function (error) {
-            console.log(error);
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);   
+
+            document.getElementById('progressBar-node').style.display = "none";
+            document.getElementById('progressBar-node-div').style.display = "none";
             resultElement.innerHTML = '<h3 align="center">No connection</h3>'+
                 '<a id="check-status-config" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
                 checkStatus();

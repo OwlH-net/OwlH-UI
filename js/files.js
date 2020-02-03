@@ -1,4 +1,30 @@
-getAllFiles()
+
+var payload = "";
+loadJSONdata();
+
+function loadJSONdata() {
+    $.getJSON('../conf/ui.conf', function (data) {
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+                 
+        var ipLoad = document.getElementById('ip-master');
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        
+        loadTitleJSONdata();
+        getAllFiles();
+    });
+// }getAllFiles()
+
 function getAllFiles() {
     var urlData = new URL(window.location.href);
     var uuid = urlData.searchParams.get("uuid");
@@ -19,7 +45,7 @@ function getAllFiles() {
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             files.innerHTML = generateAllFilesOutput(response, node);
         })
         .catch(function (error) {
@@ -76,27 +102,3 @@ function checkStatus() {
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
     document.getElementById('check-status-config').href = nodeurl;
 }
-
-function loadJSONdata() {
-    $.getJSON('../conf/ui.conf', function (data) {
-        //token check
-        var tokens = document.cookie.split(".");
-        if (tokens.length != 3){
-            document.cookie = "";
-        }
-        if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
-        }
-        try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
-                 
-        var ipLoad = document.getElementById('ip-master');
-        ipLoad.value = data.master.ip;
-        var portLoad = document.getElementById('port-master');
-        portLoad.value = data.master.port;
-        loadTitleJSONdata();
-        getAllFiles();
-    });
-}
-var payload = "";
-loadJSONdata();

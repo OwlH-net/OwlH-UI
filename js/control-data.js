@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
          
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
@@ -49,7 +49,7 @@ function loadControlData(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.ack == "false"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";

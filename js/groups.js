@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
                  
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
@@ -101,7 +101,7 @@ function addGroup() {
             data: nodeJSON
         })
        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -158,7 +158,7 @@ function GetAllGroups(){
         }
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none"; 
 
@@ -312,7 +312,7 @@ function modalLoadRuleset(group){
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (typeof response.data.error != "undefined"){
                 document.getElementById('group-ruleset-values').innerHTML = '<p>No rules available...</p>';
             }else{
@@ -368,7 +368,7 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         data: grJSON
         })
        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -407,7 +407,7 @@ function modalSelectNodeGroup(uuid){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -504,7 +504,7 @@ function addNodesToGroup(uuid){
         data: nodeJSON
         })
        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -603,7 +603,7 @@ function EditGroupData(uuid){
             data: nodeJSON
             })
            .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -644,7 +644,7 @@ function deleteGroup(groupID){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
     })
        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -684,7 +684,7 @@ function deleteNodeForGroup(uuid){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -771,7 +771,7 @@ function SyncRulesetToAllGroupNodes(groupID){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none"; 
 

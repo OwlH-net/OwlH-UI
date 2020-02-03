@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
                  
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
@@ -36,7 +36,7 @@ function loadRulesData(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
         $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
         for (source in response.data){
@@ -332,7 +332,7 @@ function modalAddNewRuleset(){
                 data: nodeJSON
             })
             .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}               
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}               
                 if (response.data.ack == "true"){                
                     document.getElementById('progressBar-create-div').style.display="none";
                     document.getElementById('progressBar-create').style.display="none";

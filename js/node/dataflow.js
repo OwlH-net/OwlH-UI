@@ -15,7 +15,7 @@ function loadNetworkValues(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         var html = '<div class="modal-dialog" id="network-modal-window">'+
           '<div class="modal-content">'+
 
@@ -92,7 +92,7 @@ function LoadAllVxLAN(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         var areElements = false;
         for (type in response.data){
             if (response.data[type]["type"] == "networkvxlan"){
@@ -236,7 +236,7 @@ function CreateNewVxLAN(uuid){
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         var inner = "";
         for (net in response.data){
             inner = inner +
@@ -316,7 +316,7 @@ function SaveVxLAN(uuid){
             data: dataJSON
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack=="false"){
                 document.getElementById('ifaceNameVxLAN').value = "";
                 document.getElementById('ifaceNameVxLAN').placeholder = "Name used. Use other name.";
@@ -346,7 +346,7 @@ function LoadAllNewLocal(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         var areElements = false;
         for (type in response.data){
             if (response.data[type]["type"] == "networknewlocal"){
@@ -501,7 +501,7 @@ function SaveNewLocal(uuid){
             data: dataJSON
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack=="false"){
                 document.getElementById('InterfaceNameNewLocal').value = "";
                 document.getElementById('InterfaceNameNewLocal').placeholder = "Name used. Use other name.";
@@ -537,7 +537,7 @@ function selectNewLocal(uuid, nodeUUID){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
     })
     .catch(function (error) {
     });
@@ -559,7 +559,7 @@ function LoadNetworkValuesSelected(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.getElementById('net-value-'+response.data[uuid]["interface"]).checked = "true";
         document.getElementById('vxlan-value-'+response.data[uuid]["interface"]).checked = "true";
     })
@@ -595,7 +595,7 @@ function updateNetworkInterface(uuid){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
     })
     .catch(function (error) {
     });
@@ -630,7 +630,7 @@ function SocketToNetworkList(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         var html = "";
         var areElements = false;
         for (type in response.data){
@@ -768,7 +768,7 @@ function createSocketToNetwork(uuid){
 
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         var isChecked = false;
         var inner = "";
         for (net in response.data){
@@ -847,7 +847,7 @@ function saveSocketToNetwork(uuid){
             data: dataJSON
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack=="false"){
                 document.getElementById('socketName').value = "";
                 document.getElementById('socketName').placeholder = "Name used. Use other name.";
@@ -882,7 +882,7 @@ function saveSocketToNetworkSelected(uuid, nodeUUID){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
     })
     .catch(function (error) {
     });
@@ -917,7 +917,7 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
             data: dataJSON
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (type == "sockettonetwork"){
                 SocketToNetworkList(uuid);
             }else if(type == "networknewlocal"){
@@ -954,7 +954,7 @@ function changeDataflowValues(FlowUUID, param, value, uuid){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {

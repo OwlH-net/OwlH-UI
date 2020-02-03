@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
                  
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
@@ -50,7 +50,7 @@ function GetGroupsDetails(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.getElementById('progressBar-options-div').style.display="none";
         document.getElementById('progressBar-options').style.display="none"; 
         if (response.data == null) {
@@ -376,7 +376,7 @@ async function ChangeAnalyzerStatus(nodes, status){
             data: dataJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -435,7 +435,7 @@ function SuricataNodesStatus(guuid){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -481,9 +481,9 @@ function SuricataNodesStatus(guuid){
 }
 
 function ChangeSuricataGroupService(uuid,action){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/group/suricata/';
+    // var ipmaster = document.getElementById('ip-master').value;
+    // var portmaster = document.getElementById('port-master').value;
+    // var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/group/suricata/';
 
     $('#group-suricata-list > tr').each(function() {
         if(action == "start"){
@@ -521,7 +521,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -532,6 +532,8 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
         }else{
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
@@ -571,7 +573,7 @@ async function syncAnalyzer(nodes){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         for(x in response.data){
             if(response.data[x]["status"] == "error"){
                 errorNodes = errorNodes + response.data[x]["name"]+" "; 
@@ -661,7 +663,7 @@ function syncAllGroupElements(uuid){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -756,7 +758,7 @@ function changePaths(guuid, type){
             data: grJSON
             })
             .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}           
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}           
                 if (response.data.ack == "true") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -835,7 +837,7 @@ function SyncPathGroup(guuid, type){
             data: grJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}      
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}      
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -920,9 +922,9 @@ function modalLoadRuleset(group){
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
+    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (typeof response.data.error != "undefined"){
                 document.getElementById('group-ruleset-values').innerHTML = '<p>No rules available...</p>';
             }else{
@@ -971,7 +973,7 @@ function syncSuricataGroupService(guuid){
         data: grJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.acke == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1019,7 +1021,7 @@ function GetAllClusterFiles(guuid){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
         })
         .then(function (response) {
-          if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+          if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             var html = '<tr>'+
                     '<td id="cluster-row-span" rowspan="2" class="align-middle" width="20%">Cluster <i class="fas fa-sync" style="color:dodgerblue; cursor:pointer" onclick="SyncClusterFile(\''+guuid+'\', \'all\')"></i> </td>'+
                     '<th>Cluster path</td>'+
@@ -1075,7 +1077,7 @@ function SyncClusterFile(uuid, type){
         data: grJSON
     })
         .then(function (response) {
-           if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+           if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1135,7 +1137,7 @@ function changeClusterValue(guuid, uuid){
             data: grJSON
         })
             .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1216,7 +1218,7 @@ function deleteCluster(uuid){
         data: grJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             GetGroupsDetails();
         })
         .catch(function error() {
@@ -1242,7 +1244,7 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         data: grJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
             document.getElementById('ruleset-group-'+group).style.color = "black";
             document.getElementById('ruleset-group-standalone-'+group).innerHTML = ruleset;
@@ -1265,7 +1267,7 @@ function modalSelectNodeGroup(uuid){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             var modalWindowDelete = document.getElementById('modal-groups');
             var html = '<div class="modal-dialog">'+
                 '<div class="modal-content">'+
@@ -1340,7 +1342,7 @@ function addNodesToGroup(uuid){
         data: nodeJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             GetGroupsDetails();
         })
         .catch(function (error) {
@@ -1359,7 +1361,7 @@ function deleteNodeForGroup(uuid){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1441,7 +1443,7 @@ function SyncRulesetToAllGroupNodes(guuid){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.getElementById('progressBar-options-div').style.display="none";
         document.getElementById('progressBar-options').style.display="none"; 
 
@@ -1530,7 +1532,7 @@ function updateGroupService(uuid, type, value){
         data: grJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1613,7 +1615,7 @@ function addCluster(uuid, path){
         data: grJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1719,7 +1721,7 @@ function ChangeGroupConfigTable(tab){
 //         data: grJSON
 //     })
 //         .then(function (response) {
-                // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+                // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 //             if(response.data.ack == "false"){
 //                 $('html,body').scrollTop(0);
 //                 var alert = document.getElementById('floating-alert');

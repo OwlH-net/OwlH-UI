@@ -84,7 +84,7 @@ function addRulesetSource() {
             data: nodeJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -144,7 +144,7 @@ function GetAllRulesetSource(){
         }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.getElementById('ruleset-source-text-top').style.display ="block";
         document.getElementById('ruleset-source-text-bot').style.display ="block";
         result.innerHTML = generateAllRulesetSourceHTMLOutput(response);
@@ -260,7 +260,7 @@ function loadCustomRulesetRules(uuid,path,type){
         }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.location.href = 'https://' + ipmaster + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
     })
     .catch(function (error) {
@@ -317,7 +317,7 @@ function loadCustomRulesetRules(uuid,path,type){
 //         data: dataJSON
 //     })
 //         .then(function (response) {
-    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 //         })
 //         .catch(function (error) {
 //         });
@@ -344,7 +344,7 @@ function loadCustomRulesetRules(uuid,path,type){
 //         data: nodeJSON
 //         })
 //         .then(function (response) {
-    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 //         })
 //         .catch(function (error) {
 //         });
@@ -435,7 +435,7 @@ function editRulesetSourceData(){
             data: nodeJSON
             })
             .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                 GetAllRulesetSource();
             })
             .catch(function (error) {
@@ -466,7 +466,7 @@ function deleteRulesetSource(sourceUUID,sourceType){
         data: nodeJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             GetAllRulesetSource();
         })
         .catch(function error() {
@@ -503,7 +503,7 @@ function downloadFile(name, path, url, sourceUUID){
             data: nodeJSON
         })
             .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                 if (response.data.ack == "true") {
                     var alert = document.getElementById('floating-alert');
                     $('html,body').scrollTop(0);
@@ -607,7 +607,7 @@ function overwriteDownload(name, path, url, uuid){
         data: nodeJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
@@ -670,10 +670,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
 
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;

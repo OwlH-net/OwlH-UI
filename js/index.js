@@ -7,7 +7,7 @@ function loadJSONdata() {
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
 
         var ipmaster = document.getElementById('ip-master');
@@ -23,7 +23,7 @@ loadJSONdata();
 function LoadNodes() {
     var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+ipmaster+'/login.html';
+        document.location.href='https://'+location.hostname+'/login.html';
     }else{
         document.location.href='https://'+ipmaster+'/nodes.html';
     }
@@ -31,7 +31,7 @@ function LoadNodes() {
 function LoadGroups(){
     var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+ipmaster+'/login.html';
+        document.location.href='https://'+location.hostname+'/login.html';
     }else{
         document.location.href='https://'+ipmaster+'/groups.html';
     }
@@ -39,7 +39,7 @@ function LoadGroups(){
 function LoadOpenrules(){
     var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+ipmaster+'/login.html';
+        document.location.href='https://'+location.hostname+'/login.html';
     }else{
         document.location.href='https://'+ipmaster+'/rulesets.html';
     }
@@ -47,7 +47,7 @@ function LoadOpenrules(){
 function LoadMaster(){
     var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+ipmaster+'/login.html';
+        document.location.href='https://'+location.hostname+'/login.html';
     }else{
         document.location.href='https://'+ipmaster+'/master.html';
     }
@@ -55,7 +55,7 @@ function LoadMaster(){
 function LoadConfig(){
     var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+ipmaster+'/login.html';
+        document.location.href='https://'+location.hostname+'/login.html';
     }else{
         document.location.href='https://'+ipmaster+'/config.html';
     }

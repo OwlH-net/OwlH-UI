@@ -175,7 +175,7 @@ function loadPlugins(){
 
     // axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/showMasterCollector')
     //.then(function (response) {
-    //    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+    //    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
     //     if (response.data.ack){
     //         document.getElementById('ports-table').innerHTML = "No remote systems yet";
     //     }else if(response.data){
@@ -257,7 +257,7 @@ function deployMaster(value){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -295,7 +295,7 @@ function loadNetworkValues(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         var html = '<div class="modal-dialog modal-sm">'+
             '<div class="modal-content">'+
         
@@ -363,7 +363,7 @@ function loadNetworkStapValues(uuid){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         var html = '<div class="modal-dialog modal-sm">'+
             '<div class="modal-content">'+
         
@@ -438,7 +438,7 @@ function updateMasterStapInterface(uuid){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         $('#modal-master').modal('hide');
         PingPlugins();
     })
@@ -470,7 +470,7 @@ function updateMasterNetworkInterface(){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}        
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}        
         $('#modal-master').modal('hide');
     })
     .catch(function (error) {
@@ -488,7 +488,7 @@ function DeployServiceMaster(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "true"){
             document.getElementById('owlhMasterService').style.display = "none";
         }else {
@@ -510,7 +510,7 @@ function PingServiceMaster(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}        
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}        
         if (response.data.ack == "true"){
             document.getElementById('owlhMasterService').style.display = "none";
         }else {
@@ -533,7 +533,7 @@ function LoadMasterNetworkValuesSelected(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.getElementById('net-value-'+response.data["interface"]["value"]).checked = "true"
     })
     .catch(function (error) {
@@ -572,7 +572,7 @@ function PingPlugins(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}   
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}   
         for (line in response.data){
             if (line == "dispatcher"){
                 if (response.data[line]["status"] == "enabled"){
@@ -781,7 +781,7 @@ function saveStapChanges(type, uuid){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -835,7 +835,7 @@ function saveBPF(uuid, value){
         data: bpfjson
     })
      .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.getElementById('socket-pcap-bpf-'+uuid).value = value;
         document.getElementById('socket-pcap-bpf-default-'+uuid).innerHTML = value;
         //   loadPlugins();
@@ -889,7 +889,7 @@ function deleteServiceMaster(uuid){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -915,7 +915,7 @@ function changePluginStatus(uuid,param,value){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -941,7 +941,7 @@ function changeDataflowStatus(uuid,param,value){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -962,7 +962,7 @@ function PingCollector(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -995,7 +995,7 @@ function playMasterCollector(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1025,7 +1025,7 @@ function stopMasterCollector(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1056,7 +1056,7 @@ function showMasterCollector(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1179,7 +1179,7 @@ function AddSTAPModal(type){
                 '</table>';   
                 axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
                .then(function (response) {
-                    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+                    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                     var isChecked = false;
                     var inner = "";
                     for (net in response.data){
@@ -1309,7 +1309,7 @@ function saveSoftwareTAP(type){
             data: dataJSON
         })
        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1369,7 +1369,7 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -1415,7 +1415,7 @@ function StopStapServiceMaster(uuid, type){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         loadPlugins();
     })
     .catch(function (error) {
@@ -1449,7 +1449,7 @@ function loadNetworkValuesService(name, service){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}        
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}        
         var html = '<div class="modal-dialog" id="network-modal-master">'+
           '<div class="modal-content">'+
 
@@ -1533,7 +1533,7 @@ function SaveStapInterface(uuid){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         // loadPlugins();
         document.getElementById('socket-network-interface-default-'+uuid).innerHTML = valueSelected;
         document.getElementById('socket-network-interface-'+uuid).value = valueSelected;
@@ -1550,10 +1550,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
                  
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;

@@ -14,7 +14,7 @@ function GetAllRulesets() {
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
         })
         .catch(function (error) {
@@ -107,7 +107,7 @@ function modalShowLog(uuid, name){
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             var ruleset = response.data;
             html = 
             '<div class="modal-dialog modal-lg">'+
@@ -435,7 +435,7 @@ function timeSchedule(uuid, status){
         data: schedulejson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}            
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
             GetAllRulesets();
         })
         .catch(function (error) {
@@ -565,7 +565,7 @@ function synchronizeAllRulesets() {
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (response.data.ack == "true"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -621,7 +621,7 @@ function deleteRuleset(name, uuid) {
         data: bpfjson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (response.data.ack == "false"){
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
@@ -678,7 +678,7 @@ function deleteRuleset(name, uuid) {
 //             data: bpfjson
 //         })
 //             .then(function (response) {
-    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 //                 GetAllRulesets();
 //             })
 //             .catch(function (error) {
@@ -709,7 +709,7 @@ function syncRuleset(uuid){
         data: dataJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (response.data.ack == "true"){
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
@@ -765,10 +765,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
                
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;

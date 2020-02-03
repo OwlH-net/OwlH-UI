@@ -13,7 +13,7 @@ function GetAllRuleset() {
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid,{headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         resultElement.innerHTML = generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, rule, type, rulesetuuid);
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
@@ -159,7 +159,7 @@ function getToCustomRuleset(rulesetuuid){
             }
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             var customRulesets = response.data;
             var customRulesetModal = document.getElementById('modal-window-ruleset');
             var html =
@@ -235,7 +235,7 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
         data: bpfjson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             $('#modal-window-ruleset').modal('hide')   
             GetAllRuleset();         
         })
@@ -276,7 +276,7 @@ function changeRulesetStatus(sid, fileuuid, action) {
         data: bpfjson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (action == "Disable") {
                 document.getElementById(sid + '-rule-status').innerHTML = '<i class="fas fa-times-circle" style="color:red;"></i>';
                 document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, fileuuid, "Enable"); };
@@ -333,7 +333,7 @@ function getRuleNote(elementID, fileuuid, sid) {
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (typeof (response.data) === 'object') {
                 loadNote.value = '';
             } else {
@@ -369,7 +369,7 @@ function rulesetNotes(sid, fileuuid) {
         data: bpfjson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             document.getElementById(sid + '-note').innerHTML = '<p>' + textAreaNote + '</p>';
             return true
         })
@@ -386,10 +386,10 @@ function loadJSONdata() {
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
                  
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;

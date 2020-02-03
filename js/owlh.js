@@ -3,7 +3,7 @@ var payload = "";
 loadJSONdata();
 
 //load json data from local file
-function loadJSONdata() {
+function loadJSONdata() {    
     //get ui.conf file content
     $.getJSON('../conf/ui.conf', function (data) {
         //token check
@@ -12,12 +12,11 @@ function loadJSONdata() {
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+data.master.ip+'/login.html';
+            document.location.href='https://'+location.hostname+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
          
-
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
@@ -60,8 +59,7 @@ async function PingNode(uuid) {
             }
     })
         .then(function (response) {
-            console.log(response.data);
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}            
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
             if (response.data.ping=='pong') {
                 document.getElementById('node-actions-'+uuid).style.color = "Dodgerblue";
                 document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
@@ -135,7 +133,7 @@ function PingService(uuid){
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (response.data.ack == "true"){
                 document.getElementById(uuid+'-owlhservice').style.display = "none";
             }else {
@@ -163,7 +161,7 @@ function PingMonitor(uuid){
         timeout: 30000
     })
         .then(function (response) {
-          if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+          if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             var cpuData = "";
             for(x in response.data.cpus){
                 cpuData = cpuData + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
@@ -191,7 +189,7 @@ function DeployService(uuid) {
         timeout: 30000
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             GetAllNodes();
             return true;
         })
@@ -227,7 +225,7 @@ function GetAllNodes() {
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
         .then(function (response) {            
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 
             if (response.data.ack == "false") {
                 document.getElementById('add-nid-bottom').style.display = "none";
@@ -438,7 +436,7 @@ function deleteNode(node) {
         timeout: 30000
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             GetAllNodes();
             return true;
         })
@@ -479,7 +477,7 @@ function PingDataflow(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
         document.getElementById('analysis-'+response.data["analysis"]["value"]).checked = "true";
         document.getElementById('transport-'+response.data["transport"]["value"]).checked = "true";
@@ -509,7 +507,7 @@ function deployNode(value,uuid,nodeName){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (response.data.ack == "true") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -622,7 +620,7 @@ function ChangeStatus(uuid){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         GetAllNodes()
     })
     .catch(function (error) {
@@ -644,7 +642,7 @@ function getRulesetUID(uuid) {
         timeout: 30000
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         getRuleName(response.data, uuid);
         return true;
     })
@@ -668,7 +666,7 @@ function getRuleName(uuidRuleset, uuid) {
         timeout: 30000
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (typeof response.data.error != "undefined") {
                 document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
                 document.getElementById(uuid + '-ruleset').className = "text-danger";
@@ -820,7 +818,7 @@ function addNode() {
 			data: nodeJSON
 		})
 		.then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 			if(response.data.ack == "false"){
 				$('html,body').scrollTop(0);
 				var alert = document.getElementById('floating-alert');
@@ -887,7 +885,7 @@ function modifyNodeInformation() {
         data: newValues
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -962,7 +960,7 @@ function loadBPF(nid, name){
     timeout: 3000
   })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if('bpf' in response.data){
             inputBPF.value=response.data.bpf;     
         }else{
@@ -999,7 +997,7 @@ function saveBPF(nid){
     data: bpfjson
   })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
       return true;
     })
     .catch(function (error) {
@@ -1039,7 +1037,7 @@ function loadRuleset(nid){
   })
 
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if (typeof response.data.error != "undefined"){
             resultElement.innerHTML = '<p>No rules available...</p>';
         }else{
@@ -1105,7 +1103,7 @@ function saveRuleSelected(rule, nid){
         data: uidJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+ipmaster+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             getRulesetUID(nid);
             return true;
         })

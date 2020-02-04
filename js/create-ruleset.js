@@ -336,7 +336,7 @@ function modalAddNewRuleset(){
                 if (response.data.ack == "true"){                
                     document.getElementById('progressBar-create-div').style.display="none";
                     document.getElementById('progressBar-create').style.display="none";
-                    document.location.href = 'https://' + ipmaster + '/rulesets.html';
+                    document.location.href = 'https://' + location.hostname + '/rulesets.html';
                 }else if (response.data.ack == "false"){
                     $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
                     document.getElementById('progressBar-create-div').style.display="none";
@@ -416,7 +416,7 @@ function modalAddNewRuleset(){
                     // }else{
                     //     document.getElementById('progressBar-create-div').style.display="none";
                     //     document.getElementById('progressBar-create').style.display="none";
-                    //     document.location.href = 'https://' + ipmaster + '/rulesets.html';
+                    //     document.location.href = 'https://' + location.hostname + '/rulesets.html';
                     // }
                 }
             })

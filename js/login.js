@@ -26,9 +26,11 @@ function Login() {
         data: userLogin
     })
     .then(function (response) {
+        console.log(response.data);
+        console.log('https://'+location.hostname);
         if(response.data.ack != "false"){
             document.cookie = response.data;            
-            document.location.href='https://'+ipmaster;
+            document.location.href='https://'+location.hostname;
         }
     })
     .catch(function (error) {

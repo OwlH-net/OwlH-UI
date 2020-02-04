@@ -23,6 +23,7 @@ function loadJSONdata() {
         loadTitleJSONdata();
         getAllFiles();
     });
+}
 // }getAllFiles()
 
 function getAllFiles() {
@@ -92,8 +93,7 @@ function generateAllFilesOutput(response, node) {
 }
 
 function loadEditURL(uuid, file, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
 
 function checkStatus() {

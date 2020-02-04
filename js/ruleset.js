@@ -117,13 +117,11 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
 }
 
 function editRuleset(fileuuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit-ruleset.html?fileuuid='+fileuuid+'&file='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/edit-ruleset.html?fileuuid='+fileuuid+'&file='+nodeName;
 }
 
 function loadRulesetDetails(sid, fileuuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
+    document.location.href = 'https://' + location.hostname + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
 }
 
 function getToCustomRuleset(rulesetuuid){

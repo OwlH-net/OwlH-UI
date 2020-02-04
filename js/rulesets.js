@@ -80,10 +80,9 @@ function generateAllRulesetsHTMLOutput(response) {
 }
 
 function loadRulesetBySearch(){
-    var ipmaster = document.getElementById('ip-master').value;
     var search = document.getElementById('search-ruleset-details').value;
     if(search.length >= 3){
-        document.location.href = 'https://' + ipmaster + '/ruleset-search.html?&search='+search;
+        document.location.href = 'https://' + location.hostname + '/ruleset-search.html?&search='+search;
     }else{
         $('#search-ruleset-details').val("");
         $('#search-ruleset-details').css('border', '2px solid red');
@@ -443,8 +442,7 @@ function timeSchedule(uuid, status){
 }
 
 function loadRulesetsDetails(type,name,uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
+    document.location.href = 'https://' + location.hostname + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
 }
 
 function syncRulesetModal(uuid, name){

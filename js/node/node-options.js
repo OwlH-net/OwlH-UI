@@ -548,8 +548,7 @@ function loadPlugins(){
 
 }
 function showMasterFile(param){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+param;
+    document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+param;
 }
 
 function hideEditValues(id){
@@ -1715,18 +1714,13 @@ function PingDataflow(uuid){
 }
 
 function loadFilesURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/files.html?uuid='+uuid+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/files.html?uuid='+uuid+'&node='+nodeName;
 }
-
 function loadEditURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+nodeName+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+nodeName+'&node='+nodeName;
 }
-
 function editFile(uuid, file, nodeName, status){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&status='+status;
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&status='+status;
 }
 
 function ChangeAnalyzerStatus(uuid){
@@ -1920,10 +1914,10 @@ function StartSuricataMainConf(uuid) {
         url: nodeurl,
         timeout: 30000,
         headers:{
-                'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
-            },
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: dataJSON
     })
         .then(function (response) {
@@ -2844,8 +2838,7 @@ function saveRuleSelected(rule, nid, source, name, service){
 }
 
 function loadStapURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/stap.html?uuid='+uuid+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/stap.html?uuid='+uuid+'&node='+nodeName;
 }
 
 function playCollector(uuid){
@@ -3863,13 +3856,31 @@ function PingWazuhFiles(uuid) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong>Get Wazuh files: '+response.data.error+'.'+
+                '<strong>Error!</strong>Wazuh connect: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
+        }
+        var isError = false;
+        for(obj in response.data){
+            if (response.data[obj].ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong>Get Wazuh files: '+response.data[obj].error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                isError = true;
+            }
+        }
+        
+        //if there are no error retrieving Wazuh files, show all files in the list
+        if(!isError){
             var html = "";
             var count = 1;
             var sufixSize = "";
@@ -3898,8 +3909,9 @@ function PingWazuhFiles(uuid) {
                 count++;
             }
             document.getElementById('wazuh-count-table-value').value = count-1;
-            document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;
-               
+            document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;                   
+        }else{
+            document.getElementById('wazuh-table').innerHTML = "No files available";
         }
     })
     .catch(function (error) {
@@ -3916,8 +3928,7 @@ function PingWazuhFiles(uuid) {
 }
 
 function LoadPageLastLines(uuid, line, path) {
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/load-content.html?uuid='+uuid+'&line='+line+'&path='+path;
+    document.location.href = 'https://' + location.hostname + '/load-content.html?uuid='+uuid+'&line='+line+'&path='+path;
 }
 
 function PingWazuh(uuid) {

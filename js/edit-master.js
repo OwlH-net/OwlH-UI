@@ -53,7 +53,7 @@ function saveFileChanged() {
     if(file == "nodeConfig" || file == "networksConfig"){
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/savefilePath';
     }else{
-        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/editFile';
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/savefile';
     }
     
     var masterDataEdit = {}

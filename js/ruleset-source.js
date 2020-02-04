@@ -236,10 +236,9 @@ function generateAllRulesetSourceHTMLOutput(response) {
 }
 
 function loadRulesetSourceDetails(type, name, uuid){
-    var ipmaster = document.getElementById('ip-master').value;
     var isDownloaded = document.getElementById('download-status-'+uuid).value;
     if (isDownloaded == "true"){
-        document.location.href = 'https://' + ipmaster + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
+        document.location.href = 'https://' + location.hostname + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
     }
 }
 
@@ -261,7 +260,7 @@ function loadCustomRulesetRules(uuid,path,type){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        document.location.href = 'https://' + ipmaster + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
+        document.location.href = 'https://' + location.hostname + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
     })
     .catch(function (error) {
         result.innerHTML = '<h3 align="center">No connection</h3>'+

@@ -535,33 +535,31 @@ function deployNode(value,uuid,nodeName){
 }
 
 function loadIncidentMaster(uuid, type){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/incident-data.html?type='+type+'&uuid='+uuid;
+    document.location.href = 'https://' + location.hostname + '/incident-data.html?type='+type+'&uuid='+uuid;
 }
-
 function ShowMonitoring(uuid, name){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/node-monitor.html?uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.hostname + '/node-monitor.html?uuid='+uuid+'&node='+name;
 }
-
 function showServicesConfig(uuid, name){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/node-options.html?uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name;
 }
-
 // function showMasterFile(file){
-//     var ipmaster = document.getElementById('ip-master').value;
-//     document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
+//     document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+file;
 // }
-
 function editAnalyzer(uuid, file, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
-
 function loadChangeControl(uuid, type){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/control-data.html?type='+type+'&uuid='+uuid;
+    document.location.href = 'https://' + location.hostname + '/control-data.html?type='+type+'&uuid='+uuid;
+}
+function loadStapURL(uuid, nodeName){
+    document.location.href = 'https://' + location.hostname + '/stap.html?uuid='+uuid+'&node='+nodeName;
+}
+function loadFilesURL(uuid, nodeName){
+    document.location.href = 'https://' + location.hostname + '/files.html?uuid='+uuid+'&node='+nodeName;
+}
+function loadEditURL(uuid, file, nodeName){
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
 
 function showActions(action,uuid){
@@ -577,20 +575,6 @@ function showActions(action,uuid){
         icon.classList.remove("fa-sort-up");   
     }    
 }
-
-function loadStapURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/stap.html?uuid='+uuid+'&node='+nodeName;
-}
-function loadFilesURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/files.html?uuid='+uuid+'&node='+nodeName;
-}
-function loadEditURL(uuid, file, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
-}
-
 
 function ChangeStatus(uuid){
     var ipmaster = document.getElementById('ip-master').value;

@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+data.master.ip+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+data.master.ip+'/login.html';}
          
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
@@ -56,6 +56,22 @@ function saveNewValue(type){
     $('#'+type+'-line').hide();
 }
 
+function ChangeStatus(newStatus){
+    var type = document.getElementById("type-match-value").innerHTML;
+    var re = /^#/;
+    var lineStatus = type.match(re)
+    if(lineStatus != null && newStatus == "Enable"){
+        var statusChanged = type.replace("#", "");
+        type = statusChanged;
+        document.getElementById("type-match-value").innerHTML = statusChanged;
+        saveCurrentRule();
+    }else if(lineStatus == null && newStatus == "Disable"){
+        var statusChanged = type.replace(type, "#"+type);
+        document.getElementById("type-match-value").innerHTML = statusChanged;
+        saveCurrentRule();
+    }
+}
+
 function getRule(sid, fileuuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -91,11 +107,11 @@ function getRule(sid, fileuuid){
             title.innerHTML = title.innerHTML + inline[1];
             secondaryTitle.innerHTML = secondaryTitle.innerHTML + sid;
             
-
-
             var content = document.getElementById('rule-content');  
             var html =
             '<div class="float-right" style="width:100%;">'+
+                '<span style="cursor: pointer;" onclick="ChangeStatus(\'Enable\')" class="sort-table badge bg-success align-text-bottom text-white float-left mr-1">Enable</span>'+
+                '<span style="cursor: pointer;" onclick="ChangeStatus(\'Disable\')" class="sort-table badge bg-danger align-text-bottom text-white float-left mr-1">Disable</span>'+
                 '<a class="btn btn-primary float-right text-decoration-none text-white" onclick="saveCurrentRule()">Save</a> &nbsp'+
                 '<a class="btn btn-danger float-right text-decoration-none text-white" style=" margin-right: 10px;" onclick="cancelRuleEdit()">Cancel</a>'+
             '</div>'+
@@ -321,7 +337,7 @@ function getRule(sid, fileuuid){
                     '<a class="btn btn-primary float-right text-decoration-none text-white" onclick="saveCurrentRule()">Save</a> &nbsp'+
                     '<a class="btn btn-danger float-right text-decoration-none text-white" style=" margin-right: 10px;" onclick="cancelRuleEdit()">Cancel</a>'+
                 '</div>';
-            content.innerHTML = content.innerHTML + '<b>RAW rule</b><br><p style="word-wrap: break-word;">'+response.data.raw + '</p><br><br><br><br>';
+            content.innerHTML = content.innerHTML + '<b>RAW rule</b><br><p id="raw-rule" style="word-wrap: break-word;">'+response.data.raw + '</p><br><br><br><br>';
             content.innerHTML = content.innerHTML + html + "<br><br>";
             $('#add-new-key-value-line').click(function(){ $('#add-new-value-row').show(); });
         }
@@ -397,17 +413,22 @@ function saveCurrentRule(){
             if(document.getElementById(x+'-value-data').innerHTML.length != 0){
                 finalLine = finalLine +":"+document.getElementById(x+'-value-data').innerHTML+";";
             }else{
-                finalLine = finalLine +";";
+                // finalLine = finalLine +";";
             }
             if (document.getElementById(x+'-key-data').innerHTML == "sid"){jasonRule["sid"] = document.getElementById(x+'-value-data').innerHTML;}
         }
     }
     finalLine = finalLine + ")";
     
+
+    console.log(finalLine);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/updateRule';
     
+    // //replace raw line by this
+    // document.getElementById("raw-rule").innerHTML = finalLine;
+
     jasonRule["line"] = finalLine;
     jasonRule["uuid"] = fileuuid;
     var dataJSON = JSON.stringify(jasonRule);
@@ -457,6 +478,4 @@ function saveCurrentRule(){
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
-
-
 }

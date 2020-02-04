@@ -749,7 +749,7 @@ function checkStatus() {
 
 function ShowNodesValue (uuid, gname){
     var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/groups-info.html?uuid='+uuid+'&gname='+gname;
+    document.location.href = 'https://' + location.hostname + '/groups-info.html?uuid='+uuid+'&gname='+gname;
 }
 
 function SyncRulesetToAllGroupNodes(groupID){

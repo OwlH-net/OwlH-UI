@@ -98,7 +98,13 @@ function getRulesetsBySearch(){
                                 html = html + '<i class="fas fa-times-circle" style="color:red;"></i>';
                             }
                         html = html + '</td>';
-                        if(rulesets[element]["sourceType"] != ""){html = html + '<td width="50%">'+rulesets[element]["sourceType"]+'</td>';}else{html = html + '<td width="50%">local</td>';}                        
+                        console.log(rulesets[element]);
+                        html = html + '<td width="50%">'+rulesets[element]["type"]+'</td>';
+                        // if(rulesets[element]["sourceType"] != ""){
+                        //     // html = html + '<td width="50%">'+rulesets[element]["sourceType"]+'</td>';
+                        // }else{
+                        //     html = html + '<td width="50%">Source</td>';
+                        // }                        
                         html = html + '<td width="50%">'+rulesets[element]["file"]+'</td>'+
                         '<td width="20%">'+rulesets[element]["name"]+'</td>'+
                         '<td width="10%"><i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+response.data[rule]["sid"]+'\', \''+rulesets[element]["uuid"]+'\')"></i></td>' +
@@ -116,11 +122,10 @@ function getRulesetsBySearch(){
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
         localStorage.setItem("searchError", "error");
-        document.location.href = 'https://' + ipmaster + '/rulesets.html';
+        document.location.href = 'https://' + location.hostname + '/rulesets.html';
     });
 }
 
 function loadRulesetDetails(sid, fileuuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
+    document.location.href = 'https://' + location.hostname + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
 }

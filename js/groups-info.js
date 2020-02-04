@@ -418,7 +418,7 @@ function editAnalyzer(node, type, name){
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     }else{
         var ipmaster = document.getElementById('ip-master').value;
-        document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+node+'&file='+type+'&node='+name;
+        document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+node+'&file='+type+'&node='+name;
     }
 }
 
@@ -894,8 +894,7 @@ function backButton(){
 }
 
 function loadClusterFile(uuid, path, type){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/show-file-content.html?type='+type+'&uuid='+uuid+'&path='+path;
+    document.location.hostname.href = 'https://' + ipmaster + '/show-file-content.html?type='+type+'&uuid='+uuid+'&path='+path;
 }
 
 function modalLoadRuleset(group){

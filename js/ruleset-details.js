@@ -124,9 +124,8 @@ function modalAddNewLines(uuid, name){
 }
 
 function loadRulesetBySearch(uuid, rulesetName){
-    var ipmaster = document.getElementById('ip-master').value;
     var search = document.getElementById('search-ruleset-details').value;
-    document.location.href = 'https://' + ipmaster + '/ruleset-search.html?rulesetName='+rulesetName+'&search='+search;
+    document.location.href = 'https://' + location.hostname + '/ruleset-search.html?rulesetName='+rulesetName+'&search='+search;
 }
 
 function addNewLines(uuid){
@@ -152,13 +151,10 @@ function addNewLines(uuid){
 }
 
 function viewDifferences(uuid, ruleFile){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/compare-files.html?uuid='+uuid+'&file='+ruleFile;
+    document.location.href = 'https://' + location.hostname + '/compare-files.html?uuid='+uuid+'&file='+ruleFile;
 }
-
 function loadDetails(fileuuid, ruleFile, type, rulesetuuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/ruleset.html?file='+fileuuid+'&rule='+ruleFile+'&type='+type+'&ruleset='+rulesetuuid;
+    document.location.href = 'https://' + location.hostname + '/ruleset.html?file='+fileuuid+'&rule='+ruleFile+'&type='+type+'&ruleset='+rulesetuuid;
 }
 
 function modalDeleteRulesetDetail(name, uuid){

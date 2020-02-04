@@ -45,8 +45,8 @@ function loadPlugins(){
                 '<tr>'+
                     '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-random"></i> Dispatcher</td>'+
                     '<td width="25%">Status: <span id="dispatcher-status"></span></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i> </td>'+
-                    '<td width="25%">Dispatcher nodes: <i style="color: grey;" class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey;cursor:pointer;" class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i> </td>'+
+                    '<td width="25%">Dispatcher nodes: <i style="color: grey;cursor:pointer;" class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i></td>'+
                 '</tr>'+       
             '</table>'+
             // '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
@@ -227,18 +227,13 @@ function loadPlugins(){
 }
 
 function showMasterFile(file){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
+    document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+file;
 }
-
 function loadControlDataMaster(type){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/control-data.html?type='+type;
+    document.location.href = 'https://' + location.hostname + '/control-data.html?type='+type;
 }
-
 function loadIncidentMaster(type){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/incident-data.html?type='+type;
+    document.location.href = 'https://' + location.hostname + '/incident-data.html?type='+type;
 }
 
 function deployMaster(value){
@@ -614,13 +609,13 @@ function PingPlugins(){
                     '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor:pointer;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
                         }else if (response.data[line]["pid"] != "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey;" onclick="StopStapServiceMaster(\''+line+'\', \'socket-network\')"></i> &nbsp';
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor:pointer;" onclick="StopStapServiceMaster(\''+line+'\', \'socket-network\')"></i> &nbsp';
                         }                        
 
-                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+                        
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor:pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+                        
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor:pointer;"></i>'+
                     '</td>'+
                 '</tr>'+
                 '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
@@ -638,7 +633,7 @@ function PingPlugins(){
                                 'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                             '</div>'+
                             '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+response.data[line]["name"]+'\', \''+line+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                'Interface: <i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+response.data[line]["name"]+'\', \''+line+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+
@@ -683,12 +678,12 @@ function PingPlugins(){
                     '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
                     '<td style="word-wrap: break-word;">';
                         if (response.data[line]["pid"] == "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey; cursor:pointer;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
                         }else if (response.data[line]["pid"] != "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey;" onclick="StopStapServiceMaster( \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor:pointer;" onclick="StopStapServiceMaster( \''+line+'\', \'socket-pcap\')"></i> &nbsp';
                         }
-                        tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
+                        tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor:pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor:pointer;"></i>'+
                     '</td>'+
                 '</tr>'+
                 '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
@@ -714,7 +709,7 @@ function PingPlugins(){
                                 'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                             '</div>'+
                             '<div class="col">'+
-                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" onclick="loadBPF(\''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                'BPF: <i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue;" onclick="loadBPF(\''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
                             '</div>'+
                         '</div>'+
                     '</td>'+

@@ -314,8 +314,7 @@ function PingMonitorFiles(uuid){
 }
 
 function LoadPageLastLines(uuid, line, path) {
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/load-content.html?uuid='+uuid+'&line='+line+'&path='+path;
+    document.location.href = 'https://' + location.hostname + '/load-content.html?uuid='+uuid+'&line='+line+'&path='+path;
 }
 
 function PingMonitor(uuid){

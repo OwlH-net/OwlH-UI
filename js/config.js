@@ -42,6 +42,10 @@ function checkStatus() {
     document.getElementById('check-status-config').href = nodeurl;
 }
 
+function adminUsers() {
+    document.location.href='https://'+location.hostname+'/users.html';
+}
+
 function closeFileChanged(){
     window.history.back();
 }

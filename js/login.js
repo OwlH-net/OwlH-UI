@@ -26,11 +26,19 @@ function Login() {
         data: userLogin
     })
     .then(function (response) {
-        console.log(response.data);
-        console.log('https://'+location.hostname);
         if(response.data.ack != "false"){
             document.cookie = response.data;            
             document.location.href='https://'+location.hostname;
+        }else{
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Incorrect username or password.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         }
     })
     .catch(function (error) {

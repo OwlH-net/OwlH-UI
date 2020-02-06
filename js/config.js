@@ -60,8 +60,13 @@ function loadJSONdata() {
         if(document.cookie == ""){
             document.location.href='https://'+location.hostname+'/login.html';
         }
-        try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        try {
+            payload = JSON.parse(atob(tokens[1]));
+            if(payload.user == "admin"){                
+                $("#admin-users-btn").show();
+            }
+        }
+        catch(err) {console.log(err); document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
                  
         
         var ipLoad = document.getElementById('ip-master');

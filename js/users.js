@@ -61,7 +61,13 @@ function GetAllUsers(){
                 for(id in response.data){
                     html = html + '<tr>'+
                         '<td>'+response.data[id]["user"]+'</td>'+
-                        '<td><i class="fas fa-trash-alt" style="color:red; cursor:pointer;" onclick="modalDeleteUser(\''+id+'\', \''+response.data[id]["user"]+'\')"></i></td>'+
+                        '<td>'+
+                            '<i class="fas fa-user-friends" title="Add roles to this user" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToRole(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
+                            '<i class="fas fa-object-ungroup" title="Add this user to groups" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToGroup(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp';
+                            if(response.data[id]["deleteable"] != "false"){
+                                html = html + '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteUser(\''+id+'\', \''+response.data[id]["user"]+'\')"></i>';
+                            }
+                        html = html + '</td>'+
                     '</tr>';
                 }
                 html = html + '</tbody>';
@@ -204,6 +210,193 @@ function AddGroup(){
         url: nodeurl,
         timeout: 30000,
         data: userDelete,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if (response.data.ack == "false") {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Add group: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }else{
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                '<strong>Success!</strong> Group added successfully.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Add group: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+function modalAddUserToGroup(idUser, name){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/getGroupsForUser/'+idUser;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
+    .then(function (response) {
+        console.log(response.data);
+        var html = 
+        '<div class="modal-dialog" role="document">'+
+            '<div class="modal-content">'+
+        
+            '<div class="modal-header">'+
+                '<h4 class="modal-title">Add user '+name+' to groups</h4>'+
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+            
+            '<div class="modal-body" style="word-break: break-all;">'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<tr>'+
+                            '<th>Group name</th>'+
+                            '<th>Select</th>'+
+                        '</tr>'+
+                    '</thead>'+
+                    '<tbody>';
+                        for(id in response.data){                                    
+                            html = html + '<tr>'+
+                                '<td style="word-wrap: break-word;">'+response.data[id]["group"]+'</td>'+
+                                '<td><input type="checkbox" id="checkbox-user-to-groups" uuid="'+id+'" value="'+response.data[id]["group"]+'"></td>'+
+                            '</tr>';                                
+                        }
+                    html = html + '</tbody>'+
+                '</table>'+
+            '</div>'+
+        
+            '<div class="modal-footer">'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                '<button type="submit" class="btn btn-primary" id="add-user-to-group-btn">Add</button>'+
+            '</div>'+
+        
+            '</div>'+
+        '</div>';
+        document.getElementById('modal-users').innerHTML = html;
+
+        $('#modal-users').modal().show();
+        $('#add-user-to-group-btn').click(function(){ addUsersTo(idUser, "group")});
+    })
+    .catch(function (error) {
+    })
+}
+
+function modalAddUserToRole(idUser, name){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/getRolesForUser/'+idUser;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid
+        }
+    })
+    .then(function (response) {
+        console.log(response.data);
+        var html = 
+        '<div class="modal-dialog" role="document">'+
+            '<div class="modal-content">'+
+        
+            '<div class="modal-header">'+
+                '<h4 class="modal-title">Add user '+name+' to roles</h4>'+
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+            
+            '<div class="modal-body" style="word-break: break-all;">'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<tr>'+
+                            '<th>Role name</th>'+
+                            '<th>Select</th>'+
+                        '</tr>'+
+                    '</thead>'+
+                    '<tbody>';
+                        for(id in response.data){                                    
+                            html = html + '<tr>'+
+                                '<td style="word-wrap: break-word;">'+response.data[id]["role"]+'</td>'+
+                                '<td><input type="checkbox" id="checkbox-user-to-role" uuid="'+id+'" value="'+response.data[id]["role"]+'"></td>'+
+                            '</tr>';                                
+                        }
+                    html = html + '</tbody>'+
+                '</table>'+
+            '</div>'+
+        
+            '<div class="modal-footer">'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                '<button type="submit" class="btn btn-primary" id="add-user-to-role-btn">Add</button>'+
+            '</div>'+
+        
+            '</div>'+
+        '</div>';
+        document.getElementById('modal-users').innerHTML = html;
+
+        $('#modal-users').modal().show();
+        $('#add-user-to-role-btn').click(function(){ addUsersTo(idUser, "role")});
+
+    })
+    .catch(function (error) {
+    })
+}
+
+function addUsersTo(id, type){
+    $('#modal-users').modal('hide');
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/addUsersTo'; 
+
+    //get all checkbox checked
+    var list = [];
+    $("input:checked").each(function () {
+        list.push($(this).attr("uuid"));
+    });
+
+    var jsonAdd = {}
+    jsonAdd["user"] = id;
+    jsonAdd["type"] = type
+    jsonAdd["values"] = list.toString();
+    var userTo = JSON.stringify(jsonAdd);
+
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        data: userTo,
         headers:{
             'token': document.cookie,
             'user': payload.user,

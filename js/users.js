@@ -54,7 +54,7 @@ function GetAllUsers(){
                 '<thead>'+
                     '<tr>'+
                         '<th>Username</th>'+
-                        '<th style="width: 10%">Actions</th>'+
+                        '<th style="width: 15%">Actions</th>'+
                     '</tr>'+
                 '</thead>'+
                 '<tbody>';
@@ -62,6 +62,7 @@ function GetAllUsers(){
                     html = html + '<tr>'+
                         '<td>'+response.data[id]["user"]+'</td>'+
                         '<td>'+
+                            '<i class="fas fa-key" title="Change user password" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalChangePassword(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
                             '<i class="fas fa-user-friends" title="Add roles to this user" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToRole(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
                             '<i class="fas fa-object-ungroup" title="Add this user to groups" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToGroup(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp';
                             if(response.data[id]["deleteable"] != "false"){
@@ -268,7 +269,6 @@ function modalAddUserToGroup(idUser, name){
         }
     })
     .then(function (response) {
-        console.log(response.data);
         var html = 
         '<div class="modal-dialog" role="document">'+
             '<div class="modal-content">'+
@@ -328,7 +328,6 @@ function modalAddUserToRole(idUser, name){
         }
     })
     .then(function (response) {
-        console.log(response.data);
         var html = 
         '<div class="modal-dialog" role="document">'+
             '<div class="modal-content">'+
@@ -525,6 +524,35 @@ function modalAddGroup(){
     $('#group-user-btn').click(function(){ AddGroup();});
 }
 
+function modalChangePassword(id, name){
+    var modalWindow = document.getElementById('modal-users');
+    modalWindow.innerHTML = 
+    '<div class="modal-dialog" role="document">'+
+        '<div class="modal-content">'+
+
+            '<div class="modal-header">'+
+                '<h4 class="modal-title">Change '+name+' password</h4>'+
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+            '</div>'+
+            
+            '<div class="modal-body">'+ 
+                '<p>Insert new password:</p>'+
+                '<input type="text" class="form-control" id="user-change-password" placeholder="new password..."><br>'+
+                '<p>Verify new password:</p>'+
+                '<input type="text" class="form-control" id="user-verify-password" placeholder="Verify password..."><br>'+
+            '</div>'+
+
+            '<div class="modal-footer">'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                '<button type="submit" class="btn btn-primary" id="user-password-btn">Modify</button>'+
+            '</div>'+
+
+        '</div>'+
+    '</div>';
+    $('#modal-users').modal().show();
+    $('#user-password-btn').click(function(){ ChangePassword(id);});
+}
+
 function modalDeleteUser(id, user){
     var modalWindow = document.getElementById('modal-users');
     modalWindow.innerHTML = 
@@ -628,6 +656,86 @@ function AddUser(){
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Add user: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+    }
+}
+
+function ChangePassword(id){
+    //check for whitespaces
+    if(document.getElementById('user-change-password').value.trim() == "" || document.getElementById('user-verify-password').value.trim() == ""){
+        if(document.getElementById('user-change-password').value.trim() == ""){
+            $('#user-change-password').css('border', '2px solid red');
+            $('#user-change-password').attr("placeholder", "Please, insert new password"); 
+        }else{
+            $('#user-change-password').css('border', '2px solid #ced4da');
+        }
+        if(document.getElementById('user-verify-password').value.trim() == ""){
+            $('#user-verify-password').css('border', '2px solid red');
+            $('#user-verify-password').attr("placeholder", "Please, verify new password"); 
+        }else{
+            $('#user-verify-password').css('border', '2px solid #ced4da');
+        }
+    }else if(document.getElementById('user-change-password').value.trim() != document.getElementById('user-verify-password').value.trim()){
+        $('#user-verify-password').val('');
+        $('#user-verify-password').css('border', '2px solid red');
+        $('#user-verify-password').attr("placeholder", "Passwords are not equals"); 
+    }else{
+        $('#modal-users').modal('hide');
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/changePassword';
+
+        var jsonDeployService = {}
+        jsonDeployService["user"] = id;
+        jsonDeployService["pass"] = document.getElementById('user-verify-password').value.trim();
+        var dataJSON = JSON.stringify(jsonDeployService);
+    
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
+            data: dataJSON
+        })
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Change password: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Password changed succcessfully!'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                GetAllUsers();
+            }
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Change password: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+

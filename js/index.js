@@ -9,6 +9,11 @@ function loadJSONdata() {
         if(document.cookie == ""){
             document.location.href='https://'+location.hostname+'/login.html';
         }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
 
         var ipmaster = document.getElementById('ip-master');
         ipmaster.value = data.master.ip;

@@ -68,6 +68,8 @@ function loadJSONdata() {
         }
         catch(err) {console.log(err); document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
                  
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;

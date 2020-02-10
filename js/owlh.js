@@ -772,6 +772,8 @@ function addNode() {
     var nname = document.getElementById('nodename').value.trim();
     var nip = document.getElementById('nodeip').value.trim();
     var nport = document.getElementById('nodeport').value.trim();
+    var nuser = document.getElementById('nodeuser').value.trim();
+    var npass = document.getElementById('nodepass').value.trim();
     if(nname=="" || nip=="" || nport==""){
 		$('html,body').scrollTop(0);
 		var alert = document.getElementById('floating-alert');
@@ -785,6 +787,8 @@ function addNode() {
     }else{
 		formAddNids();//close add nids form
 		var nodejson = {}
+		nodejson["nodepass"] = npass;
+		nodejson["nodeuser"] = nuser;
 		nodejson["name"] = nname;
 		nodejson["port"] = nport;
 		nodejson["ip"] = nip;

@@ -1267,7 +1267,7 @@ function modalSelectNodeGroup(uuid){
         timeout: 30000,
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-        .then(function (response) {
+        .then(function (response) {            
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             var modalWindowDelete = document.getElementById('modal-groups');
             var html = '<div class="modal-dialog">'+
@@ -1289,9 +1289,13 @@ function modalSelectNodeGroup(uuid){
                             '</thead>'+
                             '<tbody>';
                                 for(node in response.data){                                    
-                                    html = html + '<tr>'+
-                                        '<td style="word-wrap: break-word;">'+response.data[node]["name"]+'</td>'+
-                                        '<td style="word-wrap: break-word;">'+response.data[node]["ip"]+'</td>';
+                                    html = html + '<tr>';
+                                        if(response.data[node]["token"] == "wait"){
+                                            html = html + '<td style="word-wrap: break-word; color:red;">(unavailable) '+response.data[node]["name"]+'</td>';
+                                        }else{
+                                            html = html + '<td style="word-wrap: break-word;">'+response.data[node]["name"]+'</td>';
+                                        }
+                                        html = html + '<td style="word-wrap: break-word;">'+response.data[node]["ip"]+'</td>';
                                         if (response.data[node]["checked"] == "true"){
                                             html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'" checked disabled></td>';
                                         }else{

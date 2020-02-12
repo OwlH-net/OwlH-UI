@@ -45,7 +45,7 @@ function showConfig(oip, oname, oport, ouuid){
     uuid.value = ouuid.trim();
 }
 
-async function PingNode(uuid) {
+async function PingNode(uuid, token) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ping/' + uuid;
@@ -70,7 +70,7 @@ async function PingNode(uuid) {
 
                 PingMonitor(uuid);
                 var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
-            } else {
+            }else{
                 document.getElementById('node-monitor-'+uuid).onclick = "";
                 document.getElementById('node-services-'+uuid).onclick = "";
                 document.getElementById('node-modify-'+uuid).onclick = "";
@@ -89,9 +89,9 @@ async function PingNode(uuid) {
                 document.getElementById('node-incident-'+uuid).style.cursor = "default";
                 document.getElementById('node-actions-'+uuid).style.cursor = "default";
 
-                if(response.data.nodeToken=='none'){
-                    document.getElementById(uuid+'-online').className = "badge bg-dark align-text-bottom text-white";
-                    document.getElementById(uuid+'-online').innerHTML = "NOT AVAILABLE";
+                if(token=='wait'){
+                    document.getElementById(uuid+'-online').className = "badge bg-warning align-text-bottom text-white";
+                    document.getElementById(uuid+'-online').innerHTML = "PENDING REGISTRATION";
                 }else{
                     document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
                     document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
@@ -226,7 +226,8 @@ function GetAllNodes() {
             }//Authorization
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
-        .then(function (response) {            
+        .then(function (response) {    
+            console.log(response.data);        
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 
             if (response.data.ack == "false") {
@@ -275,10 +276,10 @@ function GetAllNodes() {
                                 port = "10443";
                             }
                             var uuid = node;
-                            PingNode(uuid);
+                            PingNode(uuid, nodes[node]['token']);
                             getRulesetUID(uuid);
                     
-                    
+                            
                             html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
                                 '<td></td>'+
                                 '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +

@@ -65,6 +65,7 @@ function GetAllUsers(){
                     html = html + '<tr>'+
                         '<td>'+response.data[id]["user"]+'</td>'+
                         '<td>'+
+                            // '<i class="fas fa-user-shield" title="Change user privileges" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick=""></i>'+
                             '<i class="fas fa-key" title="Change user password" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalChangePassword(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
                             '<i class="fas fa-user-friends" title="Add roles to this user" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToRole(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
                             '<i class="fas fa-object-ungroup" title="Add this user to groups" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToGroup(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp';
@@ -616,6 +617,7 @@ function AddUser(){
         var jsonDeployService = {}
         jsonDeployService["user"] = document.getElementById('user-name').value.trim();
         jsonDeployService["pass"] = document.getElementById('user-pass').value.trim();
+        jsonDeployService["privilege"] = "get"
         var dataJSON = JSON.stringify(jsonDeployService);
     
         axios({

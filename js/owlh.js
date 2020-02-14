@@ -61,43 +61,47 @@ async function PingNode(uuid, token) {
             }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
-            if (response.data.ping=='pong') {
-                document.getElementById('node-actions-'+uuid).style.color = "Dodgerblue";
-                document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
-                document.getElementById(uuid+'-online').innerHTML = "ON LINE";
-                document.getElementById('node-row-'+uuid).setAttribute("status", "online");
-
-                PingMonitor(uuid);
-                var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
-            }else{
-                document.getElementById('node-monitor-'+uuid).onclick = "";
-                document.getElementById('node-services-'+uuid).onclick = "";
-                document.getElementById('node-modify-'+uuid).onclick = "";
-                document.getElementById('node-config-'+uuid).onclick = "";
-                document.getElementById('node-files-'+uuid).onclick = "";
-                document.getElementById('node-change-'+uuid).onclick = "";
-                document.getElementById('node-incident-'+uuid).onclick = "";
-                document.getElementById('node-actions-'+uuid).onclick = "";
-
-                document.getElementById('node-monitor-'+uuid).style.cursor = " default";
-                document.getElementById('node-services-'+uuid).style.cursor = "default";
-                document.getElementById('node-modify-'+uuid).style.cursor = "default";
-                document.getElementById('node-config-'+uuid).style.cursor = "default";
-                document.getElementById('node-files-'+uuid).style.cursor = "default";
-                document.getElementById('node-change-'+uuid).style.cursor = "default";
-                document.getElementById('node-incident-'+uuid).style.cursor = "default";
-                document.getElementById('node-actions-'+uuid).style.cursor = "default";
-
-                if(token=='wait'){
-                    document.getElementById(uuid+'-online').className = "badge bg-warning align-text-bottom text-white";
-                    document.getElementById(uuid+'-online').innerHTML = "PENDING REGISTRATION";
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ping=='pong') {
+                    document.getElementById('node-actions-'+uuid).style.color = "Dodgerblue";
+                    document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
+                    document.getElementById(uuid+'-online').innerHTML = "ON LINE";
+                    document.getElementById('node-row-'+uuid).setAttribute("status", "online");
+    
+                    PingMonitor(uuid);
+                    var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
                 }else{
-                    document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
-                }
-                document.getElementById('node-row-'+uuid).setAttribute("status", "offline");
-            }   
+                    document.getElementById('node-monitor-'+uuid).onclick = "";
+                    document.getElementById('node-services-'+uuid).onclick = "";
+                    document.getElementById('node-modify-'+uuid).onclick = "";
+                    document.getElementById('node-config-'+uuid).onclick = "";
+                    document.getElementById('node-files-'+uuid).onclick = "";
+                    document.getElementById('node-change-'+uuid).onclick = "";
+                    document.getElementById('node-incident-'+uuid).onclick = "";
+                    document.getElementById('node-actions-'+uuid).onclick = "";
+    
+                    document.getElementById('node-monitor-'+uuid).style.cursor = " default";
+                    document.getElementById('node-services-'+uuid).style.cursor = "default";
+                    document.getElementById('node-modify-'+uuid).style.cursor = "default";
+                    document.getElementById('node-config-'+uuid).style.cursor = "default";
+                    document.getElementById('node-files-'+uuid).style.cursor = "default";
+                    document.getElementById('node-change-'+uuid).style.cursor = "default";
+                    document.getElementById('node-incident-'+uuid).style.cursor = "default";
+                    document.getElementById('node-actions-'+uuid).style.cursor = "default";
+    
+                    if(token=='wait'){
+                        document.getElementById(uuid+'-online').className = "badge bg-warning align-text-bottom text-white";
+                        document.getElementById(uuid+'-online').innerHTML = "PENDING REGISTRATION";
+                    }else{
+                        document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
+                        document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
+                    }
+                    document.getElementById('node-row-'+uuid).setAttribute("status", "offline");
+                }   
+            }            
         })
         .catch(function (error) {
             document.getElementById('node-monitor-'+uuid).onclick = "";
@@ -136,12 +140,16 @@ function PingService(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (response.data.ack == "true"){
-                document.getElementById(uuid+'-owlhservice').style.display = "none";
-            }else {
-                document.getElementById(uuid+'-owlhservice').style.display = "block";
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "true"){
+                    document.getElementById(uuid+'-owlhservice').style.display = "none";
+                }else {
+                    document.getElementById(uuid+'-owlhservice').style.display = "block";
+                }
+                return true;
             }
-            return true;
         })
         .catch(function (error) {
             return false;
@@ -163,14 +171,18 @@ function PingMonitor(uuid){
         timeout: 30000
     })
         .then(function (response) {
-          if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            var cpuData = "";
-            for(x in response.data.cpus){
-                cpuData = cpuData + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                var cpuData = "";
+                for(x in response.data.cpus){
+                    cpuData = cpuData + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
+                }
+                document.getElementById('mem-'+uuid).innerHTML = "<b>MEM: </b>" + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
+                document.getElementById('sto-'+uuid).innerHTML = "<b>STO: </b>" + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
+                document.getElementById('cpu-'+uuid).innerHTML = cpuData;
             }
-            document.getElementById('mem-'+uuid).innerHTML = "<b>MEM: </b>" + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
-            document.getElementById('sto-'+uuid).innerHTML = "<b>STO: </b>" + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
-            document.getElementById('cpu-'+uuid).innerHTML = cpuData;
         })
         .catch(function (error) {
         }); 
@@ -192,8 +204,12 @@ function DeployService(uuid) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllNodes();
-            return true;
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllNodes();
+                return true;
+            }
         })
         .catch(function (error) {
             return false;
@@ -226,116 +242,120 @@ function GetAllNodes() {
             }//Authorization
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
-        .then(function (response) {    
-            console.log(response.data);        
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-
-            if (response.data.ack == "false") {
-                document.getElementById('add-nid-bottom').style.display = "none";
-                document.getElementById('add-nid-top').style.display = "none";
-                document.getElementById('search-node-details').style.display = "none";
-                document.getElementById('node-search-value').style.display = "none";
+        .then(function (response) {         
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
+            if(response.data.privileges == "none"){
                 document.getElementById('progressBar-node').style.display = "none";
                 document.getElementById('progressBar-node-div').style.display = "none";
-                resultElement.innerHTML =  '<div style="text-align:center"><h3 style="color:red;">Error retrieving nodes</h3></div>';
+                PrivilegesMessage();              
             }else{
-                document.getElementById('add-nid-bottom').style.display = "block";
-                document.getElementById('add-nid-top').style.display = "block";
-                document.getElementById('search-node-details').style.display = "block";
-                document.getElementById('node-search-value').style.display = "block";
+                if (response.data.ack == "false") {
+                    document.getElementById('add-nid-bottom').style.display = "none";
+                    document.getElementById('add-nid-top').style.display = "none";
+                    document.getElementById('search-node-details').style.display = "none";
+                    document.getElementById('node-search-value').style.display = "none";
+                    document.getElementById('progressBar-node').style.display = "none";
+                    document.getElementById('progressBar-node-div').style.display = "none";
+                    resultElement.innerHTML =  '<div style="text-align:center"><h3 style="color:red;">Error retrieving nodes</h3></div>';
+                }else{
+                    document.getElementById('add-nid-bottom').style.display = "block";
+                    document.getElementById('add-nid-top').style.display = "block";
+                    document.getElementById('search-node-details').style.display = "block";
+                    document.getElementById('node-search-value').style.display = "block";
+                    document.getElementById('progressBar-node').style.display = "none";
+                    document.getElementById('progressBar-node-div').style.display = "none";
+                    
+                    var nodes = response.data;
+                    var isEmpty = true;                
+                    var html =  
+                    '<div>'+
+                        '<span id="show-nodes-online" onclick="showNodes(\'online\')" class="badge bg-success align-text-bottom text-white float-right" style="cursor:pointer;" title="Show only online nodes">ON LINE</span>'+
+                        '<span id="show-nodes-offline" onclick="showNodes(\'offline\')" class="badge bg-danger align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show only offline nodes">OFF LINE</span>'+
+                        '<span id="show-nodes-all" onclick="showNodes(\'all\')" class="badge bg-primary align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show all nodes">ALL NODES</span>'+
+                        '<span id="sort-nodes-ip" onclick="sortTableIP()" sort="asc" class="sort-table asc badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;"   title="Sort table by IP">Sort by IP</span>'+
+                        '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
+                    '</div>'+
+                    '<br>'+
+                    '<table class="table table-hover" style="table-layout: fixed" id="node-table"> ' +
+                        '<thead> ' +
+                            '<tr>  ' +
+                                '<th scope="col" width="5%"></th> ' +
+                                '<th id="node-table-name-column" scope="col" width="30%" align="left">Name</th> ' +
+                                '<th scope="col" width="25%" align="right">Status</th> ' +
+                                '<th scope="col" width="10%"></th>' +
+                                '<th scope="col" width="25%">Actions</th>  ' +
+                            '</tr> ' +
+                        '</thead> ' +
+                        '<tbody id="node-table-tbody">';
+                            for (node in nodes) {
+                                isEmpty = false;
+                                if (nodes[node]['port'] != undefined) {
+                                    port = nodes[node]['port'];
+                                } else {
+                                    port = "10443";
+                                }
+                                var uuid = node;
+                                PingNode(uuid, nodes[node]['token']);
+                                getRulesetUID(uuid);
+                        
+                                
+                                html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
+                                    '<td></td>'+
+                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
+                                        '<p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
+                                        '<i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
+                                        '<br><br>'+
+                                        '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
+                                    '</td>' +
+                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
+                                        '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
+                                        '<span>'+
+                                            '<div><p></p></div>'+
+                                            '<div id="node-values-'+uuid+'">'+
+                                                '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
+                                                '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
+                                                '<div id="cpu-'+uuid+'"></div>'+                        
+                                            '</div>'+
+                                        '</span>'+
+                                    '</td>'+    
+                                    '<td></td>'+        
+                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+                                   
+                                        '<span style="font-size: 15px; color: Grey;" id="node-actions-'+uuid+'">'+                                                                          
+                                            '<i id="node-monitor-'+uuid+'" class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring' +
+                                            '<br><i id="node-services-'+uuid+'" class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration' +
+                                            '<br><i id="node-modify-'+uuid+'" class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node' +
+                                            '<br><i id="node-config-'+uuid+'" class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration' +
+                                            '<br><i id="node-files-'+uuid+'" class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files' +
+                                            '<br><i id="node-change-'+uuid+'" class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\')"></i> | Change control' +
+                                            '<br><i id="node-incident-'+uuid+'" class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\')"></i> | Incident data' +
+                                            '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node';
+                                        '</span>'+
+                                    '</td> ' +
+                                '</tr>';                             
+                            }
+                    html = html + '</tbody></table>';
+                
+                    if (isEmpty){
+                        resultElement.innerHTML = '<div style="text-align:center"><h3>No nodes created.</h3></div>';
+                    }else{
+                        resultElement.innerHTML = html;
+                        
+                        //search bar
+                        $('#node-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-node-details').value)});
+                    
+                        //listener for seach bar
+                        document.getElementById('search-node-details').addEventListener('input', evt => {
+                            if (document.getElementById('search-node-details').value.trim() == ""){ showAllHiddenNodes();} 
+                        });
+                    }                    
+                }            
+                // $('#node-table').click(function(){sortTable(); });
+                // DisableOfflineNodes();
+                
+                //hide progressBar when nodes have finished loading
                 document.getElementById('progressBar-node').style.display = "none";
                 document.getElementById('progressBar-node-div').style.display = "none";
-                
-                var nodes = response.data;
-                var isEmpty = true;                
-                var html =  
-                '<div>'+
-                    '<span id="show-nodes-online" onclick="showNodes(\'online\')" class="badge bg-success align-text-bottom text-white float-right" style="cursor:pointer;" title="Show only online nodes">ON LINE</span>'+
-                    '<span id="show-nodes-offline" onclick="showNodes(\'offline\')" class="badge bg-danger align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show only offline nodes">OFF LINE</span>'+
-                    '<span id="show-nodes-all" onclick="showNodes(\'all\')" class="badge bg-primary align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show all nodes">ALL NODES</span>'+
-                    '<span id="sort-nodes-ip" onclick="sortTableIP()" sort="asc" class="sort-table asc badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;"   title="Sort table by IP">Sort by IP</span>'+
-                    '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
-                '</div>'+
-                '<br>'+
-                '<table class="table table-hover" style="table-layout: fixed" id="node-table"> ' +
-                    '<thead> ' +
-                        '<tr>  ' +
-                            '<th scope="col" width="5%"></th> ' +
-                            '<th id="node-table-name-column" scope="col" width="30%" align="left">Name</th> ' +
-                            '<th scope="col" width="25%" align="right">Status</th> ' +
-                            '<th scope="col" width="10%"></th>' +
-                            '<th scope="col" width="25%">Actions</th>  ' +
-                        '</tr> ' +
-                    '</thead> ' +
-                    '<tbody id="node-table-tbody">';
-                        for (node in nodes) {
-                            isEmpty = false;
-                            if (nodes[node]['port'] != undefined) {
-                                port = nodes[node]['port'];
-                            } else {
-                                port = "10443";
-                            }
-                            var uuid = node;
-                            PingNode(uuid, nodes[node]['token']);
-                            getRulesetUID(uuid);
-                    
-                            
-                            html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
-                                '<td></td>'+
-                                '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
-                                    '<p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
-                                    '<i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
-                                    '<br><br>'+
-                                    '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
-                                '</td>' +
-                                '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
-                                    '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
-                                    '<span>'+
-                                        '<div><p></p></div>'+
-                                        '<div id="node-values-'+uuid+'">'+
-                                            '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
-                                            '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
-                                            '<div id="cpu-'+uuid+'"></div>'+                        
-                                        '</div>'+
-                                    '</span>'+
-                                '</td>'+    
-                                '<td></td>'+        
-                                '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+                                   
-                                    '<span style="font-size: 15px; color: Grey;" id="node-actions-'+uuid+'">'+                                                                          
-                                        '<i id="node-monitor-'+uuid+'" class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring' +
-                                        '<br><i id="node-services-'+uuid+'" class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration' +
-                                        '<br><i id="node-modify-'+uuid+'" class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node' +
-                                        '<br><i id="node-config-'+uuid+'" class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration' +
-                                        '<br><i id="node-files-'+uuid+'" class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files' +
-                                        '<br><i id="node-change-'+uuid+'" class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\')"></i> | Change control' +
-                                        '<br><i id="node-incident-'+uuid+'" class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\')"></i> | Incident data' +
-                                        '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node';
-                                    '</span>'+
-                                '</td> ' +
-                            '</tr>';                             
-                        }
-                html = html + '</tbody></table>';
-            
-                if (isEmpty){
-                    resultElement.innerHTML = '<div style="text-align:center"><h3>No nodes created.</h3></div>';
-                }else{
-                    resultElement.innerHTML = html;
-                    
-                    //search bar
-                    $('#node-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-node-details').value)});
-                
-                    //listener for seach bar
-                    document.getElementById('search-node-details').addEventListener('input', evt => {
-                        if (document.getElementById('search-node-details').value.trim() == ""){ showAllHiddenNodes();} 
-                    });
-                }                    
-            }            
-            // $('#node-table').click(function(){sortTable(); });
-            // DisableOfflineNodes();
-            
-            //hide progressBar when nodes have finished loading
-            document.getElementById('progressBar-node').style.display = "none";
-            document.getElementById('progressBar-node-div').style.display = "none";
+            }
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -440,8 +460,12 @@ function deleteNode(node) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllNodes();
-            return true;
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllNodes();
+                return true;
+            }
         })
         .catch(function (error) {
             return false;
@@ -481,9 +505,13 @@ function PingDataflow(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
-        document.getElementById('analysis-'+response.data["analysis"]["value"]).checked = "true";
-        document.getElementById('transport-'+response.data["transport"]["value"]).checked = "true";
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
+            document.getElementById('analysis-'+response.data["analysis"]["value"]).checked = "true";
+            document.getElementById('transport-'+response.data["transport"]["value"]).checked = "true";
+        }
     })
     .catch(function (error) {
     });
@@ -511,26 +539,30 @@ function deployNode(value,uuid,nodeName){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> '+value+' deployed successfully for node '+nodeName+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+value+' has not been deployed for node '+nodeName+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> '+value+' deployed successfully for node '+nodeName+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+value+' has not been deployed for node '+nodeName+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -608,7 +640,11 @@ function ChangeStatus(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        GetAllNodes()
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            GetAllNodes()
+        }
     })
     .catch(function (error) {
     });
@@ -630,8 +666,12 @@ function getRulesetUID(uuid) {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        getRuleName(response.data, uuid);
-        return true;
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            getRuleName(response.data, uuid);
+            return true;
+        }
     })
     .catch(function (error) {
         return false;
@@ -654,14 +694,18 @@ function getRuleName(uuidRuleset, uuid) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (typeof response.data.error != "undefined") {
-                document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
-                document.getElementById(uuid + '-ruleset').className = "text-danger";
-            } else {
-                document.getElementById(uuid + '-ruleset').innerHTML = response.data;
-                document.getElementById(uuid + '-ruleset').className = "text-muted-small";
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (typeof response.data.error != "undefined") {
+                    document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
+                    document.getElementById(uuid + '-ruleset').className = "text-danger";
+                } else {
+                    document.getElementById(uuid + '-ruleset').innerHTML = response.data;
+                    document.getElementById(uuid + '-ruleset').className = "text-muted-small";
+                }
+                return response.data;
             }
-            return response.data;
         })
         .catch(function (error) {
             return false;
@@ -810,28 +854,32 @@ function addNode() {
 		})
 		.then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-			if(response.data.ack == "false"){
-				$('html,body').scrollTop(0);
-				var alert = document.getElementById('floating-alert');
-				alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-					'<strong>Error adding node!</strong> '+response.data.error+'.'+
-					'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-						'<span aria-hidden="true">&times;</span>'+
-					'</button>'+
-				'</div>';
-				setTimeout(function() {$(".alert").alert('close')}, 5000);
-			}else{
-				$('html,body').scrollTop(0);
-				var alert = document.getElementById('floating-alert');
-				alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-					'<strong>Success!</strong> Node added successfully.'+
-					'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-						'<span aria-hidden="true">&times;</span>'+
-					'</button>'+
-				'</div>';
-				setTimeout(function() {$(".alert").alert('close')}, 5000);
-			}
-			GetAllNodes();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if(response.data.ack == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error adding node!</strong> '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Node added successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
+                GetAllNodes();
+            }
 		})
 		.catch(function (error) {
 			$('html,body').scrollTop(0);
@@ -877,18 +925,22 @@ function modifyNodeInformation() {
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.ack == "false"){
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Modify node error!</strong> '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                GetAllNodes();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if(response.data.ack == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Modify node error!</strong> '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    GetAllNodes();
+                }
             }
         })
         .catch(function (error) {
@@ -952,11 +1004,15 @@ function loadBPF(nid, name){
   })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if('bpf' in response.data){
-            inputBPF.value=response.data.bpf;     
-        }else{
-            inputBPF.value='';
-            headerBPF.innerHTML = headerBPF.innerHTML + '<br>Not defined';
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if('bpf' in response.data){
+                inputBPF.value=response.data.bpf;     
+            }else{
+                inputBPF.value='';
+                headerBPF.innerHTML = headerBPF.innerHTML + '<br>Not defined';
+            }
         }
     })
     .catch(function (error) {
@@ -989,7 +1045,11 @@ function saveBPF(nid){
   })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-      return true;
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            return true;
+        }
     })
     .catch(function (error) {
       return false;
@@ -1029,10 +1089,14 @@ function loadRuleset(nid){
 
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (typeof response.data.error != "undefined"){
-            resultElement.innerHTML = '<p>No rules available...</p>';
-        }else{
-            resultElement.innerHTML = generateAllRulesModal(response, nid);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (typeof response.data.error != "undefined"){
+                resultElement.innerHTML = '<p>No rules available...</p>';
+            }else{
+                resultElement.innerHTML = generateAllRulesModal(response, nid);
+            }
         }
     })
     .catch(function (error) {
@@ -1095,8 +1159,12 @@ function saveRuleSelected(rule, nid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            getRulesetUID(nid);
-            return true;
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                getRulesetUID(nid);
+                return true;
+            }
         })
             .catch(function (error) {
             return false;

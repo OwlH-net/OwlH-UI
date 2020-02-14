@@ -85,17 +85,21 @@ function addRulesetSource() {
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (response.data.ack == "false") {
-                $('html,body').scrollTop(0);
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error! </strong>'+response.data.error+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                GetAllRulesetSource();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error! </strong>'+response.data.error+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    GetAllRulesetSource();
+                }
             }
         })
         .catch(function (error) {
@@ -145,11 +149,15 @@ function GetAllRulesetSource(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        document.getElementById('ruleset-source-text-top').style.display ="block";
-        document.getElementById('ruleset-source-text-bot').style.display ="block";
-        result.innerHTML = generateAllRulesetSourceHTMLOutput(response);
-        changeIconAttributes(response.data);
-        RadioButtonListener();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            document.getElementById('ruleset-source-text-top').style.display ="block";
+            document.getElementById('ruleset-source-text-bot').style.display ="block";
+            result.innerHTML = generateAllRulesetSourceHTMLOutput(response);
+            changeIconAttributes(response.data);
+            RadioButtonListener();
+        }
     })
     .catch(function (error) {
         result.innerHTML = '<h3 align="center">No connection</h3>'+
@@ -260,7 +268,11 @@ function loadCustomRulesetRules(uuid,path,type){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        document.location.href = 'https://' + location.hostname + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            document.location.href = 'https://' + location.hostname + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
+        }
     })
     .catch(function (error) {
         result.innerHTML = '<h3 align="center">No connection</h3>'+
@@ -435,7 +447,11 @@ function editRulesetSourceData(){
             })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-                GetAllRulesetSource();
+                if(response.data.privileges == "none"){
+                    PrivilegesMessage();              
+                }else{   
+                    GetAllRulesetSource();
+                }
             })
             .catch(function (error) {
             });
@@ -466,7 +482,11 @@ function deleteRulesetSource(sourceUUID,sourceType){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllRulesetSource();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllRulesetSource();
+            }
         })
         .catch(function error() {
         });
@@ -503,37 +523,41 @@ function downloadFile(name, path, url, sourceUUID){
         })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-                if (response.data.ack == "true") {
-                    var alert = document.getElementById('floating-alert');
-                    $('html,body').scrollTop(0);
-                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                        '<strong>Success!</strong> Download complete.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    icon.style.color="Dodgerblue";
-                    downloadStatus.value = "true";
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-
-                    document.getElementById('progressBar-create').style.display = "none";
-                    document.getElementById('progressBar-create-div').style.display = "none";
-                }else{
-                    var alert = document.getElementById('floating-alert');
-                    $('html,body').scrollTop(0);
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong>'+response.data.error+''+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    downloadStatus.value = "false";
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-
-                    document.getElementById('progressBar-create').style.display = "none";
-                    document.getElementById('progressBar-create-div').style.display = "none";
+                if(response.data.privileges == "none"){
+                    PrivilegesMessage();              
+                }else{   
+                    if (response.data.ack == "true") {
+                        var alert = document.getElementById('floating-alert');
+                        $('html,body').scrollTop(0);
+                        alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                            '<strong>Success!</strong> Download complete.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        icon.style.color="Dodgerblue";
+                        downloadStatus.value = "true";
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    
+                        document.getElementById('progressBar-create').style.display = "none";
+                        document.getElementById('progressBar-create-div').style.display = "none";
+                    }else{
+                        var alert = document.getElementById('floating-alert');
+                        $('html,body').scrollTop(0);
+                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong>'+response.data.error+''+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        downloadStatus.value = "false";
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    
+                        document.getElementById('progressBar-create').style.display = "none";
+                        document.getElementById('progressBar-create-div').style.display = "none";
+                    }
                 }
-        })
+            })
             .catch(function error() {
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
@@ -607,34 +631,40 @@ function overwriteDownload(name, path, url, uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> Download complete.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            icon.style.color="Dodgerblue";
-            downloadStatus.value = "true";
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-
+        if(response.data.privileges == "none"){
             document.getElementById('progressBar-create').style.display = "none";
             document.getElementById('progressBar-create-div').style.display = "none";
-        }else{
-            $('html,body').scrollTop(0);
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong>'+response.data.error+''+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            // icon.style.color="Grey";
-            // downloadStatus.value = "false";
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-
-            document.getElementById('progressBar-create').style.display = "none";
-            document.getElementById('progressBar-create-div').style.display = "none";
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Download complete.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                icon.style.color="Dodgerblue";
+                downloadStatus.value = "true";
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+    
+                document.getElementById('progressBar-create').style.display = "none";
+                document.getElementById('progressBar-create-div').style.display = "none";
+            }else{
+                $('html,body').scrollTop(0);
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong>'+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                // icon.style.color="Grey";
+                // downloadStatus.value = "false";
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+    
+                document.getElementById('progressBar-create').style.display = "none";
+                document.getElementById('progressBar-create-div').style.display = "none";
+        }
         }
     })
     .catch(function error(error) {

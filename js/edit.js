@@ -26,25 +26,29 @@ function loadFileIntoTextarea(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error: </strong>'+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-            return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
         }else{
-            txtArea.innerHTML = response.data.fileContent;
-            if(uuid == "local") {uuidHidden.value = "local"} else {uuidHidden.value = response.data.nodeUUID;}
-            fileHidden.value = response.data.fileName;            
-            if(status == "disabled"){
-                $("textarea").prop('disabled', true);
-                $("#save-file-content-btn-top").hide();                
-                $("#save-file-content-btn-bot").hide();                
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
+            }else{
+                txtArea.innerHTML = response.data.fileContent;
+                if(uuid == "local") {uuidHidden.value = "local"} else {uuidHidden.value = response.data.nodeUUID;}
+                fileHidden.value = response.data.fileName;            
+                if(status == "disabled"){
+                    $("textarea").prop('disabled', true);
+                    $("#save-file-content-btn-top").hide();                
+                    $("#save-file-content-btn-bot").hide();                
+                }
             }
         }
     })
@@ -75,18 +79,22 @@ function saveFileChanged() {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Error saving file content: '+response.data.error+''+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
         }else{
-            window.history.back();
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Error saving file content: '+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                window.history.back();
+            }
         }
     })
     .catch(function (error) {

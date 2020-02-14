@@ -62,63 +62,68 @@ function getRulesetsBySearch(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false") {
+        if(response.data.privileges == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            html = html + '<div style="text-align:center"><h3 style="color:red;">Error retrieving search results...</h3></div>';
-        }else{
-            var html = "";
-            for (rule in response.data){    
-                html = html + '<table class="table table-hover" style="table-layout: fixed">' +
-                '<thead>' +
-                    '<tr>' +
-                        '<th style="width: 20%">Sid</th>' +
-                        '<th colspan="5">Description</th>' +                     
-                    '</tr>' +
-                '</thead>' +
-                '<tbody>';
-                html = html + '<tr>'+
-                    '<td>'+response.data[rule]["sid"]+'</td>'+
-                    '<td colspan="5">'+response.data[rule]["msg"]+'</td>'+
-                '</tr>'+
-                '<tr><td colspan="6">'+
-                    '<table class="table table-hover" style="table-layout: fixed;  word-break: break-all">' +
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                html = html + '<div style="text-align:center"><h3 style="color:red;">Error retrieving search results...</h3></div>';
+            }else{
+                var html = "";
+                for (rule in response.data){    
+                    html = html + '<table class="table table-hover" style="table-layout: fixed">' +
                     '<thead>' +
-                        '<th width="7%">Status</th>' +
-                        '<th width="13%">Type</th>' +
-                        '<th width="50%">File</th>' +
-                        '<th width="20%">Ruleset Name</th>' +
-                        '<th width="10%">Actions</th>' +
-                    '</thead>';
-                var rulesets = response.data[rule]["Rulesets"];
-                for(element in rulesets){
-                    html = html + '<tr>' +
-                        '<td width="10%">';
-                            if(rulesets[element]["status"] == "Enabled"){
-                                html = html + '<i class="fas fa-check-circle" style="color:green;"></i>';
-                            }else{
-                                html = html + '<i class="fas fa-times-circle" style="color:red;"></i>';
-                            }
-                        html = html + '</td>';
-                        console.log(rulesets[element]);
-                        html = html + '<td width="50%">'+rulesets[element]["type"]+'</td>';
-                        // if(rulesets[element]["sourceType"] != ""){
-                        //     // html = html + '<td width="50%">'+rulesets[element]["sourceType"]+'</td>';
-                        // }else{
-                        //     html = html + '<td width="50%">Source</td>';
-                        // }                        
-                        html = html + '<td width="50%">'+rulesets[element]["file"]+'</td>'+
-                        '<td width="20%">'+rulesets[element]["name"]+'</td>'+
-                        '<td width="10%"><i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+response.data[rule]["sid"]+'\', \''+rulesets[element]["uuid"]+'\')"></i></td>' +
-                    '</tr>';
-
-                }
-            html = html + '</table></tr></tbody>' +
-            '</table><br><br>';            }
+                        '<tr>' +
+                            '<th style="width: 20%">Sid</th>' +
+                            '<th colspan="5">Description</th>' +                     
+                        '</tr>' +
+                    '</thead>' +
+                    '<tbody>';
+                    html = html + '<tr>'+
+                        '<td>'+response.data[rule]["sid"]+'</td>'+
+                        '<td colspan="5">'+response.data[rule]["msg"]+'</td>'+
+                    '</tr>'+
+                    '<tr><td colspan="6">'+
+                        '<table class="table table-hover" style="table-layout: fixed;  word-break: break-all">' +
+                        '<thead>' +
+                            '<th width="7%">Status</th>' +
+                            '<th width="13%">Type</th>' +
+                            '<th width="50%">File</th>' +
+                            '<th width="20%">Ruleset Name</th>' +
+                            '<th width="10%">Actions</th>' +
+                        '</thead>';
+                    var rulesets = response.data[rule]["Rulesets"];
+                    for(element in rulesets){
+                        html = html + '<tr>' +
+                            '<td width="10%">';
+                                if(rulesets[element]["status"] == "Enabled"){
+                                    html = html + '<i class="fas fa-check-circle" style="color:green;"></i>';
+                                }else{
+                                    html = html + '<i class="fas fa-times-circle" style="color:red;"></i>';
+                                }
+                            html = html + '</td>';
+                            html = html + '<td width="50%">'+rulesets[element]["type"]+'</td>';
+                            // if(rulesets[element]["sourceType"] != ""){
+                            //     // html = html + '<td width="50%">'+rulesets[element]["sourceType"]+'</td>';
+                            // }else{
+                            //     html = html + '<td width="50%">Source</td>';
+                            // }                        
+                            html = html + '<td width="50%">'+rulesets[element]["file"]+'</td>'+
+                            '<td width="20%">'+rulesets[element]["name"]+'</td>'+
+                            '<td width="10%"><i class="fas fa-eye low-blue" onclick="loadRulesetDetails(\''+response.data[rule]["sid"]+'\', \''+rulesets[element]["uuid"]+'\')"></i></td>' +
+                        '</tr>';
+    
+                    }
+                html = html + '</table></tr></tbody>' +
+                '</table><br><br>';            }
+            }
+            document.getElementById('list-ruleset-search').innerHTML = html;
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
         }
-        document.getElementById('list-ruleset-search').innerHTML = html;
-        progressBar.style.display = "none";
-        progressBarDiv.style.display = "none";
     })
     .catch(function error(error) {
         progressBar.style.display = "none";

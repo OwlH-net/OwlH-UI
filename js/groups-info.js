@@ -53,122 +53,152 @@ function GetGroupsDetails(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        document.getElementById('progressBar-options-div').style.display="none";
-        document.getElementById('progressBar-options').style.display="none"; 
-        if (response.data == null) {
-            resultnodes.innerHTML= '<div style="text-align:center"><h3">No data retrieved</h3></div>';
-        }else if (response.data.ack == "false") {
-            resultnodes.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving group data</h3></div>';
+        if(response.data.privileges == "none"){
+            document.getElementById('progressBar-options-div').style.display="none";
+            document.getElementById('progressBar-options').style.display="none"; 
+            PrivilegesMessage();              
         }else{
-            var html = "";
-            var htmlnodes = "";
-            var htmlsuricata = "";
-            var htmlzeek = "";
-            var htmlanalyzer = "";
 
-            for(x=0; x<response.data.length; x++){
-                var groups = response.data[x];
-                if(groups['guuid'] == uuid){
-                    htmlnodes = "" + '<div>'+
-                        '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="modalSelectNodeGroup(\''+uuid+'\')">Add node</button>'+
-                        '<button class="btn btn-success float-right text-decoration-none text-white mr-2" type="button" onclick="syncAllGroupElements(\''+uuid+'\')">Sync all</button>'+
-                        '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="backButton()">Back</button>'+
-                        '<b>Nodes</b>'+
-                    '</div><br>'+
-                        '<table class="table" id="nodes-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+
-                            '<thead>'+                           
-                                '<tr>'+                           
-                                    '<th>Node name</th>'+
-                                    '<th>Node ip</th>'+
-                                    '<th width="10%">Actions</th>'+
-                                '</tr>'+
-                            '</thead>';   
-                            var allNodes = new Map();
-                            for(nid in groups["Nodes"]){
-                                allNodes[nid] = new Map();
-                                allNodes[nid] = groups["Nodes"][nid]; 
-                                htmlnodes = htmlnodes + '<tr>'+                           
-                                    '<td>'+groups["Nodes"][nid]["nname"]+'</td>'+
-                                    '<td>'+groups["Nodes"][nid]["nip"]+'</td>'+
-                                    '<td><i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete node for this group" onclick="modalDeleteNodeForGroup(\''+groups["Nodes"][nid]["dbuuid"]+'\', \''+groups["Nodes"][nid]["nname"]+'\')"></i></td>'+
-                                '</tr>';
-                            }
-                        htmlnodes = htmlnodes + '</table></div>';
-                        //suricata table
-                        htmlsuricata =             
-                            '<b>Suricata</b> &nbsp'+
-                            '<span id="suricata-group-mode-default" style="cursor:pointer;" class="badge bg-primary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'default-suricata-group-table\')">Current status</span>&nbsp'+  
-                            '<span id="suricata-mode" style="cursor:pointer;" class="badge bg-secondary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'suricata-mode\')">Mode</span>'+  
-                            '&nbsp'+
-                            '<span id="suricata-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
-                                '<span style="cursor: pointer;" title="Stop Suricata" class="badge bg-danger align-text-bottom text-white" onclick="ChangeSuricataGroupService(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
-                                '<span style="cursor: pointer;" title="Start Suricata" class="badge bg-primary align-text-bottom text-white" onclick="ChangeSuricataGroupService(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
-                            '</span>'+
-                            '<br><br>'+
-                            '<span id="suricata-configure" class="badge badge-pill bg-dark align-text-bottom text-white" style="display:none;">Mode: &nbsp '+  
-                                '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'standalone-suricata-group-table\')">Standalon</span> &nbsp '+
-                                '<span id="suricata-group-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'expert-suricata-group-table\')">Expert</span>'+
-                            '</span> &nbsp'+ 
-                            '<button id="group-suricata-sync-btn" class="btn btn-primary float-right text-decoration-none text-white" style="display:none;" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+
-                            
-                            //Suricata default
-                            '<div id="default-suricata-group-table">'+
-                                '<table class="table" style="table-layout: fixed" width="100%">'+        
-                                    '<tbody>'+     
+            document.getElementById('progressBar-options-div').style.display="none";
+            document.getElementById('progressBar-options').style.display="none"; 
+            if (response.data == null) {
+                resultnodes.innerHTML= '<div style="text-align:center"><h3">No data retrieved</h3></div>';
+            }else if (response.data.ack == "false") {
+                resultnodes.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving group data</h3></div>';
+            }else{
+                var html = "";
+                var htmlnodes = "";
+                var htmlsuricata = "";
+                var htmlzeek = "";
+                var htmlanalyzer = "";
+    
+                for(x=0; x<response.data.length; x++){
+                    var groups = response.data[x];
+                    if(groups['guuid'] == uuid){
+                        htmlnodes = "" + '<div>'+
+                            '<button class="btn btn-primary float-right text-decoration-none text-white" onclick="modalSelectNodeGroup(\''+uuid+'\')">Add node</button>'+
+                            '<button class="btn btn-success float-right text-decoration-none text-white mr-2" type="button" onclick="syncAllGroupElements(\''+uuid+'\')">Sync all</button>'+
+                            '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="backButton()">Back</button>'+
+                            '<b>Nodes</b>'+
+                        '</div><br>'+
+                            '<table class="table" id="nodes-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+
+                                '<thead>'+                           
+                                    '<tr>'+                           
+                                        '<th>Node name</th>'+
+                                        '<th>Node ip</th>'+
+                                        '<th width="10%">Actions</th>'+
+                                    '</tr>'+
+                                '</thead>';   
+                                var allNodes = new Map();
+                                for(nid in groups["Nodes"]){
+                                    allNodes[nid] = new Map();
+                                    allNodes[nid] = groups["Nodes"][nid]; 
+                                    htmlnodes = htmlnodes + '<tr>'+                           
+                                        '<td>'+groups["Nodes"][nid]["nname"]+'</td>'+
+                                        '<td>'+groups["Nodes"][nid]["nip"]+'</td>'+
+                                        '<td><i class="fas fa-trash-alt" style="color: red; cursor: pointer; font-size: 20px" title="Delete node for this group" onclick="modalDeleteNodeForGroup(\''+groups["Nodes"][nid]["dbuuid"]+'\', \''+groups["Nodes"][nid]["nname"]+'\')"></i></td>'+
+                                    '</tr>';
+                                }
+                            htmlnodes = htmlnodes + '</table></div>';
+                            //suricata table
+                            htmlsuricata =             
+                                '<b>Suricata</b> &nbsp'+
+                                '<span id="suricata-group-mode-default" style="cursor:pointer;" class="badge bg-primary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'default-suricata-group-table\')">Current status</span>&nbsp'+  
+                                '<span id="suricata-mode" style="cursor:pointer;" class="badge bg-secondary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'suricata-mode\')">Mode</span>'+  
+                                '&nbsp'+
+                                '<span id="suricata-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
+                                    '<span style="cursor: pointer;" title="Stop Suricata" class="badge bg-danger align-text-bottom text-white" onclick="ChangeSuricataGroupService(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
+                                    '<span style="cursor: pointer;" title="Start Suricata" class="badge bg-primary align-text-bottom text-white" onclick="ChangeSuricataGroupService(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
+                                '</span>'+
+                                '<br><br>'+
+                                '<span id="suricata-configure" class="badge badge-pill bg-dark align-text-bottom text-white" style="display:none;">Mode: &nbsp '+  
+                                    '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'standalone-suricata-group-table\')">Standalon</span> &nbsp '+
+                                    '<span id="suricata-group-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'expert-suricata-group-table\')">Expert</span>'+
+                                '</span> &nbsp'+ 
+                                '<button id="group-suricata-sync-btn" class="btn btn-primary float-right text-decoration-none text-white" style="display:none;" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+
+                                
+                                //Suricata default
+                                '<div id="default-suricata-group-table">'+
+                                    '<table class="table" style="table-layout: fixed" width="100%">'+        
+                                        '<tbody>'+     
+                                            '<tr>'+                           
+                                                '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
+                                                if(groups['gruleset']  != ""){
+                                                    htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                                }else{
+                                                    htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
+                                                }
+                                                htmlsuricata = htmlsuricata + '<td></td>'+
+                                            '</tr>'+
+                                        '</tbody>'+  
+                                    '</table>'+
+                                    '<br>'+
+                                    '<table class="table" style="table-layout: fixed" width="100%">'+
+                                        '<thead>'+
+                                            '<th>Node name</th>'+                                            
+                                            '<th>status</th>'+                                            
+                                            '<th>interface</th>'+                                            
+                                            '<th>Actions</th>'+                                            
+                                        '</thead>'+
+                                        '<tbody id="group-suricata-list">'+
+                                        '</tbody>'+
+                                    '</table>'+
+                                '</div>'+
+                                
+                                //Suricata expert
+                                '<div id="expert-suricata-group-table" style="display: none;">'+
+                                    '<table class="table" style="table-layout: fixed" width="100%">'+                                                         
+                                        '<tbody>'+   
+                                            '<tr>'+                           
+                                                '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
+                                                if(groups['gruleset']  != ""){
+                                                    htmlsuricata = htmlsuricata + '<td id="ruleset-group-expert-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                                }else{
+                                                    htmlsuricata = htmlsuricata + '<td id="ruleset-group-expert-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
+                                                }
+                                                htmlsuricata = htmlsuricata + '<td></td>'+
+                                            '</tr>'+                                       
+                                            '<tr>'+
+                                                '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
+                                                '<td>Master path:</td>';
+                                                if(groups["mastersuricata"] == ""){
+                                                    htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
+                                                }else{
+                                                    htmlsuricata = htmlsuricata + '<td id="group-suricata-master-path" value="'+groups["mastersuricata"]+'">'+groups["mastersuricata"]+'</td>';
+                                                }
+                                            htmlsuricata = htmlsuricata + '</tr>'+
+                                            '<tr>'+                           
+                                                '<td>Node path:</td>';
+                                                if(groups["nodesuricata"] == ""){
+                                                    htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-node-path" value="">No Suricata node path...</td>';
+                                                }else{
+                                                    htmlsuricata = htmlsuricata + '<td id="group-suricata-node-path" value="'+groups["nodesuricata"]+'">'+groups["nodesuricata"]+'</td>';
+                                                }
+                                            htmlsuricata = htmlsuricata + '</tr>'+   
+                                            '<tr id="suricata-edit-row" style="display:none;">'+
+                                                '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
+                                                '<td>Node path: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
+                                                '<td width="10%">'+
+                                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'suricata\')">Save</button>'+
+                                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
+                                                '</td>'+
+                                            '</tr>'+
+                                        '</tbody>'+
+                                    '</table>'+
+                                '</div>'+
+    
+                                //Suricata standalone
+                                '<div id="standalone-suricata-group-table" style="display: none;">'+
+                                    '<table class="table" style="table-layout: fixed" width="100%">'+  
                                         '<tr>'+                           
                                             '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
                                             if(groups['gruleset']  != ""){
-                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
+                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-standalone-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
                                             }else{
-                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
+                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-standalone-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
                                             }
                                             htmlsuricata = htmlsuricata + '<td></td>'+
                                         '</tr>'+
-                                    '</tbody>'+  
-                                '</table>'+
-                                '<br>'+
-                                '<table class="table" style="table-layout: fixed" width="100%">'+
-                                    '<thead>'+
-                                        '<th>Node name</th>'+                                            
-                                        '<th>status</th>'+                                            
-                                        '<th>interface</th>'+                                            
-                                        '<th>Actions</th>'+                                            
-                                    '</thead>'+
-                                    '<tbody id="group-suricata-list">'+
-                                    '</tbody>'+
-                                '</table>'+
-                            '</div>'+
-                            
-                            //Suricata expert
-                            '<div id="expert-suricata-group-table" style="display: none;">'+
-                                '<table class="table" style="table-layout: fixed" width="100%">'+                                                         
-                                    '<tbody>'+   
-                                        '<tr>'+                           
-                                            '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
-                                            if(groups['gruleset']  != ""){
-                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-expert-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
-                                            }else{
-                                                htmlsuricata = htmlsuricata + '<td id="ruleset-group-expert-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
-                                            }
-                                            htmlsuricata = htmlsuricata + '<td></td>'+
-                                        '</tr>'+                                       
-                                        '<tr>'+
-                                            '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
-                                            '<td>Master path:</td>';
-                                            if(groups["mastersuricata"] == ""){
-                                                htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
-                                            }else{
-                                                htmlsuricata = htmlsuricata + '<td id="group-suricata-master-path" value="'+groups["mastersuricata"]+'">'+groups["mastersuricata"]+'</td>';
-                                            }
-                                        htmlsuricata = htmlsuricata + '</tr>'+
-                                        '<tr>'+                           
-                                            '<td>Node path:</td>';
-                                            if(groups["nodesuricata"] == ""){
-                                                htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-node-path" value="">No Suricata node path...</td>';
-                                            }else{
-                                                htmlsuricata = htmlsuricata + '<td id="group-suricata-node-path" value="'+groups["nodesuricata"]+'">'+groups["nodesuricata"]+'</td>';
-                                            }
-                                        htmlsuricata = htmlsuricata + '</tr>'+   
                                         '<tr id="suricata-edit-row" style="display:none;">'+
                                             '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
                                             '<td>Node path: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
@@ -177,151 +207,128 @@ function GetGroupsDetails(){
                                                 '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
                                             '</td>'+
                                         '</tr>'+
-                                    '</tbody>'+
+                                        '<tr>'+
+                                            '<td class="align-middle" rowspan="5">Services &nbsp <i class="fas fa-sync-alt" title="Sync Suricata files to all group node" style="color:Dodgerblue; cursor: pointer;" onclick="syncSuricataGroupService(\''+uuid+'\')"></i></td>'+
+                                            '<td>Interface &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select an interface" onclick="modalEditGroupService(\''+uuid+'\', \'interface\', \'interface\')"></i></td>';
+                                            if(groups["interface"] == ""){
+                                                htmlsuricata = htmlsuricata + '<td id="service-interface" value="" style="color: red;">No interface selected...</td>';
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="service-interface" value="'+groups["interface"]+'">'+groups["interface"]+'</td>';}
+                                        htmlsuricata = htmlsuricata + '</tr>'+
+                                        '<tr>'+
+                                            '<td>BPF file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF file path" onclick="modalEditGroupService(\''+uuid+'\', \'BPFfile\', \'BPF file\')"></i></td>';
+                                            if(groups["BPFfile"] == ""){
+                                                htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="" style="color: red;">No BPF file selected...</td>';
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="'+groups["BPFfile"]+'">'+groups["BPFfile"]+'</td>';}
+                                        htmlsuricata = htmlsuricata + '</tr>'+
+                                        '<tr>'+
+                                            '<td>BPF rule &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF rule" onclick="modalEditGroupService(\''+uuid+'\', \'BPFrule\', \'BPF rule\')"></i></td>';
+                                            if(groups["BPFrule"] == ""){
+                                                htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="" style="color: red;">No BPF rule selected...</td>';
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="'+groups["BPFrule"]+'">'+groups["BPFrule"]+'</td>';}
+                                        htmlsuricata = htmlsuricata + '</tr>'+
+                                        '<tr>'+
+                                            '<td>Config file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a config file path" onclick="modalEditGroupService(\''+uuid+'\', \'configFile\', \'config file\')"></i></td>';
+                                            if(groups["configFile"] == ""){
+                                                htmlsuricata = htmlsuricata + '<td id="service-configfile" value="" style="color: red;">No config file selected...</td>';
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="service-configfile" value="'+groups["configFile"]+'">'+groups["configFile"]+'</td>';
+                                            }
+                                        htmlsuricata = htmlsuricata + '</tr>'+
+                                        '<tr>'+
+                                        '<td>Command line &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Command line" onclick="modalEditGroupService(\''+uuid+'\', \'commandLine\', \'command line\')"></i></td>';
+                                            if(groups["commandLine"] == ""){
+                                                htmlsuricata = htmlsuricata + '<td id="service-commandline" value="" style="color: red;">No command line selected...</td>';
+                                            }else{
+                                                htmlsuricata = htmlsuricata + '<td id="service-commandline" value="'+groups["commandLine"]+'">'+groups["commandLine"]+'</td>';}
+                                        htmlsuricata = htmlsuricata + '</tr>'+
+                                    '</table>'+
+                                '</div>';
+    
+                            //zeek table
+                            htmlzeek = "<div>"+
+                            '<b>Zeek</b> '+
+                            '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Edit Configuration &nbsp '+  
+                                '<span id="group-zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'expert-zeek-table\')">Expert</span> &nbsp'+
+                                '<span id="group-zeek-mode-cluster" class="badge bg-secondary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
+                            '</span> '+
+    
+                            '<button id="group-zeek-add-cluster-btn" style="display:none;" class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddCluster(\''+uuid+'\')">Add Cluster</button>'+
+                            //zeek expert
+                            '<div id="group-zeek-expert">'+
+                                '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
+                                    '<tbody>';      
+                                        htmlzeek = htmlzeek + '<tr>'+                           
+                                            '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
+                                            '<td>Master path</td>';
+                                            if(groups["masterzeek"] == ""){
+                                                htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
+                                            }else{
+                                                htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="'+groups["masterzeek"]+'">'+groups["masterzeek"]+'</td>';
+                                            }
+                                        htmlzeek = htmlzeek + '</tr>'+
+                                        '<tr>'+                           
+                                            '<td>Node path</td>';
+                                            if(groups["nodezeek"] == ""){
+                                                htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>';
+                                            }else{
+                                                htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="'+groups["nodezeek"]+'">'+groups["nodezeek"]+'</td>';
+                                            }                                            
+                                            htmlzeek = htmlzeek + '</tr>'+
+                                        '<tr id="zeek-edit-row" style="display:none;">'+
+                                            '<td>Master: <input class="form-control" id="zeek-group-master-'+groups['guuid']+'" value="'+groups["masterzeek"]+'"></td>'+
+                                            '<td>Node: <input class="form-control" id="zeek-group-node-'+groups['guuid']+'" value="'+groups["nodezeek"]+'"></td>'+
+                                            '<td width="10%">'+
+                                                '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'zeek\')">Save</button>'+
+                                                '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
+                                            '</td>'+
+                                        '</tr>'+                                
+                                    '</tbody>'+    
                                 '</table>'+
                             '</div>'+
-
-                            //Suricata standalone
-                            '<div id="standalone-suricata-group-table" style="display: none;">'+
-                                '<table class="table" style="table-layout: fixed" width="100%">'+  
-                                    '<tr>'+                           
-                                        '<td width="25%">Ruleset &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select ruleset" onclick="modalLoadRuleset(\''+groups['guuid']+'\')"></i>&nbsp<i class="fas fa-sync-alt" title="Sync ruleset to all group nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncRulesetToAllGroupNodes(\''+groups['guuid']+'\')"></i></td>';
-                                        if(groups['gruleset']  != ""){
-                                            htmlsuricata = htmlsuricata + '<td id="ruleset-group-standalone-'+groups['guuid']+'" style="color:black;" value="'+groups['gruleset']+'">'+groups['gruleset']+'</td>';                                            
-                                        }else{
-                                            htmlsuricata = htmlsuricata + '<td id="ruleset-group-standalone-'+groups['guuid']+'" value="" style="color:red;">No ruleset selected...</td>';                                            
-                                        }
-                                        htmlsuricata = htmlsuricata + '<td></td>'+
-                                    '</tr>'+
-                                    '<tr id="suricata-edit-row" style="display:none;">'+
-                                        '<td>Master path: <input class="form-control" id="suricata-group-master-'+groups['guuid']+'" value="'+groups["mastersuricata"]+'"></td>'+
-                                        '<td>Node path: <input class="form-control" id="suricata-group-node-'+groups['guuid']+'" value="'+groups["nodesuricata"]+'"></td>'+
-                                        '<td width="10%">'+
-                                            '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'suricata\')">Save</button>'+
-                                            '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
-                                        '</td>'+
-                                    '</tr>'+
-                                    '<tr>'+
-                                        '<td class="align-middle" rowspan="5">Services &nbsp <i class="fas fa-sync-alt" title="Sync Suricata files to all group node" style="color:Dodgerblue; cursor: pointer;" onclick="syncSuricataGroupService(\''+uuid+'\')"></i></td>'+
-                                        '<td>Interface &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Select an interface" onclick="modalEditGroupService(\''+uuid+'\', \'interface\', \'interface\')"></i></td>';
-                                        if(groups["interface"] == ""){
-                                            htmlsuricata = htmlsuricata + '<td id="service-interface" value="" style="color: red;">No interface selected...</td>';
-                                        }else{
-                                            htmlsuricata = htmlsuricata + '<td id="service-interface" value="'+groups["interface"]+'">'+groups["interface"]+'</td>';}
-                                    htmlsuricata = htmlsuricata + '</tr>'+
-                                    '<tr>'+
-                                        '<td>BPF file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF file path" onclick="modalEditGroupService(\''+uuid+'\', \'BPFfile\', \'BPF file\')"></i></td>';
-                                        if(groups["BPFfile"] == ""){
-                                            htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="" style="color: red;">No BPF file selected...</td>';
-                                        }else{
-                                            htmlsuricata = htmlsuricata + '<td id="service-bpffile" value="'+groups["BPFfile"]+'">'+groups["BPFfile"]+'</td>';}
-                                    htmlsuricata = htmlsuricata + '</tr>'+
-                                    '<tr>'+
-                                        '<td>BPF rule &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a BPF rule" onclick="modalEditGroupService(\''+uuid+'\', \'BPFrule\', \'BPF rule\')"></i></td>';
-                                        if(groups["BPFrule"] == ""){
-                                            htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="" style="color: red;">No BPF rule selected...</td>';
-                                        }else{
-                                            htmlsuricata = htmlsuricata + '<td id="service-bpfrule" value="'+groups["BPFrule"]+'">'+groups["BPFrule"]+'</td>';}
-                                    htmlsuricata = htmlsuricata + '</tr>'+
-                                    '<tr>'+
-                                        '<td>Config file &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Insert a config file path" onclick="modalEditGroupService(\''+uuid+'\', \'configFile\', \'config file\')"></i></td>';
-                                        if(groups["configFile"] == ""){
-                                            htmlsuricata = htmlsuricata + '<td id="service-configfile" value="" style="color: red;">No config file selected...</td>';
-                                        }else{
-                                            htmlsuricata = htmlsuricata + '<td id="service-configfile" value="'+groups["configFile"]+'">'+groups["configFile"]+'</td>';
-                                        }
-                                    htmlsuricata = htmlsuricata + '</tr>'+
-                                    '<tr>'+
-                                    '<td>Command line &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Command line" onclick="modalEditGroupService(\''+uuid+'\', \'commandLine\', \'command line\')"></i></td>';
-                                        if(groups["commandLine"] == ""){
-                                            htmlsuricata = htmlsuricata + '<td id="service-commandline" value="" style="color: red;">No command line selected...</td>';
-                                        }else{
-                                            htmlsuricata = htmlsuricata + '<td id="service-commandline" value="'+groups["commandLine"]+'">'+groups["commandLine"]+'</td>';}
-                                    htmlsuricata = htmlsuricata + '</tr>'+
-                                '</table>'+
+                            //zeek cluster
+                            '<div id="group-zeek-cluster" style="display:none;">'+
+                                '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
+                                '</table>';
                             '</div>';
-
-                        //zeek table
-                        htmlzeek = "<div>"+
-                        '<b>Zeek</b> '+
-                        '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Edit Configuration &nbsp '+  
-                            '<span id="group-zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'expert-zeek-table\')">Expert</span> &nbsp'+
-                            '<span id="group-zeek-mode-cluster" class="badge bg-secondary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
-                        '</span> '+
-
-                        '<button id="group-zeek-add-cluster-btn" style="display:none;" class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddCluster(\''+uuid+'\')">Add Cluster</button>'+
-                        //zeek expert
-                        '<div id="group-zeek-expert">'+
-                            '<table class="table" id="zeek-nodes-for-group-'+groups['guuid']+'" style="table-layout: fixed"  width="100%">'+                         
-                                '<tbody>';      
-                                    htmlzeek = htmlzeek + '<tr>'+                           
-                                        '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditGroup(\'zeek\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync files from master to node" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'zeek\')"></i></td>'+
-                                        '<td>Master path</td>';
-                                        if(groups["masterzeek"] == ""){
-                                            htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="" style="color: red;">No Zeek master path...</td>';
-                                        }else{
-                                            htmlzeek = htmlzeek + '<td id="group-zeek-master-path" value="'+groups["masterzeek"]+'">'+groups["masterzeek"]+'</td>';
-                                        }
-                                    htmlzeek = htmlzeek + '</tr>'+
-                                    '<tr>'+                           
-                                        '<td>Node path</td>';
-                                        if(groups["nodezeek"] == ""){
-                                            htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="" style="color: red;">No Zeek node path...</td>';
-                                        }else{
-                                            htmlzeek = htmlzeek + '<td id="group-zeek-node-path" value="'+groups["nodezeek"]+'">'+groups["nodezeek"]+'</td>';
-                                        }                                            
-                                        htmlzeek = htmlzeek + '</tr>'+
-                                    '<tr id="zeek-edit-row" style="display:none;">'+
-                                        '<td>Master: <input class="form-control" id="zeek-group-master-'+groups['guuid']+'" value="'+groups["masterzeek"]+'"></td>'+
-                                        '<td>Node: <input class="form-control" id="zeek-group-node-'+groups['guuid']+'" value="'+groups["nodezeek"]+'"></td>'+
-                                        '<td width="10%">'+
-                                            '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'zeek\')">Save</button>'+
-                                            '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'zeek\')">Cancel</button> &nbsp '+
-                                        '</td>'+
-                                    '</tr>'+                                
+    
+                            //analyzer table
+                            htmlanalyzer = "<div>"+
+                            '<b>Analyzer</b>'+
+                            '<table class="table" id="cluster-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+                          
+                                '<tbody>'+
+                                    '<tr>'+
+                                        '<td>'+
+                                            '<span style="cursor: pointer;" id="group-enable-all-analyzer" class="badge bg-primary align-text-bottom text-white float-left mr-2" >Enable all</span>'+
+                                            '<span style="cursor: pointer;" id="group-disable-all-analyzer" class="badge bg-success align-text-bottom text-white float-left mr-2" >Disable all</span>'+
+                                        '</td>'+                                                            
+                                        '<td>Edit analyzer &nbsp <i class="fas fa-edit" style="color: dodgerblue; cursor: pointer;" onclick="editAnalyzer(\'local\', \'group-analyzer\', \''+gname+'\')"></i></td>'+                                       
+                                        '<td>Synchronize analyzer &nbsp <i class="fas fa-sync" id="group-sync-analyzer" style="color: dodgerblue; cursor: pointer;"></i></td>'+                                       
+                                    '</tr>'+
                                 '</tbody>'+    
                             '</table>'+
-                        '</div>'+
-                        //zeek cluster
-                        '<div id="group-zeek-cluster" style="display:none;">'+
-                            '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
-                            '</table>';
-                        '</div>';
-
-                        //analyzer table
-                        htmlanalyzer = "<div>"+
-                        '<b>Analyzer</b>'+
-                        '<table class="table" id="cluster-for-group-'+groups['guuid']+'" style="table-layout: fixed" width="100%">'+                          
-                            '<tbody>'+
-                                '<tr>'+
-                                    '<td>'+
-                                        '<span style="cursor: pointer;" id="group-enable-all-analyzer" class="badge bg-primary align-text-bottom text-white float-left mr-2" >Enable all</span>'+
-                                        '<span style="cursor: pointer;" id="group-disable-all-analyzer" class="badge bg-success align-text-bottom text-white float-left mr-2" >Disable all</span>'+
-                                    '</td>'+                                                            
-                                    '<td>Edit analyzer &nbsp <i class="fas fa-edit" style="color: dodgerblue; cursor: pointer;" onclick="editAnalyzer(\'local\', \'group-analyzer\', \''+gname+'\')"></i></td>'+                                       
-                                    '<td>Synchronize analyzer &nbsp <i class="fas fa-sync" id="group-sync-analyzer" style="color: dodgerblue; cursor: pointer;"></i></td>'+                                       
-                                '</tr>'+
-                            '</tbody>'+    
-                        '</table>'+
-                        '<table class="table" id="analyzer-nodes-status" style="table-layout: fixed" width="100%">'+
-                        '</table>'+
-                    '</tr>';
+                            '<table class="table" id="analyzer-nodes-status" style="table-layout: fixed" width="100%">'+
+                            '</table>'+
+                        '</tr>';
+                    }
+    
                 }
-
+                resultnodes.innerHTML = htmlnodes;
+                resultsuricata.innerHTML = htmlsuricata;
+                resultzeek.innerHTML = htmlzeek;
+                resultanalyzer.innerHTML = htmlanalyzer;
+    
             }
-            resultnodes.innerHTML = htmlnodes;
-            resultsuricata.innerHTML = htmlsuricata;
-            resultzeek.innerHTML = htmlzeek;
-            resultanalyzer.innerHTML = htmlanalyzer;
-
+            $('#group-sync-analyzer').click(function(){ syncAnalyzer(allNodes); });
+            $('#group-enable-all-analyzer').click(function(){ ChangeAnalyzerStatus(allNodes, "Enabled"); });
+            $('#group-disable-all-analyzer').click(function(){ ChangeAnalyzerStatus(allNodes, "Disabled"); });
+            LoadAnalyzerNodeStatus(allNodes);
+            GetAllClusterFiles(uuid);
+            SuricataNodesStatus(uuid);
         }
 
-        $('#group-sync-analyzer').click(function(){ syncAnalyzer(allNodes); });
-        $('#group-enable-all-analyzer').click(function(){ ChangeAnalyzerStatus(allNodes, "Enabled"); });
-        $('#group-disable-all-analyzer').click(function(){ ChangeAnalyzerStatus(allNodes, "Disabled"); });
-        LoadAnalyzerNodeStatus(allNodes);
-        GetAllClusterFiles(uuid);
-        SuricataNodesStatus(uuid);
     })
     .catch(function (error) {
         document.getElementById('progressBar-options-div').style.display="none";
@@ -379,18 +386,21 @@ async function ChangeAnalyzerStatus(nodes, status){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (response.data.ack == "false") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Change analyzer status: '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Change analyzer status: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
             }
-
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -438,35 +448,39 @@ function SuricataNodesStatus(guuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error Suricata: </strong> '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
         }else{
-            var html = '';
-            for(x in response.data){
-                if(response.data[x]["type"] == "suricata"){
-                    html = html + '<tr bpf="'+response.data[x]["bpf"]+'" guuid="'+x+'" uuid="'+response.data[x]["node"]+'" interface="'+response.data[x]["interface"]+'">'+
-                        '<td>'+response.data[x]["nodeName"]+'</td>'+
-                        '<td>';
-                            if(response.data[x]["status"] == "enabled"){
-                                html = html + '<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
-                            }else if(response.data[x]["status"] == "disabled"){
-                                html = html + '<span class="badge badge-pill bg-danger align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
-                            } 
-                        html = html + '</td>'+
-                        '<td>'+response.data[x]["interface"]+'</td>'+
-                        '<td> <i class="fas fa-info" style="color: dodgerblue;"></i> </td>'+
-                    '</tr>';
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error Suricata: </strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                var html = '';
+                for(x in response.data){
+                    if(response.data[x]["type"] == "suricata"){
+                        html = html + '<tr bpf="'+response.data[x]["bpf"]+'" guuid="'+x+'" uuid="'+response.data[x]["node"]+'" interface="'+response.data[x]["interface"]+'">'+
+                            '<td>'+response.data[x]["nodeName"]+'</td>'+
+                            '<td>';
+                                if(response.data[x]["status"] == "enabled"){
+                                    html = html + '<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
+                                }else if(response.data[x]["status"] == "disabled"){
+                                    html = html + '<span class="badge badge-pill bg-danger align-text-bottom text-white">'+response.data[x]["status"]+'</span>';
+                                } 
+                            html = html + '</td>'+
+                            '<td>'+response.data[x]["interface"]+'</td>'+
+                            '<td> <i class="fas fa-info" style="color: dodgerblue;"></i> </td>'+
+                        '</tr>';
+                    }
                 }
+                suricatas.innerHTML = html;
             }
-            suricatas.innerHTML = html;
         }
     })
     .catch(function (error) {
@@ -524,22 +538,28 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Change group service status: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.privileges == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
+            PrivilegesMessage();              
         }else{
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
-            GetGroupsDetails();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Change group service status: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+            }else{
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                GetGroupsDetails();
+            }
         }
     })
     .catch(function (error) {
@@ -576,42 +596,46 @@ async function syncAnalyzer(nodes){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        for(x in response.data){
-            if(response.data[x]["status"] == "error"){
-                errorNodes = errorNodes + response.data[x]["name"]+" "; 
-                response.data.ack = "alert";
-            }
-        }
-        if (response.data.ack == "alert") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
-                '<strong>Error!</strong> Nodes not synchronized: '+errorNodes
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Sync analyzer: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
         }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> All analyzers synchronized successfully.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            for(x in response.data){
+                if(response.data[x]["status"] == "error"){
+                    errorNodes = errorNodes + response.data[x]["name"]+" "; 
+                    response.data.ack = "alert";
+                }
+            }
+            if (response.data.ack == "alert") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Nodes not synchronized: '+errorNodes
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Sync analyzer: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> All analyzers synchronized successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -666,28 +690,32 @@ function syncAllGroupElements(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> Group synchronization complete.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-            GetGroupsDetails();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
         }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Sync all: '+response.data.error+''+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }  
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Group synchronization complete.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                GetGroupsDetails();
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Sync all: '+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }  
+        }
     })
     .catch(function (error) {
         $('html,body').scrollTop(0);
@@ -760,29 +788,33 @@ function changePaths(guuid, type){
             data: grJSON
             })
             .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}           
-                if (response.data.ack == "true") {
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                        '<strong>Success!</strong> Paths updated successfully.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                    GetGroupsDetails();
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.privileges == "none"){
+                    PrivilegesMessage();              
                 }else{
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Change paths: '+response.data.error+''+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                }            
+                    if (response.data.ack == "true") {
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                            '<strong>Success!</strong> Paths updated successfully.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        GetGroupsDetails();
+                    }else{
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong> Change paths: '+response.data.error+''+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    }            
+                }           
             })
             .catch(function (error) {
                 $('html,body').scrollTop(0);
@@ -839,29 +871,33 @@ function SyncPathGroup(guuid, type){
             data: grJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}      
-            if (response.data.ack == "true") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> Paths synchronized successfully.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-                GetGroupsDetails();
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
             }else{
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Sync path: '+response.data.error+''+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }            
+                if (response.data.ack == "true") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Paths synchronized successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    GetGroupsDetails();
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Sync path: '+response.data.error+''+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }            
+            }      
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -926,25 +962,29 @@ function modalLoadRuleset(group){
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (typeof response.data.error != "undefined"){
-                document.getElementById('group-ruleset-values').innerHTML = '<p>No rules available...</p>';
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
             }else{
-                var html = '';
-                html = html + '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                    '<thead>'+
-                        '<th>Ruleset</th>'+
-                        '<th>Select</th>'+
-                    '</thead>'+
-                    '<tbody>';
-                        for(id in response.data){
-                            html = html + '<tr>'+
-                                '<td>'+response.data[id]["name"]+'</td>'+
-                                '<td><button type="submit" class="btn btn-primary" onclick="selectGroupRuleset(\''+group+'\', \''+response.data[id]["name"]+'\', \''+id+'\')">Select</button></td>'+
-                            '<tr>';
-                        }
-                    html = html + '</tbody>'+
-                '</table>';
-                document.getElementById('group-ruleset-values').innerHTML = html;
+                if (typeof response.data.error != "undefined"){
+                    document.getElementById('group-ruleset-values').innerHTML = '<p>No rules available...</p>';
+                }else{
+                    var html = '';
+                    html = html + '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                        '<thead>'+
+                            '<th>Ruleset</th>'+
+                            '<th>Select</th>'+
+                        '</thead>'+
+                        '<tbody>';
+                            for(id in response.data){
+                                html = html + '<tr>'+
+                                    '<td>'+response.data[id]["name"]+'</td>'+
+                                    '<td><button type="submit" class="btn btn-primary" onclick="selectGroupRuleset(\''+group+'\', \''+response.data[id]["name"]+'\', \''+id+'\')">Select</button></td>'+
+                                '<tr>';
+                            }
+                        html = html + '</tbody>'+
+                    '</table>';
+                    document.getElementById('group-ruleset-values').innerHTML = html;
+                }
             }
         })
         .catch(function (error) {
@@ -975,26 +1015,30 @@ function syncSuricataGroupService(guuid){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.acke == "false"){
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Sync group: '+error+''+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
             }else{
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> Group synchronized successfully.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                if(response.data.acke == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Sync group: '+error+''+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Group synchronized successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
             }
         })
         .catch(function (error) {
@@ -1022,36 +1066,40 @@ function GetAllClusterFiles(guuid){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
         })
         .then(function (response) {
-          if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            var html = '<tr>'+
-                    '<td id="cluster-row-span" rowspan="2" class="align-middle" width="20%">Cluster <i class="fas fa-sync" style="color:dodgerblue; cursor:pointer" onclick="SyncClusterFile(\''+guuid+'\', \'all\')"></i> </td>'+
-                    '<th>Cluster path</td>'+
-                    '<th width="20%">Actions</td>'+
-                '</tr>';
-            var count = 1;
-            for(uuid in response.data){
-                count = count+2;
-                html = html +'<tr>'+
-                    '<td>'+response.data[uuid]["path"]+'</td>'+
-                    '<td>'+
-                        '<i id="edit-cluster-data-'+uuid+'" class="fas fa-edit" style="color:dodgerblue; cursor:pointer" onclick="showEditGroup(\''+uuid+'\')"></i> &nbsp'+
-                        '<i class="fas fa-eye" style="color:dodgerblue; cursor:pointer" onclick="loadClusterFile(\''+uuid+'\', \''+response.data[uuid]["path"]+'\', \'Cluster group\')"></i> &nbsp'+
-                        '<i class="fas fa-sync" style="color:dodgerblue; cursor:pointer" onclick="SyncClusterFile(\''+uuid+'\', \'one\')"></i> &nbsp'+
-                        '<i class="fas fa-trash-alt" style="color:red; cursor:pointer" onclick="modalDeleteCluster(\''+uuid+'\', \''+response.data[uuid]["path"]+'\')"></i> &nbsp'+
-                    '</td>'+
-                '</tr>'+
-                '<tr id="'+uuid+'-edit-row" style="display:none;" bgcolor="AntiqueWhite">'+
-                    '<td>'+
-                        '<div class="input-group">Path: &nbsp <input class="form-control" id="new-cluster-value-'+uuid+'" value="'+response.data[uuid]["path"]+'"></input></div>'+
-                    '</td>'+
-                    '<td class="align-middle">'+
-                        '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" id="edit-cluster-data-save-'+uuid+'" onclick="changeClusterValue(\''+guuid+'\', \''+uuid+'\')">Save</button>'+
-                        '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" id="edit-cluster-data-close-'+uuid+'" onclick="hideEditGroup(\''+uuid+'\')">Cancel</button>'+
-                    '</td>'+
-                '</tr>';
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{
+                var html = '<tr>'+
+                        '<td id="cluster-row-span" rowspan="2" class="align-middle" width="20%">Cluster <i class="fas fa-sync" style="color:dodgerblue; cursor:pointer" onclick="SyncClusterFile(\''+guuid+'\', \'all\')"></i> </td>'+
+                        '<th>Cluster path</td>'+
+                        '<th width="20%">Actions</td>'+
+                    '</tr>';
+                var count = 1;
+                for(uuid in response.data){
+                    count = count+2;
+                    html = html +'<tr>'+
+                        '<td>'+response.data[uuid]["path"]+'</td>'+
+                        '<td>'+
+                            '<i id="edit-cluster-data-'+uuid+'" class="fas fa-edit" style="color:dodgerblue; cursor:pointer" onclick="showEditGroup(\''+uuid+'\')"></i> &nbsp'+
+                            '<i class="fas fa-eye" style="color:dodgerblue; cursor:pointer" onclick="loadClusterFile(\''+uuid+'\', \''+response.data[uuid]["path"]+'\', \'Cluster group\')"></i> &nbsp'+
+                            '<i class="fas fa-sync" style="color:dodgerblue; cursor:pointer" onclick="SyncClusterFile(\''+uuid+'\', \'one\')"></i> &nbsp'+
+                            '<i class="fas fa-trash-alt" style="color:red; cursor:pointer" onclick="modalDeleteCluster(\''+uuid+'\', \''+response.data[uuid]["path"]+'\')"></i> &nbsp'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr id="'+uuid+'-edit-row" style="display:none;" bgcolor="AntiqueWhite">'+
+                        '<td>'+
+                            '<div class="input-group">Path: &nbsp <input class="form-control" id="new-cluster-value-'+uuid+'" value="'+response.data[uuid]["path"]+'"></input></div>'+
+                        '</td>'+
+                        '<td class="align-middle">'+
+                            '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" id="edit-cluster-data-save-'+uuid+'" onclick="changeClusterValue(\''+guuid+'\', \''+uuid+'\')">Save</button>'+
+                            '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" id="edit-cluster-data-close-'+uuid+'" onclick="hideEditGroup(\''+uuid+'\')">Cancel</button>'+
+                        '</td>'+
+                    '</tr>';
+                }
+                document.getElementById('cluster-elements').innerHTML = html;
+                document.getElementById('cluster-row-span').rowSpan = count;
             }
-            document.getElementById('cluster-elements').innerHTML = html;
-            document.getElementById('cluster-row-span').rowSpan = count;
         })
         .catch(function (error) {
         }); 
@@ -1078,29 +1126,33 @@ function SyncClusterFile(uuid, type){
         data: grJSON
     })
         .then(function (response) {
-           if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.ack == "false"){
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Sync cluster file: '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
             }else{
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> Cluster file synchronized correctly.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                if(response.data.ack == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Sync cluster file: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Cluster file synchronized correctly.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
+                GetGroupsDetails();
             }
-            GetGroupsDetails();
         })
         .catch(function error() {
             $('html,body').scrollTop(0);
@@ -1139,27 +1191,31 @@ function changeClusterValue(guuid, uuid){
         })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-                if(response.data.ack == "false"){
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> '+response.data.error+'.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                if(response.data.privileges == "none"){
+                    PrivilegesMessage();              
                 }else{
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                        '<strong>Success!</strong> Cluster file synchronized successfully.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                    GetGroupsDetails();
+                    if(response.data.ack == "false"){
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong> '+response.data.error+'.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    }else{
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                            '<strong>Success!</strong> Cluster file synchronized successfully.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        GetGroupsDetails();
+                    }
                 }
             })
             .catch(function error() {
@@ -1220,7 +1276,11 @@ function deleteCluster(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetGroupsDetails();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{
+                GetGroupsDetails();
+            }
         })
         .catch(function error() {
         });
@@ -1246,12 +1306,16 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
-            document.getElementById('ruleset-group-'+group).style.color = "black";
-            document.getElementById('ruleset-group-standalone-'+group).innerHTML = ruleset;
-            document.getElementById('ruleset-group-standalone-'+group).style.color = "black";
-            document.getElementById('ruleset-group-expert-'+group).innerHTML = ruleset;
-            document.getElementById('ruleset-group-expert-'+group).style.color = "black";
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{
+                document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
+                document.getElementById('ruleset-group-'+group).style.color = "black";
+                document.getElementById('ruleset-group-standalone-'+group).innerHTML = ruleset;
+                document.getElementById('ruleset-group-standalone-'+group).style.color = "black";
+                document.getElementById('ruleset-group-expert-'+group).innerHTML = ruleset;
+                document.getElementById('ruleset-group-expert-'+group).style.color = "black";
+            }
         })
         .catch(function (error) {
         }); 
@@ -1269,56 +1333,60 @@ function modalSelectNodeGroup(uuid){
     })
         .then(function (response) {            
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            var modalWindowDelete = document.getElementById('modal-groups');
-            var html = '<div class="modal-dialog">'+
-                '<div class="modal-content">'+
-            
-                    '<div class="modal-header" style="word-break: break-all;">'+
-                        '<h4 class="modal-title">Add nodes to group</h4>'+
-                        '<button type="button" class="close" data-dismiss="modal" id="add-node-to-group-cross">&times;</button>'+
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{            
+                var modalWindowDelete = document.getElementById('modal-groups');
+                var html = '<div class="modal-dialog">'+
+                    '<div class="modal-content">'+
+                
+                        '<div class="modal-header" style="word-break: break-all;">'+
+                            '<h4 class="modal-title">Add nodes to group</h4>'+
+                            '<button type="button" class="close" data-dismiss="modal" id="add-node-to-group-cross">&times;</button>'+
+                        '</div>'+
+                
+                        '<div class="modal-body" style="word-break: break-all;">'+
+                            '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                                '<thead>'+
+                                    '<tr>'+
+                                        '<th>Node name</th>'+
+                                        '<th>Node IP</th>'+
+                                        '<th>Select</th>'+
+                                    '</tr>'+
+                                '</thead>'+
+                                '<tbody>';
+                                    for(node in response.data){                                    
+                                        html = html + '<tr>';
+                                            if(response.data[node]["token"] == "wait"){
+                                                html = html + '<td style="word-wrap: break-word; color:red;">(unavailable) '+response.data[node]["name"]+'</td>';
+                                            }else{
+                                                html = html + '<td style="word-wrap: break-word;">'+response.data[node]["name"]+'</td>';
+                                            }
+                                            html = html + '<td style="word-wrap: break-word;">'+response.data[node]["ip"]+'</td>';
+                                            if (response.data[node]["checked"] == "true"){
+                                                html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'" checked disabled></td>';
+                                            }else{
+                                                html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'"></td>';
+                                            }                                        
+                                        '</tr>';                                
+                                    }
+                                html = html + '</tbody>'+
+                            '</table>'+
+                        '</div>'+
+                              
+                        '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                            '<button type="button" id="add-node-to-group-close" class="btn btn-secondary">Close</button>'+
+                            '<button type="button" id="add-node-to-group-button" class="btn btn-primary">Select</button>'+
+                        '</div>'+
+                
                     '</div>'+
-            
-                    '<div class="modal-body" style="word-break: break-all;">'+
-                        '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                            '<thead>'+
-                                '<tr>'+
-                                    '<th>Node name</th>'+
-                                    '<th>Node IP</th>'+
-                                    '<th>Select</th>'+
-                                '</tr>'+
-                            '</thead>'+
-                            '<tbody>';
-                                for(node in response.data){                                    
-                                    html = html + '<tr>';
-                                        if(response.data[node]["token"] == "wait"){
-                                            html = html + '<td style="word-wrap: break-word; color:red;">(unavailable) '+response.data[node]["name"]+'</td>';
-                                        }else{
-                                            html = html + '<td style="word-wrap: break-word;">'+response.data[node]["name"]+'</td>';
-                                        }
-                                        html = html + '<td style="word-wrap: break-word;">'+response.data[node]["ip"]+'</td>';
-                                        if (response.data[node]["checked"] == "true"){
-                                            html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'" checked disabled></td>';
-                                        }else{
-                                            html = html + '<td><input type="checkbox" id="checkbox-nodes-'+node+'" uuid="'+node+'" value="'+response.data[node]["name"]+'"></td>';
-                                        }                                        
-                                    '</tr>';                                
-                                }
-                            html = html + '</tbody>'+
-                        '</table>'+
-                    '</div>'+
-                          
-                    '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
-                        '<button type="button" id="add-node-to-group-close" class="btn btn-secondary">Close</button>'+
-                        '<button type="button" id="add-node-to-group-button" class="btn btn-primary">Select</button>'+
-                    '</div>'+
-            
-                '</div>'+
-            '</div>';
-            modalWindowDelete.innerHTML = html;
-            $('#modal-groups').modal("show");
-            $('#add-node-to-group-button').click(function(){ addNodesToGroup(uuid); });
-            $('#add-node-to-group-cross').click(function(){ $('#modal-groups').modal("hide");});
-            $('#add-node-to-group-close').click(function(){ $('#modal-groups').modal("hide");});
+                '</div>';
+                modalWindowDelete.innerHTML = html;
+                $('#modal-groups').modal("show");
+                $('#add-node-to-group-button').click(function(){ addNodesToGroup(uuid); });
+                $('#add-node-to-group-cross').click(function(){ $('#modal-groups').modal("hide");});
+                $('#add-node-to-group-close').click(function(){ $('#modal-groups').modal("hide");});
+            }
         })
         .catch(function (error) {
         });
@@ -1348,7 +1416,11 @@ function addNodesToGroup(uuid){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetGroupsDetails();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{
+                GetGroupsDetails();
+            }
         })
         .catch(function (error) {
         });  
@@ -1367,18 +1439,22 @@ function deleteNodeForGroup(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Delete group error!</strong> '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
         }else{
-            GetGroupsDetails();
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Delete group error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetGroupsDetails();
+            }
         }
     })
     .catch(function error(error) {
@@ -1449,29 +1525,35 @@ function SyncRulesetToAllGroupNodes(guuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        document.getElementById('progressBar-options-div').style.display="none";
-        document.getElementById('progressBar-options').style.display="none"; 
-
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> Ruleset synchronized succesfully for all group nodes.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+            document.getElementById('progressBar-options-div').style.display="none";
+            document.getElementById('progressBar-options').style.display="none"; 
         }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            document.getElementById('progressBar-options-div').style.display="none";
+            document.getElementById('progressBar-options').style.display="none"; 
+    
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Ruleset synchronized succesfully for all group nodes.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -1538,27 +1620,31 @@ function updateGroupService(uuid, type, value){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.ack == "false"){
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
             }else{
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                        '<strong>Success!</strong> Group value updated successfully.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                    GetGroupsDetails();
+                if(response.data.ack == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                            '<strong>Success!</strong> Group value updated successfully.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        GetGroupsDetails();
+                }
             }
         })
         .catch(function error(error) {
@@ -1621,27 +1707,31 @@ function addCluster(uuid, path){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.ack == "false"){
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Add cluster: '+response.data.error+''+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
             }else{
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                        '<strong>Success!</strong> Cluster added successfully.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                    GetGroupsDetails();
+                if(response.data.ack == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong> Add cluster: '+response.data.error+''+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                            '<strong>Success!</strong> Cluster added successfully.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        GetGroupsDetails();
+                }
             }
         })
         .catch(function error(error) {

@@ -78,26 +78,30 @@ function ChangePasswordLogin(){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (response.data.ack == "false") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Change password: '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
             }else{
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> Password changed succcessfully!'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Change password: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Password changed succcessfully!'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
             }
         })
         .catch(function (error) {
@@ -117,4 +121,16 @@ function ChangePasswordLogin(){
 function Logout(){
     document.cookie = "";
     document.location.href='https://'+location.hostname+'/login.html';
+}
+
+function PrivilegesMessage(){
+    $('html,body').scrollTop(0);
+    var alert = document.getElementById('floating-alert');
+    alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+        '<strong>Error!</strong> You don\'t have enough user privileges.'+
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+            '<span aria-hidden="true">&times;</span>'+
+        '</button>'+
+    '</div>';
+    setTimeout(function() {$(".alert").alert('close')}, 5000);
 }

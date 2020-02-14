@@ -60,6 +60,9 @@ function LoadFileLastLines(uuid, line, path) {
     })
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -81,6 +84,7 @@ function LoadFileLastLines(uuid, line, path) {
                 document.getElementById('lower-buttons-file').innerHTML = '<button type="button" class="btn btn-secondary" onclick="closeCurrentFile()">Close</button>  &nbsp <button type="button" class="btn btn-primary" onclick="saveCurrentContent()">Save</button>'; 
                 document.getElementById('inputTextTailLines').value = response.data["result"];
             }
+        }
         })
         .catch(function (error) {
 
@@ -116,7 +120,11 @@ function saveCurrentContent() {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        LoadFileLastLines(uuid, "none", path);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            LoadFileLastLines(uuid, "none", path);
+        }
     })
     .catch(function (error) {
     });

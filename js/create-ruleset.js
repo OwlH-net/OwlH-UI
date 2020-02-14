@@ -40,15 +40,19 @@ function loadRulesData(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
-        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
-        for (source in response.data){
-            if (response.data[source]["type"]){
-                document.getElementById('checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
-            }else{
-                continue;
-            }
-        }         
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{
+            result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+            for (source in response.data){
+                if (response.data[source]["type"]){
+                    document.getElementById('checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
+                }else{
+                    continue;
+                }
+            }         
+        }
     })
     .catch(function (error) {
         result.innerHTML = '<h3 align="center">No connection</h3>'+
@@ -335,92 +339,98 @@ function modalAddNewRuleset(){
                 data: nodeJSON
             })
             .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}               
-                if (response.data.ack == "true"){                
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}               
+                if(response.data.privileges == "none"){
                     document.getElementById('progressBar-create-div').style.display="none";
                     document.getElementById('progressBar-create').style.display="none";
-                    document.location.href = 'https://' + location.hostname + '/rulesets.html';
-                }else if (response.data.ack == "false"){
-                    $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
-                    document.getElementById('progressBar-create-div').style.display="none";
-                    document.getElementById('progressBar-create').style.display="none";
-    
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> '+response.data.error+'.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);                    
+                    PrivilegesMessage();              
                 }else{
-                    // var enabled = true;
-                    // for(sid in response.data){
-                    //     if(response.data[sid]["enabled"] != "Enabled"){
-                    //         enabled = false;
-                    //     }
-                    // }
-                    // if (enabled){
+                    if (response.data.ack == "true"){                
+                        document.getElementById('progressBar-create-div').style.display="none";
+                        document.getElementById('progressBar-create').style.display="none";
+                        document.location.href = 'https://' + location.hostname + '/rulesets.html';
+                    }else if (response.data.ack == "false"){
                         $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
                         document.getElementById('progressBar-create-div').style.display="none";
                         document.getElementById('progressBar-create').style.display="none";
+        
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong> '+response.data.error+'.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);                    
+                    }else{
+                        // var enabled = true;
+                        // for(sid in response.data){
+                        //     if(response.data[sid]["enabled"] != "Enabled"){
+                        //         enabled = false;
+                        //     }
+                        // }
+                        // if (enabled){
+                            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                            document.getElementById('progressBar-create-div').style.display="none";
+                            document.getElementById('progressBar-create').style.display="none";
+                                
+                            lines = JSON.parse(response.data)
+                            var html =
+                            '<div class="modal-dialog modal-lg">'+
+                                '<div class="modal-content">'+
                             
-                        lines = JSON.parse(response.data)
-                        var html =
-                        '<div class="modal-dialog modal-lg">'+
-                            '<div class="modal-content">'+
-                        
-                                '<div class="modal-header">'+
-                                    '<h4 class="modal-title">Lines duplicated</h4>'+
-                                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                                '</div>'+
-                        
-                                '<div class="modal-body">'+
-                                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                                        '<thead>                                                      ' +
-                                            '<tr>                                                         ' +
-                                            '<th>SID</th>                                                ' +
-                                            '<th>Files</th>                                         ' +
-                                            '</tr>                                                        ' +
-                                        '</thead>                                                     ' +
-                                        '<tbody>                                                     '
-                                            for (sid in lines){
-                                                for(values in lines[sid]){
-                                                    var cont = true;
-                                                    for(data in lines[sid][values]){                                                    
-                                                        html = html + '<tr>'
-                                                        if (cont){
+                                    '<div class="modal-header">'+
+                                        '<h4 class="modal-title">Lines duplicated</h4>'+
+                                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                                    '</div>'+
+                            
+                                    '<div class="modal-body">'+
+                                        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                            '<thead>                                                      ' +
+                                                '<tr>                                                         ' +
+                                                '<th>SID</th>                                                ' +
+                                                '<th>Files</th>                                         ' +
+                                                '</tr>                                                        ' +
+                                            '</thead>                                                     ' +
+                                            '<tbody>                                                     '
+                                                for (sid in lines){
+                                                    for(values in lines[sid]){
+                                                        var cont = true;
+                                                        for(data in lines[sid][values]){                                                    
+                                                            html = html + '<tr>'
+                                                            if (cont){
+                                                                html = html + 
+                                                                '<th rowspan="'+lines[sid]["counter"]+'">' +
+                                                                    sid +
+                                                                '</th>'
+                                                                cont = false;
+                                                            }
                                                             html = html + 
-                                                            '<th rowspan="'+lines[sid]["counter"]+'">' +
-                                                                sid +
-                                                            '</th>'
-                                                            cont = false;
+                                                            '<td style="word-wrap: break-word;">'+
+                                                                lines[sid][values][data]["fileName"] +
+                                                            '</td></tr>'
                                                         }
-                                                        html = html + 
-                                                        '<td style="word-wrap: break-word;">'+
-                                                            lines[sid][values][data]["fileName"] +
-                                                        '</td></tr>'
                                                     }
                                                 }
-                                            }
-                                        html = html + '</tbody></table>'+
+                                            html = html + '</tbody></table>'+
+                                    '</div>'+
+                            
+                                    '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                                        '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                                    '</div>'+
+                            
                                 '</div>'+
-                        
-                                '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
-                                    '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                                '</div>'+
-                        
-                            '</div>'+
-                        '</div>';
-                
-                        document.getElementById('modal-window').innerHTML = html;
-                        $('#modal-window').modal('show')     
-                    // }else{
-                    //     document.getElementById('progressBar-create-div').style.display="none";
-                    //     document.getElementById('progressBar-create').style.display="none";
-                    //     document.location.href = 'https://' + location.hostname + '/rulesets.html';
-                    // }
+                            '</div>';
+                    
+                            document.getElementById('modal-window').innerHTML = html;
+                            $('#modal-window').modal('show')     
+                        // }else{
+                        //     document.getElementById('progressBar-create-div').style.display="none";
+                        //     document.getElementById('progressBar-create').style.display="none";
+                        //     document.location.href = 'https://' + location.hostname + '/rulesets.html';
+                        // }
+                    }
                 }
             })
             .catch(function (error) {

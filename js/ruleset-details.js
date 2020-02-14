@@ -21,11 +21,15 @@ function GetAllRulesetDetails(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack){
-            result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
-        }else{
-            result.innerHTML = generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid);
-            // changeIconAttributes(response.data);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack){
+                result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
+            }else{
+                result.innerHTML = generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid);
+                // changeIconAttributes(response.data);
+            }
         }
     })
     .catch(function (error) {
@@ -144,7 +148,11 @@ function addNewLines(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllRulesetDetails();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllRulesetDetails();
+            }
         })
         .catch(function error() {
         });
@@ -221,7 +229,11 @@ function overwriteRuleFile(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllRulesetDetails();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllRulesetDetails();
+            }
         })
         .catch(function error() {
         });
@@ -243,7 +255,11 @@ function deleteRulesetDetails(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllRulesetDetails();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllRulesetDetails();
+            }
         })
         .catch(function error() {
         });

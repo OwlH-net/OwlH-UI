@@ -16,8 +16,12 @@ function compareFiles(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            resultElement.innerHTML = generateAllLinesHTMLOutput (response);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}    
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{
+                resultElement.innerHTML = generateAllLinesHTMLOutput (response);
+            }        
         })
         .catch(function (error) {
         });   
@@ -31,14 +35,14 @@ function generateAllLinesHTMLOutput (response){
     var isEmptyRulesets = true;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
-        '<tr>                                                         ' +
-        '<th style="width: 10%">Sid</th>                                                 ' +
-        '<th style="width: 10%">Ruleset file status</th>                                ' +
-        '<th style="width: 30%">Ruleset file line</th>                                       ' +
-        '<th style="width: 10%">Source file line status</th>                                ' +
-        '<th style="width: 30%">Source file line</th>                                       ' +
-        '<th style="width: 10%">Actions</th>                                             ' +
-        '</tr>                                                        ' +
+            '<tr>                                                         ' +
+                '<th style="width: 10%">Sid</th>                                                 ' +
+                '<th style="width: 10%">Ruleset file status</th>                                ' +
+                '<th style="width: 30%">Ruleset file line</th>                                       ' +
+                '<th style="width: 10%">Source file line status</th>                                ' +
+                '<th style="width: 30%">Source file line</th>                                       ' +
+                // '<th style="width: 10%">Actions</th>                                             ' +
+            '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody>                                                     ' 
     for (line in lines) {
@@ -73,17 +77,19 @@ function generateAllLinesHTMLOutput (response){
             iconOld +
             '</td><td style="word-wrap: break-word;">                                                            ' +
             '<p id="'+line+'-old">'+lines[line]["old"]+'</p>' +
-            '</td><td style="word-wrap: break-word;">                                                            ' +
-            '<a class="btn btn-primary">Details</a>                               ' +
-            '<div class="form-check">                         '+
-                '<input class="form-check-input" type="radio" name="'+line+'" value="new">                         '+
-                '<label class="form-check-label">New line</label>                         '+
-            '</div>                         '+
-            '<div class="form-check">                         '+
-                '<input class="form-check-input" type="radio" name="'+line+'" value="old" checked="checked">                         '+
-                '<label class="form-check-label">Old line</label>                         '+
-            '</div>                         '+
-            '</td></tr>'
+            // '</td>'+
+            // '<td style="word-wrap: break-word;">                                                            ' +
+            // '<a class="btn btn-primary">Details</a>                               ' +
+            // '<div class="form-check">                         '+
+            //     '<input class="form-check-input" type="radio" name="'+line+'" value="new">                         '+
+            //     '<label class="form-check-label">New line</label>                         '+
+            // '</div>                         '+
+            // '<div class="form-check">                         '+
+            //     '<input class="form-check-input" type="radio" name="'+line+'" value="old" checked="checked">                         '+
+            //     '<label class="form-check-label">Old line</label>                         '+
+            // '</div>                         '+
+            // '</td>'+
+            '</tr>'
     }
 
     html = html + 

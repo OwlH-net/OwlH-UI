@@ -20,7 +20,12 @@ function saveFileChanged() {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        location.reload(true);        
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{
+            location.reload(true);       
+        }
+        
     })
     .catch(function (error) {
         $('html,body').scrollTop(0);

@@ -49,7 +49,11 @@ function getAllFiles() {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            files.innerHTML = generateAllFilesOutput(response, node);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{
+                files.innerHTML = generateAllFilesOutput(response, node);
+            }
         })
         .catch(function (error) {
             files.innerHTML = '<h3 align="center">No connection</h3>'+

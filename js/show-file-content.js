@@ -27,11 +27,15 @@ function loadFileIntoTextarea(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false") {
-            return '<div style="text-align:center"><h3 style="color:red;">Error retrieving file content...</h3></div>';
-        }else{
-            for(x in response.data){
-                txtArea.innerHTML = response.data[x];
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                return '<div style="text-align:center"><h3 style="color:red;">Error retrieving file content...</h3></div>';
+            }else{
+                for(x in response.data){
+                    txtArea.innerHTML = response.data[x];
+                }
             }
         }
     })
@@ -67,18 +71,22 @@ function saveFileChanged() {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Error saving file content: '+response.data.error+''+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            window.history.back();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Error saving file content: '+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                window.history.back();
+            }
         }
     })
     .catch(function (error) {

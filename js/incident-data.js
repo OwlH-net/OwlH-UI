@@ -52,76 +52,82 @@ function loadIncidentData(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.ack == "false"){
+        if(response.data.privileges == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            document.getElementById("incident-data-content").innerHTML = '<h3 class="text-center">There are not incidents</h3>';
+            PrivilegesMessage();              
         }else{
-            var isEmpty = true;
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
-    
-            html = '<div class="input-group" width="100%">'+
-                '<input class="form-control mx-3" type="text" placeholder="Search by name..." aria-label="Search" id="search-value-details">'+
-                '<a type="button" class="btn btn-primary" id="incident-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
-            '</div><br>'+
-            '<div>'+
-                '<span id="sort-incident-date" onclick="sortTable()" sort="desc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;" title="Sort table by date">Sort by date</span>'+
-            '<div>'+
-            '<br>'+
-            '<table class="table" style="table-layout: fixed" style="width:1px" id="incident-table">'+
-                '<thead>'+
-                    '<tr>'+
-                        '<th onclick="sortTable()">Date</th>'+
-                        '<th>Device</th>'+
-                        '<th>Status</th>'+
-                        '<th>Level</th>'+
-                        '<th>Actions</th>'+
-                    '</tr>'+
-                '</thead>'+
-                '<tbody>';
-                    for(data in response.data){
-                        isEmpty = false;
-                        html = html + '<tr date="'+response.data[data]["date"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["desc"]+'" ip="'+response.data[data]["deviceIp"]+'">'+
-                            '<td>'+response.data[data]["date"]+'</td>'+
-                            '<td>'+response.data[data]["deviceName"]+'</td>'+                        
-                            '<td>'+response.data[data]["status"]+'</td>'+
-                            '<td>'+response.data[data]["level"]+'</td>'+
-                            '<td><i class="fas fa-chevron-circle-down" style="cursor:pointer;" onclick="showincidentDetails(\''+data+'\')" id="details-show-'+data+'"></i></td>'+
-                        '</tr>'+
-                        '<tr date="'+response.data[data]["date"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["desc"]+'" ip="'+response.data[data]["deviceIp"]+'">'+
-                            '<td colspan="5">'+
-                                '<table id="incident-'+data+'" style="display: none;" class="table" style="table-layout: fixed" style="width:100%">'+
-                                    '<tr date="'+response.data[data]["date"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["desc"]+'" ip="'+response.data[data]["deviceIp"]+'">'+
-                                        '<td>';
-                                            for(param in response.data[data]){
-                                                html = html + '<b>'+param+': </b>'+response.data[data][param]+'<br>';
-                                            }
-                                        html = html + '</td>'+
-                                    '</tr>'+
-                                '</table>'+
-                            '</td>'+
-                        '</tr>';
-                    }
-                    
-                html = html + '</tbody>'+
-            '</table>';
-    
-            if (isEmpty == true){
-                html = '<h2 class="text-center">There are no incidents available</h2>';
-            }
-            document.getElementById("incident-data-content").innerHTML = html;
-
-            //search bar
-            $('#incident-search-value').click(function(){ loadValueBySearch(document.getElementById('search-value-details').value)});
+            if(response.data.ack == "false"){
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                document.getElementById("incident-data-content").innerHTML = '<h3 class="text-center">There are not incidents</h3>';
+            }else{
+                var isEmpty = true;
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
         
-            // listener for seach bar
-            document.getElementById('search-value-details').addEventListener('input', evt => {
-                if (document.getElementById('search-value-details').value.trim() == ""){ showAllHiddenRows();} 
-            });
-
-            //sort table by date
-            // sortTable();
+                html = '<div class="input-group" width="100%">'+
+                    '<input class="form-control mx-3" type="text" placeholder="Search by name..." aria-label="Search" id="search-value-details">'+
+                    '<a type="button" class="btn btn-primary" id="incident-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
+                '</div><br>'+
+                '<div>'+
+                    '<span id="sort-incident-date" onclick="sortTable()" sort="desc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;" title="Sort table by date">Sort by date</span>'+
+                '<div>'+
+                '<br>'+
+                '<table class="table" style="table-layout: fixed" style="width:1px" id="incident-table">'+
+                    '<thead>'+
+                        '<tr>'+
+                            '<th onclick="sortTable()">Date</th>'+
+                            '<th>Device</th>'+
+                            '<th>Status</th>'+
+                            '<th>Level</th>'+
+                            '<th>Actions</th>'+
+                        '</tr>'+
+                    '</thead>'+
+                    '<tbody>';
+                        for(data in response.data){
+                            isEmpty = false;
+                            html = html + '<tr date="'+response.data[data]["date"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["desc"]+'" ip="'+response.data[data]["deviceIp"]+'">'+
+                                '<td>'+response.data[data]["date"]+'</td>'+
+                                '<td>'+response.data[data]["deviceName"]+'</td>'+                        
+                                '<td>'+response.data[data]["status"]+'</td>'+
+                                '<td>'+response.data[data]["level"]+'</td>'+
+                                '<td><i class="fas fa-chevron-circle-down" style="cursor:pointer;" onclick="showincidentDetails(\''+data+'\')" id="details-show-'+data+'"></i></td>'+
+                            '</tr>'+
+                            '<tr date="'+response.data[data]["date"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["desc"]+'" ip="'+response.data[data]["deviceIp"]+'">'+
+                                '<td colspan="5">'+
+                                    '<table id="incident-'+data+'" style="display: none;" class="table" style="table-layout: fixed" style="width:100%">'+
+                                        '<tr date="'+response.data[data]["date"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["desc"]+'" ip="'+response.data[data]["deviceIp"]+'">'+
+                                            '<td>';
+                                                for(param in response.data[data]){
+                                                    html = html + '<b>'+param+': </b>'+response.data[data][param]+'<br>';
+                                                }
+                                            html = html + '</td>'+
+                                        '</tr>'+
+                                    '</table>'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                        
+                    html = html + '</tbody>'+
+                '</table>';
+        
+                if (isEmpty == true){
+                    html = '<h2 class="text-center">There are no incidents available</h2>';
+                }
+                document.getElementById("incident-data-content").innerHTML = html;
+    
+                //search bar
+                $('#incident-search-value').click(function(){ loadValueBySearch(document.getElementById('search-value-details').value)});
+            
+                // listener for seach bar
+                document.getElementById('search-value-details').addEventListener('input', evt => {
+                    if (document.getElementById('search-value-details').value.trim() == ""){ showAllHiddenRows();} 
+                });
+    
+                //sort table by date
+                // sortTable();
+            }
         }
     })
     .catch(function (error) {

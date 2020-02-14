@@ -16,21 +16,25 @@ function loadRulesetContent(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error: </strong>'+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-            return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
-         }else{
-             textArea.innerHTML = response.data.fileContent;
-             return true;
-         }
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
+             }else{
+                 textArea.innerHTML = response.data.fileContent;
+                 return true;
+             }
+        }
     })
     .catch(function (error) {
         return false;
@@ -58,8 +62,12 @@ function saveRulesetContent(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        closeFileChanged();
-        return true;
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{
+            closeFileChanged();
+            return true;
+        }
     })
     .catch(function (error) {
         return false;

@@ -253,26 +253,30 @@ function deployMaster(value){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> '+value+' deployed successfully.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
         }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+value+' has not been deployed.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> '+value+' deployed successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+value+' has not been deployed.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -291,57 +295,61 @@ function loadNetworkValues(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        var html = '<div class="modal-dialog modal-sm">'+
-            '<div class="modal-content">'+
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{
+            var html = '<div class="modal-dialog modal-sm">'+
+                '<div class="modal-content">'+
+            
+                    '<div class="modal-header">'+
+                        '<h4 class="modal-title" id="delete-node-header">Networks</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>'+
         
-                '<div class="modal-header">'+
-                    '<h4 class="modal-title" id="delete-node-header">Networks</h4>'+
-                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '<div class="modal-body" id="delete-node-footer-table">';
+                    
+                        if (response.data.ack == "false"){
+                            html = html + '<span><h6>Error loading interfaces</h6></span>';
+                        } else {
+                            html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                '<thead>              ' +
+                                '<tr>                 ' +
+                                '<th>Network</th>        ' +
+                                '<th>Select</th>     ' +
+                                '</tr>                ' +
+                                '</thead>             ' +
+                                '<tbody >             ' ;
+                                for (net in response.data){
+                                    html = html + 
+                                    '<tr>'+
+                                        '<td style="word-wrap: break-word;">' +
+                                            response.data[net]+
+                                        '</td><td style="word-wrap: break-word;">' +
+                                            '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                                        '</td>'+
+                                    '</tr>';
+                                }
+                                html = html + '</tbody>'+
+                                '</table>';
+                        }
+                    html = html + '</div>'+
+        
+                    '<div class="modal-footer" id="delete-node-footer-btn">'+
+                        '<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close-interface">Close</button>'+
+                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-update-interface" onclick="updateMasterNetworkInterface()">Deploy</button>'+
+                    '</div>'+
+        
                 '</div>'+
-    
-                '<div class="modal-body" id="delete-node-footer-table">';
-                
-                    if (response.data.ack == "false"){
-                        html = html + '<span><h6>Error loading interfaces</h6></span>';
-                    } else {
-                        html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                            '<thead>              ' +
-                            '<tr>                 ' +
-                            '<th>Network</th>        ' +
-                            '<th>Select</th>     ' +
-                            '</tr>                ' +
-                            '</thead>             ' +
-                            '<tbody >             ' ;
-                            for (net in response.data){
-                                html = html + 
-                                '<tr>'+
-                                    '<td style="word-wrap: break-word;">' +
-                                        response.data[net]+
-                                    '</td><td style="word-wrap: break-word;">' +
-                                        '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
-                                    '</td>'+
-                                '</tr>';
-                            }
-                            html = html + '</tbody>'+
-                            '</table>';
-                    }
-                html = html + '</div>'+
-    
-                '<div class="modal-footer" id="delete-node-footer-btn">'+
-                    '<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close-interface">Close</button>'+
-                    '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-update-interface" onclick="updateMasterNetworkInterface()">Deploy</button>'+
-                '</div>'+
-    
-            '</div>'+
-        '</div>';
-        document.getElementById('modal-master').innerHTML = html;
-        //load interfaces
-        LoadMasterNetworkValuesSelected();   
-        //close modal     
-        // $('#btn-close-interface').click(function() {
-            // $('#modal-master').modal('hide');
-        $('#modal-master').modal().hide();
-        // });
+            '</div>';
+            document.getElementById('modal-master').innerHTML = html;
+            //load interfaces
+            LoadMasterNetworkValuesSelected();   
+            //close modal     
+            // $('#btn-close-interface').click(function() {
+                // $('#modal-master').modal('hide');
+            $('#modal-master').modal().hide();
+            // });
+        }
     })
     .catch(function (error) {
     });
@@ -359,51 +367,56 @@ function loadNetworkStapValues(uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        var html = '<div class="modal-dialog modal-sm">'+
-            '<div class="modal-content">'+
+        if(response.data.privileges == "none"){
+            $('#modal-master').modal().hide();
+            PrivilegesMessage();              
+        }else{
+            var html = '<div class="modal-dialog modal-sm">'+
+                '<div class="modal-content">'+
+            
+                    '<div class="modal-header">'+
+                        '<h4 class="modal-title" id="delete-node-header">STAP Networks</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>'+
         
-                '<div class="modal-header">'+
-                    '<h4 class="modal-title" id="delete-node-header">STAP Networks</h4>'+
-                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '<div class="modal-body" id="delete-node-footer-table">';
+                    
+                        if (response.data.ack == "false"){
+                            html = html + '<span><h6>Error loading interfaces</h6></span>';
+                        } else {
+                            html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                '<thead>              ' +
+                                '<tr>                 ' +
+                                '<th>Network</th>        ' +
+                                '<th>Select</th>     ' +
+                                '</tr>                ' +
+                                '</thead>             ' +
+                                '<tbody >             ' ;
+                                for (net in response.data){
+                                    html = html + 
+                                    '<tr>'+
+                                        '<td style="word-wrap: break-word;">' +
+                                            response.data[net]+
+                                        '</td><td style="word-wrap: break-word;">' +
+                                            '<input type="radio" id="stap-value-'+net+'" value="'+net+'" name="net-select">'+
+                                        '</td>'+
+                                    '</tr>';
+                                }
+                                html = html + '</tbody>'+
+                                '</table>';
+                        }
+                    html = html + '</div>'+
+        
+                    '<div class="modal-footer" id="delete-node-footer-btn">'+
+                        '<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close-interface">Close</button>'+
+                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-update-interface" onclick="updateMasterStapInterface(\''+uuid+'\')">Deploy</button>'+
+                    '</div>'+
+        
                 '</div>'+
-    
-                '<div class="modal-body" id="delete-node-footer-table">';
-                
-                    if (response.data.ack == "false"){
-                        html = html + '<span><h6>Error loading interfaces</h6></span>';
-                    } else {
-                        html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                            '<thead>              ' +
-                            '<tr>                 ' +
-                            '<th>Network</th>        ' +
-                            '<th>Select</th>     ' +
-                            '</tr>                ' +
-                            '</thead>             ' +
-                            '<tbody >             ' ;
-                            for (net in response.data){
-                                html = html + 
-                                '<tr>'+
-                                    '<td style="word-wrap: break-word;">' +
-                                        response.data[net]+
-                                    '</td><td style="word-wrap: break-word;">' +
-                                        '<input type="radio" id="stap-value-'+net+'" value="'+net+'" name="net-select">'+
-                                    '</td>'+
-                                '</tr>';
-                            }
-                            html = html + '</tbody>'+
-                            '</table>';
-                    }
-                html = html + '</div>'+
-    
-                '<div class="modal-footer" id="delete-node-footer-btn">'+
-                    '<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close-interface">Close</button>'+
-                    '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-update-interface" onclick="updateMasterStapInterface(\''+uuid+'\')">Deploy</button>'+
-                '</div>'+
-    
-            '</div>'+
-        '</div>';
-        document.getElementById('modal-master').innerHTML = html;        
-        $('#modal-master').modal().hide();
+            '</div>';
+            document.getElementById('modal-master').innerHTML = html;        
+            $('#modal-master').modal().hide();
+        }
     })
     .catch(function (error) {
     });
@@ -434,8 +447,13 @@ function updateMasterStapInterface(uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        $('#modal-master').modal('hide');
-        PingPlugins();
+        if(response.data.privileges == "none"){
+            $('#modal-master').modal('hide');
+            PrivilegesMessage();              
+        }else{
+            $('#modal-master').modal('hide');
+            PingPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -465,8 +483,13 @@ function updateMasterNetworkInterface(){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}        
-        $('#modal-master').modal('hide');
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}   
+        if(response.data.privileges == "none"){
+            $('#modal-master').modal('hide');
+            PrivilegesMessage();              
+        }else{
+            $('#modal-master').modal('hide');
+        }     
     })
     .catch(function (error) {
     });
@@ -484,10 +507,14 @@ function DeployServiceMaster(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "true"){
-            document.getElementById('owlhMasterService').style.display = "none";
-        }else {
-            document.getElementById('owlhMasterService').style.display = "block";
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{
+            if (response.data.ack == "true"){
+                document.getElementById('owlhMasterService').style.display = "none";
+            }else {
+                document.getElementById('owlhMasterService').style.display = "block";
+            }
         }
     })
     .catch(function (error) {
@@ -505,12 +532,16 @@ function PingServiceMaster(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}        
-        if (response.data.ack == "true"){
-            document.getElementById('owlhMasterService').style.display = "none";
-        }else {
-            document.getElementById('owlhMasterService').style.display = "block";
-        }
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';} 
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{
+            if (response.data.ack == "true"){
+                document.getElementById('owlhMasterService').style.display = "none";
+            }else {
+                document.getElementById('owlhMasterService').style.display = "block";
+            }
+        }       
     })
     .catch(function (error) {
     });
@@ -529,7 +560,11 @@ function LoadMasterNetworkValuesSelected(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        document.getElementById('net-value-'+response.data["interface"]["value"]).checked = "true"
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{
+            document.getElementById('net-value-'+response.data["interface"]["value"]).checked = "true"
+        }
     })
     .catch(function (error) {
     });
@@ -567,171 +602,175 @@ function PingPlugins(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}   
-        for (line in response.data){
-            if (line == "dispatcher"){
-                if (response.data[line]["status"] == "enabled"){
-                    document.getElementById(line+'-status').style.color = "green";
-                    document.getElementById(line+'-status').value = "disabled";
-                    document.getElementById(line+'-status').className = "badge bg-success align-text-bottom text-white";
-                    document.getElementById(line+'-status').innerHTML = "ON";
-                    document.getElementById(line+'-button').title = "Stop "+line;
-                    document.getElementById(line+'-button').className = "fas fa-stop-circle";
-                }else if (response.data[line]["status"] == "disabled"){
-                    document.getElementById(line+'-status').style.color = "red";
-                    document.getElementById(line+'-status').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(line+'-status').innerHTML = "OFF";
-                    document.getElementById(line+'-status').value = "enabled";
-                    document.getElementById(line+'-button').title = "Play "+line;
-                    document.getElementById(line+'-button').className = "fas fa-play-circle";
-                }
-            }else if (response.data[line]["type"] == "socket-network"){                
-                tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
-                        if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                            if(response.data[line]["running"]=="true"){
-                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                            }
-                        }else{
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                            if(response.data[line]["running"]=="true"){
-                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                            }
-                        }                    
-                    tableSocketNetwork = tableSocketNetwork + '</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
-                        if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor:pointer;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
-                        }else if (response.data[line]["pid"] != "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor:pointer;" onclick="StopStapServiceMaster(\''+line+'\', \'socket-network\')"></i> &nbsp';
-                        }                        
-
-                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor:pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+                        
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor:pointer;"></i>'+
-                    '</td>'+
-                '</tr>'+
-                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="4">'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                            '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+response.data[line]["name"]+'\', \''+line+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;" >'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                            '</div>'+
-                        '</div>'+
-                        '<br>'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-network\', \''+line+'\')">Save</button>'+    
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                '</tr>';
-
-            }else if (response.data[line]["type"] == "socket-pcap"){                
-                tableSocketPcap = tableSocketPcap + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
-                    if (response.data[line]["pid"] == "none"){
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                        if(response.data[line]["running"]=="true"){
-                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                        }else{
-                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                        }
-                    }else{
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                        if(response.data[line]["running"]=="true"){
-                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                        }else{
-                            tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                        }
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{            
+            for (line in response.data){
+                if (line == "dispatcher"){
+                    if (response.data[line]["status"] == "enabled"){
+                        document.getElementById(line+'-status').style.color = "green";
+                        document.getElementById(line+'-status').value = "disabled";
+                        document.getElementById(line+'-status').className = "badge bg-success align-text-bottom text-white";
+                        document.getElementById(line+'-status').innerHTML = "ON";
+                        document.getElementById(line+'-button').title = "Stop "+line;
+                        document.getElementById(line+'-button').className = "fas fa-stop-circle";
+                    }else if (response.data[line]["status"] == "disabled"){
+                        document.getElementById(line+'-status').style.color = "red";
+                        document.getElementById(line+'-status').className = "badge bg-danger align-text-bottom text-white";
+                        document.getElementById(line+'-status').innerHTML = "OFF";
+                        document.getElementById(line+'-status').value = "enabled";
+                        document.getElementById(line+'-button').title = "Play "+line;
+                        document.getElementById(line+'-button').className = "fas fa-play-circle";
                     }
-                    tableSocketPcap = tableSocketPcap + '</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
+                }else if (response.data[line]["type"] == "socket-network"){                
+                    tableSocketNetwork = tableSocketNetwork + '<tr>'+
+                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }else{
+                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }                    
+                        tableSocketNetwork = tableSocketNetwork + '</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor:pointer;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
+                            }else if (response.data[line]["pid"] != "none"){
+                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor:pointer;" onclick="StopStapServiceMaster(\''+line+'\', \'socket-network\')"></i> &nbsp';
+                            }                        
+    
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor:pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+                        
+                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor:pointer;"></i>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                        '<td style="word-wrap: break-word;" colspan="4">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Interface: <i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+response.data[line]["name"]+'\', \''+line+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;" >'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                '</div>'+
+                            '</div>'+
+                            '<br>'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-network\', \''+line+'\')">Save</button>'+    
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                    '</tr>';
+    
+                }else if (response.data[line]["type"] == "socket-pcap"){                
+                    tableSocketPcap = tableSocketPcap + '<tr>'+
+                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
                         if (response.data[line]["pid"] == "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey; cursor:pointer;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
-                        }else if (response.data[line]["pid"] != "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor:pointer;" onclick="StopStapServiceMaster( \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
                         }
-                        tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor:pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor:pointer;"></i>'+
-                    '</td>'+
-                '</tr>'+
-                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="6">'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                        tableSocketPcap = tableSocketPcap + '</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey; cursor:pointer;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
+                            }else if (response.data[line]["pid"] != "none"){
+                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor:pointer;" onclick="StopStapServiceMaster( \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                            }
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor:pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor:pointer;"></i>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                        '<td style="word-wrap: break-word;" colspan="6">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                '</div>'+
                             '</div>'+
-                            '<div class="col">'+
-                                'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
+                                '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'BPF: <i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue;" onclick="loadBPF(\''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                '</div>'+
                             '</div>'+
-                            '<div class="col">'+
-                                'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;" >'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                            '<br>'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-pcap\', \''+line+'\')">Save</button>'+    
+                                '</div>'+
                             '</div>'+
-                            '<div class="col">'+
-                                'BPF: <i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue;" onclick="loadBPF(\''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;" >'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                            '</div>'+
-                        '</div>'+
-                        '<br>'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-pcap\', \''+line+'\')">Save</button>'+    
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                '</tr>'; 
+                        '</td>'+
+                    '</tr>'; 
+                }
+                
+                document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
+                document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
             }
-            
-            document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
-            document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
-        }
+        } 
     })
     .catch(function (error) {
         // return false;
@@ -777,7 +816,11 @@ function saveStapChanges(type, uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        loadPlugins();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{            
+            loadPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -831,9 +874,13 @@ function saveBPF(uuid, value){
     })
      .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        document.getElementById('socket-pcap-bpf-'+uuid).value = value;
-        document.getElementById('socket-pcap-bpf-default-'+uuid).innerHTML = value;
-        //   loadPlugins();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{            
+            document.getElementById('socket-pcap-bpf-'+uuid).value = value;
+            document.getElementById('socket-pcap-bpf-default-'+uuid).innerHTML = value;
+            //   loadPlugins();
+        }
       })
       .catch(function (error) {
       });
@@ -885,7 +932,11 @@ function deleteServiceMaster(uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        loadPlugins();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{            
+            loadPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -911,7 +962,11 @@ function changePluginStatus(uuid,param,value){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        loadPlugins();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{            
+            loadPlugins();
+        }
     })
     .catch(function (error) {
         // return false;
@@ -937,7 +992,11 @@ function changeDataflowStatus(uuid,param,value){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        loadPlugins();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{            
+            loadPlugins();
+        }
     })
     .catch(function (error) {
         // return false;
@@ -958,20 +1017,24 @@ function PingCollector(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Master STAP Collector is not available.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else if (response.data != ""){
-            collectorMasterStatus.style.color="green";
-        }else{
-            collectorMasterStatus.style.color="red";
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{            
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Master STAP Collector is not available.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else if (response.data != ""){
+                collectorMasterStatus.style.color="green";
+            }else{
+                collectorMasterStatus.style.color="red";
+            }
         }
     })
     .catch(function (error) {
@@ -991,21 +1054,23 @@ function playMasterCollector(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Can\'t start Master STAP Collector.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Can\'t start Master STAP Collector.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
-        return true;
     })
     .catch(function (error) {
-        return false;
     });
 }
 
@@ -1021,18 +1086,22 @@ function stopMasterCollector(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Can\'t stop Master STAP Collector.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            return true;
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Can\'t stop Master STAP Collector.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                return true;
+            }
         }
     })
     .catch(function (error) {
@@ -1052,19 +1121,23 @@ function showMasterCollector(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Can\'t retrieve data from Master STAP Collector.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            showMasterModalCollector(response);
-            return true;
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Can\'t retrieve data from Master STAP Collector.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                showMasterModalCollector(response);
+                return true;
+            }
         }
     })
     .catch(function (error) {
@@ -1175,24 +1248,28 @@ function AddSTAPModal(type){
                 axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
                .then(function (response) {
                     if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-                    var isChecked = false;
-                    var inner = "";
-                    for (net in response.data){
-                        inner = inner + '<tr>'+
-                            '<td style="word-wrap: break-word;">' +
-                                '<p class="ml-4">'+response.data[net]+'</p>'+
-                            '</td>'+
-                            '<td style="word-wrap: break-word;">';
-                                if (!isChecked){
-                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
-                                    isChecked = true;
-                                }else{
-                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
-                                }
-                            inner = inner + '</td>'+
-                        '</tr>';
+                    if(response.data.privileges == "none"){
+                        PrivilegesMessage();              
+                    }else{   
+                        var isChecked = false;
+                        var inner = "";
+                        for (net in response.data){
+                            inner = inner + '<tr>'+
+                                '<td style="word-wrap: break-word;">' +
+                                    '<p class="ml-4">'+response.data[net]+'</p>'+
+                                '</td>'+
+                                '<td style="word-wrap: break-word;">';
+                                    if (!isChecked){
+                                        inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                                        isChecked = true;
+                                    }else{
+                                        inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                                    }
+                                inner = inner + '</td>'+
+                            '</tr>';
+                        }
+                        document.getElementById('socket-network-modal-table-master').innerHTML = inner;
                     }
-                    document.getElementById('socket-network-modal-table-master').innerHTML = inner;
                 });   
             }
         html = html + '</div>'+
@@ -1305,28 +1382,32 @@ function saveSoftwareTAP(type){
         })
        .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (response.data.ack == "true") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> '+type+' service added successfully.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error adding service: </strong>'+response.data.error+''+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "true") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> '+type+' service added successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error adding service: </strong>'+response.data.error+''+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
+                loadPlugins();
             }
-            loadPlugins();
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -1365,18 +1446,22 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            loadPlugins();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -1411,7 +1496,11 @@ function StopStapServiceMaster(uuid, type){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        loadPlugins();
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            loadPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -1444,58 +1533,62 @@ function loadNetworkValuesService(name, service){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}        
-        var html = '<div class="modal-dialog" id="network-modal-master">'+
-          '<div class="modal-content">'+
-
-            '<div class="modal-header" style="word-break: break-all;">'+
-              '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
-              '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
-            '</div>'+
-
-            '<div class="modal-body" id="delete-node-footer-table">';
-
-                if (response.data.ack == "false"){
-                    html = html + '<span><h6>Error loading interfaces</h6></span>';
-                } else {
-                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                    '<thead>              ' +
-                    '<tr>                 ' +
-                    '<th>Network</th>        ' +
-                    '<th>Select</th>     ' +
-                    '</tr>                ' +
-                    '</thead>             ' +
-                    '<tbody >             ' ;
-                    for (net in response.data){
-                        html = html +
-                        '<tr>'+
-                            '<td style="word-wrap: break-word;">' +
-                                response.data[net]+
-                            '</td><td style="word-wrap: break-word;">' +
-                                '<input class="suricata-interface" type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
-                            '</td>'+
-                        '</tr>';
-                    }
-                    html = html + '</tbody>'+
-                    '</table>';
-                }
-            html = html + '</div>'+
-
-            '<div class="modal-footer" id="delete-node-footer-btn">'+
-                '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
-                    if (response.data.ack != "false"){
-                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="SaveStapInterface(\''+service+'\')">Save</button>';
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var html = '<div class="modal-dialog" id="network-modal-master">'+
+              '<div class="modal-content">'+
+    
+                '<div class="modal-header" style="word-break: break-all;">'+
+                  '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
+                  '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
+                '</div>'+
+    
+                '<div class="modal-body" id="delete-node-footer-table">';
+    
+                    if (response.data.ack == "false"){
+                        html = html + '<span><h6>Error loading interfaces</h6></span>';
+                    } else {
+                        html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>              ' +
+                        '<tr>                 ' +
+                        '<th>Network</th>        ' +
+                        '<th>Select</th>     ' +
+                        '</tr>                ' +
+                        '</thead>             ' +
+                        '<tbody >             ' ;
+                        for (net in response.data){
+                            html = html +
+                            '<tr>'+
+                                '<td style="word-wrap: break-word;">' +
+                                    response.data[net]+
+                                '</td><td style="word-wrap: break-word;">' +
+                                    '<input class="suricata-interface" type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                        html = html + '</tbody>'+
+                        '</table>';
                     }
                 html = html + '</div>'+
-            '</div>'+
-
-          '</div>'+
-        '</div>';
-        document.getElementById('modal-master').innerHTML = html;
-
-        $('#modal-master').modal("show");
-        $('#btn-select-interface-cross').click(function(){ $('#modal-master').modal("hide"); });
-        $('#btn-select-interface-close').click(function(){ $('#modal-master').modal("hide"); });        
+    
+                '<div class="modal-footer" id="delete-node-footer-btn">'+
+                    '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
+                        if (response.data.ack != "false"){
+                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="SaveStapInterface(\''+service+'\')">Save</button>';
+                        }
+                    html = html + '</div>'+
+                '</div>'+
+    
+              '</div>'+
+            '</div>';
+            document.getElementById('modal-master').innerHTML = html;
+    
+            $('#modal-master').modal("show");
+            $('#btn-select-interface-cross').click(function(){ $('#modal-master').modal("hide"); });
+            $('#btn-select-interface-close').click(function(){ $('#modal-master').modal("hide"); });        
+        }      
     })
     .catch(function (error) {
     });
@@ -1529,9 +1622,13 @@ function SaveStapInterface(uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        // loadPlugins();
-        document.getElementById('socket-network-interface-default-'+uuid).innerHTML = valueSelected;
-        document.getElementById('socket-network-interface-'+uuid).value = valueSelected;
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            // loadPlugins();
+            document.getElementById('socket-network-interface-default-'+uuid).innerHTML = valueSelected;
+            document.getElementById('socket-network-interface-'+uuid).value = valueSelected;
+        }
     })
     .catch(function (error) {
     });

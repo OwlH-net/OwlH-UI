@@ -14,9 +14,15 @@ function GetAllRuleset() {
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid,{headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        resultElement.innerHTML = generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, rule, type, rulesetuuid);
-        progressBar.style.display = "none";
-        progressBarDiv.style.display = "none";
+        if(response.data.privileges == "none"){
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            PrivilegesMessage();              
+        }else{   
+            resultElement.innerHTML = generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, rule, type, rulesetuuid);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+        }
         
     })
     .catch(function (error) {
@@ -158,49 +164,53 @@ function getToCustomRuleset(rulesetuuid){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            var customRulesets = response.data;
-            var customRulesetModal = document.getElementById('modal-window-ruleset');
-            var html =
-             '<div class="modal-dialog modal-lg">'+ 
-                '<div class="modal-content">'+
-            
-                    '<div class="modal-header">'+
-                        '<h4 class="modal-title">Select ruleset</h4>'+
-                        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                var customRulesets = response.data;
+                var customRulesetModal = document.getElementById('modal-window-ruleset');
+                var html =
+                 '<div class="modal-dialog modal-lg">'+ 
+                    '<div class="modal-content">'+
+                
+                        '<div class="modal-header">'+
+                            '<h4 class="modal-title">Select ruleset</h4>'+
+                            '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>'+
+        
+                        '<div class="modal-body">  '+
+                            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                '<thead>                                                      ' +
+                                    '<tr>                                                         ' +
+                                    '<th>Name</th>                                                  ' +
+                                    '<th style="width: 20%">Actions</th>                                ' +
+                                    '</tr>                                                        ' +
+                                '</thead>                                                     ' +
+                                '<tbody>                                                      ' ;
+                                    for (source in customRulesets) {
+                                        html = html + '<tr><td style="word-wrap: break-word;">'+
+                                            customRulesets[source]['name']+
+                                        '</td><td style="word-wrap: break-word;">'+
+                                            '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\',\''+rulesetuuid+'\')">Add</button>' +
+                                        '</td></tr>';
+                                    }
+                                html = html + '</tbody></table>'+
+                            '</table>'+
+                        '</div>'+
+        
+                        '<div class="modal-footer" id="ruleset-note-footer-btn">'+
+                            '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+                    
+                        '</div>'+
+        
                     '</div>'+
-    
-                    '<div class="modal-body">  '+
-                        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                            '<thead>                                                      ' +
-                                '<tr>                                                         ' +
-                                '<th>Name</th>                                                  ' +
-                                '<th style="width: 20%">Actions</th>                                ' +
-                                '</tr>                                                        ' +
-                            '</thead>                                                     ' +
-                            '<tbody>                                                      ' ;
-                                for (source in customRulesets) {
-                                    html = html + '<tr><td style="word-wrap: break-word;">'+
-                                        customRulesets[source]['name']+
-                                    '</td><td style="word-wrap: break-word;">'+
-                                        '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addrulesToCustomRuleset(\''+allRulesSelected+'\',\''+source+'\',\''+rulesetuuid+'\')">Add</button>' +
-                                    '</td></tr>';
-                                }
-                            html = html + '</tbody></table>'+
-                        '</table>'+
-                    '</div>'+
-    
-                    '<div class="modal-footer" id="ruleset-note-footer-btn">'+
-                        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+                    
-                    '</div>'+
-    
-                '</div>'+
-            '</div>';
-    
-            customRulesetModal.innerHTML = html;
-            
-            $('#modal-window-ruleset').modal('show');
+                '</div>';
+        
+                customRulesetModal.innerHTML = html;
+                
+                $('#modal-window-ruleset').modal('show');
+            }
         })
         .catch(function (error) {
             $('#modal-window-ruleset').modal('hide');
@@ -234,8 +244,13 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            $('#modal-window-ruleset').modal('hide')   
-            GetAllRuleset();         
+            if(response.data.privileges == "none"){
+                $('#modal-window-ruleset').modal('hide')   
+                PrivilegesMessage();              
+            }else{   
+                $('#modal-window-ruleset').modal('hide')   
+                GetAllRuleset();         
+            }
         })
         .catch(function (error) {
             $('#modal-window-ruleset').modal('hide')
@@ -275,12 +290,16 @@ function changeRulesetStatus(sid, fileuuid, action) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (action == "Disable") {
-                document.getElementById(sid + '-rule-status').innerHTML = '<i class="fas fa-times-circle" style="color:red;"></i>';
-                document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, fileuuid, "Enable"); };
-            } else {
-                document.getElementById(sid + '-rule-status').innerHTML = '<i class="fas fa-check-circle" style="color:green;"></i>';
-                document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, fileuuid, "Disable"); };
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (action == "Disable") {
+                    document.getElementById(sid + '-rule-status').innerHTML = '<i class="fas fa-times-circle" style="color:red;"></i>';
+                    document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, fileuuid, "Enable"); };
+                } else {
+                    document.getElementById(sid + '-rule-status').innerHTML = '<i class="fas fa-check-circle" style="color:green;"></i>';
+                    document.getElementById(sid + '-change-status').onclick = function () { changeRulesetStatus(sid, fileuuid, "Disable"); };
+                }
             }
             return true
         })
@@ -332,12 +351,16 @@ function getRuleNote(elementID, fileuuid, sid) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (typeof (response.data) === 'object') {
-                loadNote.value = '';
-            } else {
-                loadNote.value = response.data;
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (typeof (response.data) === 'object') {
+                    loadNote.value = '';
+                } else {
+                    loadNote.value = response.data;
+                }
+                return true;
             }
-            return true;
         })
         .catch(function (error) {
             return false;
@@ -368,8 +391,12 @@ function rulesetNotes(sid, fileuuid) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            document.getElementById(sid + '-note').innerHTML = '<p>' + textAreaNote + '</p>';
-            return true
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                document.getElementById(sid + '-note').innerHTML = '<p>' + textAreaNote + '</p>';
+                return true
+            }
         })
         .catch(function (error) {
             return false;

@@ -40,8 +40,12 @@ function addServerToNode() {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllServers();
-            return true;
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllServers();
+                return true;
+            }
         })
         .catch(function (error) {
             return false;
@@ -70,8 +74,12 @@ function GetAllServers() {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        tableServer.innerHTML = generateAllServerHTMLOutput(response);
-        return true;
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            tableServer.innerHTML = generateAllServerHTMLOutput(response);
+            return true;
+        }
     })
     .catch(function (error) {
         tableServer.innerHTML = generateAllServerHTMLOutput(error);
@@ -187,37 +195,41 @@ function generateAllServerHTMLOutput(response) {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        var htmDetails =
-        '<div>'+
-            '<h3 class="mb-0 low-blue lh-100" style="display: inline-block;">Values for server: '+response.data[server]['name']+'</h3>                '+
-            '<button type="button" style="float:right; margin-bottom:30px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
-        '</div>'+
-        '<table class="table table-hover" id="server-details">                                      ' +    
-            '<thead>                                                            '+
-                '<tr>                                                         ' +
-                    '<th scope="col">Param</th>                                    ' +
-                    '<th scope="col">Value</th>                                  ' +
-                    '<th scope="col" colspan="15%">Actions</th>                                 ' +
-                '</tr>                                                        ' +
-            '</thead>                                                                           '+
-            '</tbody>                                                                   ';
-                for (nameDetail in response.data[server]){                                                                        
-                    htmDetails = htmDetails +
-                    '<tr>                                                                                                   ' +
-                        '<td style="word-wrap: break-word;" id class="align-middle">'+nameDetail+'</td>                                                    ' +
-                        '<td style="word-wrap: break-word;" id class="align-middle" >'+response.data[server][nameDetail]+'</td>                            ' +
-                        '<td style="word-wrap: break-word;"><i class="fas fa-sticky-note low-blue" title="Edit" data-toggle="modal" data-target="#modal-edit-stap-server" onclick="ModalEditStapServer(\''+server+'\',\''+nameDetail+'\',\''+response.data[server][nameDetail]+'\',\''+response.data[server]['name']+'\')"></i></td>                                  ' +
-                    '</tr>                                                                                                  ' ;
-                }
-            htmDetails = htmDetails +
-            '<tr><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td></tr>'+
-            '</tbody>                                                                                                   ' +
-        '</table>                                                                                                       ' +
-        '<div>                                                                                                          '+
-            '<button type="button" style="float:right; margin-bottom:50px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
-        '</div>                                                                                                         ';
-        serverDetails.innerHTML = htmDetails;
-        return true;   
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var htmDetails =
+            '<div>'+
+                '<h3 class="mb-0 low-blue lh-100" style="display: inline-block;">Values for server: '+response.data[server]['name']+'</h3>                '+
+                '<button type="button" style="float:right; margin-bottom:30px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
+            '</div>'+
+            '<table class="table table-hover" id="server-details">                                      ' +    
+                '<thead>                                                            '+
+                    '<tr>                                                         ' +
+                        '<th scope="col">Param</th>                                    ' +
+                        '<th scope="col">Value</th>                                  ' +
+                        '<th scope="col" colspan="15%">Actions</th>                                 ' +
+                    '</tr>                                                        ' +
+                '</thead>                                                                           '+
+                '</tbody>                                                                   ';
+                    for (nameDetail in response.data[server]){                                                                        
+                        htmDetails = htmDetails +
+                        '<tr>                                                                                                   ' +
+                            '<td style="word-wrap: break-word;" id class="align-middle">'+nameDetail+'</td>                                                    ' +
+                            '<td style="word-wrap: break-word;" id class="align-middle" >'+response.data[server][nameDetail]+'</td>                            ' +
+                            '<td style="word-wrap: break-word;"><i class="fas fa-sticky-note low-blue" title="Edit" data-toggle="modal" data-target="#modal-edit-stap-server" onclick="ModalEditStapServer(\''+server+'\',\''+nameDetail+'\',\''+response.data[server][nameDetail]+'\',\''+response.data[server]['name']+'\')"></i></td>                                  ' +
+                        '</tr>                                                                                                  ' ;
+                    }
+                htmDetails = htmDetails +
+                '<tr><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td></tr>'+
+                '</tbody>                                                                                                   ' +
+            '</table>                                                                                                       ' +
+            '<div>                                                                                                          '+
+                '<button type="button" style="float:right; margin-bottom:50px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
+            '</div>                                                                                                         ';
+            serverDetails.innerHTML = htmDetails;
+            return true;   
+        }
     })
     .catch(function (error) {
         return false;
@@ -309,8 +321,12 @@ function EditStapServer(server, param){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            //GetAllServers();
-            loadServerDetails(server);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                //GetAllServers();
+                loadServerDetails(server);
+            }
         })
         .catch(function error() {
         });
@@ -334,7 +350,11 @@ function RunStapServer(server) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllServers();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllServers();
+            }
         })
         .catch(function error() {
         });
@@ -359,7 +379,11 @@ function StopStapServer(server) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllServers();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllServers();
+            }
         })
         .catch(function error() {
         });
@@ -384,7 +408,11 @@ function DeleteStapServer(server) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            GetAllServers();
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllServers();
+            }
         })
         .catch(function error() {
         });

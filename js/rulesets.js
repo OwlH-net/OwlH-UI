@@ -15,7 +15,11 @@ function GetAllRulesets() {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
+            }
         })
         .catch(function (error) {
             resultElement.innerHTML = '<div style="text-align:center"><h3>No connection</h3></div>'+
@@ -107,39 +111,43 @@ function modalShowLog(uuid, name){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            var ruleset = response.data;
-            html = 
-            '<div class="modal-dialog modal-lg">'+
-                '<div class="modal-content">'+
-            
-                    '<div class="modal-header" style="word-break: break-all;">'+
-                        '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Log for ruleset '+name+'</h4>'+
-                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                    '</div>'+
-            
-                    '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+
-                        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                        '<thead>                                                      ' +
-                            '<tr>                                                         ' +
-                            '<th>Time</th>                                                ' +
-                            '<th>Log</th>                                         ' +
-                            '</tr>                                                        ' +
-                        '</thead>                                                     ' +
-                        '<tbody>                                                     ';
-                        for (uuid in ruleset) {
-                            for (param in ruleset[uuid]) {
-                                html = html + '<tr><td style="word-wrap: break-word;">' +
-                                new Date(param * 1000) +
-                                '</td><td style="word-wrap: break-word;">  ' +
-                                ruleset[uuid][param] +
-                                '</td></tr>';
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                var ruleset = response.data;
+                html = 
+                '<div class="modal-dialog modal-lg">'+
+                    '<div class="modal-content">'+
+                
+                        '<div class="modal-header" style="word-break: break-all;">'+
+                            '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Log for ruleset '+name+'</h4>'+
+                            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                        '</div>'+
+                
+                        '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+
+                            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                            '<thead>                                                      ' +
+                                '<tr>                                                         ' +
+                                '<th>Time</th>                                                ' +
+                                '<th>Log</th>                                         ' +
+                                '</tr>                                                        ' +
+                            '</thead>                                                     ' +
+                            '<tbody>                                                     ';
+                            for (uuid in ruleset) {
+                                for (param in ruleset[uuid]) {
+                                    html = html + '<tr><td style="word-wrap: break-word;">' +
+                                    new Date(param * 1000) +
+                                    '</td><td style="word-wrap: break-word;">  ' +
+                                    ruleset[uuid][param] +
+                                    '</td></tr>';
+                                }
                             }
-                        }
-                    '</div>'+        
-                '</div>'+
-            '</div>';
-            modalWindow.innerHTML = html;
-            $('#modal-ruleset').modal("show");
+                        '</div>'+        
+                    '</div>'+
+                '</div>';
+                modalWindow.innerHTML = html;
+                $('#modal-ruleset').modal("show");
+            }
         })
         .catch(function (error) {
         });
@@ -434,8 +442,12 @@ function timeSchedule(uuid, status){
         data: schedulejson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
-            GetAllRulesets();
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';} 
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllRulesets();
+            }           
         })
         .catch(function (error) {
         });
@@ -564,26 +576,30 @@ function synchronizeAllRulesets() {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (response.data.ack == "true"){
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> All rulesets had been synchronized successfully.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                var alert = document.getElementById('floating-alert');
-                $('html,body').scrollTop(0);
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "true"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> All rulesets had been synchronized successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
             }
         })
         .catch(function (error) {
@@ -708,26 +724,30 @@ function syncRuleset(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if (response.data.ack == "true"){
-                var alert = document.getElementById('floating-alert');
-                $('html,body').scrollTop(0);
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> Ruleset synchronization complete.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                var alert = document.getElementById('floating-alert');
-                $('html,body').scrollTop(0);
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> The ruleset could not be synchronized.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.privileges == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "true"){
+                    var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Ruleset synchronization complete.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> The ruleset could not be synchronized.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
             }
 
         })

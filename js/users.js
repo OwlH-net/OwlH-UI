@@ -41,6 +41,7 @@ function GetAllUsers(){
         }
     })
     .then(function (response) {
+        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.privileges == "none"){
             PrivilegesMessage();              
@@ -68,7 +69,7 @@ function GetAllUsers(){
                         html = html + '<tr>'+
                             '<td>'+response.data[id]["user"]+'</td>'+
                             '<td>'+
-                                // '<i class="fas fa-user-shield" title="Change user privileges" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick=""></i>'+
+                                '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowUserDetails(\''+id+'\')"></i> &nbsp'+
                                 '<i class="fas fa-key" title="Change user password" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalChangePassword(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-user-friends" title="Add roles to this user" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToRole(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-object-ungroup" title="Add this user to groups" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToGroup(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp';
@@ -76,10 +77,48 @@ function GetAllUsers(){
                                     html = html + '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteUser(\''+id+'\', \''+response.data[id]["user"]+'\')"></i>';
                                 }
                             html = html + '</td>'+
+                        '</tr>'+
+                        //user information
+                        '<tr id="user-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                  
+                            '<td>'+
+                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                                    '<tr>'+
+                                        '<th>Roles</th>'+
+                                        '<th>Actions</th>'+
+                                    '</tr>';
+                                    var roles = response.data[id]["roles"].split(",");
+                                    for (x in roles){
+                                        if(roles[x] != ""){
+                                            html = html + '<tr>'+
+                                                '<td>'+roles[x]+'</td>'+
+                                                '<td><i class="fas fa-trash-alt" style="color:red;" onclick="DeleteUserRole(\''+id+'\', \''+roles[x]+'\')"></i></td>';
+                                            '</tr>';
+                                        }
+                                    }
+                                    html = html + '</table>'+
+                                '</td>'+
+                                '<td>'+
+                                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                                        '<tr>'+
+                                            '<th>Groups</th>'+
+                                            '<th>Actions</th>'+
+                                        '</tr>';
+                                        var groups = response.data[id]["groups"].split(",");
+                                        for (x in groups){
+                                            if(groups[x] != ""){
+                                                html = html + '<tr>'+
+                                                    '<td>'+groups[x]+'</td>'+
+                                                    '<td><i class="fas fa-trash-alt" style="color:red;" onclick="DeleteUserRole(\''+id+'\', \''+groups[x]+'\')"></i></td>';
+                                                '</tr>';
+                                            }
+                                        }
+                                        html = html + '</table>'+
+                                '</td>'+
                         '</tr>';
                     }
-                    html = html + '</tbody>';
-                    document.getElementById('users-list-td').innerHTML = html;
+                    html = html + '</tbody>'+
+                '</table>';
+                document.getElementById('users-list-td').innerHTML = html;
             }
         }
     })
@@ -88,6 +127,123 @@ function GetAllUsers(){
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Get all user: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+function ShowUserDetails(id){
+    var info = document.getElementById('user-info-'+id);
+    if(info.style.display == "block"){
+        info.style.display = "none"
+    }else if(info.style.display == "none"){
+        info.style.display = "block"
+    }
+}
+
+function DeleteUserRole(userID, role){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteUserRole';
+
+    var jsonDelete = {}
+    jsonDelete["id"] = userID;
+    jsonDelete["role"] = role;
+    var userDelete = JSON.stringify(jsonDelete);
+
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: userDelete,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Delete user role: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllUsers();
+            }
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Delete user role: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+function DeleteUserGroup(userID, group){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteUserGroup';
+
+    var jsonDelete = {}
+    jsonDelete["id"] = userID;
+    jsonDelete["group"] = group;
+    var userDelete = JSON.stringify(jsonDelete);
+
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: userDelete,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.privileges == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Delete user group: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllUsers();
+            }
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Delete user group: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+

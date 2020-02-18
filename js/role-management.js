@@ -77,7 +77,7 @@ function GetAllRoles(){
                             '<td>'+
                                 '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
                                     '<tr>'+
-                                        '<th width="20%">Roles</th>'+
+                                        '<th width="20%">Permissions</th>'+
                                     '</tr>';
                                     var roles = response.data[id]["permissions"].split(",");
                                     for (x in roles){

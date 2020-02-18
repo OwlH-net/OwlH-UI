@@ -173,7 +173,7 @@ function DeleteMonitorFile(uuid, file){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false") {
@@ -232,7 +232,7 @@ function AddMonitorFile(uuid, path){
         })
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false") {
@@ -281,7 +281,7 @@ function PingMonitorFiles(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false"){
@@ -349,7 +349,7 @@ function PingMonitor(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false"){            

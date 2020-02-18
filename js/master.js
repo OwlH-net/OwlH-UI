@@ -253,7 +253,7 @@ function deployMaster(value){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             if (response.data.ack == "true") {
@@ -295,7 +295,7 @@ function loadNetworkValues(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             var html = '<div class="modal-dialog modal-sm">'+
@@ -367,7 +367,7 @@ function loadNetworkStapValues(uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             $('#modal-master').modal().hide();
             PrivilegesMessage();              
         }else{
@@ -447,7 +447,7 @@ function updateMasterStapInterface(uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             $('#modal-master').modal('hide');
             PrivilegesMessage();              
         }else{
@@ -484,7 +484,7 @@ function updateMasterNetworkInterface(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}   
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             $('#modal-master').modal('hide');
             PrivilegesMessage();              
         }else{
@@ -507,7 +507,7 @@ function DeployServiceMaster(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             if (response.data.ack == "true"){
@@ -533,7 +533,7 @@ function PingServiceMaster(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';} 
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             if (response.data.ack == "true"){
@@ -560,7 +560,7 @@ function LoadMasterNetworkValuesSelected(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             document.getElementById('net-value-'+response.data["interface"]["value"]).checked = "true"
@@ -603,7 +603,7 @@ function PingPlugins(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
             for (line in response.data){
@@ -816,7 +816,7 @@ function saveStapChanges(type, uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
             loadPlugins();
@@ -874,7 +874,7 @@ function saveBPF(uuid, value){
     })
      .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
             document.getElementById('socket-pcap-bpf-'+uuid).value = value;
@@ -932,7 +932,7 @@ function deleteServiceMaster(uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
             loadPlugins();
@@ -962,7 +962,7 @@ function changePluginStatus(uuid,param,value){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
             loadPlugins();
@@ -992,7 +992,7 @@ function changeDataflowStatus(uuid,param,value){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
             loadPlugins();
@@ -1017,7 +1017,7 @@ function PingCollector(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
             if (response.data.ack == "false"){
@@ -1054,7 +1054,7 @@ function playMasterCollector(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false"){
@@ -1086,7 +1086,7 @@ function stopMasterCollector(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false"){
@@ -1121,7 +1121,7 @@ function showMasterCollector(){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false"){
@@ -1248,7 +1248,7 @@ function AddSTAPModal(type){
                 axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
                .then(function (response) {
                     if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-                    if(response.data.privileges == "none"){
+                    if(response.data.permissions == "none"){
                         PrivilegesMessage();              
                     }else{   
                         var isChecked = false;
@@ -1382,7 +1382,7 @@ function saveSoftwareTAP(type){
         })
        .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (response.data.ack == "true") {
@@ -1446,7 +1446,7 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false") {
@@ -1496,7 +1496,7 @@ function StopStapServiceMaster(uuid, type){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             loadPlugins();
@@ -1534,7 +1534,7 @@ function loadNetworkValuesService(name, service){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             var html = '<div class="modal-dialog" id="network-modal-master">'+
@@ -1622,7 +1622,7 @@ function SaveStapInterface(uuid){
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             // loadPlugins();

@@ -62,7 +62,7 @@ async function PingNode(uuid, token) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (response.data.ping=='pong') {
@@ -140,7 +140,7 @@ function PingService(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (response.data.ack == "true"){
@@ -172,7 +172,7 @@ function PingMonitor(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 var cpuData = "";
@@ -204,7 +204,7 @@ function DeployService(uuid) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllNodes();
@@ -244,7 +244,7 @@ function GetAllNodes() {
         })
         .then(function (response) {         
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 document.getElementById('progressBar-node').style.display = "none";
                 document.getElementById('progressBar-node-div').style.display = "none";
                 PrivilegesMessage();              
@@ -460,7 +460,7 @@ function deleteNode(node) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllNodes();
@@ -505,7 +505,7 @@ function PingDataflow(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
@@ -539,7 +539,7 @@ function deployNode(value,uuid,nodeName){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "true") {
@@ -640,7 +640,7 @@ function ChangeStatus(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             GetAllNodes()
@@ -666,7 +666,7 @@ function getRulesetUID(uuid) {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             getRuleName(response.data, uuid);
@@ -694,7 +694,7 @@ function getRuleName(uuidRuleset, uuid) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (typeof response.data.error != "undefined") {
@@ -854,7 +854,7 @@ function addNode() {
 		})
 		.then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if(response.data.ack == "false"){
@@ -925,7 +925,7 @@ function modifyNodeInformation() {
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if(response.data.ack == "false"){
@@ -1004,7 +1004,7 @@ function loadBPF(nid, name){
   })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if('bpf' in response.data){
@@ -1045,7 +1045,7 @@ function saveBPF(nid){
   })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             return true;
@@ -1089,7 +1089,7 @@ function loadRuleset(nid){
 
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (typeof response.data.error != "undefined"){
@@ -1159,7 +1159,7 @@ function saveRuleSelected(rule, nid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 getRulesetUID(nid);

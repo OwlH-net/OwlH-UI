@@ -21,7 +21,7 @@ function GetAllRulesetDetails(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack){
@@ -148,7 +148,7 @@ function addNewLines(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllRulesetDetails();
@@ -229,7 +229,7 @@ function overwriteRuleFile(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllRulesetDetails();
@@ -255,7 +255,7 @@ function deleteRulesetDetails(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllRulesetDetails();

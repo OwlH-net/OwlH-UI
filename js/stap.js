@@ -40,7 +40,7 @@ function addServerToNode() {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllServers();
@@ -74,7 +74,7 @@ function GetAllServers() {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             tableServer.innerHTML = generateAllServerHTMLOutput(response);
@@ -195,7 +195,7 @@ function generateAllServerHTMLOutput(response) {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             var htmDetails =
@@ -321,7 +321,7 @@ function EditStapServer(server, param){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 //GetAllServers();
@@ -350,7 +350,7 @@ function RunStapServer(server) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllServers();
@@ -379,7 +379,7 @@ function StopStapServer(server) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllServers();
@@ -408,7 +408,7 @@ function DeleteStapServer(server) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllServers();

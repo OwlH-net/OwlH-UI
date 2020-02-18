@@ -15,7 +15,7 @@ function GetAllRulesets() {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
@@ -111,7 +111,7 @@ function modalShowLog(uuid, name){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 var ruleset = response.data;
@@ -443,7 +443,7 @@ function timeSchedule(uuid, status){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';} 
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllRulesets();
@@ -576,7 +576,7 @@ function synchronizeAllRulesets() {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (response.data.ack == "true"){
@@ -724,7 +724,7 @@ function syncRuleset(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (response.data.ack == "true"){

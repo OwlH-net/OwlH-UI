@@ -60,7 +60,7 @@ function LoadFileLastLines(uuid, line, path) {
     })
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if(response.data.ack == "false"){
@@ -120,7 +120,7 @@ function saveCurrentContent() {
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             LoadFileLastLines(uuid, "none", path);

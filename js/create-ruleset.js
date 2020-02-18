@@ -40,7 +40,7 @@ function loadRulesData(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
@@ -340,7 +340,7 @@ function modalAddNewRuleset(){
             })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}               
-                if(response.data.privileges == "none"){
+                if(response.data.permissions == "none"){
                     document.getElementById('progressBar-create-div').style.display="none";
                     document.getElementById('progressBar-create').style.display="none";
                     PrivilegesMessage();              

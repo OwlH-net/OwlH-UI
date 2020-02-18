@@ -41,9 +41,8 @@ function GetAllUsers(){
         }
     })
     .then(function (response) {
-        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false") {
@@ -135,6 +134,14 @@ function GetAllUsers(){
     });
 }
 
+function RoleManagement(){
+    // document.location.href = 'https://' + location.hostname + '/role-management.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/role-management.html';
+}
+function GroupManagement(){
+    document.location.href = 'https://' + location.hostname + '/group-management.html';
+}
+
 function ShowUserDetails(id){
     var info = document.getElementById('user-info-'+id);
     if(info.style.display == "block"){
@@ -167,7 +174,7 @@ function DeleteUserRole(userID, role){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false") {
@@ -221,7 +228,7 @@ function DeleteUserGroup(userID, group){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false") {
@@ -275,7 +282,7 @@ function DeleteUser(id){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false") {
@@ -306,80 +313,6 @@ function DeleteUser(id){
     });
 }
 
-function AddRole(){
-    if(document.getElementById('role-name').value.trim() == ""){
-        $('#role-name').css('border', '2px solid red');
-        $('#role-name').attr("placeholder", "Please, insert role name"); 
-    }else{        
-        $('#modal-users').modal('hide');
-        var ipmaster = document.getElementById('ip-master').value;
-        var portmaster = document.getElementById('port-master').value;
-        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/addRole';
-    
-        //get all checkbox checked
-        var list = [];
-        $('input[type=checkbox]:checked').each(function(index){
-            list.push($(this).val());
-        });
-          
-        var jsonDelete = {}
-        jsonDelete["role"] = document.getElementById('role-name').value;
-        jsonDelete["privileges"] = list.toString();
-        var userDelete = JSON.stringify(jsonDelete);
-    
-        axios({
-            method: 'put',
-            url: nodeurl,
-            timeout: 30000,
-            data: userDelete,
-            headers:{
-                'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
-            }
-        })
-        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
-                PrivilegesMessage();              
-            }else{   
-                if (response.data.ack == "false") {
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Add Role: '+response.data.error+'.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                }else{
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                        '<strong>Success!</strong> Role added successfully.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                }
-            }
-        })
-        .catch(function (error) {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Add Role: '+error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        });
-    }
-}
-
 function AddGroup(){
     if(document.getElementById('group-name').value.trim() == ""){
         $('#group-name').css('border', '2px solid red');
@@ -398,7 +331,7 @@ function AddGroup(){
 
         var jsonDelete = {}
         jsonDelete["group"] = document.getElementById('group-name').value;
-        jsonDelete["privileges"] = list.toString();
+        jsonDelete["permissions"] = list.toString();
         var userDelete = JSON.stringify(jsonDelete);
     
         axios({
@@ -414,7 +347,7 @@ function AddGroup(){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (response.data.ack == "false") {
@@ -604,7 +537,7 @@ function addUsersTo(id, type){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack == "false") {
@@ -674,44 +607,6 @@ function modalAddUser(){
     $('#add-user-btn').click(function(){ AddUser();});
 }
 
-function modalAddRole(){
-    var modalWindow = document.getElementById('modal-users');
-    modalWindow.innerHTML = 
-    '<div class="modal-dialog" role="document">'+
-        '<div class="modal-content">'+
-
-        '<div class="modal-header">'+
-            '<h4 class="modal-title">Add new role</h4>'+
-            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-            '</div>'+
-        
-        '<div class="modal-body">'+ 
-            '<p>Insert user name:</p>'+
-            '<input type="text" class="form-control" id="role-name" placeholder="Insert here the new role"><br>'+
-            '<p>Select privileges:</p>'+
-            '<div class="form-check">'+
-                '<input type="checkbox" class="form-check-input" id="role-check-get" value="get" disabled checked>'+
-                '<label class="form-check-label" for="role-check-get">GET</label><br>'+
-                '<input type="checkbox" class="form-check-input" id="role-check-put" value="put">'+
-                '<label class="form-check-label" for="role-check-put">PUT</label><br>'+
-                '<input type="checkbox" class="form-check-input" id="role-check-post" value="post">'+
-                '<label class="form-check-label" for="role-check-post">POST</label><br>'+
-                '<input type="checkbox" class="form-check-input" id="role-check-delete" value="delete">'+
-                '<label class="form-check-label" for="role-check-delete">DELETE</label>'+
-            '</div>'+
-        '</div>'+
-
-        '<div class="modal-footer">'+
-            '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-            '<button type="submit" class="btn btn-primary" id="role-user-btn">Add</button>'+
-        '</div>'+
-
-        '</div>'+
-    '</div>';
-    $('#modal-users').modal().show();
-    $('#role-user-btn').click(function(){ AddRole();});
-}
-
 function modalAddGroup(){
     var modalWindow = document.getElementById('modal-users');
     modalWindow.innerHTML = 
@@ -726,7 +621,7 @@ function modalAddGroup(){
         '<div class="modal-body">'+ 
             '<p>Insert user name:</p>'+
             '<input type="text" class="form-control" id="group-name" placeholder="Insert here the new group"><br>'+
-            '<p>Select privileges:</p>'+
+            '<p>Select permissions:</p>'+
             '<div class="form-check">'+
                 '<input type="checkbox" class="form-check-input" id="group-check-get" value="get" disabled checked>'+
                 '<label class="form-check-label" for="group-check-get">GET</label><br>'+
@@ -839,7 +734,7 @@ function AddUser(){
         var jsonDeployService = {}
         jsonDeployService["user"] = document.getElementById('user-name').value.trim();
         jsonDeployService["pass"] = document.getElementById('user-pass').value.trim();
-        jsonDeployService["privilege"] = "get"
+        jsonDeployService["permission"] = "get"
         var dataJSON = JSON.stringify(jsonDeployService);
     
         axios({
@@ -855,7 +750,7 @@ function AddUser(){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (response.data.ack == "false") {
@@ -939,7 +834,7 @@ function ChangePassword(id){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (response.data.ack == "false") {

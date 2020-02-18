@@ -53,7 +53,7 @@ function GetGroupsDetails(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             document.getElementById('progressBar-options-div').style.display="none";
             document.getElementById('progressBar-options').style.display="none"; 
             PrivilegesMessage();              
@@ -386,7 +386,7 @@ async function ChangeAnalyzerStatus(nodes, status){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 if (response.data.ack == "false") {
@@ -448,7 +448,7 @@ function SuricataNodesStatus(guuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             if(response.data.ack == "false"){
@@ -538,7 +538,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
             PrivilegesMessage();              
@@ -596,7 +596,7 @@ async function syncAnalyzer(nodes){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             for(x in response.data){
@@ -690,7 +690,7 @@ function syncAllGroupElements(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             if (response.data.ack == "true") {
@@ -789,7 +789,7 @@ function changePaths(guuid, type){
             })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-                if(response.data.privileges == "none"){
+                if(response.data.permissions == "none"){
                     PrivilegesMessage();              
                 }else{
                     if (response.data.ack == "true") {
@@ -872,7 +872,7 @@ function SyncPathGroup(guuid, type){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 if (response.data.ack == "true") {
@@ -962,7 +962,7 @@ function modalLoadRuleset(group){
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 if (typeof response.data.error != "undefined"){
@@ -1015,7 +1015,7 @@ function syncSuricataGroupService(guuid){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 if(response.data.acke == "false"){
@@ -1067,7 +1067,7 @@ function GetAllClusterFiles(guuid){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 var html = '<tr>'+
@@ -1127,7 +1127,7 @@ function SyncClusterFile(uuid, type){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 if(response.data.ack == "false"){
@@ -1191,7 +1191,7 @@ function changeClusterValue(guuid, uuid){
         })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-                if(response.data.privileges == "none"){
+                if(response.data.permissions == "none"){
                     PrivilegesMessage();              
                 }else{
                     if(response.data.ack == "false"){
@@ -1276,7 +1276,7 @@ function deleteCluster(uuid){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 GetGroupsDetails();
@@ -1306,7 +1306,7 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 document.getElementById('ruleset-group-'+group).innerHTML = ruleset;
@@ -1333,7 +1333,7 @@ function modalSelectNodeGroup(uuid){
     })
         .then(function (response) {            
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{            
                 var modalWindowDelete = document.getElementById('modal-groups');
@@ -1416,7 +1416,7 @@ function addNodesToGroup(uuid){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 GetGroupsDetails();
@@ -1439,7 +1439,7 @@ function deleteNodeForGroup(uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
             if(response.data.ack == "false"){
@@ -1525,7 +1525,7 @@ function SyncRulesetToAllGroupNodes(guuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
             document.getElementById('progressBar-options-div').style.display="none";
             document.getElementById('progressBar-options').style.display="none"; 
@@ -1620,7 +1620,7 @@ function updateGroupService(uuid, type, value){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 if(response.data.ack == "false"){
@@ -1707,7 +1707,7 @@ function addCluster(uuid, path){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 if(response.data.ack == "false"){

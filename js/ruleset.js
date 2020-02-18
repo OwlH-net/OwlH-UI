@@ -14,7 +14,7 @@ function GetAllRuleset() {
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid,{headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
             PrivilegesMessage();              
@@ -164,7 +164,7 @@ function getToCustomRuleset(rulesetuuid){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 var customRulesets = response.data;
@@ -244,7 +244,7 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 $('#modal-window-ruleset').modal('hide')   
                 PrivilegesMessage();              
             }else{   
@@ -290,7 +290,7 @@ function changeRulesetStatus(sid, fileuuid, action) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (action == "Disable") {
@@ -351,7 +351,7 @@ function getRuleNote(elementID, fileuuid, sid) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (typeof (response.data) === 'object') {
@@ -391,7 +391,7 @@ function rulesetNotes(sid, fileuuid) {
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 document.getElementById(sid + '-note').innerHTML = '<p>' + textAreaNote + '</p>';

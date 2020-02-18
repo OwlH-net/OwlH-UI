@@ -85,7 +85,7 @@ function addRulesetSource() {
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 if (response.data.ack == "false") {
@@ -149,7 +149,7 @@ function GetAllRulesetSource(){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             document.getElementById('ruleset-source-text-top').style.display ="block";
@@ -268,7 +268,7 @@ function loadCustomRulesetRules(uuid,path,type){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
             document.location.href = 'https://' + location.hostname + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
@@ -447,7 +447,7 @@ function editRulesetSourceData(){
             })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-                if(response.data.privileges == "none"){
+                if(response.data.permissions == "none"){
                     PrivilegesMessage();              
                 }else{   
                     GetAllRulesetSource();
@@ -482,7 +482,7 @@ function deleteRulesetSource(sourceUUID,sourceType){
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 GetAllRulesetSource();
@@ -523,7 +523,7 @@ function downloadFile(name, path, url, sourceUUID){
         })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-                if(response.data.privileges == "none"){
+                if(response.data.permissions == "none"){
                     PrivilegesMessage();              
                 }else{   
                     if (response.data.ack == "true") {
@@ -631,7 +631,7 @@ function overwriteDownload(name, path, url, uuid){
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.privileges == "none"){
+        if(response.data.permissions == "none"){
             document.getElementById('progressBar-create').style.display = "none";
             document.getElementById('progressBar-create-div').style.display = "none";
             PrivilegesMessage();              

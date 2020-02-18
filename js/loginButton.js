@@ -78,7 +78,7 @@ function ChangePasswordLogin(){
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.privileges == "none"){
+            if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
                 if (response.data.ack == "false") {
@@ -127,7 +127,7 @@ function PrivilegesMessage(){
     $('html,body').scrollTop(0);
     var alert = document.getElementById('floating-alert');
     alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
-        '<strong>Error!</strong> You don\'t have enough user privileges.'+
+        '<strong>Error!</strong> You don\'t have enough user permissions.'+
         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
             '<span aria-hidden="true">&times;</span>'+
         '</button>'+

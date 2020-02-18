@@ -313,79 +313,79 @@ function DeleteUser(id){
     });
 }
 
-function AddGroup(){
-    if(document.getElementById('group-name').value.trim() == ""){
-        $('#group-name').css('border', '2px solid red');
-        $('#group-name').attr("placeholder", "Please, insert group name"); 
-    }else{        
-        $('#modal-users').modal('hide');
-        var ipmaster = document.getElementById('ip-master').value;
-        var portmaster = document.getElementById('port-master').value;
-        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/addGroupUsers';
+// function AddGroup(){
+//     if(document.getElementById('group-name').value.trim() == ""){
+//         $('#group-name').css('border', '2px solid red');
+//         $('#group-name').attr("placeholder", "Please, insert group name"); 
+//     }else{        
+//         $('#modal-users').modal('hide');
+//         var ipmaster = document.getElementById('ip-master').value;
+//         var portmaster = document.getElementById('port-master').value;
+//         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/addGroupUsers';
     
-        //get all checkbox checked
-        var list = [];
-        $('input[type=checkbox]:checked').each(function(index){
-            list.push($(this).val());
-        });
+//         //get all checkbox checked
+//         var list = [];
+//         $('input[type=checkbox]:checked').each(function(index){
+//             list.push($(this).val());
+//         });
 
-        var jsonDelete = {}
-        jsonDelete["group"] = document.getElementById('group-name').value;
-        jsonDelete["permissions"] = list.toString();
-        var userDelete = JSON.stringify(jsonDelete);
+//         var jsonDelete = {}
+//         jsonDelete["group"] = document.getElementById('group-name').value;
+//         jsonDelete["permissions"] = list.toString();
+//         var userDelete = JSON.stringify(jsonDelete);
     
-        axios({
-            method: 'put',
-            url: nodeurl,
-            timeout: 30000,
-            data: userDelete,
-            headers:{
-                'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
-            }
-        })
-        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                if (response.data.ack == "false") {
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Add group: '+response.data.error+'.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                }else{
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                        '<strong>Success!</strong> Group added successfully.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                }
-            }
-        })
-        .catch(function (error) {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Add group: '+error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        });
-    }
-}
+//         axios({
+//             method: 'put',
+//             url: nodeurl,
+//             timeout: 30000,
+//             data: userDelete,
+//             headers:{
+//                 'token': document.cookie,
+//                 'user': payload.user,
+//                 'uuid': payload.uuid,
+//             }
+//         })
+//         .then(function (response) {
+//             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//             if(response.data.permissions == "none"){
+//                 PrivilegesMessage();              
+//             }else{   
+//                 if (response.data.ack == "false") {
+//                     $('html,body').scrollTop(0);
+//                     var alert = document.getElementById('floating-alert');
+//                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//                         '<strong>Error!</strong> Add group: '+response.data.error+'.'+
+//                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                             '<span aria-hidden="true">&times;</span>'+
+//                         '</button>'+
+//                     '</div>';
+//                     setTimeout(function() {$(".alert").alert('close')}, 5000);
+//                 }else{
+//                     $('html,body').scrollTop(0);
+//                     var alert = document.getElementById('floating-alert');
+//                     alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+//                         '<strong>Success!</strong> Group added successfully.'+
+//                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                             '<span aria-hidden="true">&times;</span>'+
+//                         '</button>'+
+//                     '</div>';
+//                     setTimeout(function() {$(".alert").alert('close')}, 5000);
+//                 }
+//             }
+//         })
+//         .catch(function (error) {
+//             $('html,body').scrollTop(0);
+//             var alert = document.getElementById('floating-alert');
+//             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//                 '<strong>Error!</strong> Add group: '+error+'.'+
+//                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                     '<span aria-hidden="true">&times;</span>'+
+//                 '</button>'+
+//             '</div>';
+//             setTimeout(function() {$(".alert").alert('close')}, 5000);
+//         });
+//     }
+// }
 
 function modalAddUserToGroup(idUser, name){
     var ipmaster = document.getElementById('ip-master').value;

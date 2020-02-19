@@ -84,7 +84,6 @@ function GetAllRoles(){
                                         if(roles[x] != ""){
                                             html = html + '<tr>'+
                                                 '<td>'+roles[x]+'</td>'+
-                                                // '<td><i class="fas fa-trash-alt" style="color:red;" onclick="DeleteUserRole(\''+id+'\', \''+roles[x]+'\')"></i></td>';
                                             '</tr>';
                                         }
                                     }
@@ -101,7 +100,7 @@ function GetAllRoles(){
                                         if(users[x] != ""){
                                             html = html + '<tr>'+
                                                 '<td>'+users[x]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color:red;"></i></td>';
+                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleUser(\''+id+'\', \''+users[x]+'\')"></i></td>';                                                
                                             '</tr>';
                                         }
                                     }
@@ -118,7 +117,7 @@ function GetAllRoles(){
                                         if(groups[x] != ""){
                                             html = html + '<tr>'+
                                                 '<td>'+groups[x]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color:red;"></i></td>';
+                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleGroup(\''+id+'\', \''+groups[x]+'\')"></i></td>';
                                             '</tr>';
                                         }
                                     }
@@ -451,6 +450,114 @@ function EditRole(id, name){
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Edit role: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+function DeleteRoleUser(id, user){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteRoleUser';
+
+    var jsonDelete = {}
+    jsonDelete["id"] = id;
+    jsonDelete["user"] = user;
+    var userDelete = JSON.stringify(jsonDelete);
+
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: userDelete,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Delete role user: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllRoles();
+            }
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Delete role user: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+function DeleteRoleGroup(id, group){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteRoleGroup';
+
+    var jsonDelete = {}
+    jsonDelete["id"] = id;
+    jsonDelete["group"] = group;
+    var userDelete = JSON.stringify(jsonDelete);
+
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: userDelete,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Delete role group: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllRoles();
+            }
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Delete role group: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+

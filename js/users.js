@@ -90,7 +90,7 @@ function GetAllUsers(){
                                         if(roles[x] != ""){
                                             html = html + '<tr>'+
                                                 '<td>'+roles[x]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color:red;" onclick="DeleteUserRole(\''+id+'\', \''+roles[x]+'\')"></i></td>';
+                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteUserRole(\''+id+'\', \''+roles[x]+'\')"></i></td>';
                                             '</tr>';
                                         }
                                     }
@@ -107,7 +107,7 @@ function GetAllUsers(){
                                             if(groups[x] != ""){
                                                 html = html + '<tr>'+
                                                     '<td>'+groups[x]+'</td>'+
-                                                    '<td><i class="fas fa-trash-alt" style="color:red;" onclick="DeleteUserRole(\''+id+'\', \''+groups[x]+'\')"></i></td>';
+                                                    '<td><i class="fas fa-trash-alt" style="color:red; cursor:pointer;" onclick="DeleteUserGroup(\''+id+'\', \''+groups[x]+'\')"></i></td>';
                                                 '</tr>';
                                             }
                                         }

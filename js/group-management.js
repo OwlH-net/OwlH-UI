@@ -42,6 +42,7 @@ function GetAllGroups(){
         }
     })
     .then(function (response) {
+        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -74,59 +75,43 @@ function GetAllGroups(){
                                 '<i class="fas fa-user-friends" title="Add roles to this group" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddRoleToGroup(\''+id+'\', \''+response.data[id]["group"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteGroup(\''+id+'\', \''+response.data[id]["group"]+'\')"></i>'+                                
                             '</td>'+
+                        '</tr>'+
+                        '<tr id="group-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                                     
+                            '<td>'+
+                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                                    '<tr>'+
+                                        '<th>Users</th>'+
+                                        '<th>Actions</th>'+
+                                    '</tr>';
+                                    var users = response.data[id]["users"].split(",");
+                                    for (x in users){
+                                        if(users[x] != ""){
+                                            html = html + '<tr>'+
+                                                '<td>'+users[x]+'</td>'+
+                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteGroupUser(\''+id+'\', \''+users[x]+'\')"></i></td>';
+                                            '</tr>';
+                                        }
+                                    }
+                                html = html + '</table>'+
+                            '</td>'+
+                            '<td>'+
+                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                                    '<tr>'+
+                                        '<th>Roles</th>'+
+                                        '<th>Actions</th>'+
+                                    '</tr>';
+                                    var roles = response.data[id]["roles"].split(",");
+                                    for (x in roles){
+                                        if(roles[x] != ""){
+                                            html = html + '<tr>'+
+                                                '<td>'+roles[x]+'</td>'+
+                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteGroupRole(\''+id+'\', \''+roles[x]+'\')"></i></td>';
+                                            '</tr>';
+                                        }
+                                    }
+                                html = html + '</table>'+
+                            '</td>'+
                         '</tr>';
-                        // '<tr id="group-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                                     
-                        //     '<td>'+
-                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                        //             '<tr>'+
-                        //                 '<th width="20%">Permissions</th>'+
-                        //             '</tr>';
-                        //             var groups = response.data[id]["permissions"].split(",");
-                        //             for (x in groups){
-                        //                 if(group[x] != ""){
-                        //                     html = html + '<tr>'+
-                        //                         '<td>'+group[x]+'</td>'+
-                        //                         // '<td><i class="fas fa-trash-alt" style="color:red;" onclick="DeleteUserRole(\''+id+'\', \''+roles[x]+'\')"></i></td>';
-                        //                     '</tr>';
-                        //                 }
-                        //             }
-                        //         html = html + '</table>'+
-                        //     '</td>'+
-                        //     '<td>'+
-                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                        //             '<tr>'+
-                        //                 '<th>Users</th>'+
-                        //                 '<th>Actions</th>'+
-                        //             '</tr>';
-                        //             var users = response.data[id]["users"].split(",");
-                        //             for (x in users){
-                        //                 if(users[x] != ""){
-                        //                     html = html + '<tr>'+
-                        //                         '<td>'+users[x]+'</td>'+
-                        //                         '<td><i class="fas fa-trash-alt" style="color:red;"></i></td>';
-                        //                     '</tr>';
-                        //                 }
-                        //             }
-                        //         html = html + '</table>'+
-                        //     '</td>'+
-                        //     '<td>'+
-                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                        //             '<tr>'+
-                        //                 '<th>Groups</th>'+
-                        //                 '<th>Actions</th>'+
-                        //             '</tr>';
-                        //             var groups = response.data[id]["groups"].split(",");
-                        //             for (x in groups){
-                        //                 if(groups[x] != ""){
-                        //                     html = html + '<tr>'+
-                        //                         '<td>'+groups[x]+'</td>'+
-                        //                         '<td><i class="fas fa-trash-alt" style="color:red;"></i></td>';
-                        //                     '</tr>';
-                        //                 }
-                        //             }
-                        //         html = html + '</table>'+
-                        //     '</td>'+
-                        // '</tr>';
                     }
                     html = html + '</tbody>'+
                 '</table>';
@@ -574,6 +559,7 @@ function AddRoleToGroup(id){
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
+                GetAllGroups();
             }
         }
     })
@@ -582,6 +568,114 @@ function AddRoleToGroup(id){
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Add role to group: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+function DeleteGroupUser(id, user){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteGroupUser';
+
+    var jsonDelete = {}
+    jsonDelete["id"] = id;
+    jsonDelete["user"] = user;
+    var userDelete = JSON.stringify(jsonDelete);
+
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: userDelete,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Delete group user: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllGroups();
+            }
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Delete group user: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+function DeleteGroupRole(id, role){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteGroupRole';
+
+    var jsonDelete = {}
+    jsonDelete["id"] = id;
+    jsonDelete["role"] = role;
+    var userDelete = JSON.stringify(jsonDelete);
+
+    axios({
+        method: 'delete',
+        url: nodeurl,
+        timeout: 30000,
+        data: userDelete,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Delete group role: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                GetAllGroups();
+            }
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Delete group role: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+

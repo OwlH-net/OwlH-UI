@@ -27,6 +27,8 @@ loadJSONdata();
 
 
 function GetAllGroups(){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/getAllUserGroups';
@@ -42,7 +44,8 @@ function GetAllGroups(){
         }
     })
     .then(function (response) {
-        console.log(response.data);
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -120,6 +123,8 @@ function GetAllGroups(){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -146,17 +151,6 @@ function modalAddGroup(){
         '<div class="modal-body">'+ 
             '<p>Insert user name:</p>'+
             '<input type="text" class="form-control" id="group-name" placeholder="Insert here the new group"><br>'+
-            // '<p>Select permissions:</p>'+
-            // '<div class="form-check">'+
-            //     '<input type="checkbox" class="form-check-input" id="group-check-get" value="get" disabled checked>'+
-            //     '<label class="form-check-label" for="group-check-get">GET</label><br>'+
-            //     '<input type="checkbox" class="form-check-input" id="group-check-put" value="put">'+
-            //     '<label class="form-check-label" for="group-check-put">PUT</label><br>'+
-            //     '<input type="checkbox" class="form-check-input" id="group-check-post" value="post">'+
-            //     '<label class="form-check-label" for="group-check-post">POST</label><br>'+
-            //     '<input type="checkbox" class="form-check-input" id="group-check-delete" value="delete">'+
-            //     '<label class="form-check-label" for="group-check-delete">DELETE</label>'+
-            // '</div>'+
         '</div>'+
 
         '<div class="modal-footer">'+
@@ -174,7 +168,9 @@ function AddGroup(){
     if(document.getElementById('group-name').value.trim() == ""){
         $('#group-name').css('border', '2px solid red');
         $('#group-name').attr("placeholder", "Please, insert group name"); 
-    }else{        
+    }else{  
+        document.getElementById('progressBar-options').style.display = "block";
+        document.getElementById('progressBar-options-div').style.display = "block";      
         $('#modal-window').modal('hide');
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
@@ -203,6 +199,8 @@ function AddGroup(){
             }
         })
         .then(function (response) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
@@ -223,6 +221,8 @@ function AddGroup(){
             }
         })
         .catch(function (error) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -244,7 +244,6 @@ function ShowGroupDetails(id){
         info.style.display = "block"
     }
 }
-
 
 function modalDeleteGroup(id, user){
     var modalWindow = document.getElementById('modal-window');
@@ -273,6 +272,8 @@ function modalDeleteGroup(id, user){
 }
 
 function DeleteGroup(id){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     $('#modal-window').modal('hide');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -294,6 +295,8 @@ function DeleteGroup(id){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -314,6 +317,8 @@ function DeleteGroup(id){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -340,17 +345,6 @@ function modalEditGroup(id, name, permissions){
         '<div class="modal-body">'+ 
             '<p>Edit username:</p>'+
             '<input type="text" class="form-control" id="edit-group-name" value='+name+'><br>'+
-            // '<p>Edit permissions:</p>'+
-            // '<div class="form-check">'+
-            //     '<input type="checkbox" class="form-check-input" id="edit-group-check-get" value="get" disabled checked>'+
-            //     '<label class="form-check-label" for="group-check-get">GET</label><br>'+
-            //     '<input type="checkbox" class="form-check-input" id="edit-group-check-put" value="put">'+
-            //     '<label class="form-check-label" for="group-check-put">PUT</label><br>'+
-            //     '<input type="checkbox" class="form-check-input" id="edit-group-check-post" value="post">'+
-            //     '<label class="form-check-label" for="group-check-post">POST</label><br>'+
-            //     '<input type="checkbox" class="form-check-input" id="edit-group-check-delete" value="delete">'+
-            //     '<label class="form-check-label" for="group-check-delete">DELETE</label>'+
-            // '</div>'+
         '</div>'+
 
         '<div class="modal-footer">'+
@@ -377,6 +371,8 @@ function modalEditGroup(id, name, permissions){
 }
 
 function EditGroup(id, name){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     $('#modal-window').modal('hide');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -405,6 +401,8 @@ function EditGroup(id, name){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -434,6 +432,8 @@ function EditGroup(id, name){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -507,6 +507,8 @@ function modalAddRoleToGroup(idUser, name){
 }
 
 function AddRoleToGroup(id){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     $('#modal-window').modal('hide');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -535,6 +537,8 @@ function AddRoleToGroup(id){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -564,6 +568,8 @@ function AddRoleToGroup(id){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -577,6 +583,8 @@ function AddRoleToGroup(id){
 }
 
 function DeleteGroupUser(id, user){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteGroupUser';
@@ -598,6 +606,8 @@ function DeleteGroupUser(id, user){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -618,6 +628,8 @@ function DeleteGroupUser(id, user){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -631,6 +643,8 @@ function DeleteGroupUser(id, user){
 }
 
 function DeleteGroupRole(id, role){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteGroupRole';
@@ -652,6 +666,8 @@ function DeleteGroupRole(id, role){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -672,6 +688,8 @@ function DeleteGroupRole(id, role){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

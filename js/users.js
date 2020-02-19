@@ -26,6 +26,8 @@ var payload = "";
 loadJSONdata();
 
 function GetAllUsers(){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/getAllUsers';
@@ -41,6 +43,8 @@ function GetAllUsers(){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -122,6 +126,8 @@ function GetAllUsers(){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -152,6 +158,8 @@ function ShowUserDetails(id){
 }
 
 function DeleteUserRole(userID, role){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteUserRole';
@@ -173,6 +181,8 @@ function DeleteUserRole(userID, role){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -193,6 +203,8 @@ function DeleteUserRole(userID, role){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -206,6 +218,8 @@ function DeleteUserRole(userID, role){
 }
 
 function DeleteUserGroup(userID, group){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/deleteUserGroup';
@@ -227,6 +241,8 @@ function DeleteUserGroup(userID, group){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -247,6 +263,8 @@ function DeleteUserGroup(userID, group){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -260,6 +278,8 @@ function DeleteUserGroup(userID, group){
 }
 
 function DeleteUser(id){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     $('#modal-users').modal('hide');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -281,6 +301,8 @@ function DeleteUser(id){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -301,6 +323,8 @@ function DeleteUser(id){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -312,80 +336,6 @@ function DeleteUser(id){
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 }
-
-// function AddGroup(){
-//     if(document.getElementById('group-name').value.trim() == ""){
-//         $('#group-name').css('border', '2px solid red');
-//         $('#group-name').attr("placeholder", "Please, insert group name"); 
-//     }else{        
-//         $('#modal-users').modal('hide');
-//         var ipmaster = document.getElementById('ip-master').value;
-//         var portmaster = document.getElementById('port-master').value;
-//         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/addGroupUsers';
-    
-//         //get all checkbox checked
-//         var list = [];
-//         $('input[type=checkbox]:checked').each(function(index){
-//             list.push($(this).val());
-//         });
-
-//         var jsonDelete = {}
-//         jsonDelete["group"] = document.getElementById('group-name').value;
-//         jsonDelete["permissions"] = list.toString();
-//         var userDelete = JSON.stringify(jsonDelete);
-    
-//         axios({
-//             method: 'put',
-//             url: nodeurl,
-//             timeout: 30000,
-//             data: userDelete,
-//             headers:{
-//                 'token': document.cookie,
-//                 'user': payload.user,
-//                 'uuid': payload.uuid,
-//             }
-//         })
-//         .then(function (response) {
-//             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-//             if(response.data.permissions == "none"){
-//                 PrivilegesMessage();              
-//             }else{   
-//                 if (response.data.ack == "false") {
-//                     $('html,body').scrollTop(0);
-//                     var alert = document.getElementById('floating-alert');
-//                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-//                         '<strong>Error!</strong> Add group: '+response.data.error+'.'+
-//                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-//                             '<span aria-hidden="true">&times;</span>'+
-//                         '</button>'+
-//                     '</div>';
-//                     setTimeout(function() {$(".alert").alert('close')}, 5000);
-//                 }else{
-//                     $('html,body').scrollTop(0);
-//                     var alert = document.getElementById('floating-alert');
-//                     alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-//                         '<strong>Success!</strong> Group added successfully.'+
-//                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-//                             '<span aria-hidden="true">&times;</span>'+
-//                         '</button>'+
-//                     '</div>';
-//                     setTimeout(function() {$(".alert").alert('close')}, 5000);
-//                 }
-//             }
-//         })
-//         .catch(function (error) {
-//             $('html,body').scrollTop(0);
-//             var alert = document.getElementById('floating-alert');
-//             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-//                 '<strong>Error!</strong> Add group: '+error+'.'+
-//                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-//                     '<span aria-hidden="true">&times;</span>'+
-//                 '</button>'+
-//             '</div>';
-//             setTimeout(function() {$(".alert").alert('close')}, 5000);
-//         });
-//     }
-// }
 
 function modalAddUserToGroup(idUser, name){
     var ipmaster = document.getElementById('ip-master').value;
@@ -507,6 +457,8 @@ function modalAddUserToRole(idUser, name){
 }
 
 function addUsersTo(id, type){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     $('#modal-users').modal('hide');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -536,6 +488,8 @@ function addUsersTo(id, type){
         }
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -565,6 +519,8 @@ function addUsersTo(id, type){
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -727,6 +683,8 @@ function AddUser(){
         $('#user-pass-again').css('border', '2px solid red');
         $('#user-pass-again').attr("placeholder", "Passwords are not equals"); 
     }else{
+        document.getElementById('progressBar-options').style.display = "block";
+        document.getElementById('progressBar-options-div').style.display = "block";
         $('#modal-users').modal('hide');
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
@@ -750,6 +708,8 @@ function AddUser(){
             data: dataJSON
         })
         .then(function (response) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
@@ -779,6 +739,8 @@ function AddUser(){
             }
         })
         .catch(function (error) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -812,6 +774,8 @@ function ChangePassword(id){
         $('#user-verify-password').css('border', '2px solid red');
         $('#user-verify-password').attr("placeholder", "Passwords are not equals"); 
     }else{
+        document.getElementById('progressBar-options').style.display = "block";
+        document.getElementById('progressBar-options-div').style.display = "block";
         $('#modal-users').modal('hide');
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
@@ -834,6 +798,8 @@ function ChangePassword(id){
             data: dataJSON
         })
         .then(function (response) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
@@ -863,6 +829,8 @@ function ChangePassword(id){
             }
         })
         .catch(function (error) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

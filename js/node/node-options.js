@@ -13,7 +13,7 @@ function loadJSONdata(){
 
         //login button
         document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
-        
+
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
@@ -92,7 +92,7 @@ function loadPlugins(){
                     '<span style="cursor: pointer;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'deploy\')">Deploy</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp '+
                 '</span>'+
-                '&nbsp <span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+  
+                '&nbsp <span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+
                     '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
                     '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'networks.cfg\', \''+name+'\', \'disabled\')">Network.cfg</span> &nbsp '+
                     '<span id="zeek-ctl-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'zeekctl.cfg\', \''+name+'\', \'disabled\')">Zeekctl.cfg</span> &nbsp '+
@@ -137,17 +137,17 @@ function loadPlugins(){
             // ZEEK CONFIGURATION - GLOBAL
             htmlzeek = htmlzeek +
             '<div id="zeek-configuration-tab" style="display:none;">'+
-                '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Edit Configuration &nbsp '+  
+                '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Edit Configuration &nbsp '+
                     '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'standalone-zeek-table\')">Standalone</span> &nbsp '+
                     '<span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
                     '<span id="zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'expert-zeek-table\')">Expert</span>'+
                 '</span> '+
-                '<span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+  
+                '<span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+
                     '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
                     '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'networks.cfg\', \''+name+'\', \'disabled\')">Network.cfg</span> &nbsp '+
                     '<span id="zeek-ctl-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'zeekctl.cfg\', \''+name+'\', \'disabled\')">Zeekctl.cfg</span> &nbsp '+
                 '</span> ';
-                
+
                 //zeek expert
                 htmlzeek = htmlzeek +
                 '<div id="expert-zeek-table" style="display:none;">'+
@@ -183,7 +183,7 @@ function loadPlugins(){
                             '<tr id="networks-edit-row" style="display:none;" bgcolor="#f6ddcc">'+
                                 '<td colspan="2"><input class="form-control" id="expert-zeek-path-networks-edit"></input></td>'+
                                 '<td class="align-middle">'+
-                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'networksConfig\')">Save</button>'+ 
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'networksConfig\')">Save</button>'+
                                     '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'networks-edit-row\')">Close</button>'+
                                 '</td>'+
                             '</tr>'+
@@ -206,7 +206,7 @@ function loadPlugins(){
                                     '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'policies\')">Save</button>'+
                                     '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'zeek-edit-policies-row\')">Close</button> &nbsp '+
                             '</td>'+
-                            '</tr>'+ 
+                            '</tr>'+
                             //variables
                             '<tr>'+
                                 '<td width="20%" class="align-middle" rowspan="2">Variables &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek variables" onclick="showEditValues(\'zeek-edit-variables-row\')"></i> </td>'+
@@ -226,8 +226,8 @@ function loadPlugins(){
                                     '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'variables\')">Save</button>'+
                                     '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'zeek-edit-variables-row\')">Close</button> &nbsp '+
                             '</td>'+
-                            '</tr>'+ 
-                        '</tbody>'+    
+                            '</tr>'+
+                        '</tbody>'+
                     '</table>'+
                     //Zeek cluster
                     '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
@@ -309,7 +309,7 @@ function loadPlugins(){
                     '</div><br>'+
                 '</div>'+
             '</div>';
-    
+
     //wazuh
     var htmlwazuh = ""+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
@@ -321,7 +321,7 @@ function loadPlugins(){
                 '<i class="fas fa-stop-circle" style="cursor: pointer;" id="'+uuid+'-wazuh-icon"></i> &nbsp' +
                 '<i class="fas fa-sync-alt" style="cursor: pointer;" title="Reload Wazuh information" id="reload-wazuh" onclick="ReloadFilesData(\''+uuid+'\')"></i>' +
                 ' <a style="color:black;">|</a> <span style="cursor: pointer;" title="Edit main Wazuh config file" class="badge bg-primary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\',\'none\',\'/var/ossec/etc/ossec.conf\')">Edit ossec.conf file</span>'+
-                '<button class="btn btn-primary float-right" style="font-size: 15px;" id="show-wazuh-add-file">Add file</button>'+ 
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" id="show-wazuh-add-file">Add file</button>'+
             '</span></p>'+
             '<div>'+
                 '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
@@ -566,7 +566,7 @@ function SyncZeekValues(uuid){
     var progressBarDiv = document.getElementById('progressBar-options-div');
     progressBar.style.display = "block";
     progressBarDiv.style.display = "block";
-    
+
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/syncZeekValues';
@@ -590,8 +590,8 @@ function SyncZeekValues(uuid){
         if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -654,7 +654,7 @@ function changeSuricataTable(uuid){
     var progressBarDiv = document.getElementById('progressBar-options-div');
     progressBar.style.display = "block";
     progressBarDiv.style.display = "block";
-    
+
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/plugin/changeSuricataTable';
@@ -684,8 +684,8 @@ function changeSuricataTable(uuid){
         if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -727,10 +727,10 @@ function hideInputAreaValue(key){
     document.getElementById(key).style.display = "none";
 }
 
-function addNewWazuhPath(uuid){      
+function addNewWazuhPath(uuid){
     if (document.getElementById("wazuh-add-line").value == ""){
         $('#wazuh-add-line').css('border', '2px solid red');
-        $('#wazuh-add-line').attr("placeholder", "Please, insert a valid path");  
+        $('#wazuh-add-line').attr("placeholder", "Please, insert a valid path");
     }else{
         $("#wazuh-insert").hide();
         var html = ""
@@ -745,7 +745,7 @@ function addNewWazuhPath(uuid){
                 '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteWazuhFile(\''+uuid+'\', \''+contentInput+'\', \''+count+'\')"></i>'+
             '</td>'+
         '<tr>';
-        document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;  
+        document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;
 
         addWazuhFile(uuid);
     }
@@ -769,8 +769,8 @@ function PingPluginsMaster(){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -785,19 +785,19 @@ function PingPluginsMaster(){
                 for(id in response.data){
                     if(id=="zeek"){
                         //table text
-                        if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-node").innerHTML = response.data[id]["nodeConfig"]; $("#zeek-expert-values-node").css('color', '');}     
+                        if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-node").innerHTML = response.data[id]["nodeConfig"]; $("#zeek-expert-values-node").css('color', '');}
                         if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-networks").innerHTML = response.data[id]["networksConfig"]; $("#zeek-expert-values-networks").css('color', '');}
                         if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-policies-master").innerHTML = response.data[id]["policiesMaster"]; $("#zeek-expert-values-policies-master").css('color', '');}
                         if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-policies-node").innerHTML = response.data[id]["policiesNode"]; $("#zeek-expert-values-policies-node").css('color', '');}
                         if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-1").innerHTML = response.data[id]["variables1"]; $("#zeek-expert-values-var-1").css('color', '');}
                         if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-2").innerHTML = response.data[id]["variables2"]; $("#zeek-expert-values-var-2").css('color', '');}
                         //edit fields
-                        document.getElementById("expert-zeek-path-node-edit").value = response.data[id]["nodeConfig"].trim();            
-                        document.getElementById("expert-zeek-path-networks-edit").value = response.data[id]["networksConfig"].trim();            
-                        document.getElementById("expert-zeek-path-policies-master").value = response.data[id]["policiesMaster"].trim();            
-                        document.getElementById("expert-zeek-path-policies-node").value = response.data[id]["policiesNode"].trim();            
-                        document.getElementById("expert-zeek-path-var-1").value = response.data[id]["variables1"].trim();            
-                        document.getElementById("expert-zeek-path-var-2").value = response.data[id]["variables2"].trim();            
+                        document.getElementById("expert-zeek-path-node-edit").value = response.data[id]["nodeConfig"].trim();
+                        document.getElementById("expert-zeek-path-networks-edit").value = response.data[id]["networksConfig"].trim();
+                        document.getElementById("expert-zeek-path-policies-master").value = response.data[id]["policiesMaster"].trim();
+                        document.getElementById("expert-zeek-path-policies-node").value = response.data[id]["policiesNode"].trim();
+                        document.getElementById("expert-zeek-path-var-1").value = response.data[id]["variables1"].trim();
+                        document.getElementById("expert-zeek-path-var-2").value = response.data[id]["variables2"].trim();
                     }
                 }
             }
@@ -845,8 +845,8 @@ function ChangeZeekMode(uuid, mode){
         if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -919,8 +919,8 @@ function ChangeMainServiceStatus(uuid, param, service){
         if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -970,8 +970,8 @@ function getCurrentRulesetName(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
                 headers:{
                     'token': document.cookie,
@@ -980,7 +980,7 @@ function getCurrentRulesetName(uuid) {
                 }
             })
             .then(function (response2) {
-                if(response2.data.ack){                
+                if(response2.data.ack){
                     document.getElementById('current-ruleset-options').innerHTML = "No ruleset selected...";
                     document.getElementById('current-ruleset-options').style.color = "red";
                     document.getElementById('current-ruleset').innerHTML = "No ruleset selected...";
@@ -997,13 +997,13 @@ function getCurrentRulesetName(uuid) {
                     .then(function (response) {
                         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                         if(response.data.permissions == "none"){
-                            PrivilegesMessage();              
-                        }else{   
+                            PrivilegesMessage();
+                        }else{
                             for (line in response.data){
                                 if (response.data[line]["type"] == "suricata"){
-                                    document.getElementById('suricata-ruleset-'+line).innerHTML = response2.data;                            
-                                    document.getElementById('suricata-ruleset-edit-'+line).value = response2.data;                            
-        
+                                    document.getElementById('suricata-ruleset-'+line).innerHTML = response2.data;
+                                    document.getElementById('suricata-ruleset-edit-'+line).value = response2.data;
+
                                 }
                             }
                         }
@@ -1021,7 +1021,7 @@ function getCurrentRulesetName(uuid) {
     });
 }
 
-async function GetMainconfData(uuid){   
+async function GetMainconfData(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
 
@@ -1036,8 +1036,8 @@ async function GetMainconfData(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             for (line in response.data){
                 if(response.data[line]["command"]){count++;}
             }
@@ -1049,7 +1049,7 @@ async function GetMainconfData(uuid){
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/getMainconfData/'+uuid;    
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/getMainconfData/'+uuid;
     await axios({
         method: 'get',
         url: nodeurl,
@@ -1060,11 +1060,11 @@ async function GetMainconfData(uuid){
                 'uuid': payload.uuid,
             }
     })
-    .then(function (response) {  
+    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             for (service in response.data){
                 if(service == "suricata"){
                     document.getElementById('managed-expert-span').innerHTML = 'To expert ('+count+')';
@@ -1099,14 +1099,14 @@ async function GetMainconfData(uuid){
                     }
                     if(response.data[service]["mode"] == "standalone"){
                         // document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white standalone';
-                        document.getElementById('zeek-mode-standalone').disabled = true; 
-                        // document.getElementById('zeek-mode-cluster').onclick = function(){ChangeZeekMode(uuid, "cluster");}; 
-                        // document.getElementById('standalone-zeek-table').style.display = "block"; 
-                        // document.getElementById('cluster-zeek-table').style.display = "none"; 
+                        document.getElementById('zeek-mode-standalone').disabled = true;
+                        // document.getElementById('zeek-mode-cluster').onclick = function(){ChangeZeekMode(uuid, "cluster");};
+                        // document.getElementById('standalone-zeek-table').style.display = "block";
+                        // document.getElementById('cluster-zeek-table').style.display = "none";
                     }else if(response.data[service]["mode"] == "cluster"){
                         // document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white cluster';
-                        document.getElementById('zeek-mode-cluster').disabled = true; 
-                        // document.getElementById('zeek-mode-standalone').onclick = function(){ChangeZeekMode(uuid, "standalone");}; 
+                        document.getElementById('zeek-mode-cluster').disabled = true;
+                        // document.getElementById('zeek-mode-standalone').onclick = function(){ChangeZeekMode(uuid, "standalone");};
                         // document.getElementById('standalone-zeek-table').style.display = "none";
                         // document.getElementById('cluster-zeek-table').style.display = "block";
                     }
@@ -1130,12 +1130,12 @@ async function GetMainconfData(uuid){
 function ModalAddClusterValue(uuid, type){
     var html = '<div class="modal-dialog">'+
       '<div class="modal-content">'+
-  
+
         '<div class="modal-header">'+
           '<h4 class="modal-title">Add '+type+'</h4>'+
           '<button type="button" class="close" id="add-cluster-modal-cross">&times;</button>'+
         '</div>'+
-  
+
         '<div class="modal-body">'+
           '<p>Insert the host:</p>'+
           '<input type="text" class="form-control" id="new-cluster-host" value=""><br>';
@@ -1146,15 +1146,15 @@ function ModalAddClusterValue(uuid, type){
             html = html + '<div id="new-cluster-interface"></div>';
           }
           html = html + '</div>'+
-  
+
         '<div class="modal-footer" id="sync-node-footer-btn">'+
           '<button type="button" class="btn btn-secondary" id="add-cluster-modal-close">Cancel</button>'+
           '<button type="button" class="btn btn-primary" id="add-cluster-modal">Add</button>'+
         '</div>'+
-  
+
       '</div>'+
     '</div>';
-    
+
     document.getElementById('modal-window').innerHTML = html;
     $('#modal-window').modal("show");
     $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value.trim(), document.getElementById('new-cluster-interface').value.trim()); });
@@ -1227,7 +1227,7 @@ function ModalSyncCluster(uuid){
 
     '</div>'+
   '</div>';
-  
+
   document.getElementById('modal-window').innerHTML = html;
   $('#modal-window').modal("show");
   $('#sync-cluster-modal').click(function(){ SyncCluster(uuid); });
@@ -1239,37 +1239,37 @@ function saveZeekValues(uuid, param){
     if(param == "nodeConfig" && document.getElementById('expert-zeek-path-node-edit').value=="" || param == "networksConfig" && document.getElementById('expert-zeek-path-networks-edit').value=="" || param == "policies" && document.getElementById('expert-zeek-path-policies-master').value=="" ||
         param == "policies" && document.getElementById('expert-zeek-path-policies-node').value=="" || param == "variables" && document.getElementById('expert-zeek-path-var-1').value=="" || param == "variables" && document.getElementById('expert-zeek-path-var-2').value==""){
             if (param == "nodeConfig" && document.getElementById('expert-zeek-path-node-edit').value == ""){
-                $('#expert-zeek-path-node-edit').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-node-edit').attr("placeholder", "Please, insert value");
                 $('#expert-zeek-path-node-edit').css('border', '2px solid red');
             }else{
                 $('#expert-zeek-path-node-edit').css('border', '2px solid #ced4da');
             }
             if (param == "networksConfig" && document.getElementById('expert-zeek-path-networks-edit').value == ""){
-                $('#expert-zeek-path-networks-edit').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-networks-edit').attr("placeholder", "Please, insert value");
                 $('#expert-zeek-path-networks-edit').css('border', '2px solid red');
             }else{
                 $('#expert-zeek-path-networks-edit').css('border', '2px solid #ced4da');
             }
             if (param == "policies" && document.getElementById('expert-zeek-path-policies-master').value == ""){
-                $('#expert-zeek-path-policies-master').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-policies-master').attr("placeholder", "Please, insert value");
                 $('#expert-zeek-path-policies-master').css('border', '2px solid red');
             }else{
                 $('#expert-zeek-path-policies-master').css('border', '2px solid #ced4da');
             }
             if (param == "policies" && document.getElementById('expert-zeek-path-policies-node').value == ""){
-                $('#expert-zeek-path-policies-node').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-policies-node').attr("placeholder", "Please, insert value");
                 $('#expert-zeek-path-policies-node').css('border', '2px solid red');
             }else{
                 $('#expert-zeek-path-policies-node').css('border', '2px solid #ced4da');
             }
             if (param == "variables" && document.getElementById('expert-zeek-path-var-1').value == ""){
-                $('#expert-zeek-path-var-1').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-var-1').attr("placeholder", "Please, insert value");
                 $('#expert-zeek-path-var-1').css('border', '2px solid red');
             }else{
                 $('#expert-zeek-path-var-1').css('border', '2px solid #ced4da');
             }
             if (param == "variables" && document.getElementById('expert-zeek-path-var-2').value == ""){
-                $('#expert-zeek-path-var-2').attr("placeholder", "Please, insert value");  
+                $('#expert-zeek-path-var-2').attr("placeholder", "Please, insert value");
                 $('#expert-zeek-path-var-2').css('border', '2px solid red');
             }else{
                 $('#expert-zeek-path-var-2').css('border', '2px solid #ced4da');
@@ -1280,13 +1280,13 @@ function saveZeekValues(uuid, param){
         $('#expert-zeek-path-network-edit').css('border', '2px solid #ced4da');     $('#expert-zeek-path-network-edit').attr("placeholder", "");        hideEditValues('networks-edit-row');
         $('#expert-zeek-path-policies-master').css('border', '2px solid #ced4da');  $('#expert-zeek-path-policies-master').attr("placeholder", "");     hideEditValues('zeek-edit-policies-row');
         $('#expert-zeek-path-policies-node').css('border', '2px solid #ced4da');    $('#expert-zeek-path-policies-node').attr("placeholder", "");       hideEditValues('zeek-edit-policies-row');
-        $('#expert-zeek-path-var-2').css('border', '2px solid #ced4da');            $('#expert-zeek-path-var-1').attr("placeholder", "");               hideEditValues('zeek-edit-variables-row'); 
-        $('#expert-zeek-path-var-1').css('border', '2px solid #ced4da');            $('#expert-zeek-path-var-2').attr("placeholder", "");               hideEditValues('zeek-edit-variables-row'); 
+        $('#expert-zeek-path-var-2').css('border', '2px solid #ced4da');            $('#expert-zeek-path-var-1').attr("placeholder", "");               hideEditValues('zeek-edit-variables-row');
+        $('#expert-zeek-path-var-1').css('border', '2px solid #ced4da');            $('#expert-zeek-path-var-2').attr("placeholder", "");               hideEditValues('zeek-edit-variables-row');
 
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/zeek/saveZeekValues';
-    
+
         var jsonCluster = {}
         jsonCluster["uuid"] = uuid;
         jsonCluster["param"] = param;
@@ -1316,8 +1316,8 @@ function saveZeekValues(uuid, param){
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
+                PrivilegesMessage();
+            }else{
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1338,7 +1338,7 @@ function saveZeekValues(uuid, param){
                         '</button>'+
                     '</div>';
                     setTimeout(function() {$(".alert").alert('close')}, 5000);
-    
+
                     PingPluginsMaster();
                 }
             }
@@ -1380,8 +1380,8 @@ function SyncCluster(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1421,20 +1421,20 @@ function SyncCluster(uuid){
 function AddClusterValue(uuid, type, host, interface){
     if (host == "" ||  interface == ""){
         if ((type == "proxy")&&(host == "")){
-            $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");  
+            $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");
             $('#new-cluster-host').css('border', '2px solid red');
         }else{
             $('#new-cluster-host').css('border', '2px solid #ced4da');
         }
         if ((type == "worker")&&(host == "" || interface == "")){
             if(host == ""){
-                $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");  
+                $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");
                 $('#new-cluster-host').css('border', '2px solid red');
             }else{
                 $('#new-cluster-host').css('border', '2px solid #ced4da');
             }
             if(interface == ""){
-                $('#new-cluster-interface').attr("placeholder", "Please, insert a valid interface");  
+                $('#new-cluster-interface').attr("placeholder", "Please, insert a valid interface");
                 $('#new-cluster-interface').css('border', '2px solid red');
             }else{
                 $('#new-cluster-interface').css('border', '2px solid #ced4da');
@@ -1445,7 +1445,7 @@ function AddClusterValue(uuid, type, host, interface){
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/addClusterValue';
-    
+
         var jsonCluster = {}
         jsonCluster["uuid"] = uuid;
         jsonCluster["type"] = type;
@@ -1466,8 +1466,8 @@ function AddClusterValue(uuid, type, host, interface){
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
+                PrivilegesMessage();
+            }else{
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1514,8 +1514,8 @@ function PingCluster(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1534,19 +1534,19 @@ function PingCluster(uuid){
                         '</tr>';
                         document.getElementById('zeek-table-logger').innerHTML = content;
                     }else if(elem == "manager"){
-                        var content = '<tr><td>'+response.data[elem]["host"]+'</td><td><i class="fas fa-edit" style="color:grey; cursor:pointer" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'manager\')"></i></td></tr>';                   
+                        var content = '<tr><td>'+response.data[elem]["host"]+'</td><td><i class="fas fa-edit" style="color:grey; cursor:pointer" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'manager\')"></i></td></tr>';
                         document.getElementById('zeek-table-manager').innerHTML = content;
                     }else if(elem.includes("proxy")){
-                        document.getElementById('zeek-table-proxy').innerHTML =  document.getElementById('zeek-table-proxy').innerHTML + 
+                        document.getElementById('zeek-table-proxy').innerHTML =  document.getElementById('zeek-table-proxy').innerHTML +
                         '<tr><td>'+elem+'</td><td>'+response.data[elem]["host"]+'</td>'+
                         '<td><i class="fas fa-edit" style="color:grey; cursor:pointer" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'proxy\')"></i> &nbsp <i class="fas fa-trash-alt" style="color:red; cursor:pointer" onclick="ModalDeleteClusterValue(\''+uuid+'\', \''+elem+'\')"></i></td>'+
                         '</tr>';
                     }else if(elem.includes("worker")){
-                        document.getElementById('zeek-table-worker').innerHTML = document.getElementById('zeek-table-worker').innerHTML + 
+                        document.getElementById('zeek-table-worker').innerHTML = document.getElementById('zeek-table-worker').innerHTML +
                             '<tr><td>'+elem+'</td><td>'+response.data[elem]["host"]+'</td><td>'+response.data[elem]["interface"]+'</td>'+
                             '<td><i class="fas fa-edit" style="color:grey; cursor:pointer;" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'worker\')"></i> &nbsp <i class="fas fa-trash-alt" style="color:red; cursor:pointer" onclick="ModalDeleteClusterValue(\''+uuid+'\', \''+elem+'\')"></i></td>'+
                         '</tr>';
-                    }            
+                    }
                 }
             }
         }
@@ -1561,7 +1561,7 @@ function PingCluster(uuid){
             '</button>'+
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
-    });  
+    });
 }
 
 function ModalDeleteClusterValue(uuid, type){
@@ -1582,7 +1582,7 @@ function ModalDeleteClusterValue(uuid, type){
             '</div>'+
         '</div>'+
     '</div>';
-  
+
     document.getElementById('modal-window').innerHTML = html;
     $('#modal-window').modal("show");
     $('#delete-cluster-modal').click(function(){ DeleteClusterValue(uuid, type); });
@@ -1617,7 +1617,7 @@ function ModalEditClusterValue(uuid, type, cluster){
 
         '</div>'+
     '</div>';
-  
+
     document.getElementById('modal-window').innerHTML = html;
     $('#modal-window').modal("show");
     $('#edit-cluster-modal').click(function(){ EditClusterValue(uuid, type, document.getElementById('edit-cluster-host').value, document.getElementById('edit-cluster-interface').value, cluster); });
@@ -1629,20 +1629,20 @@ function EditClusterValue(uuid, type, host, interface, cluster){
     if (host == "" ||  interface == ""){
         $('#edit-cluster-host').css('border', '2px solid red');
         if ((type.includes("proxy"))&&(host == "")){
-            $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");  
+            $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");
             $('#edit-cluster-host').css('border', '2px solid red');
         }else{
             $('#edit-cluster-host').css('border', '2px solid #ced4da');
         }
         if ((type.includes("worker"))&&(host == "" || interface == "")){
             if(host == ""){
-                $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");  
+                $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");
                 $('#edit-cluster-host').css('border', '2px solid red');
             }else{
                 $('#edit-cluster-host').css('border', '2px solid #ced4da');
             }
             if(interface == ""){
-                $('#edit-cluster-interface').attr("placeholder", "Please, insert a valid interface");  
+                $('#edit-cluster-interface').attr("placeholder", "Please, insert a valid interface");
                 $('#edit-cluster-interface').css('border', '2px solid red');
             }else{
                 $('#edit-cluster-interface').css('border', '2px solid #ced4da');
@@ -1653,7 +1653,7 @@ function EditClusterValue(uuid, type, host, interface, cluster){
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/zeek/editClusterValue';
-    
+
         var jsonCluster = {}
         jsonCluster["uuid"] = uuid;
         jsonCluster["cluster"] = cluster;
@@ -1675,8 +1675,8 @@ function EditClusterValue(uuid, type, host, interface, cluster){
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
+                PrivilegesMessage();
+            }else{
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1730,8 +1730,8 @@ function DeleteClusterValue(uuid, type){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1777,8 +1777,8 @@ function PingDataflow(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
             document.getElementById('analysis-'+response.data["analysis"]["value"]).checked = "true";
             document.getElementById('transport-'+response.data["transport"]["value"]).checked = "true";
@@ -1828,8 +1828,8 @@ function ChangeAnalyzerStatus(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1895,8 +1895,8 @@ function deployNode(value,uuid,nodeName){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1931,7 +1931,7 @@ function LaunchZeekMainConf(uuid, param) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/LaunchZeekMainConf';
-    
+
     var jsonValues = {}
     jsonValues["uuid"] = uuid;
     jsonValues["param"] = param;
@@ -1952,8 +1952,8 @@ function LaunchZeekMainConf(uuid, param) {
         if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if(response.data != null){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
@@ -1967,7 +1967,7 @@ function LaunchZeekMainConf(uuid, param) {
                     setTimeout(function() {$(".alert").alert('close')}, 5000);
                     progressBar.style.display = "none";
                     progressBarDiv.style.display = "none";
-                } 
+                }
             }else{
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
@@ -1990,8 +1990,10 @@ function LaunchZeekMainConf(uuid, param) {
         });
 }
 
-//Stop suricata using kill -9 
+//Stop suricata using kill -9
 function StartSuricataMainConf(uuid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StartSuricataMain';
@@ -2010,28 +2012,31 @@ function StartSuricataMainConf(uuid) {
         data: dataJSON
     })
         .then(function (response) {
+            console.log(response.data);
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                if(response.data != null){
-                    if (response.data.ack == "false") {
-                        $('html,body').scrollTop(0);
-                        var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                            '<strong>Error!</strong> Start Suricata main conf: '+response.data.error+'.'+
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                                '<span aria-hidden="true">&times;</span>'+
-                            '</button>'+
-                        '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
-                    }
+                PrivilegesMessage();
+            }else{
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Start Suricata main conf: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);   
                 }else{
-                    loadPlugins();
+                    location.reload(); 
                 }
             }
         })
         .catch(function error(error) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -2046,6 +2051,8 @@ function StartSuricataMainConf(uuid) {
 
 //Stop suricata using main.conf
 function StopSuricataMainConf(uuid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StopSuricataMain';
@@ -2064,28 +2071,30 @@ function StopSuricataMainConf(uuid) {
         data: dataJSON
     })
         .then(function (response) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                if(response.data != null){
-                    if (response.data.ack == "false") {
-                        $('html,body').scrollTop(0);
-                        var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Stop Suricata main conf: '+response.data.error+'.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
+                PrivilegesMessage();
+            }else{
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Stop Suricata main conf: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
                     '</div>';
                     setTimeout(function() {$(".alert").alert('close')}, 5000);
-                    } 
                 }else{
-                    loadPlugins();
+                    location.reload(); 
                 }
             }
         })
         .catch(function error(error) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -2098,8 +2107,10 @@ function StopSuricataMainConf(uuid) {
         });
 }
 
-//Stop suricata using kill -9 
+//Stop suricata using kill -9
 function KillSuricataMainConf(uuid, pid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/KillSuricataMain';
@@ -2118,43 +2129,47 @@ function KillSuricataMainConf(uuid, pid) {
             },
         data: dataJSON
     })
-        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                if(response.data != null){
-                    if (response.data.ack == "false") {
-                        $('html,body').scrollTop(0);
-                        var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                            '<strong>Error!</strong> Kill Suricata main conf: '+response.data.error+'.'+
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                                '<span aria-hidden="true">&times;</span>'+
-                            '</button>'+
-                        '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
-                    }
-                }else{
-                    loadPlugins();
-                }
+    .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Kill Suricata main conf: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                location.reload(); 
             }
-        })
-        .catch(function error(error) {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Kill Suricata main conf: '+error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        });
+        }
+    })
+    .catch(function error(error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Kill Suricata main conf: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
 }
 
-//Stop suricata using kill -9 
+//Stop suricata using kill -9
 function ReloadSuricataMainConf(uuid, pid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ReloadSuricataMain';
@@ -2173,44 +2188,48 @@ function ReloadSuricataMainConf(uuid, pid) {
             },
         data: dataJSON
     })
-        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                if(response.data != null){
-                    if (response.data.ack == "false") {
-                        $('html,body').scrollTop(0);
-                        var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                            '<strong>Error!</strong> Reload Suricata main conf response: '+response.data.error+'.'+
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                                '<span aria-hidden="true">&times;</span>'+
-                            '</button>'+
-                        '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
-                    }
-                }else{
-                    loadPlugins();
-                }
+    .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Reload Suricata main conf response: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                location.reload(); 
             }
-        })
-        .catch(function error(error) {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Reload Suricata main conf: '+error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        });
+        }
+    })
+    .catch(function error(error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Reload Suricata main conf: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
 }
 
 
 //Stop suricata system
 function StopSuricata(uuid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StopSuricata/' + uuid;
@@ -2224,39 +2243,43 @@ function StopSuricata(uuid) {
                 'uuid': payload.uuid,
             },
     })
-        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                if (response.data.ack == "false") {
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Stop Suricata: '+response.data.error+'.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                }else{
-                    setTimeout(function (){
-                        loadPlugins();
-                    }, 1500);
-                }
+    .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Stop Suricata: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                setTimeout(function (){
+                    loadPlugins();
+                }, 1500);
             }
-        })
-        .catch(function error(error) {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Stop Suricata: '+error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        });
+        }
+    })
+    .catch(function error(error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Stop Suricata: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
 
 }
 
@@ -2308,8 +2331,8 @@ function AddSTAPModal(uuid, type){
             '<input type="text" class="form-control" id="soft-tap-port" value="50010"><br>'+
         '<p>Insert certificate:</p>'+
             '<input type="text" class="form-control" id="soft-tap-cert" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
-        // if (type == "socket-network"){                  
-        // }else 
+        // if (type == "socket-network"){
+        // }else
         if (type == "socket-pcap"){
             html = html + '<p>Insert PCAP path:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps"><br>'+
@@ -2328,7 +2351,7 @@ function AddSTAPModal(uuid, type){
             '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
                 '<tbody id="socket-network-modal-table">' +
                 '</tbody>'+
-            '</table>';   
+            '</table>';
             axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid, {
                 headers:{
                     'token': document.cookie,
@@ -2339,8 +2362,8 @@ function AddSTAPModal(uuid, type){
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                 if(response.data.permissions == "none"){
-                    PrivilegesMessage();              
-                }else{   
+                    PrivilegesMessage();
+                }else{
                     var isChecked = false;
                     var inner = "";
                     for (net in response.data){
@@ -2350,17 +2373,17 @@ function AddSTAPModal(uuid, type){
                             '</td>'+
                             '<td style="word-wrap: break-word;">';
                                 if (!isChecked){
-                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';
                                     isChecked = true;
                                 }else{
-                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';
                                 }
                             inner = inner + '</td>'+
                         '</tr>';
                     }
                     document.getElementById('socket-network-modal-table').innerHTML = inner;
                 }
-            });   
+            });
     }
     html = html + '</div>'+
     '<div class="modal-footer" id="sync-node-footer-btn">'+
@@ -2371,11 +2394,11 @@ function AddSTAPModal(uuid, type){
     '</div>'+
   '</div>';
 
-  
+
 
   //   $('#add-stap-modal').click(function(){ $('#modal-window').modal("hide"); saveSoftwareTAP(uuid, type); });
   document.getElementById('modal-window').innerHTML = html;
-  
+
   $('#modal-window').modal("show");
   $('#add-stap-modal').click(function(){ saveSoftwareTAP(uuid, type); });
   $('#add-stap-modal-close').click(function(){ $('#modal-window').modal("hide");});
@@ -2383,115 +2406,115 @@ function AddSTAPModal(uuid, type){
 }
 
 function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('soft-tap-name').value)
-    if( (type == "socket-network" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "")) ||  
-    (type == "socket-pcap" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" )) ||  
+    if( (type == "socket-network" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "")) ||
+    (type == "socket-pcap" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" )) ||
     (type == "network-socket" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == ""))){
         if(type == "socket-network"){
             if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "") {
                 if (document.getElementById('soft-tap-name').value == "" ){
                     $('#soft-tap-name').css('border', '2px solid red');
-                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name"); 
+                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");
                 }else{
                     $('#soft-tap-name').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-port').value == ""){
                     $('#soft-tap-port').css('border', '2px solid red');
-                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port"); 
+                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port");
                 }else{
                     $('#soft-tap-port').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-cert').value == ""){
                     $('#soft-tap-cert').css('border', '2px solid red');
-                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate"); 
+                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");
                 }else{
                     $('#soft-tap-cert').css('border', '2px solid #ced4da');
                 }
             }
         }else if(type == "socket-pcap"){
-            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ){                
+            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ){
                 if (document.getElementById('soft-tap-port').value == ""){
                     $('#soft-tap-port').css('border', '2px solid red');
-                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port"); 
+                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port");
                 }else{
                     $('#soft-tap-port').css('border', '2px solid #ced4da');
                 }
-                if (document.getElementById('soft-tap-name').value == ""){   
+                if (document.getElementById('soft-tap-name').value == ""){
                     $('#soft-tap-name').css('border', '2px solid red');
-                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");              
+                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");
                 }else{
                     $('#soft-tap-name').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-cert').value == ""){
                     $('#soft-tap-cert').css('border', '2px solid red');
-                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");   
+                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");
                 }else{
                     $('#soft-tap-cert').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-pcap-path').value == ""){
                     $('#soft-tap-pcap-path').css('border', '2px solid red');
-                    $('#soft-tap-pcap-path').attr("placeholder", "Please, insert a valid pcap path");   
+                    $('#soft-tap-pcap-path').attr("placeholder", "Please, insert a valid pcap path");
                 }else{
                     $('#soft-tap-pcap-path').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-pcap-prefix').value == ""){
                     $('#soft-tap-pcap-prefix').css('border', '2px solid red');
-                    $('#soft-tap-pcap-prefix').attr("placeholder", "Please, insert a valid pcap prefix");            
+                    $('#soft-tap-pcap-prefix').attr("placeholder", "Please, insert a valid pcap prefix");
                 }else{
                     $('#soft-tap-pcap-prefix').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-bpf').value == ""){
                     $('#soft-tap-bpf').css('border', '2px solid red');
-                    $('#soft-tap-bpf').attr("placeholder", "Please, insert a valid bpf");   
+                    $('#soft-tap-bpf').attr("placeholder", "Please, insert a valid bpf");
                 }else{
                     $('#soft-tap-bpf').css('border', '2px solid #ced4da');
                 }
-                
+
             }
         }else if(type == "network-socket"){
             if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == ""){
-                if (document.getElementById('soft-tap-name').value == ""){  
+                if (document.getElementById('soft-tap-name').value == ""){
                     $('#soft-tap-name').css('border', '2px solid red');
-                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");                 
+                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");
                 }else{
                     $('#soft-tap-name').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-port').value == ""){
                     $('#soft-tap-port').css('border', '2px solid red');
-                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port");   
+                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port");
                 }else{
                     $('#soft-tap-port').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-cert').value == ""){
                     $('#soft-tap-cert').css('border', '2px solid red');
-                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");   
+                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");
                 }else{
                     $('#soft-tap-cert').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-collector').value == ""){
                     $('#soft-tap-collector').css('border', '2px solid red');
-                    $('#soft-tap-collector').attr("placeholder", "Please, insert a valid collector IP");   
+                    $('#soft-tap-collector').attr("placeholder", "Please, insert a valid collector IP");
                 }else{
                     $('#soft-tap-collector').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-bpf-socket').value == ""){
                     $('#soft-tap-bpf-socket').css('border', '2px solid red');
-                    $('#soft-tap-bpf-socket').attr("placeholder", "Please, insert a valid BPF path");   
+                    $('#soft-tap-bpf-socket').attr("placeholder", "Please, insert a valid BPF path");
                 }else{
                     $('#soft-tap-bpf-socket').css('border', '2px solid #ced4da');
                 }
             }
         }
-    }else{     
+    }else{
         $('#modal-window').modal("hide");
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/add';
 
         var valueSelected = "";
-        $('input:radio:checked').each(function() {            
+        $('input:radio:checked').each(function() {
             if($(this).attr('class') == 'socket-network-radio-stap'){
                 valueSelected = $(this).prop("value");
-            }                        
+            }
         });
 
         var jsonSave = {}
@@ -2518,8 +2541,8 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2559,9 +2582,9 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
 }
 
 function AddPluginService(uuid, name, type){
-    if (name == ""){       
+    if (name == ""){
         $('#new-service-name').css('border', '2px solid red');
-        $('#new-service-name').attr("placeholder", "Please, insert a description"); 
+        $('#new-service-name').attr("placeholder", "Please, insert a description");
     }else{
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
@@ -2583,11 +2606,11 @@ function AddPluginService(uuid, name, type){
             data: dataMap
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}   
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             $('#modal-window').modal("hide");
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             $('#modal-window').modal("hide");
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
@@ -2611,7 +2634,7 @@ function AddPluginService(uuid, name, type){
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }
             loadPlugins();
-        }         
+        }
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -2738,8 +2761,8 @@ function saveBPF(uuid, value, service, type){
       .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.error == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -2801,8 +2824,8 @@ function loadRuleset(uuid, source, service){
       .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (typeof response.data.error != "undefined"){
                 resultElement.innerHTML = '<p>No rules available...</p>';
             }else{
@@ -2857,8 +2880,8 @@ function deployZeek(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2942,8 +2965,8 @@ function saveRuleSelected(rule, nid, source, name, service){
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2996,8 +3019,8 @@ function playCollector(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
             document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
             return true;
@@ -3025,8 +3048,8 @@ function stopCollector(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
             document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";
             return true;
@@ -3054,8 +3077,8 @@ function showCollector(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             showModalCollector(response);
         }
 
@@ -3144,8 +3167,8 @@ function PingCollector(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data != ""){
                 document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
                 document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
@@ -3177,8 +3200,8 @@ function PingPorts(uuid) {
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             for(line in response.data){
                 if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
@@ -3195,8 +3218,8 @@ function PingPorts(uuid) {
         }
         })
         .catch(function (error) {
-            
-            return false;            
+
+            return false;
         });
     return false;
 }
@@ -3231,8 +3254,8 @@ function ChangeStatus(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3291,8 +3314,8 @@ function ChangeMode(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3338,8 +3361,8 @@ function showPorts(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             showModalPorts(response, uuid);
         }
     })
@@ -3434,7 +3457,7 @@ function deletePorts(uuid){
         }).then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
+            PrivilegesMessage();
         }
 
         }).catch(function (error) {
@@ -3459,7 +3482,7 @@ function deleteAllPorts(uuid){
     }).then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
+            PrivilegesMessage();
         }
 
     }).catch(function (error) {
@@ -3491,8 +3514,8 @@ function sendRulesetToNode(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3548,8 +3571,8 @@ function RunSuricata(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3576,7 +3599,7 @@ function RunSuricata(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);        
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 
 }
@@ -3599,8 +3622,8 @@ function StopSuricata(uuid) {
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3627,7 +3650,7 @@ function StopSuricata(uuid) {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);   
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 
 }
@@ -3649,8 +3672,8 @@ function PingSuricata(uuid) {
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (!response.data.path && !response.data.bin) {
                 document.getElementById(uuid + '-suricata').className = "badge bg-dark align-text-bottom text-white";
                 document.getElementById(uuid + '-suricata').innerHTML = "N/A";
@@ -3702,8 +3725,8 @@ function RunZeek(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3752,8 +3775,8 @@ function StopZeek(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3781,7 +3804,7 @@ function StopZeek(uuid) {
             '</button>'+
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
-        
+
     });
 
 }
@@ -3805,12 +3828,12 @@ function PingZeek(uuid) {
             }
     })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}     
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             document.getElementById("zeek-status-details").innerHTML = '';
             document.getElementById("zeek-current-mode").innerHTML = response.data["mode"];
             document.getElementById("zeek-role").innerHTML = response.data["role"];
@@ -3830,7 +3853,7 @@ function PingZeek(uuid) {
             document.getElementById("zeek-status-details").innerHTML = html;
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-        }   
+        }
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -3865,8 +3888,8 @@ function RunWazuh(uuid) {
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3917,8 +3940,8 @@ function StopWazuh(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3954,7 +3977,7 @@ function addWazuhFile(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/addWazuhFile';
-    
+
     var array = []
     for (x = 1; x <= totalCount; x++) {
         array.push(document.getElementById(x+'-wazuh-files').innerHTML);
@@ -3964,7 +3987,7 @@ function addWazuhFile(uuid){
     jsonWazuhFilePath["uuid"] = uuid;
     jsonWazuhFilePath["paths"] = array;
     var dataJSON = JSON.stringify(jsonWazuhFilePath);
-    
+
     axios({
         method: 'put',
         url: nodeurl,
@@ -3979,8 +4002,8 @@ function addWazuhFile(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             loadPlugins();
         }
     })
@@ -4022,7 +4045,7 @@ function DeleteWazuhFile(uuid, count){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deleteWazuhFile';
-    
+
     var array = []
     for (x = 1; x <= totalCount; x++) {
         if (x != count){
@@ -4034,7 +4057,7 @@ function DeleteWazuhFile(uuid, count){
     jsonWazuhFilePath["uuid"] = uuid;
     jsonWazuhFilePath["paths"] = array;
     var dataJSON = JSON.stringify(jsonWazuhFilePath);
-    
+
     axios({
         method: 'delete',
         url: nodeurl,
@@ -4049,8 +4072,8 @@ function DeleteWazuhFile(uuid, count){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             loadPlugins();
         }
     })
@@ -4075,8 +4098,8 @@ function PingWazuhFiles(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -4103,7 +4126,7 @@ function PingWazuhFiles(uuid) {
                     isError = true;
                 }
             }
-            
+
             //if there are no error retrieving Wazuh files, show all files in the list
             if(!isError){
                 var html = "";
@@ -4134,7 +4157,7 @@ function PingWazuhFiles(uuid) {
                     count++;
                 }
                 document.getElementById('wazuh-count-table-value').value = count-1;
-                document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;                   
+                document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;
             }else{
                 document.getElementById('wazuh-table').innerHTML = "No files available";
             }
@@ -4174,8 +4197,8 @@ function PingWazuh(uuid) {
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (!response.data.path && !response.data.bin) {
                 document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
                 document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
@@ -4226,8 +4249,8 @@ function RunStap(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -4274,8 +4297,8 @@ function StopStap(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -4323,8 +4346,8 @@ function PingStap(uuid) {
         .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (!response.data.stapStatus) {
                 document.getElementById(uuid + '-stap').className = "badge bg-danger align-text-bottom text-white";
                 document.getElementById(uuid + '-stap').innerHTML = "OFF";
@@ -4348,7 +4371,7 @@ function PingStap(uuid) {
     return false;
 }
 
-function PingPluginsNode(uuid) {    
+function PingPluginsNode(uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/' + uuid;
@@ -4371,8 +4394,8 @@ function PingPluginsNode(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             for(line in response.data){
                 // if (line == "knownports"){
                 //     if (response.data[line]["status"] == "Enabled"){
@@ -4388,14 +4411,14 @@ function PingPluginsNode(uuid) {
                 // }else if (response.data[line]["type"] == "suricata"){
                 if (response.data[line]["type"] == "suricata"){
                     if (response.data[line]["command"]){
-                        tableSuricataCommand = tableSuricataCommand + '<tr>'+                    
+                        tableSuricataCommand = tableSuricataCommand + '<tr>'+
                             '<td>'+response.data[line]["pid"]+'</td>'+
                             '<td>'+response.data[line]["command"]+'</td>'+
                             '<td>'+
                                 '<span style="cursor: pointer;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
                                 '<span style="cursor: pointer;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Reload</span>'+
                             '</td>'+
-    
+
                         '<tr>';
                     }else{
                         tableSuricata = tableSuricata + '<tr>'+
@@ -4466,13 +4489,13 @@ function PingPluginsNode(uuid) {
                                 '<br>'+
                                 '<div class="form-row text-center">'+
                                     '<div class="col">'+
-                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+    
+                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+
                                     '</div>'+
                                 '</div>'+
                             '</td>'+
                         '</tr>';
                     }
-                }else if (response.data[line]["type"] == "zeek"){                
+                }else if (response.data[line]["type"] == "zeek"){
                     tableZeek = tableZeek + '<tr>'+
                         '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
                         '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
@@ -4521,7 +4544,7 @@ function PingPluginsNode(uuid) {
                                             '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
                                         '</div>'+
                                         '<div class="col">'+
-                                            '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+    
+                                            '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+
                                         '</div>'+
                                     '</div>'+
                                     '<br>'+
@@ -4529,8 +4552,8 @@ function PingPluginsNode(uuid) {
                             '</div>'+
                         '</td>'+
                     '</tr>';
-                    
-                }else if (response.data[line]["type"] == "socket-network"){                
+
+                }else if (response.data[line]["type"] == "socket-network"){
                     tableSocketNetwork = tableSocketNetwork + '<tr>'+
                         '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
                             if (response.data[line]["pid"] == "none"){
@@ -4557,7 +4580,7 @@ function PingPluginsNode(uuid) {
                                 tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
                             }else if (response.data[line]["pid"] != "none"){
                                 tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
-                            }                        
+                            }
                             tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                             '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
                         '</td>'+
@@ -4590,7 +4613,7 @@ function PingPluginsNode(uuid) {
                             '<br>'+
                             '<div class="form-row text-center">'+
                                 '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+    
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+
                                 '</div>'+
                             '</div>'+
                         '</td>'+
@@ -4665,7 +4688,7 @@ function PingPluginsNode(uuid) {
                             '<br>'+
                             '<div class="form-row text-center">'+
                                 '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+    
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+
                                 '</div>'+
                             '</div>'+
                         '</td>'+
@@ -4714,7 +4737,7 @@ function PingPluginsNode(uuid) {
                                     'Port: <input class="form-control" id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'">'+
                                 '</div>'+
                             '</div>'+
-                            '<div class="form-row">'+                            
+                            '<div class="form-row">'+
                             '</div>'+
                             '<div class="form-row">'+
                                 '<div class="col">'+
@@ -4742,20 +4765,20 @@ function PingPluginsNode(uuid) {
                             '<br>'+
                             '<div class="form-row text-center">'+
                                 '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+    
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+
                                 '</div>'+
                             '</div>'+
                         '</td>'+
                     '</tr>';
-                }            
+                }
                 document.getElementById('zeek-table-services').innerHTML = tableZeek;
                 document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
                 document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
                 document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
                 document.getElementById('suricata-table-services').innerHTML = tableSuricata;
-                document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;           
+                document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;
             }
-    
+
             axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid, {
                 headers:{
                     'token': document.cookie,
@@ -4766,8 +4789,8 @@ function PingPluginsNode(uuid) {
             .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
+                PrivilegesMessage();
+            }else{
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -4780,8 +4803,8 @@ function PingPluginsNode(uuid) {
                     setTimeout(function() {$(".alert").alert('close')}, 5000);
                 }else{
                     if (document.getElementById('zeek-interface') != null){
-                        for (net in response.data){                                                        
-                            document.getElementById('zeek-interface').value = response.data[net]["interface"];                            
+                        for (net in response.data){
+                            document.getElementById('zeek-interface').value = response.data[net]["interface"];
                         }
                     }
                 }
@@ -4821,7 +4844,7 @@ function showModifyStap(service){
     $('#edit-row-'+service).show();
 }
 
-function saveStapChanges(uuid, type, service){    
+function saveStapChanges(uuid, type, service){
     $('#edit-row-'+service).hide();
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -4837,10 +4860,10 @@ function saveStapChanges(uuid, type, service){
         jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+service).value.trim();
         jsonDeployService["interface"] = document.getElementById('socket-network-interface-'+service).value.trim();
     }else if (type == "suricata"){
-        jsonDeployService["name"] = document.getElementById('suricata-name-'+service).value.trim();      
+        jsonDeployService["name"] = document.getElementById('suricata-name-'+service).value.trim();
     }else if (type == "zeek"){
-        jsonDeployService["name"] = document.getElementById('zeek-name-'+service).value.trim();      
-    }else if (type == "socket-pcap"){        
+        jsonDeployService["name"] = document.getElementById('zeek-name-'+service).value.trim();
+    }else if (type == "socket-pcap"){
         jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+service).value.trim();
         jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+service).value.trim();
         jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+service).value.trim();
@@ -4854,7 +4877,7 @@ function saveStapChanges(uuid, type, service){
         jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value.trim();
         jsonDeployService["interface"] = document.getElementById('network-socket-interface-'+service).value.trim();
         jsonDeployService["bpf"] = document.getElementById('network-socket-bpf-'+service).value.trim();
-    }    
+    }
     var dataJSON = JSON.stringify(jsonDeployService);
 
     axios({
@@ -4871,8 +4894,8 @@ function saveStapChanges(uuid, type, service){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -4883,7 +4906,7 @@ function saveStapChanges(uuid, type, service){
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
-                
+
                 loadPlugins();
             }else{
                 loadPlugins();
@@ -4961,8 +4984,8 @@ function deployStapService(uuid, service, collector,port,interface, type){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -5016,8 +5039,8 @@ function stopStapService(uuid, service, type){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -5070,8 +5093,8 @@ function deleteService(uuid, service){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -5146,12 +5169,12 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
             if(response.data.permissions == "none"){
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
-                PrivilegesMessage();              
-            }else{   
+                PrivilegesMessage();
+            }else{
                 if(response.data.permissions == "none"){
                     progressBar.style.display = "none";
                     progressBarDiv.style.display = "none";
-                    PrivilegesMessage();              
+                    PrivilegesMessage();
                 }else{
                     if (response.data.ack == "false") {
                         $('html,body').scrollTop(0);
@@ -5204,8 +5227,8 @@ function PingAnalyzer(uuid) {
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data["status"] == "Enabled"){
                 document.getElementById('analyzer-status-'+uuid).innerHTML = "ON";
                 document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-stop-circle";
@@ -5258,8 +5281,8 @@ function ReloadFilesData(uuid){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             var wazuhCount = document.getElementById('wazuh-count-table-value').value;
             for (file in response.data){
                 if (file == "analyzer"){
@@ -5287,7 +5310,7 @@ function ReloadFilesData(uuid){
                                     if(response.data[file][value]>=1048576 && response.data[file][value]<1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1048576).toFixed(2)+' MB</span>';}
                                     if(response.data[file][value]>=1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1073741824).toFixed(2)+' GB</span>';}
                                 }
-                                document.getElementById('wazuh-file-column-'+x).innerHTML = htmlWazuh; 
+                                document.getElementById('wazuh-file-column-'+x).innerHTML = htmlWazuh;
                             }
                         }
                     }
@@ -5299,7 +5322,7 @@ function ReloadFilesData(uuid){
     })
     .catch(function (error) {
     });
-    
+
     // //wazuh
     // //analyzer
     // if (fileSize > response.data["size"]) {
@@ -5331,18 +5354,18 @@ function loadNetworkValuesService(uuid, name, service, type){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             var html = '<div class="modal-dialog" id="network-modal-window">'+
               '<div class="modal-content">'+
-    
+
                 '<div class="modal-header" style="word-break: break-all;">'+
                   '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
                   '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
                 '</div>'+
-    
+
                 '<div class="modal-body" id="delete-node-footer-table">';
-    
+
                     if (response.data.ack == "false"){
                         html = html + '<span><h6>Error loading interfaces</h6></span>';
                     } else {
@@ -5368,7 +5391,7 @@ function loadNetworkValuesService(uuid, name, service, type){
                         '</table>';
                     }
                 html = html + '</div>'+
-    
+
                 '<div class="modal-footer" id="delete-node-footer-btn">'+
                     '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
                         if (response.data.ack != "false"){
@@ -5376,20 +5399,20 @@ function loadNetworkValuesService(uuid, name, service, type){
                                 html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\', \''+service+'\')">Save</button>';
                             }else {
                                 html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="saveSuricataInterface(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Save</button>';
-                            }                        
+                            }
                         }
                     html = html + '</div>'+
                 '</div>'+
-    
+
               '</div>'+
             '</div>';
-    
+
             document.getElementById('modal-window').innerHTML = html;
             // LoadNetworkValuesSelected(uuid);
-    
+
             $('#modal-window').modal("show");
             $('#btn-select-interface-cross').click(function(){ $('#modal-window').modal("hide"); });
-            $('#btn-select-interface-close').click(function(){ $('#modal-window').modal("hide"); });        
+            $('#btn-select-interface-close').click(function(){ $('#modal-window').modal("hide"); });
         }
     })
     .catch(function (error) {
@@ -5432,7 +5455,7 @@ function updateNetworkInterface(uuid, type, service){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
+            PrivilegesMessage();
         }
         // loadPlugins();
     })
@@ -5484,7 +5507,7 @@ function saveSuricataInterface(uuid, name, service, type){
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
+            PrivilegesMessage();
         }
     })
     .catch(function (error) {

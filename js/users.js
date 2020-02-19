@@ -560,6 +560,7 @@ function addUsersTo(id, type){
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
+                GetAllUsers();
             }
         }
     })

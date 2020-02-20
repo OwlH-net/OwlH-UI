@@ -18,14 +18,14 @@ function loadJSONdata(){
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
-        loadPlugins();
+        loadMonitor();
         loadTitleJSONdata();
     });
 }
 var payload = "";
 loadJSONdata();
 
-function loadPlugins(){
+function loadMonitor(){
     var urlWeb = new URL(window.location.href);
     var name = urlWeb.searchParams.get("node");
     var uuid = urlWeb.searchParams.get("uuid");
@@ -71,6 +71,7 @@ function loadPlugins(){
                 '<thead>'+
                     '<tr>'+
                         '<th>Path</th>'+
+                        '<th width="10%">Rotation</th>'+
                         '<th width="15%">Status</th>'+
                         '<th width="20%">Actions</th>'+
                     '</tr>'+
@@ -103,8 +104,15 @@ function AddMonitorFileModal(uuid){
         '</div>'+
   
         '<div class="modal-body" style="word-break: break-all;">'+
-          '<p>Insert the path for add this file.</p>'+
+          '<p>Insert the path for add this file:</p>'+
           '<input type="text" class="form-control" id="new-file-path">'+
+          '<br>'+
+          '<p>Maximum rotation file size (in Bytes):</p>'+
+          '<input type="text" class="form-control" id="size-file-path">'+
+          '<p>Maximum rotation file lines:</p>'+
+          '<input type="text" class="form-control" id="lines-file-path">'+
+          '<p>Maximum rotation file days:</p>'+
+          '<input type="text" class="form-control" id="days-file-path">'+
         '</div>'+
   
         '<div class="modal-footer" id="sync-node-footer-btn" style="word-break: break-all;">'+
@@ -187,7 +195,7 @@ function DeleteMonitorFile(uuid, file){
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
-                loadPlugins();
+                loadMonitor();
             }
         }
     })
@@ -205,19 +213,43 @@ function DeleteMonitorFile(uuid, file){
 }
 
 function AddMonitorFile(uuid, path){
-    if(document.getElementById('new-file-path').value == ""){
-        $("#new-file-path").css('border', '2px solid red');
-        $("#new-file-path").attr('placeholder', 'Please, insert a valid path...');
+    if(document.getElementById('new-file-path').value == "" || document.getElementById('size-file-path').value == "" || document.getElementById('lines-file-path').value == "" || document.getElementById('days-file-path').value == ""){
+        if(document.getElementById('new-file-path').value == ""){
+            $("#new-file-path").css('border', '2px solid red');
+            $("#new-file-path").attr('placeholder', 'Please, insert valid path...');
+        }else{
+            $("#new-file-path").css('border', '');
+        }
+        if(document.getElementById('size-file-path').value == ""){
+            $("#size-file-path").css('border', '2px solid red');
+            $("#size-file-path").attr('placeholder', 'Please, insert file size...');
+        }else{
+            $("#size-file-path").css('border', '');
+        }
+        if(document.getElementById('lines-file-path').value == ""){
+            $("#lines-file-path").css('border', '2px solid red');
+            $("#lines-file-path").attr('placeholder', 'Please, insert number of lines...');
+        }else{
+            $("#lines-file-path").css('border', '');
+        }   
+        if(document.getElementById('days-file-path').value == ""){
+            $("#days-file-path").css('border', '2px solid red');
+            $("#days-file-path").attr('placeholder', 'Please, insert number of days...');
+        }else{
+            $("#days-file-path").css('border', '');
+        }   
     }else{
         $('#modal-window').modal("hide");
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/monitor/addFile';
 
-        $("#new-file-path").css('border', '');
         var jsonSave = {}
         jsonSave["uuid"] = uuid;
         jsonSave["path"] = path;
+        jsonSave["maxSize"] = document.getElementById('size-file-path').value;
+        jsonSave["maxLines"] = document.getElementById('lines-file-path').value;
+        jsonSave["maxDays"] = document.getElementById('days-file-path').value;
         var dataJSON = JSON.stringify(jsonSave);
         axios({
             method: 'post',
@@ -246,7 +278,7 @@ function AddMonitorFile(uuid, path){
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
-                loadPlugins();
+                loadMonitor();
             }
         }
         })
@@ -290,7 +322,13 @@ function PingMonitorFiles(uuid){
                 for (file in response.data){
                     html = html + '<tr>'+
                         '<td style="word-wrap: break-word;" id="'+file+'-monitor-files">'+response.data[file]["path"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="monitor-file-column-'+file+'">';
+                        '<td style="word-wrap: break-word;">';
+                            if(response.data[file]["rotate"] == "Enabled"){
+                                html = html + '<span id="monitor-rotation-'+file+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["rotate"]+'</span></td>';
+                            }else{
+                                html = html + '<span id="monitor-rotation-'+file+'" class="badge badge-pill bg-danger align-text-bottom text-white">'+response.data[file]["rotate"]+'</span></td>';
+                            }
+                        html = html + '<td style="word-wrap: break-word;" id="monitor-file-column-'+file+'">';
                         if(response.data[file]["size"] < 0){
                             html = html +'<span id="monitor-file-status-'+file+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
                         }else{
@@ -306,7 +344,8 @@ function PingMonitorFiles(uuid){
                                 '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[file]["path"]+'\')">50</span> &nbsp'+
                                 '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[file]["path"]+'\')">100</span> &nbsp';
                             }
-                            html = html + '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteMonitorFile(\''+uuid+'\', \''+file+'\', \''+response.data[file]["path"]+'\')"></i>'+
+                            html = html + '<i class="fas fa-sync-alt" style="color:dodgerblue;cursor: pointer;" title="Change rotation file status" onclick="ChangeRotationStatus(\''+uuid+'\', \''+file+'\', \''+response.data[file]["rotate"]+'\')"></i> &nbsp'+
+                            '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteMonitorFile(\''+uuid+'\', \''+file+'\', \''+response.data[file]["path"]+'\')"></i>'+
                         '</td>'+
                     '<tr>';
                 }
@@ -527,4 +566,58 @@ function showActions(action,uuid){
         icon.classList.add("fa-sort-down");
         icon.classList.remove("fa-sort-up");
     }
+}
+
+function ChangeRotationStatus(uuid, file, status){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/monitor/changeRotationStatus';
+
+    var jsonSave = {}
+    jsonSave["uuid"] = uuid;
+    jsonSave["file"] = file;
+    if(status == "Enabled"){jsonSave["status"] = "Disabled";}else{jsonSave["status"] = "Enabled";}
+    var dataJSON = JSON.stringify(jsonSave);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
+        data: dataJSON
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>Change rotation status: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadMonitor();
+            }
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error: </strong>Change rotation status: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
 }

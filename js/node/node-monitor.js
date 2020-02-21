@@ -345,11 +345,45 @@ function PingMonitorFiles(uuid){
                                 '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[file]["path"]+'\')">100</span> &nbsp';
                             }
                             html = html + '<i class="fas fa-sync-alt" style="color:dodgerblue;cursor: pointer;" title="Change rotation file status" onclick="ChangeRotationStatus(\''+uuid+'\', \''+file+'\', \''+response.data[file]["rotate"]+'\')"></i> &nbsp'+
+                            '<i class="fas fa-edit" style="color:dodgerblue;cursor: pointer;" title="Edit rotation file values" onclick="showModifyRotation(\''+file+'\')"></i> &nbsp'+
                             '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteMonitorFile(\''+uuid+'\', \''+file+'\', \''+response.data[file]["path"]+'\')"></i>'+
                         '</td>'+
-                    '<tr>';
+                    '</tr>'+
+                    '<tr id="edit-file-'+file+'" style="display:none;" bgcolor="peachpuff">'+
+                        '<td colspan="3">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Path: <input class="form-control" id="rotation-path-'+file+'" value="'+response.data[file]["path"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Maximum file size (in Bytes): <input class="form-control" id="rotation-size-'+file+'" value="'+response.data[file]["maxSize"]+'">'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Maximum file lines: <input class="form-control" id="rotation-lines-'+file+'" value="'+response.data[file]["maxLines"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Maximum rotation days: <input class="form-control" id="rotation-days-'+file+'" value="'+response.data[file]["maxDays"]+'">'+
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                        '<td>'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-primary float-right" onclick="EditRotation(\''+uuid+'\', \''+file+'\')">Save</button>'+
+                                '</div>'+
+                            '</div>'+
+                            '<br>'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-danger float-right" onclick="hideEditRotation(\''+file+'\')">Cancel</button>'+
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                    '</tr>';
                 }
-                document.getElementById('file-data-monitor').innerHTML= html;
+                document.getElementById('file-data-monitor').innerHTML= html;                
             }
         }
     })
@@ -365,6 +399,15 @@ function PingMonitorFiles(uuid){
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 
+}
+
+function hideEditRotation(file){
+    // document.getElementById('edit-file-'+line).style.display = "none";
+    $('#edit-file-'+file).hide();
+}
+
+function showModifyRotation(file){
+    $('#edit-file-'+file).show();
 }
 
 function LoadPageLastLines(uuid, line, path) {
@@ -620,4 +663,90 @@ function ChangeRotationStatus(uuid, file, status){
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
+}
+
+function EditRotation(uuid, file){
+    if(document.getElementById('rotation-path-'+file).value == "" || document.getElementById('rotation-lines-'+file).value == "" || document.getElementById('rotation-size-'+file).value == "" || document.getElementById('rotation-days-'+file).value == ""){
+        if(document.getElementById('rotation-path-'+file).value ==""){        
+            $('#rotation-path-'+file).css('border', '2px solid red');
+            $('#rotation-path-'+file).attr('placeholder', 'Please, insert valid path...');    
+        }else{         
+            $('#rotation-path-'+file).css('border', '');   
+        }
+        if(document.getElementById('rotation-lines-'+file).value ==""){        
+            $('#rotation-lines-'+file).css('border', '2px solid red');
+            $('#rotation-lines-'+file).attr('placeholder', 'Please, insert valid number of lines...');    
+        }else{         
+            $('#rotation-lines-'+file).css('border', '');   
+        }
+        if(document.getElementById('rotation-size-'+file).value ==""){        
+            $('#rotation-size-'+file).css('border', '2px solid red');
+            $('#rotation-size-'+file).attr('placeholder', 'Please, insert valid size...');    
+        }else{         
+            $('#rotation-size-'+file).css('border', '');   
+        }
+        if(document.getElementById('rotation-days-'+file).value ==""){        
+            $('#rotation-days-'+file).css('border', '2px solid red');
+            $('#rotation-days-'+file).attr('placeholder', 'Please, insert valid days...');    
+        }else{         
+            $('#rotation-days-'+file).css('border', '');   
+        }
+    }else{       
+        $('#edit-file-'+file).hide(); 
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/monitor/editRotation';
+
+        var jsonSave = {}
+        jsonSave["uuid"] = uuid;
+        jsonSave["file"] = file;
+        jsonSave["path"] = document.getElementById('rotation-path-'+file).value;
+        jsonSave["size"] = document.getElementById('rotation-size-'+file).value;
+        jsonSave["lines"] = document.getElementById('rotation-lines-'+file).value;
+        jsonSave["days"] = document.getElementById('rotation-days-'+file).value;
+        var dataJSON = JSON.stringify(jsonSave);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+                headers:{
+                    'token': document.cookie,
+                    'user': payload.user,
+                    'uuid': payload.uuid,
+                },
+            data: dataJSON
+        })
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error: </strong>Edit rotation: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    loadMonitor();
+                }
+            }
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>Edit rotation: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+    }
+
 }

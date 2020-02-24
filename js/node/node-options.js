@@ -3471,7 +3471,7 @@ function deleteAllPorts(uuid){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/ports/deleteAll/'+uuid;
     axios({
-        method: 'put',
+        method: 'delete',
         url: nodeurl,
         timeout: 30000,
         headers:{

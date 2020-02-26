@@ -43,6 +43,7 @@ function GetAllUsers(){
         }
     })
     .then(function (response) {
+        console.log(response.data);
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -82,7 +83,7 @@ function GetAllUsers(){
                             html = html + '</td>'+
                         '</tr>'+
                         //user information
-                        '<tr id="user-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                  
+                        '<tr id="user-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue" colspan="2">'+                                  
                             '<td>'+
                                 '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
                                     '<tr>'+
@@ -98,25 +99,32 @@ function GetAllUsers(){
                                             '</tr>';
                                         }
                                     }
-                                    html = html + '</table>'+
-                                '</td>'+
-                                '<td>'+
-                                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                                        '<tr>'+
-                                            '<th>Groups</th>'+
-                                            '<th>Actions</th>'+
-                                        '</tr>';
-                                        var groups = response.data[id]["groups"].split(",");
-                                        for (x in groups){
-                                            if(groups[x] != ""){
-                                                html = html + '<tr>'+
-                                                    '<td>'+groups[x]+'</td>'+
-                                                    '<td><i class="fas fa-trash-alt" style="color:red; cursor:pointer;" onclick="DeleteUserGroup(\''+id+'\', \''+groups[x]+'\')"></i></td>';
-                                                '</tr>';
-                                            }
+                                html = html + '</table>'+
+                            '</td>'+
+                            '<td>'+
+                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                                    '<tr>'+
+                                        '<th>Groups</th>'+
+                                        '<th>Actions</th>'+
+                                    '</tr>';
+                                    var groups = response.data[id]["groups"].split(",");
+                                    for (x in groups){
+                                        if(groups[x] != ""){
+                                            html = html + '<tr>'+
+                                                '<td>'+groups[x]+'</td>'+
+                                                '<td><i class="fas fa-trash-alt" style="color:red; cursor:pointer;" onclick="DeleteUserGroup(\''+id+'\', \''+groups[x]+'\')"></i></td>';
+                                            '</tr>';
                                         }
-                                        html = html + '</table>'+
-                                '</td>'+
+                                    }
+                                html = html + '</table>'+
+                            '</td>'+
+                            // '<td>';
+                            //     if(response.data[id]["ldap"] == "enabled"){
+                            //         html = html + '<p>LDAP</p>';
+                            //     }else if(response.data[id]["ldap"] == "disabled"){
+                            //         html = html + '<p>Local</p>';
+                            //     }
+                            // html = html + '</td>'+
                         '</tr>';
                     }
                     html = html + '</tbody>'+
@@ -547,10 +555,23 @@ function modalAddUser(){
         '<div class="modal-body">'+ 
             '<p>Insert user name:</p>'+
             '<input type="text" class="form-control" id="user-name" placeholder="Insert here the new user name"><br>'+
-            '<p>Insert user password:</p>'+
-            '<input type="text" class="form-control" id="user-pass" placeholder="Insert here the new user password"><br>'+
-            '<p>Insert user password again:</p>'+
-            '<input type="text" class="form-control" id="user-pass-again" placeholder="Insert here the new user password"><br>'+
+            '<p>Select autentication type:</p>'+
+            '<div class="custom-control custom-radio custom-control-inline">'+
+                '<input class="form-check-input" type="radio" name="exampleRadios" id="login-local-radio" value="local">'+
+                '<label class="form-check-label" for="login-local-radio">Local</label> &nbsp'+
+            '</div> &nbsp'+
+            '<div class="custom-control custom-radio custom-control-inline">'+
+                '<input class="form-check-input" type="radio" name="exampleRadios" id="login-ldap-radio" value="ldap" checked>'+
+                '<label class="form-check-label" for="login-ldap-radio">LDAP</label>'+
+            '</div>'+
+            
+            '<div id="local-values" style="display:none">'+
+                '<p>Insert user password:</p>'+
+                '<input type="text" class="form-control" id="user-pass" placeholder="Insert here the new user password"><br>'+
+                '<p>Insert user password again:</p>'+
+                '<input type="text" class="form-control" id="user-pass-again" placeholder="Insert here the new user password"><br>'+            
+            '</div>'+
+            
         '</div>'+
 
         '<div class="modal-footer">'+
@@ -558,10 +579,21 @@ function modalAddUser(){
             '<button type="submit" class="btn btn-primary" id="add-user-btn">Add</button>'+
         '</div>'+
 
-        '</div>'+
     '</div>';
     $('#modal-users').modal().show();
     $('#add-user-btn').click(function(){ AddUser();});
+    RadioButtonListener();
+}
+
+function RadioButtonListener(){
+    $('input:radio').on('click', function(e) {
+        var inputRadioClicked = $(e.currentTarget);
+        if (inputRadioClicked.attr('value') == "local"){
+            document.getElementById("local-values").style.display="block";
+        }else if (inputRadioClicked.attr('value') == "ldap"){
+            document.getElementById("local-values").style.display="none";
+        }
+    });
 }
 
 function modalAddGroup(){
@@ -658,8 +690,7 @@ function modalDeleteUser(id, user){
 }
 
 function AddUser(){
-    //check for whitespaces
-    if(document.getElementById('user-name').value.trim() == "" || document.getElementById('user-pass').value.trim() == "" ||  document.getElementById('user-pass-again').value.trim() == ""){
+    if(document.getElementById('login-local-radio').checked && (document.getElementById('user-name').value.trim() == "" || document.getElementById('user-pass').value.trim() == "" ||  document.getElementById('user-pass-again').value.trim() == "")){
         if(document.getElementById('user-name').value.trim() == ""){
             $('#user-name').css('border', '2px solid red');
             $('#user-name').attr("placeholder", "Please, insert a user name"); 
@@ -678,7 +709,14 @@ function AddUser(){
         }else{
             $('#user-pass-again').css('border', '2px solid #ced4da');
         }
-    }else if(document.getElementById('user-pass').value.trim() != document.getElementById('user-pass-again').value.trim()){
+    }else if(document.getElementById('login-ldap-radio').checked && document.getElementById('user-name').value.trim() == ""){
+        if(document.getElementById('user-name').value.trim() == ""){
+            $('#user-name').css('border', '2px solid red');
+            $('#user-name').attr("placeholder", "Please, insert a user name"); 
+        }else{
+            $('#user-name').css('border', '2px solid #ced4da');
+        }    
+    }else if((document.getElementById('user-pass').value.trim() != document.getElementById('user-pass-again').value.trim()) && document.getElementById('login-local-radio').checked){
         $('#user-pass-again').val('');
         $('#user-pass-again').css('border', '2px solid red');
         $('#user-pass-again').attr("placeholder", "Passwords are not equals"); 
@@ -692,8 +730,13 @@ function AddUser(){
 
         var jsonDeployService = {}
         jsonDeployService["user"] = document.getElementById('user-name').value.trim();
+        if(document.getElementById('login-local-radio').checked){
+            jsonDeployService["pass"] = document.getElementById('user-pass').value.trim();
+            jsonDeployService["ldap"] = "disabled"
+        }else if(document.getElementById('login-ldap-radio').checked){
+            jsonDeployService["ldap"] = "enabled"
+        }
         jsonDeployService["pass"] = document.getElementById('user-pass').value.trim();
-        jsonDeployService["permission"] = "get"
         var dataJSON = JSON.stringify(jsonDeployService);
     
         axios({

@@ -86,7 +86,7 @@ function loadMonitor(){
 
     PingMonitor(uuid);
     PingMonitorFiles(uuid);
-    var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
+    var myVar = setInterval(function(){PingMonitor(uuid)}, 3000);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
@@ -99,25 +99,35 @@ function AddMonitorFileModal(uuid){
       '<div class="modal-content">'+
   
         '<div class="modal-header" style="word-break: break-all;">'+
-          '<h4 class="modal-title">Add new file</h4>'+
-          '<button type="button" class="close" id="add-file-modal-cross">&times;</button>'+
+            '<h4 class="modal-title">Add new file</h4>'+
+            '<button type="button" class="close" id="add-file-modal-cross">&times;</button>'+
         '</div>'+
   
         '<div class="modal-body" style="word-break: break-all;">'+
-          '<p>Insert the path for add this file:</p>'+
-          '<input type="text" class="form-control" id="new-file-path">'+
-          '<br>'+
-          '<p>Maximum rotation file size (in Bytes):</p>'+
-          '<input type="text" class="form-control" id="size-file-path">'+
-          '<p>Maximum rotation file lines:</p>'+
-          '<input type="text" class="form-control" id="lines-file-path">'+
-          '<p>Maximum rotation file days:</p>'+
-          '<input type="text" class="form-control" id="days-file-path">'+
+            '<p>Insert the path for add this file:</p>'+
+            '<input type="text" class="form-control" id="new-file-path">'+
+            '<br>'+
+            '<p>File rotation:</p>'+
+            '<div class="custom-control custom-radio custom-control-inline">'+
+                '<input class="form-check-input" type="radio" name="exampleRadios" id="check-rotation-enabled" value="enabled" checked>'+
+                '<label class="form-check-label" for="check-rotation-enabled">Enabled</label> &nbsp'+
+            '</div> &nbsp'+
+            '<div class="custom-control custom-radio custom-control-inline">'+
+                '<input class="form-check-input" type="radio" name="exampleRadios" id="check-rotation-disabled" value="disabled">'+
+                '<label class="form-check-label" for="check-rotation-disabled">Disabled</label>'+
+            '</div>'+
+            '<br><br>'+
+            '<p>Maximum rotation file size (in Bytes):</p>'+
+            '<input type="text" class="form-control" id="size-file-path" value="256000000">'+
+            '<p>Maximum rotation file lines:</p>'+
+            '<input type="text" class="form-control" id="lines-file-path" value="1000000000">'+
+            '<p>Maximum rotation file days:</p>'+
+            '<input type="text" class="form-control" id="days-file-path" value="7">'+
         '</div>'+
   
         '<div class="modal-footer" id="sync-node-footer-btn" style="word-break: break-all;">'+
-          '<button type="button" class="btn btn-secondary" id="add-file-modal-close">Cancel</button>'+
-          '<button type="button" class="btn btn-primary" id="add-file-modal">Add</button>'+
+            '<button type="button" class="btn btn-secondary" id="add-file-modal-close">Cancel</button>'+
+            '<button type="button" class="btn btn-primary" id="add-file-modal">Add</button>'+
         '</div>'+
   
       '</div>'+
@@ -188,7 +198,7 @@ function DeleteMonitorFile(uuid, file){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error: </strong>AddMonitorFile '+response.data.error+'.'+
+                    '<strong>Error: </strong>Delete monitor file: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -203,7 +213,7 @@ function DeleteMonitorFile(uuid, file){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error: </strong>AddMonitorFile '+error+'.'+
+            '<strong>Error: </strong>Delete monitor file: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
@@ -245,11 +255,16 @@ function AddMonitorFile(uuid, path){
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/monitor/addFile';
 
         var jsonSave = {}
+        if(document.getElementById('check-rotation-disabled').checked){
+            jsonSave["rotate"] = "Disabled"
+        }else if(document.getElementById('check-rotation-enabled').checked){
+            jsonSave["rotate"] = "Enabled"
+        }
         jsonSave["uuid"] = uuid;
-        jsonSave["path"] = path;
-        jsonSave["maxSize"] = document.getElementById('size-file-path').value;
-        jsonSave["maxLines"] = document.getElementById('lines-file-path').value;
-        jsonSave["maxDays"] = document.getElementById('days-file-path').value;
+        jsonSave["path"] = path.trim();
+        jsonSave["maxSize"] = document.getElementById('size-file-path').value.trim();
+        jsonSave["maxLines"] = document.getElementById('lines-file-path').value.trim();
+        jsonSave["maxDays"] = document.getElementById('days-file-path').value.trim();
         var dataJSON = JSON.stringify(jsonSave);
         axios({
             method: 'post',

@@ -72,7 +72,7 @@ async function PingNode(uuid, token) {
                     document.getElementById('node-row-'+uuid).setAttribute("status", "online");
     
                     PingMonitor(uuid);
-                    var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
+                    var myVar = setInterval(function(){PingMonitor(uuid)}, 3000);
                 }else{
                     document.getElementById('node-monitor-'+uuid).onclick = "";
                     document.getElementById('node-services-'+uuid).onclick = "";

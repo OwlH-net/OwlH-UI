@@ -419,7 +419,7 @@ function loadPlugins(){
             '<table width="100%" tyle="table-layout: fixed">'+
                 '<tr>'+
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
-                    '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
+                    '<td width="25%">Status: <span id="analyzer-status-'+uuid+'" title="Change analyzer status"></span></td>'+
                     '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
                     '<td width="25%"><button class="btn btn-primary float-right" title="Edit analyzer" onclick="editFile(\''+uuid+'\', \'analyzer\', \''+name+'\', \'enabled\')">Edit Analyzer</button></td>'+
                 '</tr>'+
@@ -4114,15 +4114,15 @@ function PingWazuhFiles(uuid) {
             var isError = false;
             for(obj in response.data){
                 if (response.data[obj].ack == "false") {
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong>Get Wazuh files: '+response.data[obj].error+'.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    // $('html,body').scrollTop(0);
+                    // var alert = document.getElementById('floating-alert');
+                    // alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    //     '<strong>Error!</strong>Get Wazuh files: '+response.data[obj].error+'.'+
+                    //     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    //         '<span aria-hidden="true">&times;</span>'+
+                    //     '</button>'+
+                    // '</div>';
+                    // setTimeout(function() {$(".alert").alert('close')}, 5000);
                     isError = true;
                 }
             }

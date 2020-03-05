@@ -43,132 +43,131 @@ function loadRulesData(){
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
-            result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
+            var sources = response.data;
+            var html = "";
+            var isEmpty = true;
+            var arrayRulesets = new Array();
+            var ids = new Array();
+            var rulesetsIds = new Array();
+        
+            if (sources.ack == "false") {
+                return '<div style="text-align:center"><h3 style="color:red;">Error creating ruleset</h3></div>';
+            }
+            html = html + 
+            '<div>'+
+                '<div class="input-group col-md-6">'+
+                '<div class="input-group-prepend">'+
+                    '<span class="input-group-text">New Name</span>'+
+                '</div>'+
+                '<input type="text" class="form-control" placeholder="Ruleset name" id="new-ruleset-name-input">'+
+            '</div>'+
+            '<br>'+
+            '<div class="input-group col-md-6">'+
+                '<div class="input-group-prepend">'+
+                    '<span class="input-group-text">New Description</span>'+
+                '</div>'+
+                '<input type="text" class="form-control" placeholder="Ruleset description" id="new-ruleset-description-input">'+
+            '</div>'+
+            '<br>'+
+            '</div>'+
+            '<br><br><br>'+
+        
+            '<h5>Select rulesets</h5>'+
+            '<div class="form-check">';
+            for (source in sources) {
+                if(sources[source]["type"] == "source"){  
+                    if(!arrayRulesets.includes(sources[source]["name"])){
+                        arrayRulesets.push(sources[source]["name"]);
+                        rulesetsIds.push(sources[source]["sourceUUID"]);
+                        html = html +'<ul class="checkbox-grid">'+
+                        ' <li style="display: block; float: left; width: 25%"><input onclick="addRulesetFilesToTable(\''+response.data+'\')" class="ruleset-input" type="checkbox" sourceUUID="'+sources[source]["sourceUUID"]+'" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked/><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
+                        '</ul>';
+                    }
+                }else{
+                    continue;
+                }
+            }
+            html = html +'</div>'+
+                
+            '<br><br>'+
+            '<br><br><br>'+
+            '<div>'+
+                '<div class="input-group col-md-6">'+
+                    '<div class="input-group-prepend">'+
+                        '<span class="input-group-text">Search rule file</span>'+
+                    '</div>'+
+                    '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')"'+
+                        'placeholder="Search for rule file name..." title="Insert a ruleset name for search">'+
+                '</div>'+
+            '</div>'+
+            '<div class="mt-3">'+
+                '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mb-0" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
+                '<button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
+            '</div>'+
+            '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
+                '<thead>                                                      ' +
+                '<tr>                                                         ' +
+                '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset" onchange="CheckAll(this)"></th>' +
+                '<th>Ruleset name</th>                                          ' +
+                '<th>File name</th>                                          ' +
+                '<th>File path</th>                                          ' +
+                '<th>Source</th>                                          ' +
+                '</tr>                                                        ' +
+                '</thead>                                                     ' +
+                '<tbody id="create-ruleset-table-body">' ;
+                    for (source in sources) {        
+                        if(sources[source]["type"]){
+                            if(sources[source]["exists"]=="true"){
+                                isEmpty = false;
+                                html = html + '<tr id="row-'+source+'" rulesetname="'+sources[source]["name"]+'" sourceUUID="'+sources[source]["sourceUUID"]+'">'+
+                                    '<td style="width: 100%; word-wrap: break-word;" align="center">'+
+                                        '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
+                                    '</td>'+
+                                    '<td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'" value="'+sources[source]["sourceType"]+'">'+                 
+                                        sources[source]["name"]+
+                                    '</td><td class="fileName" style="word-wrap: break-word;" id="fileNewRuleset-'+source+'">'+
+                                        sources[source]["file"]+
+                                    '</td><td style="word-wrap: break-word;" id="pathNewRuleset-'+source+'">'+
+                                        sources[source]["path"]+
+                                    '</td><td style="word-wrap: break-word;" style="display:none;" id="source-type-'+source+'">';
+                                        if (sources[source]["sourceType"]){
+                                            html = html + sources[source]["sourceType"];
+                                        }else{
+                                            html = html + sources[source]["type"];
+                                        }
+                                    html = html + '</td></tr>';
+                            }
+                        }else{
+                            continue;
+                        }
+                    }
+            html = html + '</tbody></table>'+
+            '<br><button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
+        
+            if (isEmpty){
+                result.innerHTML = '<h3 style="text-align:center">No sources created</h3>';
+            }else{
+                result.innerHTML = html;
+            }
+
             $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
             for (source in response.data){
                 if (response.data[source]["type"]){
+                    // console.log('checkbox-'+response.data[source]["sourceUUID"]);
+                    // console.log(document.getElementById('checkbox-'+response.data[source]["sourceUUID"]).innerHTML);
                     document.getElementById('checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
                 }else{
                     continue;
                 }
             }         
         }
+        
     })
     .catch(function (error) {
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
     });
-}
-
-function generateAllRuleDataHTMLOutput(sources) {
-    var html = "";
-    var isEmpty = true;
-    var arrayRulesets = new Array();
-    var ids = new Array();
-    var rulesetsIds = new Array();
-
-    if (sources.ack == "false") {
-        return '<div style="text-align:center"><h3 style="color:red;">Error creating ruleset</h3></div>';
-    }
-    html = html + 
-    '<div>'+
-        '<div class="input-group col-md-6">'+
-        '<div class="input-group-prepend">'+
-            '<span class="input-group-text">New Name</span>'+
-        '</div>'+
-        '<input type="text" class="form-control" placeholder="Ruleset name" id="new-ruleset-name-input">'+
-    '</div>'+
-    '<br>'+
-    '<div class="input-group col-md-6">'+
-        '<div class="input-group-prepend">'+
-            '<span class="input-group-text">New Description</span>'+
-        '</div>'+
-        '<input type="text" class="form-control" placeholder="Ruleset description" id="new-ruleset-description-input">'+
-    '</div>'+
-    '<br>'+
-    '</div>'+
-    '<br><br><br>'+
-
-    '<h5>Select rulesets</h5>'+
-    '<div class="form-check">';
-    for (source in sources) {
-        // ids.push(source);
-        if(sources[source]["type"] == "source"){            
-            if(!arrayRulesets.includes(sources[source]["name"])){
-                arrayRulesets.push(sources[source]["name"]);
-                rulesetsIds.push(sources[source]["sourceUUID"]);
-                html = html +'<ul class="checkbox-grid">'+
-                ' <li style="display: block; float: left; width: 25%"><input class="ruleset-input" type="checkbox" sourceUUID="'+sources[source]["sourceUUID"]+'" name="'+sources[source]["name"]+'" value="'+sources[source]["name"]+'" id="checkbox-'+sources[source]["sourceUUID"]+'" checked/><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
-                '</ul>';
-                
-            }
-        }else{
-            continue;
-        }
-    }
-    html = html +'</div>'+
-        
-    '<br><br>'+
-    '<br><br><br>'+
-    '<div>'+
-        '<div class="input-group col-md-6">'+
-            '<div class="input-group-prepend">'+
-                '<span class="input-group-text">Search rule file</span>'+
-            '</div>'+
-            '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')"'+
-                'placeholder="Search for rule file name..." title="Insert a ruleset name for search">'+
-        '</div>'+
-    '</div>'+
-    '<div class="mt-3">'+
-        '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mb-0" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
-        '<button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
-    '</div>'+
-    '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
-        '<thead>                                                      ' +
-        '<tr>                                                         ' +
-        '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset" onchange="CheckAll(this)"></th>' +
-        '<th>Ruleset name</th>                                          ' +
-        '<th>File name</th>                                          ' +
-        '<th>File path</th>                                          ' +
-        '<th>Source</th>                                          ' +
-        '</tr>                                                        ' +
-        '</thead>                                                     ' +
-        '<tbody id="create-ruleset-table-body">' ;
-            for (source in sources) {        
-                if(sources[source]["type"]){
-                    if(sources[source]["exists"]=="true"){
-                        isEmpty = false;
-                        html = html + '<tr id="row-'+source+'" rulesetname="'+sources[source]["name"]+'" sourceUUID="'+sources[source]["sourceUUID"]+'">'+
-                            '<td style="width: 100%; word-wrap: break-word;" align="center">'+
-                                '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
-                            '</td>'+
-                            '<td style="word-wrap: break-word;" id="nameNewRuleset-'+source+'" value="'+sources[source]["sourceType"]+'">'+                 
-                                sources[source]["name"]+
-                            '</td><td class="fileName" style="word-wrap: break-word;" id="fileNewRuleset-'+source+'">'+
-                                sources[source]["file"]+
-                            '</td><td style="word-wrap: break-word;" id="pathNewRuleset-'+source+'">'+
-                                sources[source]["path"]+
-                            '</td><td style="word-wrap: break-word;" style="display:none;" id="source-type-'+source+'">';
-                                if (sources[source]["sourceType"]){
-                                    html = html + sources[source]["sourceType"];
-                                }else{
-                                    html = html + sources[source]["type"];
-                                }
-                            html = html + '</td></tr>';
-                    }
-                }else{
-                    continue;
-                }
-            }
-    html = html + '</tbody></table>'+
-    '<br><button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
-
-    if (isEmpty){
-        return '<h3 style="text-align:center">No sources created</h3>';
-    }else{
-        return html;
-    }
 }
 
 function CheckAll(ele){       

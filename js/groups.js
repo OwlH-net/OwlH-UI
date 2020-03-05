@@ -164,19 +164,23 @@ function GetAllGroups(){
         }
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.permissions == "none"){
-            PrivilegesMessage();              
+        if(!response.data){
             document.getElementById('progressBar-create-div').style.display="none";
             document.getElementById('progressBar-create').style.display="none"; 
+            result.innerHTML= '<div style="text-align:center"><h3>No groups created</h3></div>';
+        }else if(response.data.token == "none"){
+            console.log(response.data == null);
+           document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';
+        }else if(response.data.permissions == "none"){
+           PrivilegesMessage();              
+           document.getElementById('progressBar-create-div').style.display="none";
+           document.getElementById('progressBar-create').style.display="none"; 
         }else{
             document.getElementById('progressBar-create-div').style.display="none";
             document.getElementById('progressBar-create').style.display="none"; 
-    
-            document.getElementById('group-text').style.display ="block";
-            if(response.data == null){
-                result.innerHTML= '<div style="text-align:center"><h3>No groups created</h3></div>';
-            }else if (response.data.ack == "false") {
+            
+            document.getElementById('group-text').style.display ="block";            
+            if (response.data.ack == "false") {
                 result.innerHTML= '<div style="text-align:center"><h3 style="color:red;">Error retrieving groups data</h3></div>';
             }else{
                 var html = "";
@@ -280,6 +284,7 @@ function GetAllGroups(){
 
     })
     .catch(function (error) {
+        console.log(error);
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none"; 
         $('html,body').scrollTop(0);

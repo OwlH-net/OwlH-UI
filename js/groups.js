@@ -169,7 +169,6 @@ function GetAllGroups(){
             document.getElementById('progressBar-create').style.display="none"; 
             result.innerHTML= '<div style="text-align:center"><h3>No groups created</h3></div>';
         }else if(response.data.token == "none"){
-            console.log(response.data == null);
            document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';
         }else if(response.data.permissions == "none"){
            PrivilegesMessage();              

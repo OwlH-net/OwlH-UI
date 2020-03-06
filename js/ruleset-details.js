@@ -33,6 +33,7 @@ function GetAllRulesetDetails(){
         }
     })
     .catch(function (error) {
+        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();

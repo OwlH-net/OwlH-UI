@@ -216,6 +216,15 @@ function AddGroup(){
                     '</div>';
                     setTimeout(function() {$(".alert").alert('close')}, 5000);                    
                 }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong>Group added successfully!'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
                     GetAllGroups();
                 }
             }
@@ -312,6 +321,15 @@ function DeleteGroup(id){
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong>Group deleted successfully!'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
                 GetAllGroups();
             }
         }
@@ -623,6 +641,15 @@ function DeleteGroupUser(id, user){
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong>Group user deleted successfully!'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
                 GetAllGroups();
             }
         }
@@ -683,6 +710,15 @@ function DeleteGroupRole(id, role){
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong>Group role deleted successfully!'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
                 GetAllGroups();
             }
         }

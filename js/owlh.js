@@ -242,7 +242,7 @@ function GetAllNodes() {
             }//Authorization
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
-        .then(function (response) {         
+        .then(function (response) {    
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
             if(response.data.permissions == "none"){
                 document.getElementById('progressBar-node').style.display = "none";

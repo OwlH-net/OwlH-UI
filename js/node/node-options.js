@@ -4391,7 +4391,7 @@ function PingPluginsNode(uuid) {
                 'uuid': payload.uuid,
             }
     })
-    .then(function (response) {
+    .then(function (response) {        
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -4906,7 +4906,6 @@ function saveStapChanges(uuid, type, service){
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
-
                 loadPlugins();
             }else{
                 loadPlugins();

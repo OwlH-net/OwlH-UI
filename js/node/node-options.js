@@ -1948,10 +1948,10 @@ function LaunchZeekMainConf(uuid, param) {
         data: dataJSON
     })
         .then(function (response) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
             PrivilegesMessage();
         }else{
             if(response.data != null){
@@ -1969,8 +1969,6 @@ function LaunchZeekMainConf(uuid, param) {
                     progressBarDiv.style.display = "none";
                 }
             }else{
-                progressBar.style.display = "none";
-                progressBarDiv.style.display = "none";
                 loadPlugins();
             }
         }

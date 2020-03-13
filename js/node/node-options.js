@@ -556,6 +556,9 @@ function loadPlugins(){
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
 
 }
+function GetCommandsLog(uuid,service, name){
+    document.location.href = 'https://' + location.hostname + '/service-commands.html?node='+uuid+'&service='+service+'&name='+name;
+}
 function showMasterFile(param){
     document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+param;
 }
@@ -4616,6 +4619,7 @@ function PingPluginsNode(uuid) {
                                 tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
                             }
                             tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
                             '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
                         '</td>'+
                     '</tr>'+
@@ -4683,6 +4687,7 @@ function PingPluginsNode(uuid) {
                                 tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
                             }
                             tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
                             '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
                         '</td>'+
                     '</tr>'+
@@ -4758,6 +4763,7 @@ function PingPluginsNode(uuid) {
                                 tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
                             }
                             tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
                             '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
                         '</td>'+
                     '</tr>'+

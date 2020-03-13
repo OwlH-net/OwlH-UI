@@ -351,6 +351,12 @@ function loadPlugins(){
     '</div>';
     //STAP - traffic management
     var htmlstap = ""+
+    '<div class="float-right" id="stap-installed-status">'+
+        '<b>SOCAT:</b> <span id="stap-installed-socat" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
+        '<b>TCPREPLAY:</b> <span id="stap-installed-tcpreplay" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
+        '<b>TCPDUMP:</b> <span id="stap-installed-tcpdump" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
+    '</div>'+
+    '<br>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Traffic Management</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
         '<span id="plugins-form-'+uuid+'" style="display:block"><br>'+
@@ -2010,7 +2016,6 @@ function StartSuricataMainConf(uuid) {
         data: dataJSON
     })
         .then(function (response) {
-            console.log(response.data);
             document.getElementById('progressBar-options').style.display = "none";
             document.getElementById('progressBar-options-div').style.display = "none";
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -4389,7 +4394,8 @@ function PingPluginsNode(uuid) {
                 'uuid': payload.uuid,
             }
     })
-    .then(function (response) {        
+    .then(function (response) {  
+        console.log(response.data);     
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -4407,6 +4413,36 @@ function PingPluginsNode(uuid) {
                 //     }
                 //     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
                 // }else if (response.data[line]["type"] == "suricata"){
+
+                //put if socat, tcpdump and tcpreplay are installed
+                if(response.data["installed"]["checkSocat"] == "false" || response.data["installed"]["checkTcpreplay"] == "false" || response.data["installed"]["checkTcpdump"] == "false"){
+                    if(response.data["installed"]["checkSocat"] == "true"){
+                        document.getElementById("stap-installed-socat").innerHTML = "Installed";
+                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-socat").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }
+                    if(response.data["installed"]["checkTcpreplay"] == "true"){
+                        document.getElementById("stap-installed-tcpreplay").innerHTML = "Installed";
+                        document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-tcpreplay").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }
+                    if(response.data["installed"]["checkTcpdump"] == "true"){
+                        document.getElementById("stap-installed-tcpdump").innerHTML = "Installed";
+                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }
+
+                }else{
+                    document.getElementById("stap-installed-status").style.display = "none";
+                }
+
+                //put suricata parameters
                 if (response.data[line]["type"] == "suricata"){
                     if (response.data[line]["command"]){
                         tableSuricataCommand = tableSuricataCommand + '<tr>'+

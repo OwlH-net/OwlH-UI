@@ -640,11 +640,11 @@ function modalAddGroup(){
             '<p>Select permissions:</p>'+
             '<div class="form-check">'+
                 '<input type="checkbox" class="form-check-input" id="group-check-get" value="get" disabled checked>'+
-                '<label class="form-check-label" for="group-check-get">GET</label><br>'+
+                '<label class="form-check-label" for="group-check-get">VIEW</label><br>'+
                 '<input type="checkbox" class="form-check-input" id="group-check-put" value="put">'+
-                '<label class="form-check-label" for="group-check-put">PUT</label><br>'+
+                '<label class="form-check-label" for="group-check-put">MODIFY</label><br>'+
                 '<input type="checkbox" class="form-check-input" id="group-check-post" value="post">'+
-                '<label class="form-check-label" for="group-check-post">POST</label><br>'+
+                '<label class="form-check-label" for="group-check-post">CREATE</label><br>'+
                 '<input type="checkbox" class="form-check-input" id="group-check-delete" value="delete">'+
                 '<label class="form-check-label" for="group-check-delete">DELETE</label>'+
             '</div>'+

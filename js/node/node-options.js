@@ -5289,9 +5289,10 @@ function PingAnalyzer(uuid) {
                 '</td>';
             document.getElementById('analyzer-file-content').innerHTML = html;
         }
+
     })
     .catch(function (error) {
-
+        console.log("error analyzer file -> "+error)
     });
 }
 

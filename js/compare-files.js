@@ -12,10 +12,16 @@ function compareFiles(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
         })
         .then(function (response) {
-            resultElement.innerHTML = generateAllLinesHTMLOutput (response);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}    
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{
+                resultElement.innerHTML = generateAllLinesHTMLOutput (response);
+            }        
         })
         .catch(function (error) {
         });   
@@ -29,14 +35,14 @@ function generateAllLinesHTMLOutput (response){
     var isEmptyRulesets = true;
     var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
-        '<tr>                                                         ' +
-        '<th style="width: 10%">Sid</th>                                                 ' +
-        '<th style="width: 10%">Ruleset file status</th>                                ' +
-        '<th style="width: 30%">Ruleset file line</th>                                       ' +
-        '<th style="width: 10%">Source file line status</th>                                ' +
-        '<th style="width: 30%">Source file line</th>                                       ' +
-        '<th style="width: 10%">Actions</th>                                             ' +
-        '</tr>                                                        ' +
+            '<tr>                                                         ' +
+                '<th style="width: 10%">Sid</th>                                                 ' +
+                '<th style="width: 10%">Ruleset file status</th>                                ' +
+                '<th style="width: 30%">Ruleset file line</th>                                       ' +
+                '<th style="width: 10%">Source file line status</th>                                ' +
+                '<th style="width: 30%">Source file line</th>                                       ' +
+                // '<th style="width: 10%">Actions</th>                                             ' +
+            '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody>                                                     ' 
     for (line in lines) {
@@ -71,17 +77,19 @@ function generateAllLinesHTMLOutput (response){
             iconOld +
             '</td><td style="word-wrap: break-word;">                                                            ' +
             '<p id="'+line+'-old">'+lines[line]["old"]+'</p>' +
-            '</td><td style="word-wrap: break-word;">                                                            ' +
-            '<a class="btn btn-primary">Details</a>                               ' +
-            '<div class="form-check">                         '+
-                '<input class="form-check-input" type="radio" name="'+line+'" value="new">                         '+
-                '<label class="form-check-label">New line</label>                         '+
-            '</div>                         '+
-            '<div class="form-check">                         '+
-                '<input class="form-check-input" type="radio" name="'+line+'" value="old" checked="checked">                         '+
-                '<label class="form-check-label">Old line</label>                         '+
-            '</div>                         '+
-            '</td></tr>'
+            // '</td>'+
+            // '<td style="word-wrap: break-word;">                                                            ' +
+            // '<a class="btn btn-primary">Details</a>                               ' +
+            // '<div class="form-check">                         '+
+            //     '<input class="form-check-input" type="radio" name="'+line+'" value="new">                         '+
+            //     '<label class="form-check-label">New line</label>                         '+
+            // '</div>                         '+
+            // '<div class="form-check">                         '+
+            //     '<input class="form-check-input" type="radio" name="'+line+'" value="old" checked="checked">                         '+
+            //     '<label class="form-check-label">Old line</label>                         '+
+            // '</div>                         '+
+            // '</td>'+
+            '</tr>'
     }
 
     html = html + 
@@ -112,9 +120,11 @@ function generateAllLinesHTMLOutput (response){
 //         method: 'post',
 //         url: nodeurl,
 //         timeout: 30000,
+        // headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
 //         data: nodeJSON
 //         })
 //         .then(function (response) {
+        // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 //         })
 //         .catch(function (error) {
 //         }); 
@@ -122,12 +132,27 @@ function generateAllLinesHTMLOutput (response){
 
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
-      var ipLoad = document.getElementById('ip-master'); 
-      ipLoad.value = data.master.ip;
-      var portLoad = document.getElementById('port-master');
-      portLoad.value = data.master.port;
-      loadTitleJSONdata();
-      compareFiles();
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        
+        var ipLoad = document.getElementById('ip-master'); 
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        loadTitleJSONdata();
+        compareFiles();
     });
 }
+var payload = "";
 loadJSONdata();

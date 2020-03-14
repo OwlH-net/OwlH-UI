@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="img/favicon.ico">
+    
+        <title>OwlH Login</title>
+    
+        <!-- Bootstrap core CSS -->
+        <link href="css/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+        <!-- fontawesome -->
+        <link rel="stylesheet" href="css/fontawesome/css/all.css">
+    
+        <!-- Custom styles for this template -->
+        <link href="css/offcanvas.css" rel="stylesheet">
+    </head>
+    <body class="bg-light">
+        <main class="container text-center p-5">
+            <!--Alert-->
+            <div id="floating-alert" style="top: 5px;"></div>
+
+            <div class="d-inline-block w-75 my-5 p-5 bg-white rounded shadow-sm">
+                <h3 class=" pb-2 mb-0"><b>OwlH Login</b></h3>
+                <div class="media text-muted pt-3">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Username</span>
+                        <input type="text" id="owlh-input-user" class="form-control">
+                    </div>
+                </div>
+                <div class="media text-muted pt-3">                      
+                    <div class="input-group">
+                        <span class="input-group-text">Password</span>
+                        <input type="password" id="owlh-input-psswd" class="form-control">
+                    </div>
+                </div>
+                <button onclick="Login()" type="button" class="mt-3 pt-3 w-50 btn btn-primary" id="btn-login"><h5>Login</h5></button>
+                <br>
+                <a id="check-status-login" class="btn btn-success float-center mt-3 text-white" onclick="checkStatus()" target="_blank">Check Master API connection</a>                
+            </div>
+        
+            <!-- Master ip and port -->
+            <div id="load-json-data" style="display: none;">
+                <input id="ip-master" type="text" class="form-control">
+                <input id="port-master" type="text" class="form-control">
+            </div>  
+
+        </main>
+
+        <script src="js/axios/dist/axios.js"></script> 
+        <script src="js/jquery-3.4.1.js"></script>
+        <script src="css/dist/js/bootstrap.min.js"></script>
+        <script src="js/offcanvas.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/enc-base64-min.js"></script>
+        <script src="js/login.js"></script>
+        <!-- <script src="js/loadTitle.js"></script> -->
+    </body>
+</html>

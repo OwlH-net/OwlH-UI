@@ -36,7 +36,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="nodes.html">Nodes</a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="groups.html">Groups</a>
                 </li>
                 <li class="nav-item">
@@ -51,7 +51,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="master.html">Master</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="config.html">Config</a>
                 </li>
             </ul>
@@ -71,45 +71,36 @@
 
 
     <main role="main" class="container">
+        
         <!--Alert-->
         <div id="floating-alert" style="top: 5px;">
         </div>
 
-        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
+        <div>
+            <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
             <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
             <div class="lh-100">
                 <h3 class="mb-0 text-white lh-100">Groups</h3>
-                <small>Summary</small>
+                <small>Group management</small>
             </div>
         </div>
 
         <!-- ProgressBar -->            
-        <div id="progressBar-create-div" class="progress">
-            <div id="progressBar-create" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width: 100%"> &nbsp </div>
+        <div id="progressBar-options-div" class="progress" style="display:none;">
+            <div id="progressBar-options" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width: 100%"> &nbsp </div>
         </div>
         <br>
 
-        <div class="text-decoration-none text-primary" style="width:20%; float:right;">
-            <a class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddGroup()" id="group-text" style="cursor: default;">Add new group</a> 
-        </div>
-        <br><br><br>
-
-        <!-- Group contents -->
-        <div id="list-groups"></div>
-
-        <br>
-        <div class="text-decoration-none text-primary" style="width:20%; float:right;">
-            <a class="btn btn-primary float-right text-decoration-none text-white" onclick="modalAddGroup()" id="group-text" style="cursor: default;">Add new group</a> 
+        <button type="button" class="btn btn-primary float-right ml-1" onclick="modalAddGroup()">Add Group</button>
+        <br><br>
+        <div id="group-list-td"></div>
         </div>
 
         <!-- Footer -->
         <div id="footer"></div>
 
-        <!-- Modal delete group -->
-        <div class="modal fade" id="modal-groups"></div>
         <!-- Modal -->
         <div class="modal fade" id="modal-window"></div>
-
 
         <!-- Load master ip/port -->
         <div id="load-json-data" style="display: none;">
@@ -118,7 +109,6 @@
         </div>
     </main>
 
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -126,10 +116,9 @@
     <script src="js/jquery-3.4.1.js"></script>
     <script src="css/dist/js/bootstrap.min.js"></script>
     <script src="js/offcanvas.js"></script>
-    <script src="js/groups.js"></script>
-    <script src="js/loadTitle.js"></script>
+    <script src="js/group-management.js"></script>
     <script src="js/footer.js"></script>
+    <script src="js/loadTitle.js"></script>
     <script src="js/loginButton.js"></script>
   </body>
 </html>
-

@@ -1,5 +1,19 @@
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
@@ -8,6 +22,7 @@ function loadJSONdata(){
         loadTitleJSONdata();
     });
 }
+var payload = "";
 loadJSONdata();
 
 function loadPlugins(){
@@ -16,54 +31,214 @@ function loadPlugins(){
     var uuid = urlWeb.searchParams.get("uuid");
     document.getElementById('node-config-title').innerHTML = name;
 
-    var html =
     //SURICATA & ZEEK
-    '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
-        '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'network-ids\',\''+uuid+'\')"><b>Network IDS</b> <i class="fas fa-sort-down" id="network-ids-form-icon-'+uuid+'"></i></h6>'+
-        '<span id="network-ids-form-'+uuid+'" style="display:block"><br>'+
             //suricata
-            '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+           
-                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp <i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp|&nbsp <span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')">To expert</span>'+
-                '<b>&nbsp | <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp  Current ruleset: </b><i id="current-ruleset-options"></i>'+
+            var htmlsuricata = ""+
+            '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+
+                '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
+                    '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp|&nbsp '+
+                '<span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')"></span> &nbsp |'+
+                '<span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp '+
+                '<b> Current ruleset: </b><i id="current-ruleset-options"></i>'+
 
-                '</span>' +
                 '<button class="btn btn-primary float-right" style="font-size: 15px; display:block;" id="add-suricata-button" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
-                '<div id="table-suricata" style="display:block;">'+
-                    '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                        '<thead>'+
-                            '<th width="16%">Description</th>'+
-                            '<th width="16%">Status</th>'+
-                            '<th width="16%">BPF</th>'+
-                            '<th width="16%">Ruleset</th>'+
-                            '<th width="16%">Interface</th>'+
-                            '<th width="16%">Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="suricata-table-services">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div>'+
-                '<div id="table-suricata-command" style="display:none;">'+
-                    '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
-                        '<thead>'+
-                            '<th width="20%">PID</th>'+
-                            '<th>Command</th>'+
-                        '</thead>'+
-                        '<tbody id="suricata-table-services-command">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div>'+
-                '<br><br>'+
-            // //zeek
+            '<div id="table-suricata" style="display:block;">'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th width="16%">Description</th>'+
+                        '<th width="16%">Status</th>'+
+                        '<th width="16%">BPF</th>'+
+                        '<th width="16%">Ruleset</th>'+
+                        '<th width="16%">Interface</th>'+
+                        '<th width="16%">Actions</th>'+
+                    '</thead>'+
+                    '<tbody id="suricata-table-services">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div>'+
+            '<div id="table-suricata-command" style="display:none;">'+
+                '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
+                    '<thead>'+
+                        '<th width="10%">PID '+
+
+                        '</th>'+
+                        '<th >Command</th>'+
+                        '<th width="20%">Actions &nbsp '+
+                            '<span style="cursor: pointer;" title="Start Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="StartSuricataMainConf(\''+uuid+'\')">Start</span> &nbsp '+
+                            '<span style="cursor: pointer;" title="Stop Suricata using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="StopSuricataMainConf(\''+uuid+'\')">Stop</span> &nbsp '+
+                        '</th>'+
+                    '</thead>'+
+                    '<tbody id="suricata-table-services-command">'+
+                    '</tbody>'+
+                '</table>'+
+            '</div>';
+
+            //zeek
+            var htmlzeek = ""+
             '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
-                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp| &nbsp'+
-                '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Standalone</span> &nbsp <span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;">Cluster</span>'+
-            '</div>'+
+                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp '+
+                '<span id="btn-zeek-node-status" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-status-tab\')">Current status</span> &nbsp '+
+                '<span id="btn-zeek-node-configuration" class="badge bg-secondary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-configuration-tab\')">Change Zeek configuration</span>'+
+            '</div></br>';
+
+            // ZEEK STATUS - GLOBAL
+            htmlzeek = htmlzeek + ""+
+            '<div id="zeek-status-tab" style="display:block;">'+
+                '<span id="zeek-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
+                    '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'deploy\')">Deploy</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp '+
+                '</span>'+
+                '&nbsp <span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+
+                    '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
+                    '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'networks.cfg\', \''+name+'\', \'disabled\')">Network.cfg</span> &nbsp '+
+                    '<span id="zeek-ctl-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'zeekctl.cfg\', \''+name+'\', \'disabled\')">Zeekctl.cfg</span> &nbsp '+
+                '</span> '+
+
+                '<div id="status-zeek-table" style="display:block;">'+
+                    '</br><b>Current status</b> &nbsp '+
+
+                    '<table class="table" id="tb-zeek-current-status" style="table-layout: fixed"  width="100%">'+
+                        '<tbody>'+
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Zeek Mode</td>'+
+                                '<td id="zeek-current-mode"></td>'+
+                                '<td style="color: red;">extra info</td>'+
+                            '</tr>'+
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Node Role</td>'+
+                                '<td id="zeek-role"></td>'+
+                                '<td style="color: red;">extra info</td>'+
+                            '</tr>'+
+                        '</tbody>'+
+                    '</table>'+
+                '</div>'+
+                '<div id="status-zeek-detail-table" style="display:block;">'+
+                    '</br><b>Status Detail</b>'+
+                    '<table class="table" id="tb-zeek-current-status" style="table-layout: fixed"  width="100%">'+
+                        '<thead id="">'+
+                            '<th>Name (host)</th>'+
+                            '<th>Status</th>'+
+                            '<th>Type</th>'+
+                            '<th>Interface</th>'+
+                            '<th>PID</th>'+
+                            '<th>Started</th>'+
+                            '<th>Extra</th>'+
+                        '</thead>'+
+                        '<tbody id="zeek-status-details">'+
+                        '</tbody>'+
+                    '</table>'+
+                '</div>'+
+            '</div>';
+
+            // ZEEK CONFIGURATION - GLOBAL
+            htmlzeek = htmlzeek +
+            '<div id="zeek-configuration-tab" style="display:none;">'+
+                '<span id="zeek-configure" class="badge badge-pill bg-dark align-text-bottom text-white">Edit Configuration &nbsp '+
+                    '<span id="zeek-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'standalone-zeek-table\')">Standalone</span> &nbsp '+
+                    '<span id="zeek-mode-cluster" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'cluster-zeek-table\')">Cluster</span> &nbsp '+
+                    '<span id="zeek-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekConfigTable(\'expert-zeek-table\')">Expert</span>'+
+                '</span> '+
+                '<span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+
+                    '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
+                    '<span id="zeek-network-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'networks.cfg\', \''+name+'\', \'disabled\')">Network.cfg</span> &nbsp '+
+                    '<span id="zeek-ctl-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'zeekctl.cfg\', \''+name+'\', \'disabled\')">Zeekctl.cfg</span> &nbsp '+
+                '</span> ';
+
+                //zeek expert
+                htmlzeek = htmlzeek +
+                '<div id="expert-zeek-table" style="display:none;">'+
+                    '</br><b>Expert mode</b> <button id="sync-zeek-expert-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="SyncZeekValues(\''+uuid+'\')">Sync</button>'+
+                    '<table class="table" id="zeek-expert-values" style="table-layout: fixed"  width="100%">'+
+                        '<tbody>';
+                            htmlzeek = htmlzeek +
+                            //node.cfg
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Node.cfg file &nbsp '+
+                                    '<i class="fas fa-edit" onclick="showEditValues(\'node-edit-row\')" style="color:Dodgerblue; cursor: pointer;" title="Edit Master node.cfg path"></i> &nbsp'+
+                                    '<i class="fas fa-eye" style="color:Dodgerblue; cursor: pointer;" title="Edit Master node.cfg file" onclick="showMasterFile(\'nodeConfig\')"></i> '+
+                                '</td>'+
+                                '<td>node.cfg path</td>'+
+                                '<td style="color: red;" id="zeek-expert-values-node">No Zeek node.cfg...</td>'+
+                            '</tr>'+
+                            '<tr id="node-edit-row" style="display:none;" bgcolor="#f6ddcc">'+
+                                '<td colspan="2"><input class="form-control" id="expert-zeek-path-node-edit"></input></td>'+
+                                '<td class="align-middle">'+
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'nodeConfig\')">Save</button>'+
+                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'node-edit-row\')">Close</button>'+
+                                '</td>'+
+                            '</tr>'+
+                            //networks.cfg
+                            '<tr>'+
+                                '<td width="20%" class="align-middle">Networks.cfg file &nbsp '+
+                                    '<i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Upload networks.cfg file" onclick="showEditValues(\'networks-edit-row\')"></i> &nbsp'+
+                                    '<i class="fas fa-eye" style="color:Dodgerblue; cursor: pointer;" title="Edit Master networks.cfg file" onclick="showMasterFile(\'networksConfig\')"></i> '+
+                                '</td>'+
+                                '<td>network.cfg path</td>'+
+                                '<td id="zeek-expert-values-networks" style="color: red;" >No Zeek networks.cfg...</td>'+
+                            '</tr>'+
+                            '<tr id="networks-edit-row" style="display:none;" bgcolor="#f6ddcc">'+
+                                '<td colspan="2"><input class="form-control" id="expert-zeek-path-networks-edit"></input></td>'+
+                                '<td class="align-middle">'+
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'networksConfig\')">Save</button>'+
+                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'networks-edit-row\')">Close</button>'+
+                                '</td>'+
+                            '</tr>'+
+                            //policies
+                            '<tr>'+
+                                '<td width="20%" class="align-middle" rowspan="2">Policies &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek paths" onclick="showEditValues(\'zeek-edit-policies-row\')"></i> </td>'+
+                                '<td>Master path</td>'+
+                                '<td style="color: red;" id="zeek-expert-values-policies-master">No Zeek master path...</td>'+
+                            '</tr>'+
+                            '<tr>'+
+                                '<td>Node path</td>'+
+                                '<td style="color: red;" id="zeek-expert-values-policies-node">No Zeek node path...</td>'+
+                            '</tr>'+
+                            '<tr id="zeek-edit-policies-row" style="display:none;" bgcolor="#f6ddcc">'+
+                                '<td colspan="2">'+
+                                    'Master: <input class="form-control" id="expert-zeek-path-policies-master">'+
+                                    'Node: <input class="form-control" id="expert-zeek-path-policies-node">'+
+                                '</td>'+
+                                '<td width="10%">'+
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'policies\')">Save</button>'+
+                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'zeek-edit-policies-row\')">Close</button> &nbsp '+
+                            '</td>'+
+                            '</tr>'+
+                            //variables
+                            '<tr>'+
+                                '<td width="20%" class="align-middle" rowspan="2">Variables &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Zeek variables" onclick="showEditValues(\'zeek-edit-variables-row\')"></i> </td>'+
+                                '<td>Variable 1</td>'+
+                                '<td id="zeek-expert-values-var-1" style="color: red;">No Zeek variable 1...</td>'+
+                            '</tr>'+
+                            '<tr>'+
+                                '<td>Variable 2</td>'+
+                                '<td id="zeek-expert-values-var-2" style="color: red;">No Zeek variable 2...</td>'+
+                            '</tr>'+
+                            '<tr id="zeek-edit-variables-row" style="display:none;" bgcolor="#f6ddcc">'+
+                                '<td colspan="2">'+
+                                    'Variable 1: <input class="form-control" id="expert-zeek-path-var-1">'+
+                                    'Variable 2: <input class="form-control" id="expert-zeek-path-var-2">'+
+                                '</td>'+
+                                '<td width="10%">'+
+                                    '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="saveZeekValues(\''+uuid+'\', \'variables\')">Save</button>'+
+                                    '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditValues(\'zeek-edit-variables-row\')">Close</button> &nbsp '+
+                            '</td>'+
+                            '</tr>'+
+                        '</tbody>'+
+                    '</table>'+
+                    //Zeek cluster
+                    '<table id="cluster-elements" class="table" style="table-layout: fixed" width="100%">'+
+                    '</table>'+
+                '</div>';
+
                 //Zeek standalone
-            '<div id="standalone-zeek-table" style="display:block;">'+
-                '<button id="add-zeek-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
-                '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                htmlzeek = htmlzeek +
+                '<div id="standalone-zeek-table" style="display:none;">'+
+                    '<button id="add-zeek-button" class="btn btn-primary float-right" style="font-size: 15px;" onclick="AddServiceModal(\''+uuid+'\', \'zeek\')">Add Zeek</button>'+
+                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
                     '<thead id="">'+
                         '<th>Description</th>'+
                         '<th>Status</th>'+
@@ -72,63 +247,71 @@ function loadPlugins(){
                     '</thead>'+
                     '<tbody id="zeek-table-services">'+
                     '</tbody>'+
-                '</table>'+
-            '</div>'+
-            //zeek cluster
-            '<div id="cluster-zeek-table" class="cluster" style="display:block;"><br>'+
-                '<button id="sync-zeek-cluster" class="btn btn-primary float-right" style="font-size: 15px;" onclick="ModalSyncCluster(\''+uuid+'\')">Sync cluster</button>'+
-                '<div>'+
-                    '<div><b style="display:inline;">Manager</b></div>'+
-                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
-                        '<thead>'+
-                            '<th>Host</th>'+
-                            '<th>Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="zeek-table-manager">'+
-                        '</tbody>'+
                     '</table>'+
-                '</div><br>'+
-                '<div style="display:inline;">'+
-                    '<div><b style="display:inline;">Logger</b></div>'+
-                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
-                        '<thead>'+
-                            '<th>Host</th>'+
-                            '<th>Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="zeek-table-logger">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div><br>'+
-                '<div>'+
-                    '<div><b style="display:inline;">Proxy</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'proxy\')">Add proxy</button></div>'+
-                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
-                        '<thead>'+
-                            '<th>Name</th>'+
-                            '<th>Host</th>'+
-                            '<th>Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="zeek-table-proxy">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div><br>'+
-                '<div>'+
-                    '<div><b style="display:inline;">Worker</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'worker\')">Add worker</button></div>'+
-                    '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
-                        '<thead>'+
-                            '<th>Name</th>'+
-                            '<th>Host</th>'+
-                            '<th>Interface</th>'+
-                            '<th>Actions</th>'+
-                        '</thead>'+
-                        '<tbody id="zeek-table-worker">'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div><br>'+
-            '</div>'+
-        '</span>'+
-    '</div>'+
-    
+                '</div>';
+
+                //zeek cluster
+                htmlzeek = htmlzeek +
+                '<div id="cluster-zeek-table" class="cluster" style="display:none;"><br>'+
+                    '<button id="sync-zeek-cluster" class="btn btn-primary float-right" style="font-size: 15px;" onclick="ModalSyncCluster(\''+uuid+'\')">Sync cluster</button>'+
+                    '<div>'+
+                        '<div>'+
+                            '<b style="display:inline;">Manager</b>'+
+                        '</div>'+
+                        '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                            '<thead>'+
+                                '<th>Host</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="zeek-table-manager">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div></br>'+
+                    '<div>'+
+                        '<div>'+
+                            '<b style="display:inline;">Logger</b>'+
+                        '</div>'+
+                        '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                            '<thead>'+
+                                '<th>Host</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="zeek-table-logger">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div></br>'+
+                    '<div>'+
+                        '<div><b style="display:inline;">Proxy</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'proxy\')">Add proxy</button>'+
+                        '</div>'+
+                        '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                            '<thead>'+
+                                '<th>Name</th>'+
+                                '<th>Host</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="zeek-table-proxy">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div></br>'+
+                    '<div>'+
+                        '<div><b style="display:inline;">Worker</b><button class="btn btn-primary float-right" onclick="ModalAddClusterValue(\''+uuid+'\', \'worker\')">Add worker</button>'+
+                        '</div>'+
+                        '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
+                            '<thead>'+
+                                '<th>Name</th>'+
+                                '<th>Host</th>'+
+                                '<th>Interface</th>'+
+                                '<th>Actions</th>'+
+                            '</thead>'+
+                            '<tbody id="zeek-table-worker">'+
+                            '</tbody>'+
+                        '</table>'+
+                    '</div><br>'+
+                '</div>'+
+            '</div>';
+
     //wazuh
+    var htmlwazuh = ""+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'transport\',\''+uuid+'\')"><b>Transport</b> <i class="fas fa-sort-down" id="transport-form-icon-'+uuid+'"></i></h6>'+
         '<span id="transport-form-'+uuid+'" style="display:block"><br>'+
@@ -137,8 +320,8 @@ function loadPlugins(){
             '<span style="font-size: 15px; color: grey;">                                  ' +
                 '<i class="fas fa-stop-circle" style="cursor: pointer;" id="'+uuid+'-wazuh-icon"></i> &nbsp' +
                 '<i class="fas fa-sync-alt" style="cursor: pointer;" title="Reload Wazuh information" id="reload-wazuh" onclick="ReloadFilesData(\''+uuid+'\')"></i>' +
-                ' <a style="color:black;">|</a> <span style="cursor: pointer;" title="Edit main Wazuh config file" class="badge bg-primary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\',\'none\',\'/var/ossec/etc/ossec.conf\')">Edit main config file</span>'+
-                '<button class="btn btn-primary float-right" style="font-size: 15px;" id="show-wazuh-add-file">Add file</button>'+ 
+                ' <a style="color:black;">|</a> <span style="cursor: pointer;" title="Edit main Wazuh config file" class="badge bg-primary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\',\'none\',\'/var/ossec/etc/ossec.conf\')">Edit ossec.conf file</span>'+
+                '<button class="btn btn-primary float-right" style="font-size: 15px;" id="show-wazuh-add-file">Add file</button>'+
             '</span></p>'+
             '<div>'+
                 '<table class="table table-hover" style="table-layout: fixed" width="100%">'+
@@ -165,7 +348,15 @@ function loadPlugins(){
                 '</table>'+
             '</div>'+
         '</span>'+
+    '</div>';
+    //STAP - traffic management
+    var htmlstap = ""+
+    '<div class="float-right" id="stap-installed-status">'+
+        '<b>SOCAT:</b> <span id="stap-installed-socat" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
+        '<b>TCPREPLAY:</b> <span id="stap-installed-tcpreplay" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
+        '<b>TCPDUMP:</b> <span id="stap-installed-tcpdump" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
     '</div>'+
+    '<br>'+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'plugins\',\''+uuid+'\')"><b>Traffic Management</b> <i class="fas fa-sort-down" id="plugins-form-icon-'+uuid+'"></i></h6>'+
         '<span id="plugins-form-'+uuid+'" style="display:block"><br>'+
@@ -225,17 +416,18 @@ function loadPlugins(){
                 '</table>'+
             '</div><br><br>'+
         '</span>'+
-    '</div>'+
+    '</div>';
     //analyzer
+    var htmlanalyzer = ""+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" style="color: black;" onclick="showActions(\'analyzer\',\''+uuid+'\')"><b>Analyzer</b> <i class="fas fa-sort-down" id="analyzer-form-icon-'+uuid+'"></i></h6>'+
         '<span id="analyzer-form-'+uuid+'" style="display:block"><br>'+
             '<table width="100%" tyle="table-layout: fixed">'+
                 '<tr>'+
                     '<td width="25%"><img src="img/favicon.ico" height="25"> Analyzer</th>'+
-                    '<td width="25%">Status: <span class="fas fa-play-circle" id="analyzer-status-'+uuid+'" title="Change analyzer status">[N/A]</span></td>'+
+                    '<td width="25%">Status: <span id="analyzer-status-'+uuid+'" title="Change analyzer status"></span></td>'+
                     '<td width="25%">Start/Stop: <i style="color: grey; padding-left:3px; cursor: pointer;" id="analyzer-status-btn-'+uuid+'" onclick="ChangeAnalyzerStatus(\''+uuid+'\')"></i></td>'+
-                    '<td width="25%"><button class="btn btn-primary float-right" title="Edit analyzer" onclick="editAnalyzer(\''+uuid+'\', \'analyzer\', \''+name+'\')">Edit Analyzer</button></td>'+
+                    '<td width="25%"><button class="btn btn-primary float-right" title="Edit analyzer" onclick="editFile(\''+uuid+'\', \'analyzer\', \''+name+'\', \'enabled\')">Edit Analyzer</button></td>'+
                 '</tr>'+
                 '<tr>'+
                     '<table class="table table-hover" width="100%" style="table-layout: fixed">'+
@@ -341,7 +533,11 @@ function loadPlugins(){
     //         '</span>'+
     //     '</span>' +
     // '</div>';
-    document.getElementById('master-table-plugins').innerHTML = html;
+    document.getElementById('pills-suricata').innerHTML = htmlsuricata;
+    document.getElementById('pills-zeek').innerHTML = htmlzeek;
+    document.getElementById('pills-stap').innerHTML = htmlstap;
+    document.getElementById('pills-wazuh').innerHTML = htmlwazuh;
+    document.getElementById('pills-analyzer').innerHTML = htmlanalyzer;
 
     PingWazuh(uuid);
     PingWazuhFiles(uuid);
@@ -350,19 +546,107 @@ function loadPlugins(){
     GetMainconfData(uuid);
     // PingDataflow(uuid);
     PingPluginsNode(uuid);
+    PingPluginsMaster();
     PingCluster(uuid);
     getCurrentRulesetName(uuid);
+    PingZeek(uuid);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
+
+}
+function showMasterFile(param){
+    document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+param;
+}
+
+function hideEditValues(id){
+    $('#'+id).hide();
+}
+function showEditValues(id){
+    $('#'+id).show();
+}
+
+function SyncZeekValues(uuid){
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
+
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/syncZeekValues';
+
+    var jsonService = {}
+    jsonService["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonService);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
+        data: dataJSON
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Sync Zeek values error: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> All Zeek Files synchronized successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+            }
+        }
+    })
+    .catch(function (error) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Sync Zeek values error: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+    });
 }
 
 function changeSuricataTable(uuid){
     var suricata = document.getElementById('table-suricata');
     var command = document.getElementById('table-suricata-command');
     var suricataButton = document.getElementById('add-suricata-button');
-    if(suricata.style.display == "block"){        
+    if(suricata.style.display == "block"){
         suricataButton.style.display = "none";
         suricata.style.display = "none";
         command.style.display = "block";
@@ -376,6 +660,7 @@ function changeSuricataTable(uuid){
     var progressBarDiv = document.getElementById('progressBar-options-div');
     progressBar.style.display = "block";
     progressBarDiv.style.display = "block";
+
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/plugin/changeSuricataTable';
@@ -393,25 +678,37 @@ function changeSuricataTable(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Change plugin status error: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            PrivilegesMessage();
         }else{
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Change plugin status error: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -436,16 +733,16 @@ function hideInputAreaValue(key){
     document.getElementById(key).style.display = "none";
 }
 
-function addNewWazuhPath(uuid){      
+function addNewWazuhPath(uuid){
     if (document.getElementById("wazuh-add-line").value == ""){
         $('#wazuh-add-line').css('border', '2px solid red');
-        $('#wazuh-add-line').attr("placeholder", "Please, insert a valid path");  
+        $('#wazuh-add-line').attr("placeholder", "Please, insert a valid path");
     }else{
         $("#wazuh-insert").hide();
         var html = ""
         document.getElementById("wazuh-count-table-value").value++;
         var count = document.getElementById("wazuh-count-table-value").value;
-        var contentInput = document.getElementById("wazuh-add-line").value;
+        var contentInput = document.getElementById("wazuh-add-line").value.trim();
         html = html + '<tr>'+
             '<td id="'+count+'-wazuh-files">'+contentInput+'</td>'+
             '<td><span class="badge badge-pill bg-success align-text-bottom text-white">ON</span></td>'+
@@ -454,10 +751,75 @@ function addNewWazuhPath(uuid){
                 '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteWazuhFile(\''+uuid+'\', \''+contentInput+'\', \''+count+'\')"></i>'+
             '</td>'+
         '<tr>';
-        document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;  
+        document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;
 
         addWazuhFile(uuid);
     }
+}
+
+function PingPluginsMaster(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/pingPlugins';
+
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> PingPluginsMaster error: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                for(id in response.data){
+                    if(id=="zeek"){
+                        //table text
+                        if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-node").innerHTML = response.data[id]["nodeConfig"]; $("#zeek-expert-values-node").css('color', '');}
+                        if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-networks").innerHTML = response.data[id]["networksConfig"]; $("#zeek-expert-values-networks").css('color', '');}
+                        if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-policies-master").innerHTML = response.data[id]["policiesMaster"]; $("#zeek-expert-values-policies-master").css('color', '');}
+                        if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-policies-node").innerHTML = response.data[id]["policiesNode"]; $("#zeek-expert-values-policies-node").css('color', '');}
+                        if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-1").innerHTML = response.data[id]["variables1"]; $("#zeek-expert-values-var-1").css('color', '');}
+                        if(response.data[id]["nodeConfig"] != ""){document.getElementById("zeek-expert-values-var-2").innerHTML = response.data[id]["variables2"]; $("#zeek-expert-values-var-2").css('color', '');}
+                        //edit fields
+                        document.getElementById("expert-zeek-path-node-edit").value = response.data[id]["nodeConfig"].trim();
+                        document.getElementById("expert-zeek-path-networks-edit").value = response.data[id]["networksConfig"].trim();
+                        document.getElementById("expert-zeek-path-policies-master").value = response.data[id]["policiesMaster"].trim();
+                        document.getElementById("expert-zeek-path-policies-node").value = response.data[id]["policiesNode"].trim();
+                        document.getElementById("expert-zeek-path-var-1").value = response.data[id]["variables1"].trim();
+                        document.getElementById("expert-zeek-path-var-2").value = response.data[id]["variables2"].trim();
+                    }
+                }
+            }
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> PingPluginsMaster error: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
 }
 
 function ChangeZeekMode(uuid, mode){
@@ -477,25 +839,37 @@ function ChangeZeekMode(uuid, mode){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Change Zeek mode error: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            PrivilegesMessage();
         }else{
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Change Zeek mode error: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -539,23 +913,35 @@ function ChangeMainServiceStatus(uuid, param, service){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            loadPlugins();
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -580,95 +966,156 @@ function getCurrentRulesetName(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
-        })
-        .then(function (response2) {
-            if(response2.data.ack){                
-                document.getElementById('current-ruleset-options').innerHTML = "No ruleset selected...";
-                document.getElementById('current-ruleset-options').style.color = "red";
-                document.getElementById('current-ruleset').innerHTML = "No ruleset selected...";
-                document.getElementById('current-ruleset').style.color = "red";
-            }else{
-                document.getElementById('current-ruleset-options').innerHTML = response2.data;
-                // document.getElementById('current-ruleset').innerHTML = response2.data;
-                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid)
-                .then(function (response) {
-                    for (line in response.data){
-                        if (response.data[line]["type"] == "suricata"){
-                            document.getElementById('suricata-ruleset-'+line).innerHTML = response2.data;                            
-                            document.getElementById('suricata-ruleset-edit-'+line).value = response2.data;                            
-
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
+                headers:{
+                    'token': document.cookie,
+                    'user': payload.user,
+                    'uuid': payload.uuid,
+                }
+            })
+            .then(function (response2) {
+                if(response2.data.ack){
+                    document.getElementById('current-ruleset-options').innerHTML = "No ruleset selected...";
+                    document.getElementById('current-ruleset-options').style.color = "red";
+                    document.getElementById('current-ruleset').innerHTML = "No ruleset selected...";
+                    document.getElementById('current-ruleset').style.color = "red";
+                }else{
+                    document.getElementById('current-ruleset-options').innerHTML = response2.data;
+                    axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid, {
+                        headers:{
+                            'token': document.cookie,
+                            'user': payload.user,
+                            'uuid': payload.uuid,
                         }
-                    }
-                })
-                .catch(function (error) {
-                });
-            }
-        })
-        .catch(function (error) {
-        });
+                    })
+                    .then(function (response) {
+                        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                        if(response.data.permissions == "none"){
+                            PrivilegesMessage();
+                        }else{
+                            for (line in response.data){
+                                if (response.data[line]["type"] == "suricata"){
+                                    document.getElementById('suricata-ruleset-'+line).innerHTML = response2.data;
+                                    document.getElementById('suricata-ruleset-edit-'+line).value = response2.data;
+
+                                }
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                    });
+                }
+            })
+            .catch(function (error) {
+            });
+        }
     })
     .catch(function (error) {
 
     });
 }
 
-function GetMainconfData(uuid){
+async function GetMainconfData(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+
+    var count = 0;
+    await axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid, {
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            for (line in response.data){
+                if(response.data[line]["command"]){count++;}
+            }
+            document.getElementById('expert-number-services').value = count;
+        }
+    })
+    .catch(function (error) {
+    });
+
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/getMainconfData/'+uuid;
-    axios({
+    await axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        for (service in response.data){
-            if(service == "suricata"){
-                document.getElementById('managed-expert-span').innerHTML = 'To expert';
-                document.getElementById('table-suricata').style.display = 'block';
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            for (service in response.data){
+                if(service == "suricata"){
+                    document.getElementById('managed-expert-span').innerHTML = 'To expert ('+count+')';
+                    document.getElementById('table-suricata').style.display = 'block';
                     document.getElementById('table-suricata-command').style.display = 'none';
-                if(response.data[service]["status"] == "disabled"){
-                    document.getElementById('suricata-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
-                    document.getElementById('suricata-current-status').innerHTML = 'Disabled';
-                    document.getElementById('main-suricata-status-btn').className = 'fas fa-play-circle';
-                }else if(response.data[service]["status"] == "enabled"){
-                    document.getElementById('suricata-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
-                    document.getElementById('main-suricata-status-btn').className = 'fas fa-stop-circle';
-                    document.getElementById('suricata-current-status').innerHTML = 'Enabled';
-                }else if(response.data[service]["status"] == "expert"){
-                    document.getElementById('suricata-current-status').className = 'badge badge-pill bg-warning align-text-bottom text-white';
-                    document.getElementById('table-suricata').style.display = 'none';
-                    document.getElementById('table-suricata-command').style.display = 'block';
-                    document.getElementById('suricata-current-status').innerHTML = 'Expert';
-                    document.getElementById('managed-expert-span').innerHTML = 'To managed';
-                    document.getElementById('main-suricata-status-btn').style.display = 'none';
-                }
-            }else if(service == "zeek"){
-                if(response.data[service]["status"] == "disabled"){
-                    document.getElementById('main-zeek-status-btn').className = 'fas fa-play-circle';
-                    document.getElementById('zeek-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
-                    document.getElementById('zeek-current-status').innerHTML = 'Disabled';
-                }else if(response.data[service]["status"] == "enabled"){
-                    document.getElementById('main-zeek-status-btn').className = 'fas fa-stop-circle';
-                    document.getElementById('zeek-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
-                    document.getElementById('zeek-current-status').innerHTML = 'Enabled';
-                }
-                if(response.data[service]["mode"] == "standalone"){
-                    document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white standalone';
-                    document.getElementById('zeek-mode-standalone').disabled = true; 
-                    document.getElementById('zeek-mode-cluster').onclick = function(){ChangeZeekMode(uuid, "cluster");}; 
-                    document.getElementById('standalone-zeek-table').style.display = "block"; 
-                    document.getElementById('cluster-zeek-table').style.display = "none"; 
-                }else if(response.data[service]["mode"] == "cluster"){
-                    document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white cluster';
-                    document.getElementById('zeek-mode-cluster').disabled = true; 
-                    document.getElementById('zeek-mode-standalone').onclick = function(){ChangeZeekMode(uuid, "standalone");}; 
-                    document.getElementById('standalone-zeek-table').style.display = "none";
-                    document.getElementById('cluster-zeek-table').style.display = "block";
+                    if(response.data[service]["status"] == "disabled"){
+                        document.getElementById('suricata-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
+                        document.getElementById('suricata-current-status').innerHTML = 'Disabled';
+                        document.getElementById('main-suricata-status-btn').className = 'fas fa-play-circle';
+                    }else if(response.data[service]["status"] == "enabled"){
+                        document.getElementById('suricata-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
+                        document.getElementById('main-suricata-status-btn').className = 'fas fa-stop-circle';
+                        document.getElementById('suricata-current-status').innerHTML = 'Enabled';
+                    }else if(response.data[service]["status"] == "expert"){
+                        document.getElementById('suricata-current-status').className = 'badge badge-pill bg-warning align-text-bottom text-white';
+                        document.getElementById('table-suricata').style.display = 'none';
+                        document.getElementById('add-suricata-button').style.display = 'none';
+                        document.getElementById('table-suricata-command').style.display = 'block';
+                        document.getElementById('suricata-current-status').innerHTML = 'Expert';
+                        document.getElementById('managed-expert-span').innerHTML = 'To managed';
+                        document.getElementById('main-suricata-status-btn').style.display = 'none';
+                    }
+                }else if(service == "zeek"){
+                    if(response.data[service]["status"] == "disabled"){
+                        document.getElementById('main-zeek-status-btn').className = 'fas fa-play-circle';
+                        document.getElementById('zeek-current-status').className = 'badge badge-pill bg-danger align-text-bottom text-white';
+                        document.getElementById('zeek-current-status').innerHTML = 'Disabled';
+                    }else if(response.data[service]["status"] == "enabled"){
+                        document.getElementById('main-zeek-status-btn').className = 'fas fa-stop-circle';
+                        document.getElementById('zeek-current-status').className = 'badge badge-pill bg-success align-text-bottom text-white';
+                        document.getElementById('zeek-current-status').innerHTML = 'Enabled';
+                    }
+                    if(response.data[service]["mode"] == "standalone"){
+                        // document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white standalone';
+                        document.getElementById('zeek-mode-standalone').disabled = true;
+                        // document.getElementById('zeek-mode-cluster').onclick = function(){ChangeZeekMode(uuid, "cluster");};
+                        // document.getElementById('standalone-zeek-table').style.display = "block";
+                        // document.getElementById('cluster-zeek-table').style.display = "none";
+                    }else if(response.data[service]["mode"] == "cluster"){
+                        // document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white cluster';
+                        document.getElementById('zeek-mode-cluster').disabled = true;
+                        // document.getElementById('zeek-mode-standalone').onclick = function(){ChangeZeekMode(uuid, "standalone");};
+                        // document.getElementById('standalone-zeek-table').style.display = "none";
+                        // document.getElementById('cluster-zeek-table').style.display = "block";
+                    }
                 }
             }
         }
@@ -689,12 +1136,12 @@ function GetMainconfData(uuid){
 function ModalAddClusterValue(uuid, type){
     var html = '<div class="modal-dialog">'+
       '<div class="modal-content">'+
-  
+
         '<div class="modal-header">'+
           '<h4 class="modal-title">Add '+type+'</h4>'+
           '<button type="button" class="close" id="add-cluster-modal-cross">&times;</button>'+
         '</div>'+
-  
+
         '<div class="modal-body">'+
           '<p>Insert the host:</p>'+
           '<input type="text" class="form-control" id="new-cluster-host" value=""><br>';
@@ -705,20 +1152,65 @@ function ModalAddClusterValue(uuid, type){
             html = html + '<div id="new-cluster-interface"></div>';
           }
           html = html + '</div>'+
-  
+
         '<div class="modal-footer" id="sync-node-footer-btn">'+
           '<button type="button" class="btn btn-secondary" id="add-cluster-modal-close">Cancel</button>'+
           '<button type="button" class="btn btn-primary" id="add-cluster-modal">Add</button>'+
         '</div>'+
-  
+
       '</div>'+
     '</div>';
-    
+
     document.getElementById('modal-window').innerHTML = html;
     $('#modal-window').modal("show");
-    $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value, document.getElementById('new-cluster-interface').value); });
+    $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value.trim(), document.getElementById('new-cluster-interface').value.trim()); });
     $('#add-cluster-modal-close').click(function(){ $('#modal-window').modal("hide");});
     $('#add-cluster-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function ChangeZeekConfigTable(tab){
+    if (tab == "standalone-zeek-table"){
+        document.getElementById('standalone-zeek-table').style.display = 'block';
+        document.getElementById('cluster-zeek-table').style.display = 'none';
+        document.getElementById('expert-zeek-table').style.display = 'none';
+
+        document.getElementById('zeek-mode-standalone').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('zeek-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
+    } else if (tab == "cluster-zeek-table") {
+        document.getElementById('standalone-zeek-table').style.display = 'none';
+        document.getElementById('cluster-zeek-table').style.display = 'block';
+        document.getElementById('expert-zeek-table').style.display = 'none';
+
+        document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('zeek-mode-cluster').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('zeek-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
+    } else if (tab == "expert-zeek-table") {
+        document.getElementById('standalone-zeek-table').style.display = 'none';
+        document.getElementById('cluster-zeek-table').style.display = 'none';
+        document.getElementById('expert-zeek-table').style.display = 'block';
+
+        document.getElementById('zeek-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('zeek-mode-cluster').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('zeek-mode-expert').className = 'badge bg-primary align-text-bottom text-white';
+    }
+}
+
+function ChangeZeekStatusTable(tab){
+    if (tab == "zeek-status-tab"){
+        document.getElementById('zeek-status-tab').style.display = 'block';
+        document.getElementById('zeek-configuration-tab').style.display = 'none';
+
+
+        document.getElementById('btn-zeek-node-status').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('btn-zeek-node-configuration').className = 'badge bg-secondary align-text-bottom text-white';
+    } else if (tab == "zeek-configuration-tab") {
+        document.getElementById('zeek-status-tab').style.display = 'none';
+        document.getElementById('zeek-configuration-tab').style.display = 'block';
+
+        document.getElementById('btn-zeek-node-status').className = 'badge bg-secondary align-text-bottom text-white';
+        document.getElementById('btn-zeek-node-configuration').className = 'badge bg-primary align-text-bottom text-white';
+    }
 }
 
 function ModalSyncCluster(uuid){
@@ -741,12 +1233,134 @@ function ModalSyncCluster(uuid){
 
     '</div>'+
   '</div>';
-  
+
   document.getElementById('modal-window').innerHTML = html;
   $('#modal-window').modal("show");
   $('#sync-cluster-modal').click(function(){ SyncCluster(uuid); });
   $('#sync-cluster-modal-close').click(function(){ $('#modal-window').modal("hide");});
   $('#sync-cluster-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
+
+function saveZeekValues(uuid, param){
+    if(param == "nodeConfig" && document.getElementById('expert-zeek-path-node-edit').value=="" || param == "networksConfig" && document.getElementById('expert-zeek-path-networks-edit').value=="" || param == "policies" && document.getElementById('expert-zeek-path-policies-master').value=="" ||
+        param == "policies" && document.getElementById('expert-zeek-path-policies-node').value=="" || param == "variables" && document.getElementById('expert-zeek-path-var-1').value=="" || param == "variables" && document.getElementById('expert-zeek-path-var-2').value==""){
+            if (param == "nodeConfig" && document.getElementById('expert-zeek-path-node-edit').value == ""){
+                $('#expert-zeek-path-node-edit').attr("placeholder", "Please, insert value");
+                $('#expert-zeek-path-node-edit').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-path-node-edit').css('border', '2px solid #ced4da');
+            }
+            if (param == "networksConfig" && document.getElementById('expert-zeek-path-networks-edit').value == ""){
+                $('#expert-zeek-path-networks-edit').attr("placeholder", "Please, insert value");
+                $('#expert-zeek-path-networks-edit').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-path-networks-edit').css('border', '2px solid #ced4da');
+            }
+            if (param == "policies" && document.getElementById('expert-zeek-path-policies-master').value == ""){
+                $('#expert-zeek-path-policies-master').attr("placeholder", "Please, insert value");
+                $('#expert-zeek-path-policies-master').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-path-policies-master').css('border', '2px solid #ced4da');
+            }
+            if (param == "policies" && document.getElementById('expert-zeek-path-policies-node').value == ""){
+                $('#expert-zeek-path-policies-node').attr("placeholder", "Please, insert value");
+                $('#expert-zeek-path-policies-node').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-path-policies-node').css('border', '2px solid #ced4da');
+            }
+            if (param == "variables" && document.getElementById('expert-zeek-path-var-1').value == ""){
+                $('#expert-zeek-path-var-1').attr("placeholder", "Please, insert value");
+                $('#expert-zeek-path-var-1').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-path-var-1').css('border', '2px solid #ced4da');
+            }
+            if (param == "variables" && document.getElementById('expert-zeek-path-var-2').value == ""){
+                $('#expert-zeek-path-var-2').attr("placeholder", "Please, insert value");
+                $('#expert-zeek-path-var-2').css('border', '2px solid red');
+            }else{
+                $('#expert-zeek-path-var-2').css('border', '2px solid #ced4da');
+            }
+    }else{
+        //clean input fields
+        $('#expert-zeek-path-node-edit').css('border', '2px solid #ced4da');        $('#expert-zeek-path-node-edit').attr("placeholder", "");           hideEditValues('node-edit-row');
+        $('#expert-zeek-path-network-edit').css('border', '2px solid #ced4da');     $('#expert-zeek-path-network-edit').attr("placeholder", "");        hideEditValues('networks-edit-row');
+        $('#expert-zeek-path-policies-master').css('border', '2px solid #ced4da');  $('#expert-zeek-path-policies-master').attr("placeholder", "");     hideEditValues('zeek-edit-policies-row');
+        $('#expert-zeek-path-policies-node').css('border', '2px solid #ced4da');    $('#expert-zeek-path-policies-node').attr("placeholder", "");       hideEditValues('zeek-edit-policies-row');
+        $('#expert-zeek-path-var-2').css('border', '2px solid #ced4da');            $('#expert-zeek-path-var-1').attr("placeholder", "");               hideEditValues('zeek-edit-variables-row');
+        $('#expert-zeek-path-var-1').css('border', '2px solid #ced4da');            $('#expert-zeek-path-var-2').attr("placeholder", "");               hideEditValues('zeek-edit-variables-row');
+
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/zeek/saveZeekValues';
+
+        var jsonCluster = {}
+        jsonCluster["uuid"] = uuid;
+        jsonCluster["param"] = param;
+        if(param == "nodeConfig"){
+            jsonCluster["nodeConfig"] = document.getElementById('expert-zeek-path-node-edit').value;
+        }else if(param == "networksConfig"){
+            jsonCluster["networksConfig"] = document.getElementById('expert-zeek-path-networks-edit').value;
+        }else if(param == "policies"){
+            jsonCluster["policiesMaster"] = document.getElementById('expert-zeek-path-policies-master').value;
+            jsonCluster["policiesNode"] = document.getElementById('expert-zeek-path-policies-node').value;
+        }else if(param == "variables"){
+            jsonCluster["variables1"] = document.getElementById('expert-zeek-path-var-1').value;
+            jsonCluster["variables2"] = document.getElementById('expert-zeek-path-var-2').value;
+        }
+        var dataJSON = JSON.stringify(jsonCluster);
+        axios({
+            method: 'put',
+            url: nodeurl,
+            timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
+            data: dataJSON
+        })
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();
+            }else{
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Save Zeek value: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Zeek Value saves successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+
+                    PingPluginsMaster();
+                }
+            }
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Save Zeek value: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+    }
 }
 
 function SyncCluster(uuid){
@@ -762,29 +1376,39 @@ function SyncCluster(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Delete cluster value: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> Cluster Synchronize successfully.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Delete cluster value: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Cluster Synchronize successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -803,20 +1427,20 @@ function SyncCluster(uuid){
 function AddClusterValue(uuid, type, host, interface){
     if (host == "" ||  interface == ""){
         if ((type == "proxy")&&(host == "")){
-            $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");  
+            $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");
             $('#new-cluster-host').css('border', '2px solid red');
         }else{
             $('#new-cluster-host').css('border', '2px solid #ced4da');
         }
         if ((type == "worker")&&(host == "" || interface == "")){
             if(host == ""){
-                $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");  
+                $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");
                 $('#new-cluster-host').css('border', '2px solid red');
             }else{
                 $('#new-cluster-host').css('border', '2px solid #ced4da');
             }
             if(interface == ""){
-                $('#new-cluster-interface').attr("placeholder", "Please, insert a valid interface");  
+                $('#new-cluster-interface').attr("placeholder", "Please, insert a valid interface");
                 $('#new-cluster-interface').css('border', '2px solid red');
             }else{
                 $('#new-cluster-interface').css('border', '2px solid #ced4da');
@@ -827,7 +1451,7 @@ function AddClusterValue(uuid, type, host, interface){
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/addClusterValue';
-    
+
         var jsonCluster = {}
         jsonCluster["uuid"] = uuid;
         jsonCluster["type"] = type;
@@ -838,21 +1462,31 @@ function AddClusterValue(uuid, type, host, interface){
             method: 'post',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
-            if (response.data.ack == "false") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Add cluster value: '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();
             }else{
-                loadPlugins();
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Add cluster value: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    loadPlugins();
+                }
             }
         })
         .catch(function (error) {
@@ -876,40 +1510,50 @@ function PingCluster(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Ping Zeek cluster: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            for(elem in response.data){
-                if(elem == "logger"){
-                    var content = '<tr><td>'+response.data[elem]["host"]+'</td>'+
-                    '<td><i class="fas fa-edit" style="color:grey; cursor:pointer" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'logger\')"></i></td>'+
-                    '</tr>';
-                    document.getElementById('zeek-table-logger').innerHTML = content;
-                }else if(elem == "manager"){
-                    var content = '<tr><td>'+response.data[elem]["host"]+'</td><td><i class="fas fa-edit" style="color:grey; cursor:pointer" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'manager\')"></i></td></tr>';                   
-                    document.getElementById('zeek-table-manager').innerHTML = content;
-                }else if(elem.includes("proxy")){
-                    document.getElementById('zeek-table-proxy').innerHTML =  document.getElementById('zeek-table-proxy').innerHTML + 
-                    '<tr><td>'+elem+'</td><td>'+response.data[elem]["host"]+'</td>'+
-                    '<td><i class="fas fa-edit" style="color:grey; cursor:pointer" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'proxy\')"></i> &nbsp <i class="fas fa-trash-alt" style="color:red; cursor:pointer" onclick="ModalDeleteClusterValue(\''+uuid+'\', \''+elem+'\')"></i></td>'+
-                    '</tr>';
-                }else if(elem.includes("worker")){
-                    document.getElementById('zeek-table-worker').innerHTML = document.getElementById('zeek-table-worker').innerHTML + 
-                        '<tr><td>'+elem+'</td><td>'+response.data[elem]["host"]+'</td><td>'+response.data[elem]["interface"]+'</td>'+
-                        '<td><i class="fas fa-edit" style="color:grey; cursor:pointer;" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'worker\')"></i> &nbsp <i class="fas fa-trash-alt" style="color:red; cursor:pointer" onclick="ModalDeleteClusterValue(\''+uuid+'\', \''+elem+'\')"></i></td>'+
-                    '</tr>';
-                }            
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Ping Zeek cluster: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                for(elem in response.data){
+                    if(elem == "logger"){
+                        var content = '<tr><td>'+response.data[elem]["host"]+'</td>'+
+                        '<td><i class="fas fa-edit" style="color:grey; cursor:pointer" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'logger\')"></i></td>'+
+                        '</tr>';
+                        document.getElementById('zeek-table-logger').innerHTML = content;
+                    }else if(elem == "manager"){
+                        var content = '<tr><td>'+response.data[elem]["host"]+'</td><td><i class="fas fa-edit" style="color:grey; cursor:pointer" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'manager\')"></i></td></tr>';
+                        document.getElementById('zeek-table-manager').innerHTML = content;
+                    }else if(elem.includes("proxy")){
+                        document.getElementById('zeek-table-proxy').innerHTML =  document.getElementById('zeek-table-proxy').innerHTML +
+                        '<tr><td>'+elem+'</td><td>'+response.data[elem]["host"]+'</td>'+
+                        '<td><i class="fas fa-edit" style="color:grey; cursor:pointer" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'proxy\')"></i> &nbsp <i class="fas fa-trash-alt" style="color:red; cursor:pointer" onclick="ModalDeleteClusterValue(\''+uuid+'\', \''+elem+'\')"></i></td>'+
+                        '</tr>';
+                    }else if(elem.includes("worker")){
+                        document.getElementById('zeek-table-worker').innerHTML = document.getElementById('zeek-table-worker').innerHTML +
+                            '<tr><td>'+elem+'</td><td>'+response.data[elem]["host"]+'</td><td>'+response.data[elem]["interface"]+'</td>'+
+                            '<td><i class="fas fa-edit" style="color:grey; cursor:pointer;" onclick="ModalEditClusterValue(\''+uuid+'\', \''+elem+'\', \'worker\')"></i> &nbsp <i class="fas fa-trash-alt" style="color:red; cursor:pointer" onclick="ModalDeleteClusterValue(\''+uuid+'\', \''+elem+'\')"></i></td>'+
+                        '</tr>';
+                    }
+                }
             }
         }
     })
@@ -923,7 +1567,7 @@ function PingCluster(uuid){
             '</button>'+
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
-    });  
+    });
 }
 
 function ModalDeleteClusterValue(uuid, type){
@@ -944,7 +1588,7 @@ function ModalDeleteClusterValue(uuid, type){
             '</div>'+
         '</div>'+
     '</div>';
-  
+
     document.getElementById('modal-window').innerHTML = html;
     $('#modal-window').modal("show");
     $('#delete-cluster-modal').click(function(){ DeleteClusterValue(uuid, type); });
@@ -979,7 +1623,7 @@ function ModalEditClusterValue(uuid, type, cluster){
 
         '</div>'+
     '</div>';
-  
+
     document.getElementById('modal-window').innerHTML = html;
     $('#modal-window').modal("show");
     $('#edit-cluster-modal').click(function(){ EditClusterValue(uuid, type, document.getElementById('edit-cluster-host').value, document.getElementById('edit-cluster-interface').value, cluster); });
@@ -991,20 +1635,20 @@ function EditClusterValue(uuid, type, host, interface, cluster){
     if (host == "" ||  interface == ""){
         $('#edit-cluster-host').css('border', '2px solid red');
         if ((type.includes("proxy"))&&(host == "")){
-            $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");  
+            $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");
             $('#edit-cluster-host').css('border', '2px solid red');
         }else{
             $('#edit-cluster-host').css('border', '2px solid #ced4da');
         }
         if ((type.includes("worker"))&&(host == "" || interface == "")){
             if(host == ""){
-                $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");  
+                $('#edit-cluster-host').attr("placeholder", "Please, insert a valid host");
                 $('#edit-cluster-host').css('border', '2px solid red');
             }else{
                 $('#edit-cluster-host').css('border', '2px solid #ced4da');
             }
             if(interface == ""){
-                $('#edit-cluster-interface').attr("placeholder", "Please, insert a valid interface");  
+                $('#edit-cluster-interface').attr("placeholder", "Please, insert a valid interface");
                 $('#edit-cluster-interface').css('border', '2px solid red');
             }else{
                 $('#edit-cluster-interface').css('border', '2px solid #ced4da');
@@ -1015,7 +1659,7 @@ function EditClusterValue(uuid, type, host, interface, cluster){
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/zeek/editClusterValue';
-    
+
         var jsonCluster = {}
         jsonCluster["uuid"] = uuid;
         jsonCluster["cluster"] = cluster;
@@ -1027,21 +1671,31 @@ function EditClusterValue(uuid, type, host, interface, cluster){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
-            if (response.data.ack == "false") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Edit cluster value: '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();
             }else{
-                loadPlugins();
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Edit cluster value: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    loadPlugins();
+                }
             }
         })
         .catch(function (error) {
@@ -1072,21 +1726,31 @@ function DeleteClusterValue(uuid, type){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Delete cluster value: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Delete cluster value: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -1109,30 +1773,35 @@ function PingDataflow(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
-        document.getElementById('analysis-'+response.data["analysis"]["value"]).checked = "true";
-        document.getElementById('transport-'+response.data["transport"]["value"]).checked = "true";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
+            document.getElementById('analysis-'+response.data["analysis"]["value"]).checked = "true";
+            document.getElementById('transport-'+response.data["transport"]["value"]).checked = "true";
+        }
     })
     .catch(function (error) {
     });
 }
 
 function loadFilesURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/files.html?uuid='+uuid+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/files.html?uuid='+uuid+'&node='+nodeName;
 }
-
 function loadEditURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+nodeName+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+nodeName+'&node='+nodeName;
 }
-
-function editAnalyzer(uuid, file, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+function editFile(uuid, file, nodeName, status){
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&status='+status;
 }
 
 function ChangeAnalyzerStatus(uuid){
@@ -1155,21 +1824,31 @@ function ChangeAnalyzerStatus(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Change analyzer status: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Change analyzer status: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -1212,19 +1891,29 @@ function deployNode(value,uuid,nodeName){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Deploy node: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Deploy node: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -1240,8 +1929,310 @@ function deployNode(value,uuid,nodeName){
     });
 }
 
+function LaunchZeekMainConf(uuid, param) {
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/LaunchZeekMainConf';
+
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    jsonValues["param"] = param;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
+        data: dataJSON
+    })
+        .then(function (response) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if(response.data != null){
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Launch Zeek main conf: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    progressBar.style.display = "none";
+                    progressBarDiv.style.display = "none";
+                }
+            }else{
+                loadPlugins();
+            }
+        }
+        })
+        .catch(function error(error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Launch Zeek main conf: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+        });
+}
+
+//Stop suricata using kill -9
+function StartSuricataMainConf(uuid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StartSuricataMain';
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
+        data: dataJSON
+    })
+        .then(function (response) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();
+            }else{
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Start Suricata main conf: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);   
+                }else{
+                    location.reload(); 
+                }
+            }
+        })
+        .catch(function error(error) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Start Suricata main conf: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+}
+
+//Stop suricata using main.conf
+function StopSuricataMainConf(uuid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StopSuricataMain';
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
+        data: dataJSON
+    })
+        .then(function (response) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();
+            }else{
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Stop Suricata main conf: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    location.reload(); 
+                }
+            }
+        })
+        .catch(function error(error) {
+            document.getElementById('progressBar-options').style.display = "none";
+            document.getElementById('progressBar-options-div').style.display = "none";
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Stop Suricata main conf: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });
+}
+
+//Stop suricata using kill -9
+function KillSuricataMainConf(uuid, pid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/KillSuricataMain';
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    jsonValues["pid"] = pid;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
+        data: dataJSON
+    })
+    .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Kill Suricata main conf: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                location.reload(); 
+            }
+        }
+    })
+    .catch(function error(error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Kill Suricata main conf: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+//Stop suricata using kill -9
+function ReloadSuricataMainConf(uuid, pid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ReloadSuricataMain';
+    var jsonValues = {}
+    jsonValues["uuid"] = uuid;
+    jsonValues["pid"] = pid;
+    var dataJSON = JSON.stringify(jsonValues);
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
+        data: dataJSON
+    })
+    .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Reload Suricata main conf response: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                location.reload(); 
+            }
+        }
+    })
+    .catch(function error(error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Reload Suricata main conf: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
+}
+
+
 //Stop suricata system
 function StopSuricata(uuid) {
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StopSuricata/' + uuid;
@@ -1249,8 +2240,19 @@ function StopSuricata(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
-        .then(function (response) {
+    .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1266,18 +2268,21 @@ function StopSuricata(uuid) {
                     loadPlugins();
                 }, 1500);
             }
-        })
-        .catch(function error(error) {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Stop Suricata: '+error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        });
+        }
+    })
+    .catch(function error(error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Stop Suricata: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    });
 
 }
 
@@ -1305,7 +2310,7 @@ function AddServiceModal(uuid, type){
     '</div>'+
   '</div>';
   $('#modal-window').modal("show");
-  $('#add-service-modal').click(function(){ AddPluginService(uuid, document.getElementById('new-service-name').value, type); });
+  $('#add-service-modal').click(function(){ AddPluginService(uuid, document.getElementById('new-service-name').value.trim(), type); });
   $('#add-service-modal-close').click(function(){ $('#modal-window').modal("hide");});
   $('#add-service-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
@@ -1329,8 +2334,8 @@ function AddSTAPModal(uuid, type){
             '<input type="text" class="form-control" id="soft-tap-port" value="50010"><br>'+
         '<p>Insert certificate:</p>'+
             '<input type="text" class="form-control" id="soft-tap-cert" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
-        // if (type == "socket-network"){                  
-        // }else 
+        // if (type == "socket-network"){
+        // }else
         if (type == "socket-pcap"){
             html = html + '<p>Insert PCAP path:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-pcap-path" value="/usr/local/owlh/pcaps"><br>'+
@@ -1349,29 +2354,40 @@ function AddSTAPModal(uuid, type){
             '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
                 '<tbody id="socket-network-modal-table">' +
                 '</tbody>'+
-            '</table>';   
-            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
-            .then(function (response) {
-                var isChecked = false;
-                var inner = "";
-                for (net in response.data){
-                    inner = inner + '<tr>'+
-                        '<td style="word-wrap: break-word;">' +
-                            '<p class="ml-4">'+response.data[net]+'</p>'+
-                        '</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            if (!isChecked){
-                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
-                                isChecked = true;
-                            }else{
-                                inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
-                            }
-                        inner = inner + '</td>'+
-                    '</tr>';
+            '</table>';
+            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid, {
+                headers:{
+                    'token': document.cookie,
+                    'user': payload.user,
+                    'uuid': payload.uuid,
                 }
-                document.getElementById('socket-network-modal-table').innerHTML = inner;
-            });   
-        }
+            })
+            .then(function (response) {
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.permissions == "none"){
+                    PrivilegesMessage();
+                }else{
+                    var isChecked = false;
+                    var inner = "";
+                    for (net in response.data){
+                        inner = inner + '<tr>'+
+                            '<td style="word-wrap: break-word;">' +
+                                '<p class="ml-4">'+response.data[net]+'</p>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;">';
+                                if (!isChecked){
+                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';
+                                    isChecked = true;
+                                }else{
+                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';
+                                }
+                            inner = inner + '</td>'+
+                        '</tr>';
+                    }
+                    document.getElementById('socket-network-modal-table').innerHTML = inner;
+                }
+            });
+    }
     html = html + '</div>'+
     '<div class="modal-footer" id="sync-node-footer-btn">'+
         '<button type="button" class="btn btn-secondary" id="add-stap-modal-close">Cancel</button>'+
@@ -1381,11 +2397,11 @@ function AddSTAPModal(uuid, type){
     '</div>'+
   '</div>';
 
-  
+
 
   //   $('#add-stap-modal').click(function(){ $('#modal-window').modal("hide"); saveSoftwareTAP(uuid, type); });
   document.getElementById('modal-window').innerHTML = html;
-  
+
   $('#modal-window').modal("show");
   $('#add-stap-modal').click(function(){ saveSoftwareTAP(uuid, type); });
   $('#add-stap-modal-close').click(function(){ $('#modal-window').modal("hide");});
@@ -1393,134 +2409,143 @@ function AddSTAPModal(uuid, type){
 }
 
 function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('soft-tap-name').value)
-    if( (type == "socket-network" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "")) ||  
-    (type == "socket-pcap" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" )) ||  
+    if( (type == "socket-network" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "")) ||
+    (type == "socket-pcap" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" )) ||
     (type == "network-socket" && (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == ""))){
         if(type == "socket-network"){
             if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "") {
                 if (document.getElementById('soft-tap-name').value == "" ){
                     $('#soft-tap-name').css('border', '2px solid red');
-                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name"); 
+                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");
                 }else{
                     $('#soft-tap-name').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-port').value == ""){
                     $('#soft-tap-port').css('border', '2px solid red');
-                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port"); 
+                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port");
                 }else{
                     $('#soft-tap-port').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-cert').value == ""){
                     $('#soft-tap-cert').css('border', '2px solid red');
-                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate"); 
+                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");
                 }else{
                     $('#soft-tap-cert').css('border', '2px solid #ced4da');
                 }
             }
         }else if(type == "socket-pcap"){
-            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ){                
+            if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-pcap-path').value == "" || document.getElementById('soft-tap-pcap-prefix').value == "" || document.getElementById('soft-tap-bpf').value == "" ){
                 if (document.getElementById('soft-tap-port').value == ""){
                     $('#soft-tap-port').css('border', '2px solid red');
-                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port"); 
+                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port");
                 }else{
                     $('#soft-tap-port').css('border', '2px solid #ced4da');
                 }
-                if (document.getElementById('soft-tap-name').value == ""){   
+                if (document.getElementById('soft-tap-name').value == ""){
                     $('#soft-tap-name').css('border', '2px solid red');
-                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");              
+                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");
                 }else{
                     $('#soft-tap-name').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-cert').value == ""){
                     $('#soft-tap-cert').css('border', '2px solid red');
-                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");   
+                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");
                 }else{
                     $('#soft-tap-cert').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-pcap-path').value == ""){
                     $('#soft-tap-pcap-path').css('border', '2px solid red');
-                    $('#soft-tap-pcap-path').attr("placeholder", "Please, insert a valid pcap path");   
+                    $('#soft-tap-pcap-path').attr("placeholder", "Please, insert a valid pcap path");
                 }else{
                     $('#soft-tap-pcap-path').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-pcap-prefix').value == ""){
                     $('#soft-tap-pcap-prefix').css('border', '2px solid red');
-                    $('#soft-tap-pcap-prefix').attr("placeholder", "Please, insert a valid pcap prefix");            
+                    $('#soft-tap-pcap-prefix').attr("placeholder", "Please, insert a valid pcap prefix");
                 }else{
                     $('#soft-tap-pcap-prefix').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-bpf').value == ""){
                     $('#soft-tap-bpf').css('border', '2px solid red');
-                    $('#soft-tap-bpf').attr("placeholder", "Please, insert a valid bpf");   
+                    $('#soft-tap-bpf').attr("placeholder", "Please, insert a valid bpf");
                 }else{
                     $('#soft-tap-bpf').css('border', '2px solid #ced4da');
                 }
-                
+
             }
         }else if(type == "network-socket"){
             if (document.getElementById('soft-tap-name').value == "" || document.getElementById('soft-tap-port').value == "" || document.getElementById('soft-tap-cert').value == "" || document.getElementById('soft-tap-bpf-socket').value == "" || document.getElementById('soft-tap-collector').value == ""){
-                if (document.getElementById('soft-tap-name').value == ""){  
+                if (document.getElementById('soft-tap-name').value == ""){
                     $('#soft-tap-name').css('border', '2px solid red');
-                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");                 
+                    $('#soft-tap-name').attr("placeholder", "Please, insert a valid name");
                 }else{
                     $('#soft-tap-name').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-port').value == ""){
                     $('#soft-tap-port').css('border', '2px solid red');
-                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port");   
+                    $('#soft-tap-port').attr("placeholder", "Please, insert a valid port");
                 }else{
                     $('#soft-tap-port').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-cert').value == ""){
                     $('#soft-tap-cert').css('border', '2px solid red');
-                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");   
+                    $('#soft-tap-cert').attr("placeholder", "Please, insert a valid certificate");
                 }else{
                     $('#soft-tap-cert').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-collector').value == ""){
                     $('#soft-tap-collector').css('border', '2px solid red');
-                    $('#soft-tap-collector').attr("placeholder", "Please, insert a valid collector IP");   
+                    $('#soft-tap-collector').attr("placeholder", "Please, insert a valid collector IP");
                 }else{
                     $('#soft-tap-collector').css('border', '2px solid #ced4da');
                 }
                 if (document.getElementById('soft-tap-bpf-socket').value == ""){
                     $('#soft-tap-bpf-socket').css('border', '2px solid red');
-                    $('#soft-tap-bpf-socket').attr("placeholder", "Please, insert a valid BPF path");   
+                    $('#soft-tap-bpf-socket').attr("placeholder", "Please, insert a valid BPF path");
                 }else{
                     $('#soft-tap-bpf-socket').css('border', '2px solid #ced4da');
                 }
             }
         }
-    }else{     
+    }else{
         $('#modal-window').modal("hide");
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/add';
 
         var valueSelected = "";
-        $('input:radio:checked').each(function() {            
+        $('input:radio:checked').each(function() {
             if($(this).attr('class') == 'socket-network-radio-stap'){
                 valueSelected = $(this).prop("value");
-            }                        
+            }
         });
 
         var jsonSave = {}
         jsonSave["uuid"] = uuid;
-        jsonSave["name"] = document.getElementById('soft-tap-name').value;
+        jsonSave["name"] = document.getElementById('soft-tap-name').value.trim();
         jsonSave["type"] = type;
-        jsonSave["cert"] = document.getElementById('soft-tap-cert').value;
-        jsonSave["port"] = document.getElementById('soft-tap-port').value;
+        jsonSave["cert"] = document.getElementById('soft-tap-cert').value.trim();
+        jsonSave["port"] = document.getElementById('soft-tap-port').value.trim();
         jsonSave["interface"] = valueSelected;
-        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf').value;}
-        if (type == "network-socket"){ jsonSave["collector"] = document.getElementById('soft-tap-collector').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-socket').value;}
+        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path').value.trim(); jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix').value.trim(); jsonSave["bpf"] = document.getElementById('soft-tap-bpf').value.trim();}
+        if (type == "network-socket"){ jsonSave["collector"] = document.getElementById('soft-tap-collector').value.trim(); jsonSave["bpf"] = document.getElementById('soft-tap-bpf-socket').value.trim();}
         var dataJSON = JSON.stringify(jsonSave);
         axios({
-            method: 'put',
+            method: 'post',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1543,6 +2568,7 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }
             loadPlugins();
+        }
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -1559,9 +2585,9 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
 }
 
 function AddPluginService(uuid, name, type){
-    if (name == ""){       
+    if (name == ""){
         $('#new-service-name').css('border', '2px solid red');
-        $('#new-service-name').attr("placeholder", "Please, insert a description"); 
+        $('#new-service-name').attr("placeholder", "Please, insert a description");
     }else{
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
@@ -1575,9 +2601,19 @@ function AddPluginService(uuid, name, type){
             method: 'post',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataMap
         })
-        .then(function (response) {            
+        .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            $('#modal-window').modal("hide");
+            PrivilegesMessage();
+        }else{
             $('#modal-window').modal("hide");
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
@@ -1601,6 +2637,7 @@ function AddPluginService(uuid, name, type){
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
             }
             loadPlugins();
+        }
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -1623,10 +2660,15 @@ function AddPluginService(uuid, name, type){
 //     axios({
 //         method: 'get',
 //         url: nodeurl,
-//         timeout: 30000
+//         timeout: 30000,
+        // headers:{
+        //         'token': document.cookie,
+        //         'user': payload.user,
+        //         'uuid': payload.uuid,
+        //     }
 //     })
 //     .then(function (response) {
-//         console.log(response.data);
+        // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 //     })
 //     .catch(function (error) {
 //     });
@@ -1712,21 +2754,31 @@ function saveBPF(uuid, value, service, type){
       method: 'put',
       url: nodeurl,
       timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
       data: bpfjson
     })
       .then(function (response) {
-        if (response.data.error == "false"){
-        $('html,body').scrollTop(0);
-        var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> Save BPF: '+response.data.error+'.'+
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                '<span aria-hidden="true">&times;</span>'+
-            '</button>'+
-        '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            // loadPlugins();
+            if (response.data.error == "false"){
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Save BPF: '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                // loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -1765,13 +2817,24 @@ function loadRuleset(uuid, source, service){
     var resultElement = document.getElementById('ruleset-manager-footer-table');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset')
+    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
+    })
       .then(function (response) {
-          if (typeof response.data.error != "undefined"){
-              resultElement.innerHTML = '<p>No rules available...</p>';
-          }else{
-              resultElement.innerHTML = generateAllRulesModal(response, uuid, source, service);
-          }
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (typeof response.data.error != "undefined"){
+                resultElement.innerHTML = '<p>No rules available...</p>';
+            }else{
+                resultElement.innerHTML = generateAllRulesModal(response, uuid, source, service);
+            }
+        }
     })
     .catch(function (error) {
         resultElement.innerHTML = '<p>Error retrieving rules</p>';
@@ -1810,19 +2873,29 @@ function deployZeek(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Error deploying Zeek: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Error deploying Zeek: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -1885,9 +2958,18 @@ function saveRuleSelected(rule, nid, source, name, service){
         method: 'put',
         url: urlSetRuleset,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: uidJSON
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1902,12 +2984,11 @@ function saveRuleSelected(rule, nid, source, name, service){
             if (source == "main"){
                 loadPlugins();
             }else if (source == "service"){
-                console.log('suricata-ruleset-edit-'+service);
                 document.getElementById('suricata-ruleset-edit-'+service).value = name;
             }
+        }
         })
         .catch(function (error) {
-            console.log(error);
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -1921,8 +3002,7 @@ function saveRuleSelected(rule, nid, source, name, service){
 }
 
 function loadStapURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/stap.html?uuid='+uuid+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/stap.html?uuid='+uuid+'&node='+nodeName;
 }
 
 function playCollector(uuid){
@@ -1932,12 +3012,22 @@ function playCollector(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
-        document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
-        return true;
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
+            document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
+            return true;
+        }
     })
     .catch(function (error) {
         return false;
@@ -1951,12 +3041,22 @@ function stopCollector(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
-        document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";
-        return true;
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
+            document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";
+            return true;
+        }
     })
     .catch(function (error) {
         return false;
@@ -1970,10 +3070,20 @@ function showCollector(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        showModalCollector(response);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            showModalCollector(response);
+        }
 
     })
     .catch(function (error) {
@@ -2050,15 +3160,25 @@ function PingCollector(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        if (response.data != ""){
-            document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
-            document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
-            document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";
+            if (response.data != ""){
+                document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
+                document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
+            }else{
+                document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
+                document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";
+            }
         }
     })
     .catch(function (error) {
@@ -2073,11 +3193,19 @@ function PingPorts(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
             for(line in response.data){
-                console.log(response.data);
                 if (response.data[line]["status"] == "Enabled"){
                     document.getElementById('ports-status-'+uuid).innerHTML = "ON";
                     document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
@@ -2090,10 +3218,11 @@ function PingPorts(uuid) {
                 document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
             }
             return true;
+        }
         })
         .catch(function (error) {
-            
-            return false;            
+
+            return false;
         });
     return false;
 }
@@ -2118,21 +3247,31 @@ function ChangeStatus(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Change status: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Change status: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -2168,21 +3307,31 @@ function ChangeMode(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Change mode: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Change mode: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -2205,10 +3354,20 @@ function showPorts(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        showModalPorts(response, uuid);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            showModalPorts(response, uuid);
+        }
     })
     .catch(function (error) {
         return false;
@@ -2292,8 +3451,17 @@ function deletePorts(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: nodeJSON
         }).then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }
 
         }).catch(function (error) {
 
@@ -2306,10 +3474,19 @@ function deleteAllPorts(uuid){
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/ports/deleteAll/'+uuid;
     axios({
-        method: 'put',
+        method: 'delete',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     }).then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }
 
     }).catch(function (error) {
 
@@ -2330,29 +3507,39 @@ function sendRulesetToNode(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> Suricata ruleset deployment complete.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Ruleset Error!</strong> Deploy ruleset: '+response.data.error+''+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Suricata ruleset deployment complete.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Ruleset Error!</strong> Deploy ruleset: '+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -2377,23 +3564,33 @@ function RunSuricata(uuid) {
         method: 'put',
         url: nodeurl,
         //httpsAgent: agent,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Run suricata: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            setTimeout(function (){
-                loadPlugins();
-            }, 1500);
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Run suricata: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                setTimeout(function (){
+                    loadPlugins();
+                }, 1500);
+            }
         }
     })
     .catch(function error(error) {
@@ -2405,7 +3602,7 @@ function RunSuricata(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);        
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
     });
 
 }
@@ -2419,8 +3616,17 @@ function StopSuricata(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2436,6 +3642,7 @@ function StopSuricata(uuid) {
                     loadPlugins();
                 }, 1500);
             }
+        }
         })
         .catch(function error(error) {
             $('html,body').scrollTop(0);
@@ -2446,7 +3653,7 @@ function StopSuricata(uuid) {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);   
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
         });
 
 }
@@ -2458,9 +3665,18 @@ function PingSuricata(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
             if (!response.data.path && !response.data.bin) {
                 document.getElementById(uuid + '-suricata').className = "badge bg-dark align-text-bottom text-white";
                 document.getElementById(uuid + '-suricata').innerHTML = "N/A";
@@ -2483,6 +3699,7 @@ function PingSuricata(uuid) {
                 }
             }
             return true;
+        }
         })
         .catch(function (error) {
             document.getElementById(uuid + '-suricata').className = "badge bg-dark align-text-bottom text-white";
@@ -2501,23 +3718,33 @@ function RunZeek(uuid) {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Run Zeek: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            setTimeout(function (){
-                loadPlugins();
-            }, 1500);
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Run Zeek: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                setTimeout(function (){
+                    loadPlugins();
+                }, 1500);
+            }
         }
     })
     .catch(function error(error) {
@@ -2542,22 +3769,32 @@ function StopZeek(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Stop Zeek: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            setTimeout(function (){
-                loadPlugins();
-            }, 1500);
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Stop Zeek: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                setTimeout(function (){
+                    loadPlugins();
+                }, 1500);
+            }
         }
     })
     .catch(function error(error) {
@@ -2570,51 +3807,70 @@ function StopZeek(uuid) {
             '</button>'+
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 5000);
-        
+
     });
 
 }
 
 function PingZeek(uuid) {
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/' + uuid;
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
-            if (!response.data.path && !response.data.bin) {
-                document.getElementById(uuid + '-zeek').className = "badge bg-dark align-text-bottom text-white";
-                document.getElementById(uuid + '-zeek').innerHTML = "N/A";
-                document.getElementById(uuid + '-zeek-icon').className = "fas fa-play-circle";
-                document.getElementById(uuid + '-zeek-icon').onclick = function () { RunZeek(uuid); };
-                document.getElementById(uuid + '-zeek-icon').title = "Run zeek";
-            } else if (response.data.path || response.data.bin) {
-                if (response.data.running) {
-                    document.getElementById(uuid + '-zeek').className = "badge bg-success align-text-bottom text-white";
-                    document.getElementById(uuid + '-zeek').innerHTML = "ON";
-                    document.getElementById(uuid + '-zeek-icon').className = "fas fa-stop-circle";
-                    document.getElementById(uuid + '-zeek-icon').onclick = function () { StopZeek(uuid); };
-                    document.getElementById(uuid + '-zeek-icon').title = "Stop Zeek";
-                } else {
-                    document.getElementById(uuid + '-zeek').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(uuid + '-zeek').innerHTML = "OFF";
-                    document.getElementById(uuid + '-zeek-icon').className = "fas fa-play-circle";
-                    document.getElementById(uuid + '-zeek-icon').onclick = function () { RunZeek(uuid); };
-                    document.getElementById(uuid + '-zeek-icon').title = "Run Zeek";
-                }
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            PrivilegesMessage();
+        }else{
+            document.getElementById("zeek-status-details").innerHTML = '';
+            document.getElementById("zeek-current-mode").innerHTML = response.data["mode"];
+            document.getElementById("zeek-role").innerHTML = response.data["role"];
+
+            var html = '';
+            for(node in response.data.nodes){
+                html = html + '<tr>'+
+                    '<td>'+response.data.nodes[node]["host"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["status"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["type"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["interface"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["pid"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["started"]+'</td>'+
+                    '<td style="color: red;">extra info</td>'+
+                '</tr>';
             }
-            return true;
+            document.getElementById("zeek-status-details").innerHTML = html;
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+        }
         })
         .catch(function (error) {
-            document.getElementById(uuid + '-zeek').className = "badge bg-dark align-text-bottom text-white";
-            document.getElementById(uuid + '-zeek').innerHTML = "N/A";
-
-            return false;
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Ping Zeek: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
         });
-    return false;
 }
 
 //Run Zeek system
@@ -2625,9 +3881,18 @@ function RunWazuh(uuid) {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2643,6 +3908,7 @@ function RunWazuh(uuid) {
                     loadPlugins();
                 }, 1500);
             }
+        }
         })
         .catch(function error(error) {
             $('html,body').scrollTop(0);
@@ -2668,22 +3934,32 @@ function StopWazuh(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Stop Wazuh: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            setTimeout(function (){
-                loadPlugins();
-            }, 1500);
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Stop Wazuh: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                setTimeout(function (){
+                    loadPlugins();
+                }, 1500);
+            }
         }
     })
     .catch(function error(error) {
@@ -2704,7 +3980,7 @@ function addWazuhFile(uuid){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/addWazuhFile';
-    
+
     var array = []
     for (x = 1; x <= totalCount; x++) {
         array.push(document.getElementById(x+'-wazuh-files').innerHTML);
@@ -2714,15 +3990,25 @@ function addWazuhFile(uuid){
     jsonWazuhFilePath["uuid"] = uuid;
     jsonWazuhFilePath["paths"] = array;
     var dataJSON = JSON.stringify(jsonWazuhFilePath);
-    
+
     axios({
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -2762,7 +4048,7 @@ function DeleteWazuhFile(uuid, count){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deleteWazuhFile';
-    
+
     var array = []
     for (x = 1; x <= totalCount; x++) {
         if (x != count){
@@ -2774,15 +4060,25 @@ function DeleteWazuhFile(uuid, count){
     jsonWazuhFilePath["uuid"] = uuid;
     jsonWazuhFilePath["paths"] = array;
     var dataJSON = JSON.stringify(jsonWazuhFilePath);
-    
+
     axios({
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            loadPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -2796,49 +4092,78 @@ function PingWazuhFiles(uuid) {
         method: 'get',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong>Get Wazuh files: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            var html = "";
-            var count = 1;
-            var sufixSize = "";
-            for (pos in response.data){
-                html = html + '<tr>'+
-                    '<td style="word-wrap: break-word;" id="'+count+'-wazuh-files">'+response.data[pos]["path"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="wazuh-file-column-'+count+'">';
-                    if(response.data[pos]["size"] < 0){
-                        html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
-                    }else{
-                        if(response.data[pos]["size"]<1024){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"].toFixed(2)+' Bytes</span>';}
-                        if(response.data[pos]["size"]>=1024 && response.data[pos]["size"]<1048576){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[pos]["size"]/1024).toFixed(2)+' kB</span>';}
-                        if(response.data[pos]["size"]>=1048576 && response.data[pos]["size"]<1073741824){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[pos]["size"]/1048576).toFixed(2)+' MB</span>';}
-                        if(response.data[pos]["size"]>=1073741824){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[pos]["size"]/1073741824).toFixed(2)+' GB</span>';}
-                    }
-                    html = html + '</td>'+
-                    '<td style="color:grey; word-wrap: break-word;">';
-                        if(response.data[pos]["size"] >=0){
-                            html = html + '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data[pos]["path"]+'\')">10</span> &nbsp'+
-                            '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[pos]["path"]+'\')">50</span> &nbsp'+
-                            '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[pos]["path"]+'\')">100</span> &nbsp';
-                        }
-                        html = html + '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteWazuhFile(\''+uuid+'\', \''+response.data[pos]["path"]+'\', \''+count+'\')"></i>'+
-                    '</td>'+
-                '<tr>';
-                count++;
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong>Wazuh connect: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
             }
-            document.getElementById('wazuh-count-table-value').value = count-1;
-            document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;
-               
+            var isError = false;
+            for(obj in response.data){
+                if (response.data[obj].ack == "false") {
+                    // $('html,body').scrollTop(0);
+                    // var alert = document.getElementById('floating-alert');
+                    // alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    //     '<strong>Error!</strong>Get Wazuh files: '+response.data[obj].error+'.'+
+                    //     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    //         '<span aria-hidden="true">&times;</span>'+
+                    //     '</button>'+
+                    // '</div>';
+                    // setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    isError = true;
+                }
+            }
+
+            //if there are no error retrieving Wazuh files, show all files in the list
+            if(!isError){
+                var html = "";
+                var count = 1;
+                var sufixSize = "";
+                for (pos in response.data){
+                    html = html + '<tr>'+
+                        '<td style="word-wrap: break-word;" id="'+count+'-wazuh-files">'+response.data[pos]["path"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="wazuh-file-column-'+count+'">';
+                        if(response.data[pos]["size"] < 0){
+                            html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
+                        }else{
+                            if(response.data[pos]["size"]<1024){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[pos]["size"]+' Bytes</span>';}
+                            if(response.data[pos]["size"]>=1024 && response.data[pos]["size"]<1048576){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[pos]["size"]/1024).toFixed(2)+' kB</span>';}
+                            if(response.data[pos]["size"]>=1048576 && response.data[pos]["size"]<1073741824){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[pos]["size"]/1048576).toFixed(2)+' MB</span>';}
+                            if(response.data[pos]["size"]>=1073741824){html = html +'<span id="wazuh-file-status-'+count+'" class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[pos]["size"]/1073741824).toFixed(2)+' GB</span>';}
+                        }
+                        html = html + '</td>'+
+                        '<td style="color:grey; word-wrap: break-word;">';
+                            if(response.data[pos]["size"] >=0){
+                                html = html + '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data[pos]["path"]+'\')">10</span> &nbsp'+
+                                '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[pos]["path"]+'\')">50</span> &nbsp'+
+                                '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[pos]["path"]+'\')">100</span> &nbsp';
+                            }
+                            html = html + '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteWazuhFile(\''+uuid+'\', \''+response.data[pos]["path"]+'\', \''+count+'\')"></i>'+
+                        '</td>'+
+                    '<tr>';
+                    count++;
+                }
+                document.getElementById('wazuh-count-table-value').value = count-1;
+                document.getElementById('wazuh-table').innerHTML = document.getElementById('wazuh-table').innerHTML + html;
+            }else{
+                document.getElementById('wazuh-table').innerHTML = "No files available";
+            }
         }
     })
     .catch(function (error) {
@@ -2855,8 +4180,7 @@ function PingWazuhFiles(uuid) {
 }
 
 function LoadPageLastLines(uuid, line, path) {
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/load-content.html?uuid='+uuid+'&line='+line+'&path='+path;
+    document.location.href = 'https://' + location.hostname + '/load-content.html?uuid='+uuid+'&line='+line+'&path='+path;
 }
 
 function PingWazuh(uuid) {
@@ -2866,9 +4190,18 @@ function PingWazuh(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
             if (!response.data.path && !response.data.bin) {
                 document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
                 document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
@@ -2891,6 +4224,7 @@ function PingWazuh(uuid) {
                 }
             }
             return true;
+        }
         })
         .catch(function (error) {
             document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
@@ -2908,23 +4242,31 @@ function RunStap(uuid) {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Run STAP: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            // setTimeout(function (){
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Run STAP: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
                 loadPlugins();
-            // }, 1500);
+            }
         }
     })
     .catch(function error(error) {
@@ -2949,22 +4291,32 @@ function StopStap(uuid) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Stop STAP: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            // setTimeout(function (){
-                loadPlugins();
-            // }, 1500);
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Stop STAP: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                // setTimeout(function (){
+                    loadPlugins();
+                // }, 1500);
+            }
         }
     })
     .catch(function error(error) {
@@ -2987,9 +4339,18 @@ function PingStap(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
             if (!response.data.stapStatus) {
                 document.getElementById(uuid + '-stap').className = "badge bg-danger align-text-bottom text-white";
                 document.getElementById(uuid + '-stap').innerHTML = "OFF";
@@ -3003,6 +4364,7 @@ function PingStap(uuid) {
                 document.getElementById(uuid + '-stap-icon').onclick = function () { StopStap(uuid); };
                 document.getElementById(uuid + '-stap-icon').title = "Stop stap";
             }
+        }
         })
         .catch(function (error) {
             document.getElementById(uuid + '-stap').className = "badge bg-dark align-text-bottom text-white";
@@ -3025,380 +4387,477 @@ function PingPluginsNode(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
-    .then(function (response) {
-        for(line in response.data){
-            // if (line == "knownports"){
-            //     if (response.data[line]["status"] == "Enabled"){
-            //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
-            //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
-            //         document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-            //     }else if (response.data[line]["status"] == "Disabled"){
-            //         document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
-            //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
-            //         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-            //     }
-            //     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-            // }else if (response.data[line]["type"] == "suricata"){
-            if (response.data[line]["type"] == "suricata"){
-                if (response.data[line]["command"]){
-                    tableSuricataCommand = tableSuricataCommand + '<tr>'+                    
-                        '<td>'+response.data[line]["pid"]+'</td>'+
-                        '<td>'+response.data[line]["command"]+'</td>'+
-                    '<tr>';
+    .then(function (response) {  
+        console.log(response.data);     
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            for(line in response.data){
+                // if (line == "knownports"){
+                //     if (response.data[line]["status"] == "Enabled"){
+                //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
+                //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
+                //         document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+                //     }else if (response.data[line]["status"] == "Disabled"){
+                //         document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
+                //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
+                //         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+                //     }
+                //     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+                // }else if (response.data[line]["type"] == "suricata"){
+
+                //put if socat, tcpdump and tcpreplay are installed
+                if(response.data["installed"]["checkSocat"] == "false" || response.data["installed"]["checkTcpreplay"] == "false" || response.data["installed"]["checkTcpdump"] == "false"){
+                    if(response.data["installed"]["checkSocat"] == "true"){
+                        document.getElementById("stap-installed-socat").innerHTML = "Installed";
+                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-socat").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }
+                    if(response.data["installed"]["checkTcpreplay"] == "true"){
+                        document.getElementById("stap-installed-tcpreplay").innerHTML = "Installed";
+                        document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-tcpreplay").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }
+                    if(response.data["installed"]["checkTcpdump"] == "true"){
+                        document.getElementById("stap-installed-tcpdump").innerHTML = "Installed";
+                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }
+
                 }else{
-                    tableSuricata = tableSuricata + '<tr>'+
+                    document.getElementById("stap-installed-status").style.display = "none";
+                }
+
+                //put suricata parameters
+                if (response.data[line]["type"] == "suricata"){
+                    if (response.data[line]["command"]){
+                        tableSuricataCommand = tableSuricataCommand + '<tr>'+
+                            '<td>'+response.data[line]["pid"]+'</td>'+
+                            '<td>'+response.data[line]["command"]+'</td>'+
+                            '<td>'+
+                                '<span style="cursor: pointer;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
+                                '<span style="cursor: pointer;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Reload</span>'+
+                            '</td>'+
+
+                        '<tr>';
+                    }else{
+                        tableSuricata = tableSuricata + '<tr>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
+                                if(response.data[line]["status"]=="enabled"){
+                                    tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }else if (response.data[line]["status"]=="disabled"){
+                                    tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }
+                                tableSuricata = tableSuricata + '</td>'+
+                            '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'"></td>';
+                            tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                            '<td style="word-wrap: break-word;">';
+                                if(response.data[line]["status"]=="enabled"){
+                                    tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                                }else if (response.data[line]["status"]=="disabled"){
+                                    tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
+                                }
+                                tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                // '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
+                                // '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
+                                // '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> &nbsp'+
+                                '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                            '<td style="word-wrap: break-word;" colspan="5">'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Description: <input class="form-control" id="suricata-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        // 'BPF: <i class="fas fa-edit" id="suricata-bpf-icon-'+line+'" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF"></i>'+
+                                        'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"></i>'+
+                                        '<input class="form-control" id="suricata-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
+                                        '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="" disabled>'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
+                                        '<input class="form-control" id="suricata-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;" >'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-seconday" id="modify-stap-cancel-suricata-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<br>'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                        '</tr>';
+                    }
+                }else if (response.data[line]["type"] == "zeek"){
+                    tableZeek = tableZeek + '<tr>'+
                         '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
+                        '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
                             if(response.data[line]["status"]=="enabled"){
-                                tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
                             }else if (response.data[line]["status"]=="disabled"){
-                                tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
                             }
-                            tableSuricata = tableSuricata + '</td>'+
-                        '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'"></td>';
-                        tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                            tableZeek = tableZeek + '</td>'+
+                        '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
                         '<td style="word-wrap: break-word;">';
-                            if(response.data[line]["status"]=="enabled"){
-                                tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
-                            }else if (response.data[line]["status"]=="disabled"){
-                                tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
-                            }
-                            tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
-                            // '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
-                            // '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
-                            // '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> &nbsp'+
-                            '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                            // if(response.data[line]["status"]=="enabled"){
+                            //     tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                            // }else if (response.data[line]["status"]=="disabled"){
+                            //     tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                            // }
+                            tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-trash-alt" style="color: red; cursor: pointer;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                         '</td>'+
                     '</tr>'+
                     '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                        '<td style="word-wrap: break-word;" colspan="5">'+
+                        '<td style="word-wrap: break-word;" colspan="4">'+
                             '<div class="form-row">'+
                                 '<div class="col">'+
-                                    'Description: <input class="form-control" id="suricata-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                    'Description: <input class="form-control" id="zeek-name-'+line+'" value="'+response.data[line]["name"]+'">'+
                                 '</div>'+
                                 '<div class="col">'+
-                                    // 'BPF: <i class="fas fa-edit" id="suricata-bpf-icon-'+line+'" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF"></i>'+
-                                    'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"></i>'+
-                                    '<input class="form-control" id="suricata-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
+                                    '<input class="form-control" type="text" id="zeek-interface-config" value="" disabled>'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    '<div class="form-row text-center">'+
+                                        '<div class="col">'+
+                                            '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                        '</div>'+
+                                        '<div class="col">'+
+                                            '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '<br>'+
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                    '</tr>';
+
+                }else if (response.data[line]["type"] == "socket-network"){
+                    tableSocketNetwork = tableSocketNetwork + '<tr>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }else{
+                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }
+                        tableSocketNetwork = tableSocketNetwork + '</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
+                            }else if (response.data[line]["pid"] != "none"){
+                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
+                            }
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                        '<td style="word-wrap: break-word;" colspan="4">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
                                 '</div>'+
                             '</div>'+
                             '<div class="form-row">'+
                                 '<div class="col">'+
-                                    'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
-                                    '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="" disabled>'+
+                                    'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                                 '</div>'+
                                 '<div class="col">'+
-                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
-                                    '<input class="form-control" id="suricata-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
                                 '</div>'+
                             '</div>'+
                         '</td>'+
                         '<td style="word-wrap: break-word;" >'+
                             '<div class="form-row text-center">'+
                                 '<div class="col">'+
-                                    '<button class="btn btn-seconday" id="modify-stap-cancel-suricata-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
                                 '</div>'+
                             '</div>'+
                             '<br>'+
                             '<div class="form-row text-center">'+
                                 '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+    
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                    '</tr>';
+                }else if (response.data[line]["type"] == "socket-pcap"){
+                    tableSocketPcap = tableSocketPcap + '<tr>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        if (response.data[line]["pid"] == "none"){
+                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
+                        }
+                        tableSocketPcap = tableSocketPcap + '</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;cursor: pointer; " onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \'none\',\'socket-pcap\')"></i> &nbsp';
+                            }else if (response.data[line]["pid"] != "none"){
+                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                            }
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                        '<td style="word-wrap: break-word;" colspan="6">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;" >'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                '</div>'+
+                            '</div>'+
+                            '<br>'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                    '</tr>';
+                }else if (response.data[line]["type"] == "network-socket"){
+                    tableNetworkSocket = tableNetworkSocket + '<tr>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        if (response.data[line]["pid"] == "none"){
+                            tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
+                            if(response.data[line]["running"]=="true"){
+                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
+                        }else{
+                            tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> ';
+                            if(response.data[line]["running"]=="true"){
+                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
+                        }
+                        tableNetworkSocket = tableNetworkSocket + '</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="network-socket-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="network-socket-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (response.data[line]["pid"] == "none"){
+                                tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \''+response.data[line]["collector"]+'\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'network-socket\')"></i> &nbsp';
+                            }else if (response.data[line]["pid"] != "none"){
+                                tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
+                            }
+                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                        '<td style="word-wrap: break-word;" colspan="6">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Description: <input class="form-control" id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Port: <input class="form-control" id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="form-row">'+
+                            '</div>'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Collector: <input class="form-control" id="network-socket-collector-'+line+'" value="'+response.data[line]["collector"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Certificate: <input class="form-control" id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'BPF: <i class="fas fa-edit" title="BPF" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;" >'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-seconday" id="modify-stap-cancel-network-socket-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                '</div>'+
+                            '</div>'+
+                            '<br>'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+
                                 '</div>'+
                             '</div>'+
                         '</td>'+
                     '</tr>';
                 }
-            }else if (response.data[line]["type"] == "zeek"){                
-                tableZeek = tableZeek + '<tr>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
-                        if(response.data[line]["status"]=="enabled"){
-                            tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                        }else if (response.data[line]["status"]=="disabled"){
-                            tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                        }
-                        tableZeek = tableZeek + '</td>'+
-                    '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
-                        if(response.data[line]["status"]=="enabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
-                        }else if (response.data[line]["status"]=="disabled"){
-                            tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
-                        }
-                        tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" style="color: red; cursor: pointer;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
-                    '</td>'+
-                '</tr>'+
-                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="4">'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Description: <input class="form-control" id="zeek-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
-                                '<input class="form-control" type="text" id="zeek-interface-config" value="" disabled>'+
-                            '</div>'+
-                            '<div class="col">'+
-                                '<div class="form-row text-center">'+
-                                    '<div class="col">'+
-                                        '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                                    '</div>'+
-                                    '<div class="col">'+
-                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+    
-                                    '</div>'+
-                                '</div>'+
-                                '<br>'+
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                '</tr>';
-                
-            }else if (response.data[line]["type"] == "socket-network"){                
-                tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
-                        if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
-                        }else{
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
-                        }
-                    tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
-                        if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
-                        }else if (response.data[line]["pid"] != "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
-                        }                        
-                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                    '</td>'+
-                '</tr>'+
-                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="4">'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                            '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;" >'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                            '</div>'+
-                        '</div>'+
-                        '<br>'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+    
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                '</tr>';
-            }else if (response.data[line]["type"] == "socket-pcap"){
-                tableSocketPcap = tableSocketPcap + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
-                    if (response.data[line]["pid"] == "none"){
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
-                    }else{
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
-                    }
-                    tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
-                        if (response.data[line]["pid"] == "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;cursor: pointer; " onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \'none\',\'socket-pcap\')"></i> &nbsp';
-                        }else if (response.data[line]["pid"] != "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
-                        }
-                        tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                    '</td>'+
-                '</tr>'+
-                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="6">'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                            '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
-                            '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;" >'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                            '</div>'+
-                        '</div>'+
-                        '<br>'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+    
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                '</tr>';
-            }else if (response.data[line]["type"] == "network-socket"){
-                tableNetworkSocket = tableNetworkSocket + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
-                    if (response.data[line]["pid"] == "none"){
-                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
-                    }else{
-                        tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
-                    }
-                    tableNetworkSocket = tableNetworkSocket + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="network-socket-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="network-socket-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
-                        if (response.data[line]["pid"] == "none"){
-                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \''+response.data[line]["collector"]+'\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'network-socket\')"></i> &nbsp';
-                        }else if (response.data[line]["pid"] != "none"){
-                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
-                        }
-                        tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                    '</td>'+
-                '</tr>'+
-                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="6">'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Description: <input class="form-control" id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Port: <input class="form-control" id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                            '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+                            
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Collector: <input class="form-control" id="network-socket-collector-'+line+'" value="'+response.data[line]["collector"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Certificate: <input class="form-control" id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                            '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'BPF: <i class="fas fa-edit" title="BPF" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;" >'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-network-socket-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                            '</div>'+
-                        '</div>'+
-                        '<br>'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+    
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                '</tr>';
+                document.getElementById('zeek-table-services').innerHTML = tableZeek;
+                document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
+                document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
+                document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
+                document.getElementById('suricata-table-services').innerHTML = tableSuricata;
+                document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;
             }
-            
-            // if(($(".cluster")[0]) == undefined){ document.getElementById('zeek-table-services').innerHTML = tableZeek;}
-            document.getElementById('zeek-table-services').innerHTML = tableZeek;
-            document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
-            document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
-            document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
-            document.getElementById('suricata-table-services').innerHTML = tableSuricata;
-            document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;
-            // onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"
-            // if (response.data[line]["type"] == "suricata"){
-            //     console.log('suricata-bpf-icon-'+line);
-            //     var x = document.getElementById('suricata-bpf-icon-'+line).onclick = loadBPF(uuid, document.getElementById('suricata-bpf-'+line).value, line, response.data[line]["name"], response.data[line]["type"]);
-            //     var x = document.getElementById('suricata-bpf-'+line).value
-            //     console.log(x);
-            //     // $('#suricata-bpf-icon-'+line).click(function(){ console.log("here"); loadBPF(uuid, document.getElementById('suricata-bpf-'+line).value, line, response.data[line]["name"], response.data[line]["type"]); });
-            //     // $('#suricata-bpf-icon-'+line).click(function(){ console.log("here"); });
-            // }            
-        }
 
-        axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid)
-        .then(function (response) {
-            if (response.data.ack == "false") {
+            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid, {
+                headers:{
+                    'token': document.cookie,
+                    'user': payload.user,
+                    'uuid': payload.uuid,
+                }
+            })
+            .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();
+            }else{
+                if (response.data.ack == "false") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Load interfaces: '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    if (document.getElementById('zeek-interface') != null){
+                        for (net in response.data){
+                            document.getElementById('zeek-interface').value = response.data[net]["interface"];
+                        }
+                    }
+                }
+            }
+            })
+            .catch(function (error){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Load interfaces: '+response.data.error+'.'+
+                    '<strong>Error!</strong> Load interfaces: '+error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                if (document.getElementById('zeek-interface') != null){
-                    for (net in response.data){                                                        
-                        document.getElementById('zeek-interface').value = response.data[net]["interface"];                            
-                    }
-                }
-            }
-        })
-        .catch(function (error){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Load interfaces: '+error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        });
-    
+            });
+        }
     })
     .catch(function (error) {
-        console.log(error)
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -3419,7 +4878,7 @@ function showModifyStap(service){
     $('#edit-row-'+service).show();
 }
 
-function saveStapChanges(uuid, type, service){    
+function saveStapChanges(uuid, type, service){
     $('#edit-row-'+service).hide();
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -3430,52 +4889,61 @@ function saveStapChanges(uuid, type, service){
     jsonDeployService["service"] = service;
     jsonDeployService["type"] = type;
     if (type == "socket-network"){
-        jsonDeployService["name"] = document.getElementById('socket-network-name-'+service).value;
-        jsonDeployService["port"] = document.getElementById('socket-network-port-'+service).value;
-        jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+service).value;
-        jsonDeployService["interface"] = document.getElementById('socket-network-interface-'+service).value;
+        jsonDeployService["name"] = document.getElementById('socket-network-name-'+service).value.trim();
+        jsonDeployService["port"] = document.getElementById('socket-network-port-'+service).value.trim();
+        jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+service).value.trim();
+        jsonDeployService["interface"] = document.getElementById('socket-network-interface-'+service).value.trim();
     }else if (type == "suricata"){
-        jsonDeployService["name"] = document.getElementById('suricata-name-'+service).value;      
+        jsonDeployService["name"] = document.getElementById('suricata-name-'+service).value.trim();
     }else if (type == "zeek"){
-        jsonDeployService["name"] = document.getElementById('zeek-name-'+service).value;      
-    }else if (type == "socket-pcap"){        
-        jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+service).value;
-        jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+service).value;
-        jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+service).value;
-        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+service).value;
-        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+service).value;
-        jsonDeployService["bpf"] = document.getElementById('socket-pcap-bpf-'+service).value;
+        jsonDeployService["name"] = document.getElementById('zeek-name-'+service).value.trim();
+    }else if (type == "socket-pcap"){
+        jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+service).value.trim();
+        jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+service).value.trim();
+        jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+service).value.trim();
+        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+service).value.trim();
+        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+service).value.trim();
+        jsonDeployService["bpf"] = document.getElementById('socket-pcap-bpf-'+service).value.trim();
     }else if (type == "network-socket"){
-        jsonDeployService["name"] = document.getElementById('network-socket-name-'+service).value;
-        jsonDeployService["port"] = document.getElementById('network-socket-port-'+service).value;
-        jsonDeployService["cert"] = document.getElementById('network-socket-cert-'+service).value;
-        jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value;
-        jsonDeployService["interface"] = document.getElementById('network-socket-interface-'+service).value;
-        jsonDeployService["bpf"] = document.getElementById('network-socket-bpf-'+service).value;
-    }    
+        jsonDeployService["name"] = document.getElementById('network-socket-name-'+service).value.trim();
+        jsonDeployService["port"] = document.getElementById('network-socket-port-'+service).value.trim();
+        jsonDeployService["cert"] = document.getElementById('network-socket-cert-'+service).value.trim();
+        jsonDeployService["collector"] = document.getElementById('network-socket-collector-'+service).value.trim();
+        jsonDeployService["interface"] = document.getElementById('network-socket-interface-'+service).value.trim();
+        jsonDeployService["bpf"] = document.getElementById('network-socket-bpf-'+service).value.trim();
+    }
     var dataJSON = JSON.stringify(jsonDeployService);
 
     axios({
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Save STAP Changes: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-            
-            loadPlugins();
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Save STAP Changes: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                loadPlugins();
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -3533,28 +5001,37 @@ function deployStapService(uuid, service, collector,port,interface, type){
         jsonDeployService["port"] = port;
         jsonDeployService["interface"] = interface;
     }
-    console.log(jsonDeployService);
     var dataJSON = JSON.stringify(jsonDeployService);
 
     axios({
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -3585,21 +5062,31 @@ function stopStapService(uuid, service, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Stop STAP: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Stop STAP: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -3629,21 +5116,31 @@ function deleteService(uuid, service){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Delete service: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            loadPlugins();
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Delete service: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -3693,24 +5190,42 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
-            if (response.data.ack == "false") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Change Service Status: '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                PrivilegesMessage();
             }else{
-                loadPlugins();
+                if(response.data.permissions == "none"){
+                    progressBar.style.display = "none";
+                    progressBarDiv.style.display = "none";
+                    PrivilegesMessage();
+                }else{
+                    if (response.data.ack == "false") {
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong> Change Service Status: '+response.data.error+'.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    }else{
+                        progressBar.style.display = "none";
+                        progressBarDiv.style.display = "none";
+                        loadPlugins();
+                    }
+                }
             }
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -3735,36 +5250,46 @@ function PingAnalyzer(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        console.log(response.data)
-        if (response.data["status"] == "Enabled"){
-            document.getElementById('analyzer-status-'+uuid).innerHTML = "ON";
-            document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-stop-circle";
-            document.getElementById('analyzer-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
         }else{
-            document.getElementById('analyzer-status-'+uuid).innerHTML = "OFF";
-            document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-play-circle";
-            document.getElementById('analyzer-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+            if (response.data["status"] == "Enabled"){
+                document.getElementById('analyzer-status-'+uuid).innerHTML = "ON";
+                document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-stop-circle";
+                document.getElementById('analyzer-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+            }else{
+                document.getElementById('analyzer-status-'+uuid).innerHTML = "OFF";
+                document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-play-circle";
+                document.getElementById('analyzer-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+            }
+            var html = '<td>'+response.data["path"]+'</td>'+
+                '<td id="analyzer-file-path">';
+                    if(response.data["size"] < 0){
+                        html = html +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
+                    }else{
+                        if(response.data["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data["size"]+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                        if(response.data["size"]>=1024 && response.data["size"]<1048576){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1024).toFixed(2)+' kB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                        if(response.data["size"]>=1048576 && response.data["size"]<1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1048576).toFixed(2)+' MB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                        if(response.data["size"]>=1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1073741824).toFixed(2)+' GB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    }
+                    html = html +'</td>'+
+                '<td>'+
+                    '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data["path"]+'\')">10</span> &nbsp'+
+                    '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data["path"]+'\')">50</span> &nbsp'+
+                    '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data["path"]+'\')">100</span> &nbsp';
+                '</td>';
+            document.getElementById('analyzer-file-content').innerHTML = html;
         }
-        var html = '<td>'+response.data["path"]+'</td>'+
-            '<td id="analyzer-file-path">';
-                if(response.data["size"] < 0){
-                    html = html +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
-                }else{
-                    if(response.data["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data["size"]+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                    if(response.data["size"]>=1024 && response.data["size"]<1048576){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1024).toFixed(2)+' kB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                    if(response.data["size"]>=1048576 && response.data["size"]<1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1048576).toFixed(2)+' MB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                    if(response.data["size"]>=1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data["size"]/1073741824).toFixed(2)+' GB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                }
-                html = html +'</td>'+
-            '<td>'+
-                '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'10\', \''+response.data["path"]+'\')">10</span> &nbsp'+
-                '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data["path"]+'\')">50</span> &nbsp'+
-                '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data["path"]+'\')">100</span> &nbsp';
-            '</td>';
-        document.getElementById('analyzer-file-content').innerHTML = html;
+
     })
     .catch(function (error) {
         console.log("error analyzer file -> "+error)
@@ -3780,55 +5305,58 @@ function ReloadFilesData(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        var wazuhCount = document.getElementById('wazuh-count-table-value').value;
-        for (file in response.data){
-            console.log(response.data);
-            if (file == "analyzer"){
-                var html = ""
-                if(response.data[file]["size"] < 0){
-                    html = html +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
-                }else{
-                    if(response.data[file]["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["size"].toFixed(2)+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                    if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1024).toFixed(2)+' kB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                    if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1048576).toFixed(2)+' MB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                    if(response.data[file]["size"]>=1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1073741824).toFixed(2)+' GB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
-                }
-                document.getElementById('analyzer-file-path').innerHTML = html;
-                document.getElementById('analyzer-file-size').value = response.data[file]["size"];
-            }else if (file == "wazuh"){
-                for (value in response.data[file]){
-                    for (x = 1; x <= wazuhCount; x++){
-                        var htmlWazuh = "";
-                        if (value == document.getElementById(x+'-wazuh-files').innerHTML){
-                            if(response.data[file][value] < 0){
-                                htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
-                            }else{
-                                if(response.data[file][value]<1024){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file][value].toFixed(2)+' Bytes</span>';}
-                                if(response.data[file][value]>=1024 && response.data[file][value]<1048576){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1024).toFixed(2)+' kB</span>';}
-                                if(response.data[file][value]>=1048576 && response.data[file][value]<1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1048576).toFixed(2)+' MB</span>';}
-                                if(response.data[file][value]>=1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1073741824).toFixed(2)+' GB</span>';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            var wazuhCount = document.getElementById('wazuh-count-table-value').value;
+            for (file in response.data){
+                if (file == "analyzer"){
+                    var html = ""
+                    if(response.data[file]["size"] < 0){
+                        html = html +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
+                    }else{
+                        if(response.data[file]["size"]<1024){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file]["size"].toFixed(2)+' Bytes</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                        if(response.data[file]["size"]>=1024 && response.data[file]["size"]<1048576){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1024).toFixed(2)+' kB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                        if(response.data[file]["size"]>=1048576 && response.data[file]["size"]<1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1048576).toFixed(2)+' MB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                        if(response.data[file]["size"]>=1073741824){html = html +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file]["size"]/1073741824).toFixed(2)+' GB</span> <i class="fas fa-sync-alt" style="cursor: pointer; color:grey;" title="Reload Analyzer information" id="reload-analyzer" onclick="ReloadFilesData(\''+uuid+'\')"></i> <i style="color:grey;" id="analyzer-comparative"></i>';}
+                    }
+                    document.getElementById('analyzer-file-path').innerHTML = html;
+                    document.getElementById('analyzer-file-size').value = response.data[file]["size"];
+                }else if (file == "wazuh"){
+                    for (value in response.data[file]){
+                        for (x = 1; x <= wazuhCount; x++){
+                            var htmlWazuh = "";
+                            if (value == document.getElementById(x+'-wazuh-files').innerHTML){
+                                if(response.data[file][value] < 0){
+                                    htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-danger align-text-bottom text-white">&nbsp</span>';
+                                }else{
+                                    if(response.data[file][value]<1024){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+response.data[file][value].toFixed(2)+' Bytes</span>';}
+                                    if(response.data[file][value]>=1024 && response.data[file][value]<1048576){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1024).toFixed(2)+' kB</span>';}
+                                    if(response.data[file][value]>=1048576 && response.data[file][value]<1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1048576).toFixed(2)+' MB</span>';}
+                                    if(response.data[file][value]>=1073741824){htmlWazuh = htmlWazuh +'<span class="badge badge-pill bg-success align-text-bottom text-white">'+(response.data[file][value]/1073741824).toFixed(2)+' GB</span>';}
+                                }
+                                document.getElementById('wazuh-file-column-'+x).innerHTML = htmlWazuh;
                             }
-                            document.getElementById('wazuh-file-column-'+x).innerHTML = htmlWazuh; 
                         }
                     }
                 }
-
-
-
-
-
-
             }
+            $('#reload-analyzer').click(function(){ ReloadFilesData(uuid);});
+            $('#reload-wazuh').click(function(){ ReloadFilesData(uuid);});
         }
-        $('#reload-analyzer').click(function(){ ReloadFilesData(uuid);});
-        $('#reload-wazuh').click(function(){ ReloadFilesData(uuid);});
     })
     .catch(function (error) {
     });
-    
+
     // //wazuh
     // //analyzer
     // if (fileSize > response.data["size"]) {
@@ -3839,7 +5367,6 @@ function ReloadFilesData(uuid){
     //     document.getElementById('analyzer-comparative').className = "fas fa-equals";
     // }
     // fileSize = response.data["size"];
-    // console.log("After: "+fileSize);
 }
 
 
@@ -3851,66 +5378,76 @@ function loadNetworkValuesService(uuid, name, service, type){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        var html = '<div class="modal-dialog" id="network-modal-window">'+
-          '<div class="modal-content">'+
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            var html = '<div class="modal-dialog" id="network-modal-window">'+
+              '<div class="modal-content">'+
 
-            '<div class="modal-header" style="word-break: break-all;">'+
-              '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
-              '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
-            '</div>'+
+                '<div class="modal-header" style="word-break: break-all;">'+
+                  '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
+                  '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
+                '</div>'+
 
-            '<div class="modal-body" id="delete-node-footer-table">';
+                '<div class="modal-body" id="delete-node-footer-table">';
 
-                if (response.data.ack == "false"){
-                    html = html + '<span><h6>Error loading interfaces</h6></span>';
-                } else {
-                    html = html + '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" style="width:1px">' +
-                    '<thead>              ' +
-                    '<tr>                 ' +
-                    '<th>Network</th>        ' +
-                    '<th>Select</th>     ' +
-                    '</tr>                ' +
-                    '</thead>             ' +
-                    '<tbody >             ' ;
-                    for (net in response.data){
-                        html = html +
-                        '<tr>'+
-                            '<td style="word-wrap: break-word;">' +
-                                response.data[net]+
-                            '</td><td style="word-wrap: break-word;">' +
-                                '<input class="suricata-interface" type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
-                            '</td>'+
-                        '</tr>';
-                    }
-                    html = html + '</tbody>'+
-                    '</table>';
-                }
-            html = html + '</div>'+
-
-            '<div class="modal-footer" id="delete-node-footer-btn">'+
-                '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
-                    if (response.data.ack != "false"){
-                        if(type == "zeek"){
-                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\', \''+service+'\')">Save</button>';
-                        }else {
-                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="saveSuricataInterface(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Save</button>';
-                        }                        
+                    if (response.data.ack == "false"){
+                        html = html + '<span><h6>Error loading interfaces</h6></span>';
+                    } else {
+                        html = html + '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" style="width:1px">' +
+                        '<thead>              ' +
+                        '<tr>                 ' +
+                        '<th>Network</th>        ' +
+                        '<th>Select</th>     ' +
+                        '</tr>                ' +
+                        '</thead>             ' +
+                        '<tbody >             ' ;
+                        for (net in response.data){
+                            html = html +
+                            '<tr>'+
+                                '<td style="word-wrap: break-word;">' +
+                                    response.data[net]+
+                                '</td><td style="word-wrap: break-word;">' +
+                                    '<input class="suricata-interface" type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                        html = html + '</tbody>'+
+                        '</table>';
                     }
                 html = html + '</div>'+
-            '</div>'+
 
-          '</div>'+
-        '</div>';
+                '<div class="modal-footer" id="delete-node-footer-btn">'+
+                    '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
+                        if (response.data.ack != "false"){
+                            if(type == "zeek"){
+                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\', \''+service+'\')">Save</button>';
+                            }else {
+                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="saveSuricataInterface(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Save</button>';
+                            }
+                        }
+                    html = html + '</div>'+
+                '</div>'+
 
-        document.getElementById('modal-window').innerHTML = html;
-        // LoadNetworkValuesSelected(uuid);
+              '</div>'+
+            '</div>';
 
-        $('#modal-window').modal("show");
-        $('#btn-select-interface-cross').click(function(){ $('#modal-window').modal("hide"); });
-        $('#btn-select-interface-close').click(function(){ $('#modal-window').modal("hide"); });        
+            document.getElementById('modal-window').innerHTML = html;
+            // LoadNetworkValuesSelected(uuid);
+
+            $('#modal-window').modal("show");
+            $('#btn-select-interface-cross').click(function(){ $('#modal-window').modal("hide"); });
+            $('#btn-select-interface-close').click(function(){ $('#modal-window').modal("hide"); });
+        }
     })
     .catch(function (error) {
     });
@@ -3942,9 +5479,18 @@ function updateNetworkInterface(uuid, type, service){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }
         // loadPlugins();
     })
     .catch(function (error) {
@@ -3985,10 +5531,18 @@ function saveSuricataInterface(uuid, name, service, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        // loadPlugins();
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }
     })
     .catch(function (error) {
     });

@@ -55,7 +55,17 @@
                     <a class="nav-link" href="config.html">Config</a>
                 </li>
             </ul>
-            <p id="current-version-text" class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+                    <!-- loged button -->
+        <div class="dropdown mr-4">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Loged as: </b></button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
+            <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" style="cursor:pointer;" onclick="Logout()">Logout</a>
+          </div>
+        </div>
+        <!-- current version -->
+        <p id="current-version-text" class="text-justify align-middle text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
         </div>
     </nav>
 
@@ -75,38 +85,39 @@
             </div>
         </div>
 
-        <table style="width: 100%;">
+        <!--Every rule row-->
+        <div class="container" id="master-table-config">
+        </div>
+                
+        <!-- <table style="width: 100%;">
             <tr><td height="20"></td></tr>
             <tr>
                 <td class="text-right">
+                    <button id="admin-users-btn" style="display: none;" type="button" class="btn btn-primary float-left" onclick="adminUsers()">Admin users</button>
                     <a id="check-status-config" href="" class="btn btn-success" target="_blank">Check Master API connection</a> 
-                    <!-- <button type="button" class="btn btn-success" onclick="checkStatus()">Check status</button> -->
-                    <button type="button" class="btn btn-primary" onclick="saveFileChanged()">Save</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeFileChanged()">Close</button>
                 </td>
             </tr>
             <tr><td height="20"></td></tr>
             <tr style="width: 100%; height: 500px">
                 <td>
-                    <textarea id="inputTextUI" class="form-control" style="width: 100%; height: 800px"></textarea>
                 </td>
             </tr> 
             
             <tr><td height="20"></td></tr>
             <tr>
                 <td class="text-right">
-                    <button type="button" class="btn btn-primary" onclick="saveFileChanged()">Save</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeFileChanged()">Close</button>
                     <input type="hidden" id="uuid-hidden-text">
                     <input type="hidden" id="file-hidden-text">
                 </td>
             </tr>
             <tr><td height="20"></td></tr>
         </table>
-        </div>
+        </div> -->
 
-    <!-- Footer -->
-    <div id="footer"></div>
+        <!-- Footer -->
+        <div id="footer"></div>
+        <!-- Modal -->
+        <div class="modal fade" id="modal-window"></div>
 
         <!-- Load master ip/port -->
         <div id="load-json-data" style="display: none;">
@@ -125,5 +136,6 @@
     <script src="js/config.js"></script>
     <script src="js/footer.js"></script>
     <script src="js/loadTitle.js"></script>
+    <script src="js/loginButton.js"></script>
   </body>
 </html>

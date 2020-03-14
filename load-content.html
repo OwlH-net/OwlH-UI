@@ -55,7 +55,17 @@
                     <a class="nav-link" href="config.html">Config</a>
                 </li>
             </ul>
-            <p id="current-version-text" class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+                    <!-- loged button -->
+        <div class="dropdown mr-4">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Loged as: </b></button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
+            <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" style="cursor:pointer;" onclick="Logout()">Logout</a>
+          </div>
+        </div>
+        <!-- current version -->
+        <p id="current-version-text" class="text-justify align-middle text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
         </div>
     </nav>
 
@@ -78,10 +88,6 @@
             <div id="progressBar-options" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width: 100%"> &nbsp </div>
         </div>
         <br>
-        
-        <!-- Modal -->
-        <div class="modal fade" id="modal-window">
-        </div>
 
         <!-- content -->
         <table style="width: 100%;">
@@ -109,6 +115,8 @@
         
         <!-- Footer -->
         <div id="footer"></div>
+        <!-- Modal -->
+        <div class="modal fade" id="modal-window"></div>
 
         <!-- Load master ip/port and values -->
         <div id="load-json-data" style="display: none;">
@@ -130,6 +138,7 @@
     <script src="js/node/load-content.js"></script>
     <script src="js/loadTitle.js"></script>
     <script src="js/footer.js"></script>
+    <script src="js/loginButton.js"></script>
   </body>
 </html>
 

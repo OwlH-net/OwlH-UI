@@ -6,10 +6,20 @@ function GetAllRulesets() {
     axios({
         method: 'get',
         url: urlAllRules,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
-            resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
+            }
         })
         .catch(function (error) {
             resultElement.innerHTML = '<div style="text-align:center"><h3>No connection</h3></div>'+
@@ -47,37 +57,23 @@ function generateAllRulesetsHTMLOutput(response) {
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-info-circle" title="Details" style="cursor:pointer;" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
                     '<i class="fas fa-sync-alt" title="Sync ruleset files" id="sync-ruleset-files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
-                    /*'<i class="fas fa-sync-alt" title="Sync ruleset files" style="cursor:pointer;" id="sync-ruleset-files-'+uuid+'"></i>&nbsp';*/
                     if(ruleset[uuid]["status"]=="enabled"){
                         html = html + '<i class="fas fa-stopwatch" style="color:green;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
-                        // html = html + '<i class="fas fa-stopwatch" style="color:green; cursor:pointer;" title="Update schedule" id="update-scheduler"></i>&nbsp'+
-                        // '<i class="far fa-clipboard" title="Scheduler LOG" style="cursor:pointer;" id="scheduler-log-'+uuid+'"></i>&nbsp';
                         '<i class="far fa-clipboard" title="Scheduler LOG" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else if(ruleset[uuid]["status"]=="disabled"){
                         html = html + '<i class="fas fa-stopwatch" style="color:red;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
-                        // html = html + '<i class="fas fa-stopwatch" style="color:red; cursor:pointer;" title="Update schedule" id="update-scheduler-'+uuid+'"></i>&nbsp'+
-                        '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
-                        // '<i class="far fa-clipboard" title="Scheduler LOG" style="cursor:pointer;" id="scheduler-log-'+uuid+'"></i>&nbsp';
+                        // '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
+                        '<i class="far fa-clipboard" title="Scheduler LOG" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else{
                         html = html + '<i class="fas fa-stopwatch" style="color:grey;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp';                        
-                        // html = html + '<i class="fas fa-stopwatch" style="color:grey; cursor:pointer;" title="Update schedule" id="update-scheduler-'+uuid+'"></i>&nbsp';                        
                     }
                     html = html + '| <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
-                    // html = html + '| <i class="fas fa-trash-alt" style="color: red; cursor:pointer;" title="Delete source" id="delete-scheduler-'+uuid+'"></i>'+
                 '</span>'+
             '</td></tr>';
-
-                // console.log("testing");
-                // $('#sync-ruleset-files-'+uuid).click(function(){ console.log("dsfsfsgf"); });
-                // // $('#sync-ruleset-files-'+uuid).click(function(){ console.log("dsfsfsgf"); syncRulesetModal(uuid, ruleset[uuid]['name']); });
-                // $('#scheduler-log-'+uuid).click(function(){ modalShowLog(uuid, ruleset[uuid]['name']); });
-                // $('#update-scheduler-'+uuid).click(function(){ modalTimeSchedule(uuid, ruleset[uuid]['name'], ruleset[uuid]['status']); });
-                // $('#delete-scheduler-'+uuid).click(function(){ deleteRulesetModal(ruleset[uuid]['name'], uuid);});
-                // // $('#modal-ruleset').modal("show");
     }
     html = html + '</tbody></table>';
 
-    document.getElementById('search-input-ruesets').innerHTML = '<input class="form-control mx-3" type="text" placeholder="Search" aria-label="Search" id="search-ruleset-details">'+
+    document.getElementById('search-input-ruesets').innerHTML = '<input class="form-control mx-3" type="text" placeholder="Search by rule description..." aria-label="Search" id="search-ruleset-details">'+
             '<a type="button" class="btn btn-primary" onclick="loadRulesetBySearch()"><i class="fas fa-search" style="color: white;"></i></a>';
 
     if (isEmptyRulesets) {
@@ -88,10 +84,9 @@ function generateAllRulesetsHTMLOutput(response) {
 }
 
 function loadRulesetBySearch(){
-    var ipmaster = document.getElementById('ip-master').value;
     var search = document.getElementById('search-ruleset-details').value;
     if(search.length >= 3){
-        document.location.href = 'https://' + ipmaster + '/ruleset-search.html?&search='+search;
+        document.location.href = 'https://' + location.hostname + '/ruleset-search.html?&search='+search;
     }else{
         $('#search-ruleset-details').val("");
         $('#search-ruleset-details').css('border', '2px solid red');
@@ -107,42 +102,52 @@ function modalShowLog(uuid, name){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
-            var ruleset = response.data;
-            html = 
-            '<div class="modal-dialog modal-lg">'+
-                '<div class="modal-content">'+
-            
-                    '<div class="modal-header" style="word-break: break-all;">'+
-                        '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Log for ruleset '+name+'</h4>'+
-                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                    '</div>'+
-            
-                    '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+
-                        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                        '<thead>                                                      ' +
-                            '<tr>                                                         ' +
-                            '<th>Time</th>                                                ' +
-                            '<th>Log</th>                                         ' +
-                            '</tr>                                                        ' +
-                        '</thead>                                                     ' +
-                        '<tbody>                                                     ';
-                        for (uuid in ruleset) {
-                            for (param in ruleset[uuid]) {
-                                html = html + '<tr><td style="word-wrap: break-word;">' +
-                                new Date(param * 1000) +
-                                '</td><td style="word-wrap: break-word;">  ' +
-                                ruleset[uuid][param] +
-                                '</td></tr>';
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                var ruleset = response.data;
+                html = 
+                '<div class="modal-dialog modal-lg">'+
+                    '<div class="modal-content">'+
+                
+                        '<div class="modal-header" style="word-break: break-all;">'+
+                            '<h4 class="modal-title" id="modal-ruleset-sync-ruleset-header">Log for ruleset '+name+'</h4>'+
+                            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                        '</div>'+
+                
+                        '<div class="modal-body" id="modal-ruleset-sync-ruleset-footer-table">'+
+                            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                            '<thead>                                                      ' +
+                                '<tr>                                                         ' +
+                                '<th>Time</th>                                                ' +
+                                '<th>Log</th>                                         ' +
+                                '</tr>                                                        ' +
+                            '</thead>                                                     ' +
+                            '<tbody>                                                     ';
+                            for (uuid in ruleset) {
+                                for (param in ruleset[uuid]) {
+                                    html = html + '<tr><td style="word-wrap: break-word;">' +
+                                    new Date(param * 1000) +
+                                    '</td><td style="word-wrap: break-word;">  ' +
+                                    ruleset[uuid][param] +
+                                    '</td></tr>';
+                                }
                             }
-                        }
-                    '</div>'+        
-                '</div>'+
-            '</div>';
-            modalWindow.innerHTML = html;
-            $('#modal-ruleset').modal("show");
+                        '</div>'+        
+                    '</div>'+
+                '</div>';
+                modalWindow.innerHTML = html;
+                $('#modal-ruleset').modal("show");
+            }
         })
         .catch(function (error) {
         });
@@ -429,18 +434,27 @@ function timeSchedule(uuid, status){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: schedulejson
     })
-        .then(function (response) {            
-            GetAllRulesets();
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';} 
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllRulesets();
+            }           
         })
         .catch(function (error) {
         });
 }
 
 function loadRulesetsDetails(type,name,uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
+    document.location.href = 'https://' + location.hostname + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
 }
 
 function syncRulesetModal(uuid, name){
@@ -553,29 +567,39 @@ function synchronizeAllRulesets() {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
-            if (response.data.ack == "true"){
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> All rulesets had been synchronized successfully.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                var alert = document.getElementById('floating-alert');
-                $('html,body').scrollTop(0);
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "true"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> All rulesets had been synchronized successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
             }
         })
         .catch(function (error) {
@@ -603,9 +627,15 @@ function deleteRuleset(name, uuid) {
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: bpfjson
     })
         .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if (response.data.ack == "false"){
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
@@ -654,9 +684,15 @@ function deleteRuleset(name, uuid) {
 //             method: 'put',
 //             url: nodeurl,
 //             timeout: 30000,
+        // headers:{
+        //     'token': document.cookie,
+        //     'user': payload.user,
+        //     'uuid': payload.uuid,
+        // },
 //             data: bpfjson
 //         })
 //             .then(function (response) {
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
 //                 GetAllRulesets();
 //             })
 //             .catch(function (error) {
@@ -679,29 +715,39 @@ function syncRuleset(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: dataJSON
     })
         .then(function (response) {
-            if (response.data.ack == "true"){
-                var alert = document.getElementById('floating-alert');
-                $('html,body').scrollTop(0);
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> Ruleset synchronization complete.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                var alert = document.getElementById('floating-alert');
-                $('html,body').scrollTop(0);
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> The ruleset could not be synchronized.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "true"){
+                    var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Ruleset synchronization complete.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    var alert = document.getElementById('floating-alert');
+                    $('html,body').scrollTop(0);
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> The ruleset could not be synchronized.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
             }
 
         })
@@ -717,13 +763,40 @@ function checkStatus() {
 }
 
 function loadJSONdata(){
+    var searchError = localStorage.getItem("searchError");
+    if(searchError == "error"){
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Search error: No data found.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 5000);
+    }
+    localStorage.setItem("searchError", "none");
   $.getJSON('../conf/ui.conf', function(data) {
-    var ipLoad = document.getElementById('ip-master'); 
-    ipLoad.value = data.master.ip;
-    var portLoad = document.getElementById('port-master');
-    portLoad.value = data.master.port;
-    GetAllRulesets();   
-    loadTitleJSONdata();
-  });
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+               
+        var ipLoad = document.getElementById('ip-master'); 
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        GetAllRulesets();   
+        loadTitleJSONdata();
+    });
 }
+var payload = "";
 loadJSONdata();

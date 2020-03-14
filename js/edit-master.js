@@ -4,40 +4,61 @@ function loadFileIntoTextarea(){
     
     var fileHidden = document.getElementById('file-hidden-text');
     var txtArea = document.getElementById('inputTextToSave');
-    document.getElementById('title-edit').innerHTML = "dispatcher configuration";
+    document.getElementById('title-edit').innerHTML = file;
     document.getElementById('subtitle-edit').innerHTML = "Master file";
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/editFile/'+file;
-        
+    if(file == "nodeConfig" || file == "networksConfig"){
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/editPathFile/'+file;
+    }else{
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/editFile/'+file;
+    }
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
-        if (response.data.ack == "false") {
-            return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
         }else{
-            txtArea.innerHTML = response.data.fileContent;
-            fileHidden.value = response.data.fileName;
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error: </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                return '<div style="text-align:center"><h3 style="color:red;">Error retrieving ruleset ' + ruleName + '</h3></div>';
+            }else{
+                txtArea.innerHTML = response.data.fileContent;
+                fileHidden.value = response.data.fileName;
+            }
         }
-        return true;
     })
     .catch(function (error) {
-        return false;
     });
 }
-// loadFileIntoTextarea();
 
 function saveFileChanged() {
+    var urlData = new URL(window.location.href);
+    var file = urlData.searchParams.get("file");
     var fileHidden = document.getElementById('file-hidden-text');
     var fileContent = document.getElementById('inputTextToSave');
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var masterURL = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/savefile';
+    if(file == "nodeConfig" || file == "networksConfig"){
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/savefilePath';
+    }else{
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/savefile';
+    }
     
     var masterDataEdit = {}
     masterDataEdit["file"] = fileHidden.value;
@@ -45,16 +66,20 @@ function saveFileChanged() {
     var masterJSON = JSON.stringify(masterDataEdit);
     axios({
         method: 'put',
-        url: masterURL,
+        url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: masterJSON
     })
     .then(function (response) {
-        window.history.back();
-        return true;
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{
+            window.history.back();
+        }
     })
     .catch(function (error) {
-        return false;
     });
 }
 
@@ -64,12 +89,27 @@ function closeFileChanged(){
 
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
-      var ipLoad = document.getElementById('ip-master'); 
-      ipLoad.value = data.master.ip;
-      var portLoad = document.getElementById('port-master');
-      portLoad.value = data.master.port;
-      loadTitleJSONdata();
-      loadFileIntoTextarea();   
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        
+        var ipLoad = document.getElementById('ip-master'); 
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        loadTitleJSONdata();
+        loadFileIntoTextarea();   
     });
   }
+  var payload = "";
   loadJSONdata();

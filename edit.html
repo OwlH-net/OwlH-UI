@@ -53,11 +53,25 @@
                         <a class="nav-link" href="config.html">Config</a>
                       </li>
                 </ul>
-                <p id="current-version-text" class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+                        <!-- loged button -->
+        <div class="dropdown mr-4">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Loged as: </b></button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
+            <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" style="cursor:pointer;" onclick="Logout()">Logout</a>
+          </div>
+        </div>
+        <!-- current version -->
+        <p id="current-version-text" class="text-justify align-middle text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
             </div>
         </nav>
 
         <main role="main" class="container">
+            <!--Alert-->
+            <div id="floating-alert" style="top: 5px;">
+            </div>
+            
             <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
                 <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
                 <div class="lh-100">
@@ -70,7 +84,7 @@
                 <tr><td height="20"></td></tr>
                 <tr>
                     <td class="text-right">
-                        <button type="button" class="btn btn-primary" onclick="saveFileChanged()">Save</button>
+                        <button type="button" class="btn btn-primary" id="save-file-content-btn-top" onclick="saveFileChanged()">Save</button>
                         <button type="button" class="btn btn-secondary" onclick="closeFileChanged()">Close</button>
                     </td>
                 </tr>
@@ -83,7 +97,7 @@
                 <tr><td height="20"></td></tr>
                 <tr>
                     <td class="text-right">
-                        <button type="button" class="btn btn-primary" onclick="saveFileChanged()">Save</button>
+                        <button type="button" class="btn btn-primary" id="save-file-content-btn-bot" onclick="saveFileChanged()">Save</button>
                         <button type="button" class="btn btn-secondary" onclick="closeFileChanged()">Close</button>
                         <input type="hidden" id="uuid-hidden-text"></input>
                         <input type="hidden" id="file-hidden-text"></input>
@@ -94,6 +108,8 @@
 
             <!-- Footer -->
             <div id="footer"></div>
+            <!-- Modal -->
+            <div class="modal fade" id="modal-window"></div>    
 
             <!-- Load master ip/port -->
             <div id="load-json-data" style="display: none;">
@@ -111,5 +127,6 @@
         <script src="js/edit.js"></script>
         <script src="js/footer.js"></script>
         <script src="js/loadTitle.js"></script>
+        <script src="js/loginButton.js"></script>
     </body>
 </html>

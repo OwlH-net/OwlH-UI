@@ -7,64 +7,74 @@ function loadNetworkValues(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        var html = '<div class="modal-dialog" id="network-modal-window">'+
-          '<div class="modal-content">'+
-
-            '<div class="modal-header">'+
-              '<h4 class="modal-title" id="delete-node-header">Network</h4>'+
-              '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-            '</div>'+
-
-            '<div class="modal-body" id="delete-node-footer-table">';
-
-                if (response.data.ack == "false"){
-                    html = html + '<span><h6>Error loading interfaces</h6></span>';
-                } else {
-                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                    '<thead>              ' +
-                    '<tr>                 ' +
-                    '<th>Network</th>        ' +
-                    '<th>Select</th>     ' +
-                    '</tr>                ' +
-                    '</thead>             ' +
-                    '<tbody >             ' ;
-                    for (net in response.data){
-                        html = html +
-                        '<tr>'+
-                            '<td style="word-wrap: break-word;">' +
-                                response.data[net]+
-                            '</td><td style="word-wrap: break-word;">' +
-                                '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
-                            '</td>'+
-                        '</tr>';
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var html = '<div class="modal-dialog" id="network-modal-window">'+
+              '<div class="modal-content">'+
+    
+                '<div class="modal-header">'+
+                  '<h4 class="modal-title" id="delete-node-header">Network</h4>'+
+                  '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                '</div>'+
+    
+                '<div class="modal-body" id="delete-node-footer-table">';
+    
+                    if (response.data.ack == "false"){
+                        html = html + '<span><h6>Error loading interfaces</h6></span>';
+                    } else {
+                        html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>              ' +
+                        '<tr>                 ' +
+                        '<th>Network</th>        ' +
+                        '<th>Select</th>     ' +
+                        '</tr>                ' +
+                        '</thead>             ' +
+                        '<tbody >             ' ;
+                        for (net in response.data){
+                            html = html +
+                            '<tr>'+
+                                '<td style="word-wrap: break-word;">' +
+                                    response.data[net]+
+                                '</td><td style="word-wrap: break-word;">' +
+                                    '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                        html = html + '</tbody>'+
+                        '</table>';
                     }
-                    html = html + '</tbody>'+
-                    '</table>';
-                }
-            html = html + '</div>'+
-
-            '<div class="modal-footer" id="delete-node-footer-btn">'+
-              '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
-              if (response.data.ack != "false"){
-                  html = html +
-                    // '<button class="btn btn-success text-white" id="btn-load-all-new-local">New local</button>'+
-                    // '<button class="btn btn-success text-white" id="btn-load-all-vxlan">New VxLAN</button>'+
-                    '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
-              }
-            html = html + '</div>'+
-
-          '</div>'+
-        '</div>';
-
-        document.getElementById('modal-window').innerHTML = html;
-        LoadNetworkValuesSelected(uuid);
-
-        $('#btn-load-all-vxlan').click(function(){ $('#network-modal-window').modal("hide"); LoadAllVxLAN(uuid); });
-        $('#btn-load-all-new-local').click(function(){ $('#network-modal-window').modal("hide"); LoadAllNewLocal(uuid); });
-        $('#modal-window').modal("show");
+                html = html + '</div>'+
+    
+                '<div class="modal-footer" id="delete-node-footer-btn">'+
+                  '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>';
+                  if (response.data.ack != "false"){
+                      html = html +
+                        // '<button class="btn btn-success text-white" id="btn-load-all-new-local">New local</button>'+
+                        // '<button class="btn btn-success text-white" id="btn-load-all-vxlan">New VxLAN</button>'+
+                        '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\')">Deploy</button>';
+                  }
+                html = html + '</div>'+
+    
+              '</div>'+
+            '</div>';
+    
+            document.getElementById('modal-window').innerHTML = html;
+            LoadNetworkValuesSelected(uuid);
+    
+            $('#btn-load-all-vxlan').click(function(){ $('#network-modal-window').modal("hide"); LoadAllVxLAN(uuid); });
+            $('#btn-load-all-new-local').click(function(){ $('#network-modal-window').modal("hide"); LoadAllNewLocal(uuid); });
+            $('#modal-window').modal("show");
+        }
     })
     .catch(function (error) {
     });
@@ -78,92 +88,102 @@ function LoadAllVxLAN(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        var areElements = false;
-        for (type in response.data){
-            if (response.data[type]["type"] == "networkvxlan"){
-                areElements = true;
-                break;
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var areElements = false;
+            for (type in response.data){
+                if (response.data[type]["type"] == "networkvxlan"){
+                    areElements = true;
+                    break;
+                }
             }
-        }
-        var html = '<div class="modal-dialog modal-lg" id="load-all-vxlan-modal" style="width:1000px;">'+
-                '<div class="modal-content">'+
-
-                    '<div class="modal-header">'+
-                        '<h4 class="modal-title">Network VxLANs</h4>'+
-                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                    '</div>'+
-
-                    '<div class="modal-body">';
-                        if (areElements){
-                            html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                            '<thead>              ' +
-                            '<tr>                 ' +
-                            '<th>Name</th>        ' +
-                            '<th>Lan IP</th>        ' +
-                            '<th>Local IP</th>        ' +
-                            '<th>Port IP</th>        ' +
-                            '<th>Interface</th>      ' +
-                            '<th>Options</th>      ' +
-                            '</tr>                ' +
-                            '</thead>             ' +
-                            '<tbody >             ' ;
-                            for (type in response.data){
-                                if (response.data[type]["type"] == "networkvxlan"){
-                                    html = html + '<tr>'+
-                                        '<td style="word-wrap: break-word;">' +
-                                            response.data[type]["name"]+
-                                        '</td><td style="word-wrap: break-word;">' +
-                                            response.data[type]["lanIp"]+
-                                        '</td><td style="word-wrap: break-word;">' +
-                                            response.data[type]["localIp"]+
-                                        '</td><td style="word-wrap: break-word;">' +
-                                            response.data[type]["portIp"]+
-                                        '</td><td style="word-wrap: break-word;">' +
-                                            response.data[type]["baseInterface"]+
-                                        '</td><td style="word-wrap: break-word;">' +
+            var html = '<div class="modal-dialog modal-lg" id="load-all-vxlan-modal" style="width:1000px;">'+
+                    '<div class="modal-content">'+
+    
+                        '<div class="modal-header">'+
+                            '<h4 class="modal-title">Network VxLANs</h4>'+
+                            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                        '</div>'+
+    
+                        '<div class="modal-body">';
+                            if (areElements){
+                                html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                '<thead>              ' +
+                                '<tr>                 ' +
+                                '<th>Name</th>        ' +
+                                '<th>Lan IP</th>        ' +
+                                '<th>Local IP</th>        ' +
+                                '<th>Port IP</th>        ' +
+                                '<th>Interface</th>      ' +
+                                '<th>Options</th>      ' +
+                                '</tr>                ' +
+                                '</thead>             ' +
+                                '<tbody >             ' ;
+                                for (type in response.data){
+                                    if (response.data[type]["type"] == "networkvxlan"){
+                                        html = html + '<tr>'+
+                                            '<td style="word-wrap: break-word;">' +
+                                                response.data[type]["name"]+
+                                            '</td><td style="word-wrap: break-word;">' +
+                                                response.data[type]["lanIp"]+
+                                            '</td><td style="word-wrap: break-word;">' +
+                                                response.data[type]["localIp"]+
+                                            '</td><td style="word-wrap: break-word;">' +
+                                                response.data[type]["portIp"]+
+                                            '</td><td style="word-wrap: break-word;">' +
+                                                response.data[type]["baseInterface"]+
+                                            '</td><td style="word-wrap: break-word;">' +
+                                                '<div>'+
+                                                    '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
+                                                    '<button type="submit" class="btn btn-danger" id="btn-delete-vxlan" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
+                                                '</div>'+
+                                            '</td>'+
+                                        '</tr>';
+    
+                                        //div for delete
+                                        html = html + '<tr style="display: none" id="delete-row-'+type+'">'+
+                                        '<td colspan="6" bgcolor="LightSalmon" align="center">'+                  
                                             '<div>'+
-                                                '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
-                                                '<button type="submit" class="btn btn-danger" id="btn-delete-vxlan" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
+                                                '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
+                                                '<div>'+
+                                                    '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
+                                                    '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
+                                                '</div>'+
                                             '</div>'+
                                         '</td>'+
                                     '</tr>';
-
-                                    //div for delete
-                                    html = html + '<tr style="display: none" id="delete-row-'+type+'">'+
-                                    '<td colspan="6" bgcolor="LightSalmon" align="center">'+                  
-                                        '<div>'+
-                                            '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
-                                            '<div>'+
-                                                '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
-                                                '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
-                                            '</div>'+
-                                        '</div>'+
-                                    '</td>'+
-                                '</tr>';
+                                    }
                                 }
+                                html = html + '</tbody>'+
+                                '</table>';
+                            }else{
+                                html = html + '<p>There are not VxLAN entries.</p>';
                             }
-                            html = html + '</tbody>'+
-                            '</table>';
-                        }else{
-                            html = html + '<p>There are not VxLAN entries.</p>';
-                        }
-
-                    html = html + '</div>'+
-
-                    '<div class="modal-footer">'+
-                        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                        '<button class="btn btn-success" id="btn-create-new-vxlan">New VxLAN</button>'+
+    
+                        html = html + '</div>'+
+    
+                        '<div class="modal-footer">'+
+                            '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                            '<button class="btn btn-success" id="btn-create-new-vxlan">New VxLAN</button>'+
+                        '</div>'+
+    
                     '</div>'+
-
-                '</div>'+
-            '</div>';
-
-        document.getElementById('modal-window').innerHTML = html;
-        $('#btn-create-new-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); CreateNewVxLAN(uuid); });
-        $('#modal-window').modal("show");
+                '</div>';
+    
+            document.getElementById('modal-window').innerHTML = html;
+            $('#btn-create-new-vxlan').click(function(){ $('#load-all-vxlan-modal').modal("hide"); CreateNewVxLAN(uuid); });
+            $('#modal-window').modal("show");
+        }
     })
     .catch(function (error) {
     });
@@ -224,23 +244,28 @@ function CreateNewVxLAN(uuid){
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
     .then(function (response) {
-        var inner = "";
-        for (net in response.data){
-            inner = inner +
-            '<tr>'+
-                '<td style="word-wrap: break-word;">' +
-                    '<p class="ml-4">'+response.data[net]+'</p>'+
-                '</td><td style="word-wrap: break-word;">' +
-                    '<input type="radio" id="create-network-vxlan-'+net+'" value="'+net+'" name="net-select">'+
-                '</td>'+
-            '</tr>';
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var inner = "";
+            for (net in response.data){
+                inner = inner +
+                '<tr>'+
+                    '<td style="word-wrap: break-word;">' +
+                        '<p class="ml-4">'+response.data[net]+'</p>'+
+                    '</td><td style="word-wrap: break-word;">' +
+                        '<input type="radio" id="create-network-vxlan-'+net+'" value="'+net+'" name="net-select">'+
+                    '</td>'+
+                '</tr>';
+            }
+            document.getElementById('body-create-vxlan').innerHTML = inner;
+            document.getElementById('create-network-vxlan-'+net).checked = "true";
+    
+            $('#btn-vxlan-close').click(function(){ $('#create-new-vxlan-modal').modal("hide"); LoadAllVxLAN(uuid);});
+            $('#btn-vxlan-ok').click(function(){ $('#create-new-local-modal').modal("hide"); SaveVxLAN(uuid);});
+            $('#modal-window').modal("show");
         }
-        document.getElementById('body-create-vxlan').innerHTML = inner;
-        document.getElementById('create-network-vxlan-'+net).checked = "true";
-
-        $('#btn-vxlan-close').click(function(){ $('#create-new-vxlan-modal').modal("hide"); LoadAllVxLAN(uuid);});
-        $('#btn-vxlan-ok').click(function(){ $('#create-new-local-modal').modal("hide"); SaveVxLAN(uuid);});
-        $('#modal-window').modal("show");
     });    
 }
 
@@ -284,10 +309,10 @@ function SaveVxLAN(uuid){
 
         var jsonValues = {}
         jsonValues["uuid"] = uuid;
-        jsonValues["interface"] = document.getElementById('ifaceNameVxLAN').value;
-        jsonValues["lanIp"] = document.getElementById('VxLANid').value;
-        jsonValues["localIp"] = document.getElementById('locaIPVxLAN').value;
-        jsonValues["portIp"] = document.getElementById('portVxLAN').value;
+        jsonValues["interface"] = document.getElementById('ifaceNameVxLAN').value.trim();
+        jsonValues["lanIp"] = document.getElementById('VxLANid').value.trim();
+        jsonValues["localIp"] = document.getElementById('locaIPVxLAN').value.trim();
+        jsonValues["portIp"] = document.getElementById('portVxLAN').value.trim();
         jsonValues["type"] = "networkvxlan";
         jsonValues["baseInterface"] = valueSelected;
         var dataJSON = JSON.stringify(jsonValues);
@@ -295,9 +320,18 @@ function SaveVxLAN(uuid){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
             if(response.data.ack=="false"){
                 document.getElementById('ifaceNameVxLAN').value = "";
                 document.getElementById('ifaceNameVxLAN').placeholder = "Name used. Use other name.";
@@ -305,6 +339,7 @@ function SaveVxLAN(uuid){
             }else{
                 LoadAllVxLAN(uuid);
             }
+        }
         })
         .catch(function (error) {
         });
@@ -319,84 +354,94 @@ function LoadAllNewLocal(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        var areElements = false;
-        for (type in response.data){
-            if (response.data[type]["type"] == "networknewlocal"){
-                areElements = true;
-                break;
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var areElements = false;
+            for (type in response.data){
+                if (response.data[type]["type"] == "networknewlocal"){
+                    areElements = true;
+                    break;
+                }
             }
-        }
-        var html = '<div class="modal-dialog modal-lg" id="load-all-new-local-modal">'+
-                '<div class="modal-content">'+
-
-                    '<div class="modal-header">'+
-                        '<h4 class="modal-title">Network new locals</h4>'+
-                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                    '</div>'+
-
-                    '<div class="modal-body">';
-                        if (areElements){
-                            html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                            '<thead>              ' +
-                            '<tr>                 ' +
-                            '<th>Name</th>        ' +
-                            '<th>MTU</th>        ' +
-                            '<th style="width:25%">Select</th>      ' +
-                            '</tr>                ' +
-                            '</thead>             ' +
-                            '<tbody >             ' ;
-                            for (type in response.data){
-                                if (response.data[type]["type"] == "networknewlocal"){
-                                    html = html + '<tr>'+
-                                        '<td style="word-wrap: break-word;">' +
-                                            response.data[type]["name"]+
-                                        '</td><td style="word-wrap: break-word;">' +
-                                            response.data[type]["mtu"]+
-                                        '</td><td style="word-wrap: break-word;">' +
-                                            '<div>'+
-                                                '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
-                                                '<button class="btn btn-danger" id="btn-del-new-local" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
-                                            '</div>'+
-                                        '</td>'+
-                                    '</tr>';
-
-                                    //div for delete
-                                    html = html + '<tr style="display: none" id="delete-row-'+type+'">'+
-                                        '<td colspan="3" bgcolor="LightSalmon" align="center">'+                  
-                                            '<div>'+
-                                                '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
+            var html = '<div class="modal-dialog modal-lg" id="load-all-new-local-modal">'+
+                    '<div class="modal-content">'+
+    
+                        '<div class="modal-header">'+
+                            '<h4 class="modal-title">Network new locals</h4>'+
+                            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                        '</div>'+
+    
+                        '<div class="modal-body">';
+                            if (areElements){
+                                html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                '<thead>              ' +
+                                '<tr>                 ' +
+                                '<th>Name</th>        ' +
+                                '<th>MTU</th>        ' +
+                                '<th style="width:25%">Select</th>      ' +
+                                '</tr>                ' +
+                                '</thead>             ' +
+                                '<tbody >             ' ;
+                                for (type in response.data){
+                                    if (response.data[type]["type"] == "networknewlocal"){
+                                        html = html + '<tr>'+
+                                            '<td style="word-wrap: break-word;">' +
+                                                response.data[type]["name"]+
+                                            '</td><td style="word-wrap: break-word;">' +
+                                                response.data[type]["mtu"]+
+                                            '</td><td style="word-wrap: break-word;">' +
                                                 '<div>'+
-                                                    '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
-                                                    '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
+                                                    '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
+                                                    '<button class="btn btn-danger" id="btn-del-new-local" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\',\''+response.data[type]["type"]+'\')">Delete</button>'+
                                                 '</div>'+
-                                            '</div>'+
-                                        '</td>'+
-                                    '</tr>';
+                                            '</td>'+
+                                        '</tr>';
+    
+                                        //div for delete
+                                        html = html + '<tr style="display: none" id="delete-row-'+type+'">'+
+                                            '<td colspan="3" bgcolor="LightSalmon" align="center">'+                  
+                                                '<div>'+
+                                                    '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
+                                                    '<div>'+
+                                                        '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
+                                                        '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
+                                                    '</div>'+
+                                                '</div>'+
+                                            '</td>'+
+                                        '</tr>';
+                                    }
                                 }
+                                html = html + '</tbody>'+
+                                '</table>';
+                            }else{
+                                html = html + '<p>There are not New Local entries.</p>';
                             }
-                            html = html + '</tbody>'+
-                            '</table>';
-                        }else{
-                            html = html + '<p>There are not New Local entries.</p>';
-                        }
-
-                    html = html + '</div>'+
-
-                    '<div class="modal-footer">'+
-                        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                        '<button class="btn btn-success" id="btn-create-new-local">New local</button>'+
+    
+                        html = html + '</div>'+
+    
+                        '<div class="modal-footer">'+
+                            '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                            '<button class="btn btn-success" id="btn-create-new-local">New local</button>'+
+                        '</div>'+
+    
                     '</div>'+
-
-                '</div>'+
-            '</div>';
-
-        document.getElementById('modal-window').innerHTML = html;
-        
-        $('#btn-create-new-local').click(function(){ $('#load-all-new-local-modal').modal("hide"); CreateNewLocal(uuid); });
-        $('#modal-window').modal("show");
+                '</div>';
+    
+            document.getElementById('modal-window').innerHTML = html;
+            
+            $('#btn-create-new-local').click(function(){ $('#load-all-new-local-modal').modal("hide"); CreateNewLocal(uuid); });
+            $('#modal-window').modal("show");
+        }
     })
     .catch(function (error) {
     });
@@ -461,16 +506,25 @@ function SaveNewLocal(uuid){
 
         var jsonValues = {}
         jsonValues["uuid"] = uuid;
-        jsonValues["name"] = document.getElementById('InterfaceNameNewLocal').value;
-        jsonValues["mtu"] = document.getElementById('mtuNewLocal').value;
+        jsonValues["name"] = document.getElementById('InterfaceNameNewLocal').value.trim();
+        jsonValues["mtu"] = document.getElementById('mtuNewLocal').value.trim();
         var dataJSON = JSON.stringify(jsonValues);
         axios({
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
             if(response.data.ack=="false"){
                 document.getElementById('InterfaceNameNewLocal').value = "";
                 document.getElementById('InterfaceNameNewLocal').placeholder = "Name used. Use other name.";
@@ -478,6 +532,7 @@ function SaveNewLocal(uuid){
             }else{
                 LoadAllNewLocal(uuid);
             }
+        }
         })
         .catch(function (error) {
         });
@@ -498,9 +553,18 @@ function selectNewLocal(uuid, nodeUUID){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }
     })
     .catch(function (error) {
     });
@@ -514,11 +578,21 @@ function LoadNetworkValuesSelected(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        document.getElementById('net-value-'+response.data[uuid]["interface"]).checked = "true";
-        document.getElementById('vxlan-value-'+response.data[uuid]["interface"]).checked = "true";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            document.getElementById('net-value-'+response.data[uuid]["interface"]).checked = "true";
+            document.getElementById('vxlan-value-'+response.data[uuid]["interface"]).checked = "true";
+        }
     })
     .catch(function (error) {
     });
@@ -544,9 +618,18 @@ function updateNetworkInterface(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }
     })
     .catch(function (error) {
     });
@@ -573,91 +656,101 @@ function SocketToNetworkList(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
     .then(function (response) {
-        var html = "";
-        var areElements = false;
-        for (type in response.data){
-            if (response.data[type]["type"] == "sockettonetwork"){
-                areElements = true;
-                break;
-            }
-        }
-        html = html + '<div class="modal-dialog modal-lg" id="socket-to-network-list">'+
-            '<div class="modal-content">'+
-
-                '<div class="modal-header">'+
-                    '<h4 class="modal-title">Socket -> Network</h4>'+
-                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                '</div>'+
-
-                '<div class="modal-body">';
-                if (areElements){
-                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                    '<thead>              ' +
-                    '<tr>                 ' +
-                    '<th>File name</th>        ' +
-                    '<th>Interface</th>        ' +
-                    '<th>Port</th>        ' +
-                    '<th>Cert</th>        ' +
-                    '<th style="width:25%">Select</th>      ' +
-                    '</tr>                ' +
-                    '</thead>             ' +
-                    '<tbody >             ' ;
-                    for (type in response.data){
-                        if (response.data[type]["type"] == "sockettonetwork"){
-                            html = html + '<tr>'+
-                                '<td style="word-wrap: break-word;">' +
-                                    response.data[type]["name"]+
-                                '</td><td style="word-wrap: break-word;">' +
-                                    response.data[type]["interface"]+
-                                '</td><td style="word-wrap: break-word;">' +
-                                    response.data[type]["port"]+
-                                '</td><td style="word-wrap: break-word;">' +
-                                    response.data[type]["cert"]+
-                                '</td><td style="word-wrap: break-word;">' +
-                                    '<div>'+
-                                        // '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
-                                        '<a class="btn btn-primary text-white" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
-                                        '<button class="btn btn-danger" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\', \''+response.data[type]["type"]+'\')">Delete</button>'+
-                                    '</div>'+
-                                '</td>'+
-                            '</tr>';
-
-                            //div for delete
-                            html = html + '<tr style="display: none" id="delete-row-'+type+'">'+
-                                '<td colspan="5" bgcolor="LightSalmon" align="center">'+                  
-                                    '<div>'+
-                                        '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
-                                        '<div>'+
-                                            '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
-                                            '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
-                                        '</div>'+
-                                    '</div>'+
-                                '</td>'+
-                            '</tr>';
-                        }
-                    }
-                    html = html + '</tbody>'+
-                    '</table>';
-                }else{
-                    html = html + '<p>There are not Socket to Network entries.</p>';
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var html = "";
+            var areElements = false;
+            for (type in response.data){
+                if (response.data[type]["type"] == "sockettonetwork"){
+                    areElements = true;
+                    break;
                 }
-                html = html + '</div>'+
-
-                '<div class="modal-footer">'+
-                    '<button class="btn btn-secondary" type="button" id="btn-close-socket-network">Close</button>'+
-                    '<button type="button" class="btn btn-success" id="btn-create-socket-network">Create</button>'+
+            }
+            html = html + '<div class="modal-dialog modal-lg" id="socket-to-network-list">'+
+                '<div class="modal-content">'+
+    
+                    '<div class="modal-header">'+
+                        '<h4 class="modal-title">Socket -> Network</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>'+
+    
+                    '<div class="modal-body">';
+                    if (areElements){
+                        html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>              ' +
+                        '<tr>                 ' +
+                        '<th>File name</th>        ' +
+                        '<th>Interface</th>        ' +
+                        '<th>Port</th>        ' +
+                        '<th>Cert</th>        ' +
+                        '<th style="width:25%">Select</th>      ' +
+                        '</tr>                ' +
+                        '</thead>             ' +
+                        '<tbody >             ' ;
+                        for (type in response.data){
+                            if (response.data[type]["type"] == "sockettonetwork"){
+                                html = html + '<tr>'+
+                                    '<td style="word-wrap: break-word;">' +
+                                        response.data[type]["name"]+
+                                    '</td><td style="word-wrap: break-word;">' +
+                                        response.data[type]["interface"]+
+                                    '</td><td style="word-wrap: break-word;">' +
+                                        response.data[type]["port"]+
+                                    '</td><td style="word-wrap: break-word;">' +
+                                        response.data[type]["cert"]+
+                                    '</td><td style="word-wrap: break-word;">' +
+                                        '<div>'+
+                                            // '<a class="btn btn-primary text-white" data-dismiss="modal" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
+                                            '<a class="btn btn-primary text-white" onclick="saveSocketToNetworkSelected(\''+uuid+'\', \''+type+'\')">Start</a> &nbsp'+
+                                            '<button class="btn btn-danger" onclick="DeleteDataFlowValueSelected(\''+uuid+'\', \''+type+'\', \''+response.data[type]["type"]+'\')">Delete</button>'+
+                                        '</div>'+
+                                    '</td>'+
+                                '</tr>';
+    
+                                //div for delete
+                                html = html + '<tr style="display: none" id="delete-row-'+type+'">'+
+                                    '<td colspan="5" bgcolor="LightSalmon" align="center">'+                  
+                                        '<div>'+
+                                            '<p>Do you want to delete <b>'+response.data[type]["name"]+'</b> element?</p>'+
+                                            '<div>'+
+                                                '<button class="btn btn-secondary confirm-delete-dataflow-close-'+type+'">Close</button> &nbsp '+
+                                                '<button class="btn btn-danger confirm-delete-dataflow-'+type+'">Confirm</button>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</td>'+
+                                '</tr>';
+                            }
+                        }
+                        html = html + '</tbody>'+
+                        '</table>';
+                    }else{
+                        html = html + '<p>There are not Socket to Network entries.</p>';
+                    }
+                    html = html + '</div>'+
+    
+                    '<div class="modal-footer">'+
+                        '<button class="btn btn-secondary" type="button" id="btn-close-socket-network">Close</button>'+
+                        '<button type="button" class="btn btn-success" id="btn-create-socket-network">Create</button>'+
+                    '</div>'+
+    
                 '</div>'+
-
-            '</div>'+
-        '</div>';
-                
-        document.getElementById('modal-window').innerHTML = html;
-        $('#btn-close-socket-network').click(function(){ $('#modal-window').modal("hide");});
-        $('#btn-create-socket-network').click(function(){ $('#socket-to-network-list').modal("hide"); createSocketToNetwork(uuid);});
-        $('#modal-window').modal("show");
+            '</div>';
+                    
+            document.getElementById('modal-window').innerHTML = html;
+            $('#btn-close-socket-network').click(function(){ $('#modal-window').modal("hide");});
+            $('#btn-create-socket-network').click(function(){ $('#socket-to-network-list').modal("hide"); createSocketToNetwork(uuid);});
+            $('#modal-window').modal("show");
+        }
     })
     .catch(function (error) {
     });
@@ -713,24 +806,29 @@ function createSocketToNetwork(uuid){
 
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
     .then(function (response) {
-        var isChecked = false;
-        var inner = "";
-        for (net in response.data){
-            inner = inner + '<tr>'+
-                '<td style="word-wrap: break-word;">' +
-                    '<p class="ml-4">'+response.data[net]+'</p>'+
-                '</td>'+
-                '<td style="word-wrap: break-word;">';
-                    if (!isChecked){
-                        inner = inner + '<input class="socket-network-radio" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
-                        isChecked = true;
-                    }else{
-                        inner = inner + '<input class="socket-network-radio" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
-                    }
-                inner = inner + '</td>'+
-            '</tr>';
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var isChecked = false;
+            var inner = "";
+            for (net in response.data){
+                inner = inner + '<tr>'+
+                    '<td style="word-wrap: break-word;">' +
+                        '<p class="ml-4">'+response.data[net]+'</p>'+
+                    '</td>'+
+                    '<td style="word-wrap: break-word;">';
+                        if (!isChecked){
+                            inner = inner + '<input class="socket-network-radio" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                            isChecked = true;
+                        }else{
+                            inner = inner + '<input class="socket-network-radio" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                        }
+                    inner = inner + '</td>'+
+                '</tr>';
+            }
+            document.getElementById('body-create-socket-network').innerHTML = inner;
         }
-        document.getElementById('body-create-socket-network').innerHTML = inner;
     });
     document.getElementById('modal-window').innerHTML = html;
 
@@ -773,19 +871,28 @@ function saveSocketToNetwork(uuid){
         });
 
         var jsonSave = {}
-        jsonSave["name"] = document.getElementById('socketName').value;
-        jsonSave["cert"] = document.getElementById('certificate').value;
+        jsonSave["name"] = document.getElementById('socketName').value.trim();
+        jsonSave["cert"] = document.getElementById('certificate').value.trim();
         jsonSave["interface"] = valueSelected;
-        jsonSave["port"] = document.getElementById('listenPort').value;
+        jsonSave["port"] = document.getElementById('listenPort').value.trim();
         jsonSave["uuid"] = uuid;
         var dataJSON = JSON.stringify(jsonSave);
         axios({
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
             if(response.data.ack=="false"){
                 document.getElementById('socketName').value = "";
                 document.getElementById('socketName').placeholder = "Name used. Use other name.";
@@ -793,6 +900,7 @@ function saveSocketToNetwork(uuid){
             }else{
                 SocketToNetworkList(uuid);
             }
+        }
         })
         .catch(function (error) {
         });
@@ -812,9 +920,18 @@ function saveSocketToNetworkSelected(uuid, nodeUUID){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }
     })
     .catch(function (error) {
     });
@@ -841,9 +958,18 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
             method: 'delete',
             url: nodeurl,
             timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
             data: dataJSON
         })
         .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
             if (type == "sockettonetwork"){
                 SocketToNetworkList(uuid);
             }else if(type == "networknewlocal"){
@@ -851,6 +977,7 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
             }else if(type == "networkvxlan"){
                 LoadAllVxLAN(uuid);
             }
+        }
         })
         .catch(function (error) {
         });
@@ -872,10 +999,20 @@ function changeDataflowValues(FlowUUID, param, value, uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
         data: dataJSON
     })
     .then(function (response) {
-        loadPlugins();
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            loadPlugins();
+        }
     })
     .catch(function (error) {
     });

@@ -1,5 +1,19 @@
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+         
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
@@ -8,6 +22,7 @@ function loadJSONdata(){
         loadTitleJSONdata();
     });
 }
+var payload = "";
 loadJSONdata();
 
 function loadControlData(){
@@ -33,85 +48,93 @@ function loadControlData(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
     .then(function (response) {
-        if(response.data.ack == "false"){
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
-            document.getElementById("control-data-content").innerHTML = '<h3 class="text-center">There are not change control</h3>';
+            PrivilegesMessage();              
         }else{
-            var isEmpty = true;
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
-
-            html = '<div class="input-group" width="100%">'+
-                '<input class="form-control mx-3 searchInputValue" type="text" placeholder="Search by name..." aria-label="Search" id="search-value-details">'+
-                '<a type="button" class="btn btn-primary" id="control-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
-            '</div><br>'+
-            '<div>'+
-                '<span id="sort-control-date" onclick="sortTable()" sort="desc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;" title="Sort table by date">Sort by date</span>'+
-            '<div>'+
-            '<br>'+
-            '<table class="table" style="table-layout: fixed" style="width:1px" id="control-table">'+
-                '<thead>'+
-                    '<tr>'+
-                        '<th onclick="sortTable()">Date</td>'+
-                        '<th>Device</td>'+
-                        '<th>Status</td>'+
-                        '<th>Action value</td>'+
-                        '<th>Action desc</td>'+
-                        '<th>Actions</td>'+
-                    '</tr>'+
-                '</thead>'+
-                '<tbody>';
-                    for(data in response.data){
-                        isEmpty = false;    
-                        html = html + '<tr date="'+response.data[data]["time"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["actionDescription"]+'" ip="'+response.data[data]["deviceIP"]+'">'+
-                            '<td>'+response.data[data]["time"]+'</td>'+
-                            '<td>'+response.data[data]["deviceName"]+'</td>';                        
-                            if(response.data[data]["actionStatus"] == "success"){
-                                html = html + '<td style="color:green;">'+response.data[data]["actionStatus"]+'</td>';
-                            }else if(response.data[data]["actionStatus"] == "error"){
-                                html = html + '<td style="color:red;">'+response.data[data]["actionStatus"]+'</td>';
-                            }
-                            html = html + '<td>'+response.data[data]["action"]+'</td>'+
-                            '<td>'+response.data[data]["actionDescription"]+'</td>'+
-                            '<td><i class="fas fa-chevron-circle-down" style="cursor:pointer;" onclick="showControlDetails(\''+data+'\')" id="details-show-'+data+'"></i></td>'+
+            if(response.data.ack == "false"){
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+                document.getElementById("control-data-content").innerHTML = '<h3 class="text-center">There are not change control</h3>';
+            }else{
+                var isEmpty = true;
+                progressBar.style.display = "none";
+                progressBarDiv.style.display = "none";
+    
+                html = '<div class="input-group" width="100%">'+
+                    '<input class="form-control mx-3 searchInputValue" type="text" placeholder="Search by name..." aria-label="Search" id="search-value-details">'+
+                    '<a type="button" class="btn btn-primary" id="control-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
+                '</div><br>'+
+                '<div>'+
+                    '<span id="sort-control-date" onclick="sortTable()" sort="desc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;" title="Sort table by date">Sort by date</span>'+
+                '<div>'+
+                '<br>'+
+                '<table class="table" style="table-layout: fixed" style="width:1px" id="control-table">'+
+                    '<thead>'+
+                        '<tr>'+
+                            '<th onclick="sortTable()">Date</td>'+
+                            '<th>Device</td>'+
+                            '<th>Status</td>'+
+                            '<th>Action value</td>'+
+                            '<th>Action desc</td>'+
+                            '<th>Actions</td>'+
                         '</tr>'+
-                        '<tr date="'+response.data[data]["time"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["actionDescription"]+'" ip="'+response.data[data]["deviceIP"]+'">'+
-                            '<td colspan="6">'+
-                                '<table id="control-'+data+'" style="display: none;" class="table" style="table-layout: fixed" style="width:100%">'+
-                                    '<tr date="'+response.data[data]["time"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["actionDescription"]+'" ip="'+response.data[data]["deviceIP"]+'">'+
-                                        '<td>';
-                                            for(param in response.data[data]){
-                                                html = html + '<b>'+param+': </b>'+response.data[data][param]+'<br>';
-                                            }
-                                        html = html + '</td>'+
-                                    '</tr>'+
-                                '</table>'+
-                            '</td>'+
-                        '</tr>';
-                    }
-                    
-                html = html + '</tbody>'+
-            '</table>';
-
-            if (isEmpty == true){
-                html = '<h2 class="text-center">There is no change control available</h2>';
+                    '</thead>'+
+                    '<tbody>';
+                        for(data in response.data){
+                            isEmpty = false;    
+                            html = html + '<tr date="'+response.data[data]["time"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["actionDescription"]+'" ip="'+response.data[data]["deviceIP"]+'">'+
+                                '<td>'+response.data[data]["time"]+'</td>'+
+                                '<td>'+response.data[data]["deviceName"]+'</td>';                        
+                                if(response.data[data]["actionStatus"] == "success"){
+                                    html = html + '<td style="color:green;">'+response.data[data]["actionStatus"]+'</td>';
+                                }else if(response.data[data]["actionStatus"] == "error"){
+                                    html = html + '<td style="color:red;">'+response.data[data]["actionStatus"]+'</td>';
+                                }
+                                html = html + '<td>'+response.data[data]["action"]+'</td>'+
+                                '<td>'+response.data[data]["actionDescription"]+'</td>'+
+                                '<td><i class="fas fa-chevron-circle-down" style="cursor:pointer;" onclick="showControlDetails(\''+data+'\')" id="details-show-'+data+'"></i></td>'+
+                            '</tr>'+
+                            '<tr date="'+response.data[data]["time"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["actionDescription"]+'" ip="'+response.data[data]["deviceIP"]+'">'+
+                                '<td colspan="6">'+
+                                    '<table id="control-'+data+'" style="display: none;" class="table" style="table-layout: fixed" style="width:100%">'+
+                                        '<tr date="'+response.data[data]["time"]+'" device="'+response.data[data]["deviceName"]+'" desc="'+response.data[data]["actionDescription"]+'" ip="'+response.data[data]["deviceIP"]+'">'+
+                                            '<td>';
+                                                for(param in response.data[data]){
+                                                    html = html + '<b>'+param+': </b>'+response.data[data][param]+'<br>';
+                                                }
+                                            html = html + '</td>'+
+                                        '</tr>'+
+                                    '</table>'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                        
+                    html = html + '</tbody>'+
+                '</table>';
+    
+                if (isEmpty == true){
+                    html = '<h2 class="text-center">There is no change control available</h2>';
+                }
+                document.getElementById("control-data-content").innerHTML = html;
+    
+                //search bar
+                $('#control-search-value').click(function(){ loadValueBySearch(document.getElementById('search-value-details').value)});
+            
+                // listener for seach bar
+                document.getElementById('search-value-details').addEventListener('input', evt => {
+                    if (document.getElementById('search-value-details').value.trim() == ""){ showAllHiddenRows();} 
+                });
+    
+                // //sort table desc by default
+                // sortTable();
             }
-            document.getElementById("control-data-content").innerHTML = html;
-
-            //search bar
-            $('#control-search-value').click(function(){ loadValueBySearch(document.getElementById('search-value-details').value)});
-        
-            // listener for seach bar
-            document.getElementById('search-value-details').addEventListener('input', evt => {
-                if (document.getElementById('search-value-details').value.trim() == ""){ showAllHiddenRows();} 
-            });
-
-            // //sort table desc by default
-            // sortTable();
         }
     })
     .catch(function (error) {

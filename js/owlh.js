@@ -1,16 +1,35 @@
 
+var payload = "";
+loadJSONdata();
+
 //load json data from local file
-function loadJSONdata() {
+function loadJSONdata() {    
+    //get ui.conf file content
     $.getJSON('../conf/ui.conf', function (data) {
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+         
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
+
+        //load title and nodes
         loadTitleJSONdata();
         GetAllNodes();
     });
+
 }
-loadJSONdata();
 
 function showConfig(oip, oname, oport, ouuid){
     document.getElementById('divconfigform').style.display = "block";
@@ -20,48 +39,88 @@ function showConfig(oip, oname, oport, ouuid){
     var ip = document.getElementById('cfgnodeip');
     var port = document.getElementById('cfgnodeport');
     var uuid = document.getElementById('cfgnodeid');
-    port.value = oport;
-    name.value = oname;
-    ip.value = oip;
-    uuid.value = ouuid;
+    port.value = oport.trim();
+    name.value = oname.trim();
+    ip.value = oip.trim();
+    uuid.value = ouuid.trim();
 }
 
-function PingNode(uuid) {
-    console.log("-->"+uuid);
+async function PingNode(uuid, token) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ping/' + uuid;
     
-    axios({
+    await axios({
             method: 'get',
             url: nodeurl,
-            timeout: 30000
+            timeout: 30000,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }
     })
         .then(function (response) {
-            console.log(response.data);
-            if (response.data.ping=='pong') {
-                document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
-                document.getElementById(uuid+'-online').innerHTML = "ON LINE";
-                document.getElementById('node-row-'+uuid).setAttribute("status", "online");
-
-                PingMonitor(uuid);
-                var myVar = setInterval(function(){PingMonitor(uuid)}, 5000);
-                sortTableName();
-            } else {
-                document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
-                document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
-                document.getElementById('node-row-'+uuid).setAttribute("status", "offline");
-                $('#node-monitor-'+uuid).prop("onclick", null).off("click");
-                $('#node-services-'+uuid).prop("onclick", null).off("click");
-                $('#node-modify-'+uuid).prop("onclick", null).off("click");
-                $('#node-config-'+uuid).prop("onclick", null).off("click");
-                $('#node-files-'+uuid).prop("onclick", null).off("click");
-                $('#node-change-'+uuid).prop("onclick", null).off("click");
-                $('#node-incident-'+uuid).prop("onclick", null).off("click");
-            }      
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ping=='pong') {
+                    document.getElementById('node-actions-'+uuid).style.color = "Dodgerblue";
+                    document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
+                    document.getElementById(uuid+'-online').innerHTML = "ON LINE";
+                    document.getElementById('node-row-'+uuid).setAttribute("status", "online");
+    
+                    PingMonitor(uuid);
+                    var myVar = setInterval(function(){PingMonitor(uuid)}, 3000);
+                }else{
+                    document.getElementById('node-monitor-'+uuid).onclick = "";
+                    document.getElementById('node-services-'+uuid).onclick = "";
+                    document.getElementById('node-modify-'+uuid).onclick = "";
+                    document.getElementById('node-config-'+uuid).onclick = "";
+                    document.getElementById('node-files-'+uuid).onclick = "";
+                    document.getElementById('node-change-'+uuid).onclick = "";
+                    document.getElementById('node-incident-'+uuid).onclick = "";
+                    document.getElementById('node-actions-'+uuid).onclick = "";
+    
+                    document.getElementById('node-monitor-'+uuid).style.cursor = " default";
+                    document.getElementById('node-services-'+uuid).style.cursor = "default";
+                    document.getElementById('node-modify-'+uuid).style.cursor = "default";
+                    document.getElementById('node-config-'+uuid).style.cursor = "default";
+                    document.getElementById('node-files-'+uuid).style.cursor = "default";
+                    document.getElementById('node-change-'+uuid).style.cursor = "default";
+                    document.getElementById('node-incident-'+uuid).style.cursor = "default";
+                    document.getElementById('node-actions-'+uuid).style.cursor = "default";
+    
+                    if(token=='wait'){
+                        document.getElementById(uuid+'-online').className = "badge bg-warning align-text-bottom text-white";
+                        document.getElementById(uuid+'-online').innerHTML = "PENDING REGISTRATION";
+                    }else{
+                        document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
+                        document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
+                    }
+                    document.getElementById('node-row-'+uuid).setAttribute("status", "offline");
+                }   
+            }            
         })
-            .catch(function (error) {
-                console.log(error);
+        .catch(function (error) {
+            document.getElementById('node-monitor-'+uuid).onclick = "";
+            document.getElementById('node-services-'+uuid).onclick = "";
+            document.getElementById('node-modify-'+uuid).onclick = "";
+            document.getElementById('node-config-'+uuid).onclick = "";
+            document.getElementById('node-files-'+uuid).onclick = "";
+            document.getElementById('node-change-'+uuid).onclick = "";
+            document.getElementById('node-incident-'+uuid).onclick = "";
+            document.getElementById('node-actions-'+uuid).onclick = "";
+
+            document.getElementById('node-monitor-'+uuid).style.cursor = " default";
+            document.getElementById('node-services-'+uuid).style.cursor = "default";
+            document.getElementById('node-modify-'+uuid).style.cursor = "default";
+            document.getElementById('node-config-'+uuid).style.cursor = "default";
+            document.getElementById('node-files-'+uuid).style.cursor = "default";
+            document.getElementById('node-change-'+uuid).style.cursor = "default";
+            document.getElementById('node-incident-'+uuid).style.cursor = "default";
+            document.getElementById('node-actions-'+uuid).style.cursor = "default";
         });   
 }
 
@@ -72,15 +131,25 @@ function PingService(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
-            if (response.data.ack == "true"){
-                document.getElementById(uuid+'-owlhservice').style.display = "none";
-            }else {
-                document.getElementById(uuid+'-owlhservice').style.display = "block";
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "true"){
+                    document.getElementById(uuid+'-owlhservice').style.display = "none";
+                }else {
+                    document.getElementById(uuid+'-owlhservice').style.display = "block";
+                }
+                return true;
             }
-            return true;
         })
         .catch(function (error) {
             return false;
@@ -94,16 +163,26 @@ function PingMonitor(uuid){
     axios({
         method: 'get',
         url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         timeout: 30000
     })
         .then(function (response) {
-            var cpuData = "";
-            for(x in response.data.cpus){
-                cpuData = cpuData + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                var cpuData = "";
+                for(x in response.data.cpus){
+                    cpuData = cpuData + '<div id="cpu-core-'+x+'"><b>CPU '+x+':</b> '+ parseFloat(response.data.cpus[x].percentage).toFixed(2)+' % </div>';
+                }
+                document.getElementById('mem-'+uuid).innerHTML = "<b>MEM: </b>" + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
+                document.getElementById('sto-'+uuid).innerHTML = "<b>STO: </b>" + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
+                document.getElementById('cpu-'+uuid).innerHTML = cpuData;
             }
-            document.getElementById('mem-'+uuid).innerHTML = "<b>MEM: </b>" + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
-            document.getElementById('sto-'+uuid).innerHTML = "<b>STO: </b>" + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
-            document.getElementById('cpu-'+uuid).innerHTML = cpuData;
         })
         .catch(function (error) {
         }); 
@@ -116,11 +195,21 @@ function DeployService(uuid) {
     axios({
         method: 'put',
         url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         timeout: 30000
     })
         .then(function (response) {
-            GetAllNodes();
-            return true;
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllNodes();
+                return true;
+            }
         })
         .catch(function (error) {
             return false;
@@ -131,8 +220,13 @@ function GetAllNodes() {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var resultElement = document.getElementById('nodes-table');
+    //hide buttons
     document.getElementById('add-nid-bottom').style.display = "none";
     document.getElementById('add-nid-top').style.display = "none";
+    document.getElementById('search-node-details').style.display = "none";
+    document.getElementById('node-search-value').style.display = "none";
+    document.getElementById('progressBar-node').style.display = "block";
+    document.getElementById('progressBar-node-div').style.display = "block";
 
     //    var instance = axios.create({
     //     baseURL: 'https://' + ipmaster + ':' + portmaster + '/v1/node',
@@ -140,120 +234,151 @@ function GetAllNodes() {
     //         rejectUnauthorized: false   
     //     })
     // });
-
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/node', {
-            params: { 
-                // rejectUnauthorized: false 
-            }
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            }//Authorization
+            // params: { token: document.cookie}// rejectUnauthorized: false }
         })
-        .then(function (response) {
-            var nodes = response.data;
-            document.getElementById('add-nid-bottom').style.display = "block";
-            document.getElementById('add-nid-top').style.display = "block";
-
-            if (response.data.ack == "false") {
-                document.getElementById('add-nid-bottom').style.display = "none";
-                document.getElementById('add-nid-top').style.display = "none";
-                resultElement.innerHTML =  '<div style="text-align:center"><h3 style="color:red;">Error retrieving nodes</h3></div>';
+        .then(function (response) {    
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
+            if(response.data.permissions == "none"){
+                document.getElementById('progressBar-node').style.display = "none";
+                document.getElementById('progressBar-node-div').style.display = "none";
+                PrivilegesMessage();              
             }else{
-                var isEmpty = true;
-                
-                var html =  
-                '<div>'+
-                    '<span id="show-nodes-online" onclick="showNodes(\'online\')" class="badge bg-success align-text-bottom text-white float-right" style="cursor:pointer;" title="Show only online nodes">ON LINE</span>'+
-                    '<span id="show-nodes-offline" onclick="showNodes(\'offline\')" class="badge bg-danger align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show only offline nodes">OFF LINE</span>'+
-                    '<span id="show-nodes-all" onclick="showNodes(\'all\')" class="badge bg-primary align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show all nodes">ALL NODES</span>'+
-                    '<span id="sort-nodes-ip" onclick="sortTableIP()" sort="asc" class="sort-table asc badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;"   title="Sort table by IP">Sort by IP</span>'+
-                    '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
-                '</div>'+
-                '<br>'+
-                '<table class="table table-hover" style="table-layout: fixed" id="node-table"> ' +
-                    '<thead> ' +
-                        '<tr>  ' +
-                            '<th scope="col" width="5%"></th> ' +
-                            '<th id="node-table-name-column" scope="col" width="30%" align="left">Name</th> ' +
-                            '<th scope="col" width="25%" align="right">Status</th> ' +
-                            '<th scope="col" width="10%"></th>' +
-                            '<th scope="col" width="25%">Actions</th>  ' +
-                        '</tr> ' +
-                    '</thead> ' +
-                    '<tbody id="node-table-tbody">';
-                        for (node in nodes) {
-                            isEmpty = false;
-                            if (nodes[node]['port'] != undefined) {
-                                port = nodes[node]['port'];
-                            } else {
-                                port = "10443";
-                            }
-                            var uuid = node;
-                            PingNode(uuid);
-                            getRulesetUID(uuid);
-                    
-                    
-                            html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
-                                '<td></td>'+
-                                '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
-                                    '<p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
-                                    '<i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
-                                    '<br><br>'+
-                                    '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
-                                '</td>' +
-                                '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
-                                    '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
-                                    '<span>'+
-                                        '<div><p></p></div>'+
-                                        '<div id="node-values-'+uuid+'">'+
-                                            '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
-                                            '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
-                                            '<div id="cpu-'+uuid+'"></div>'+                        
-                                        '</div>'+
-                                    '</span>'+
-                                '</td>'+    
-                                '<td></td>'+        
-                                '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+                                   
-                                    '<span style="font-size: 15px; color: Dodgerblue;" id="node-actions-'+uuid+'">'+                                                                          
-                                        '<i id="node-monitor-'+uuid+'" class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring' +
-                                        '<br><i id="node-services-'+uuid+'" class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration' +
-                                        '<br><i id="node-modify-'+uuid+'" class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node' +
-                                        '<br><i id="node-config-'+uuid+'" class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration' +
-                                        '<br><i id="node-files-'+uuid+'" class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files' +
-                                        '<br><i id="node-change-'+uuid+'" class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\')"></i> | Change control' +
-                                        '<br><i id="node-incident-'+uuid+'" class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\')"></i> | Incident data' +
-                                        '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node';
-                                    '</span>'+
-                                '</td> ' +
-                            '</tr>'; 
-                        }
-                html = html + '</tbody></table>';
-            
-                if (isEmpty){
-                    resultElement.innerHTML = '<div style="text-align:center"><h3>No nodes created.</h3></div>';
+                if (response.data.ack == "false") {
+                    document.getElementById('add-nid-bottom').style.display = "none";
+                    document.getElementById('add-nid-top').style.display = "none";
+                    document.getElementById('search-node-details').style.display = "none";
+                    document.getElementById('node-search-value').style.display = "none";
+                    document.getElementById('progressBar-node').style.display = "none";
+                    document.getElementById('progressBar-node-div').style.display = "none";
+                    resultElement.innerHTML =  '<div style="text-align:center"><h3 style="color:red;">Error retrieving nodes</h3></div>';
                 }else{
-                    resultElement.innerHTML = html;
+                    document.getElementById('add-nid-bottom').style.display = "block";
+                    document.getElementById('add-nid-top').style.display = "block";
+                    document.getElementById('search-node-details').style.display = "block";
+                    document.getElementById('node-search-value').style.display = "block";
+                    document.getElementById('progressBar-node').style.display = "none";
+                    document.getElementById('progressBar-node-div').style.display = "none";
                     
-                    //search bar
-                    $('#node-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-node-details').value)});
+                    var nodes = response.data;
+                    var isEmpty = true;                
+                    var html =  
+                    '<div>'+
+                        '<span id="show-nodes-online" onclick="showNodes(\'online\')" class="badge bg-success align-text-bottom text-white float-right" style="cursor:pointer;" title="Show only online nodes">ON LINE</span>'+
+                        '<span id="show-nodes-offline" onclick="showNodes(\'offline\')" class="badge bg-danger align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show only offline nodes">OFF LINE</span>'+
+                        '<span id="show-nodes-all" onclick="showNodes(\'all\')" class="badge bg-primary align-text-bottom text-white float-right mr-1" style="cursor:pointer;" title="Show all nodes">ALL NODES</span>'+
+                        '<span id="sort-nodes-ip" onclick="sortTableIP()" sort="asc" class="sort-table asc badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;"   title="Sort table by IP">Sort by IP</span>'+
+                        '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mr-1" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
+                    '</div>'+
+                    '<br>'+
+                    '<table class="table table-hover" style="table-layout: fixed" id="node-table"> ' +
+                        '<thead> ' +
+                            '<tr>  ' +
+                                '<th scope="col" width="5%"></th> ' +
+                                '<th id="node-table-name-column" scope="col" width="30%" align="left">Name</th> ' +
+                                '<th scope="col" width="25%" align="right">Status</th> ' +
+                                '<th scope="col" width="10%"></th>' +
+                                '<th scope="col" width="25%">Actions</th>  ' +
+                            '</tr> ' +
+                        '</thead> ' +
+                        '<tbody id="node-table-tbody">';
+                            for (node in nodes) {
+                                isEmpty = false;
+                                if (nodes[node]['port'] != undefined) {
+                                    port = nodes[node]['port'];
+                                } else {
+                                    port = "10443";
+                                }
+                                var uuid = node;
+                                PingNode(uuid, nodes[node]['token']);
+                                getRulesetUID(uuid);
+                        
+                                
+                                html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
+                                    '<td></td>'+
+                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
+                                        '<p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
+                                        '<i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
+                                        '<br><br>'+
+                                        '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
+                                    '</td>' +
+                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
+                                        '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
+                                        '<span>'+
+                                            '<div><p></p></div>'+
+                                            '<div id="node-values-'+uuid+'">'+
+                                                '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
+                                                '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
+                                                '<div id="cpu-'+uuid+'"></div>'+                        
+                                            '</div>'+
+                                        '</span>'+
+                                    '</td>'+    
+                                    '<td></td>'+        
+                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+                                   
+                                        '<span style="font-size: 15px; color: Grey;" id="node-actions-'+uuid+'">'+                                                                          
+                                            '<i id="node-monitor-'+uuid+'" class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring' +
+                                            '<br><i id="node-services-'+uuid+'" class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration' +
+                                            '<br><i id="node-modify-'+uuid+'" class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node' +
+                                            '<br><i id="node-config-'+uuid+'" class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration' +
+                                            '<br><i id="node-files-'+uuid+'" class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files' +
+                                            '<br><i id="node-change-'+uuid+'" class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\')"></i> | Change control' +
+                                            '<br><i id="node-incident-'+uuid+'" class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\')"></i> | Incident data' +
+                                            '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node';
+                                        '</span>'+
+                                    '</td> ' +
+                                '</tr>';                             
+                            }
+                    html = html + '</tbody></table>';
                 
-                    //listener for seach bar
-                    document.getElementById('search-node-details').addEventListener('input', evt => {
-                        if (document.getElementById('search-node-details').value.trim() == ""){ showAllHiddenNodes();} 
-                    });
-                }                    
+                    if (isEmpty){
+                        resultElement.innerHTML = '<div style="text-align:center"><h3>No nodes created.</h3></div>';
+                    }else{
+                        resultElement.innerHTML = html;
+                        
+                        //search bar
+                        $('#node-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-node-details').value)});
+                    
+                        //listener for seach bar
+                        document.getElementById('search-node-details').addEventListener('input', evt => {
+                            if (document.getElementById('search-node-details').value.trim() == ""){ showAllHiddenNodes();} 
+                        });
+                    }                    
+                }            
+                // $('#node-table').click(function(){sortTable(); });
+                // DisableOfflineNodes();
+                
+                //hide progressBar when nodes have finished loading
+                document.getElementById('progressBar-node').style.display = "none";
+                document.getElementById('progressBar-node-div').style.display = "none";
             }
-
-            $('#node-table').click(function(){sortTable(); });
-
         })
         .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);   
+
+            document.getElementById('progressBar-node').style.display = "none";
+            document.getElementById('progressBar-node-div').style.display = "none";
             resultElement.innerHTML = '<h3 align="center">No connection</h3>'+
-                '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
+                '<a id="check-status-config" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
                 checkStatus();
         });
 }
 
 
 
-function sortTable() {
+// function sortTable() {
     // var $table = $('node-table');
     // var $tableBody = $table.find('tbody');
     // var rows, sortedRows;
@@ -273,9 +398,8 @@ function sortTable() {
 
     // $($('#node-table > tbody  > tr')).val('');
     // // $('#node-table > tbody  > tr').each(function() {
-    // //     console.log($(this).attr('name'));
     // // });
-}
+// }
 
 function showNodes(status){
     if (status == "all"){
@@ -311,7 +435,6 @@ function loadNodeBySearch(search){
         $('#search-node-details').attr("placeholder", "");
         $('#node-table tbody').each(function(){
             $(this).find('tr').each(function(){
-                // console.log($(this).attr("name").toLowerCase().includes(search.toLowerCase()));
                 if ($(this).attr("name").toLowerCase().includes(search.toLowerCase()) || $(this).attr("ip").toLowerCase().includes(search.toLowerCase())){
                 }else {
                     $(this).hide();
@@ -328,11 +451,21 @@ function deleteNode(node) {
     axios({
         method: 'delete',
         url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         timeout: 30000
     })
         .then(function (response) {
-            GetAllNodes();
-            return true;
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllNodes();
+                return true;
+            }
         })
         .catch(function (error) {
             return false;
@@ -363,12 +496,22 @@ function PingDataflow(uuid){
     axios({
         method: 'get',
         url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         timeout: 30000
     })
     .then(function (response) {
-        document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
-        document.getElementById('analysis-'+response.data["analysis"]["value"]).checked = "true";
-        document.getElementById('transport-'+response.data["transport"]["value"]).checked = "true";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            document.getElementById('collect-'+response.data["collect"]["value"]).checked = "true";
+            document.getElementById('analysis-'+response.data["analysis"]["value"]).checked = "true";
+            document.getElementById('transport-'+response.data["transport"]["value"]).checked = "true";
+        }
     })
     .catch(function (error) {
     });
@@ -386,30 +529,40 @@ function deployNode(value,uuid,nodeName){
     axios({
         method: 'put',
         url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         timeout: 30000,
         data: dataJSON
     })
     .then(function (response) {
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> '+value+' deployed successfully for node '+nodeName+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+value+' has not been deployed for node '+nodeName+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> '+value+' deployed successfully for node '+nodeName+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+value+' has not been deployed for node '+nodeName+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -417,33 +570,31 @@ function deployNode(value,uuid,nodeName){
 }
 
 function loadIncidentMaster(uuid, type){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/incident-data.html?type='+type+'&uuid='+uuid;
+    document.location.href = 'https://' + location.hostname + '/incident-data.html?type='+type+'&uuid='+uuid;
 }
-
 function ShowMonitoring(uuid, name){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/node-monitor.html?uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.hostname + '/node-monitor.html?uuid='+uuid+'&node='+name;
 }
-
 function showServicesConfig(uuid, name){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/node-options.html?uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name;
 }
-
-function showMasterFile(file){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
-}
-
+// function showMasterFile(file){
+//     document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+file;
+// }
 function editAnalyzer(uuid, file, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
-
 function loadChangeControl(uuid, type){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/control-data.html?type='+type+'&uuid='+uuid;
+    document.location.href = 'https://' + location.hostname + '/control-data.html?type='+type+'&uuid='+uuid;
+}
+function loadStapURL(uuid, nodeName){
+    document.location.href = 'https://' + location.hostname + '/stap.html?uuid='+uuid+'&node='+nodeName;
+}
+function loadFilesURL(uuid, nodeName){
+    document.location.href = 'https://' + location.hostname + '/files.html?uuid='+uuid+'&node='+nodeName;
+}
+function loadEditURL(uuid, file, nodeName){
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
 
 function showActions(action,uuid){
@@ -459,20 +610,6 @@ function showActions(action,uuid){
         icon.classList.remove("fa-sort-up");   
     }    
 }
-
-function loadStapURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/stap.html?uuid='+uuid+'&node='+nodeName;
-}
-function loadFilesURL(uuid, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/files.html?uuid='+uuid+'&node='+nodeName;
-}
-function loadEditURL(uuid, file, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
-}
-
 
 function ChangeStatus(uuid){
     var ipmaster = document.getElementById('ip-master').value;
@@ -493,873 +630,25 @@ function ChangeStatus(uuid){
     axios({
         method: 'put',
         url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         timeout: 30000,
         data: dataJSON
     })
     .then(function (response) {
-        GetAllNodes()
-    })
-    .catch(function (error) {
-    });
-}
-
-function ChangeAnalyzerStatus(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer';
-    
-    if(document.getElementById('analyzer-status-'+uuid).innerHTML == "ON"){
-        var status ="Disabled";
-    }else if(document.getElementById('analyzer-status-'+uuid).innerHTML == "OFF"){
-        var status ="Enabled";
-    }
-
-    var jsonAnalyzer = {}
-    jsonAnalyzer["uuid"] = uuid;
-    jsonAnalyzer["status"] = status;
-    var dataJSON = JSON.stringify(jsonAnalyzer);
-
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        GetAllNodes()
-    })
-    .catch(function (error) {
-    });
-}
-
-function ChangeMode(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/mode';
-    
-    if(document.getElementById('ports-mode-'+uuid).innerHTML == "Learning"){
-        var mode ="Production";
-    }else{
-        var mode ="Learning";
-    }
-
-    var jsonRuleUID = {}
-    jsonRuleUID["uuid"] = uuid;
-    jsonRuleUID["mode"] = mode;
-    var dataJSON = JSON.stringify(jsonRuleUID);
-
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        GetAllNodes()
-    })
-    .catch(function (error) {
-    });
-}
-
-
-
-function deployZeekModal(uuid){
-    var modalWindow = document.getElementById('modal-window');
-    modalWindow.innerHTML = 
-    '<div class="modal-dialog">'+
-      '<div class="modal-content">'+
-      
-        '<div class="modal-header">'+
-          '<h4 class="modal-title" id="delete-node-header">Node</h4>'+
-          '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-        '</div>'+
-  
-        '<div class="modal-body" id="delete-node-footer-table">'+ 
-          '<p>Do you want to Deploy Zeek policy?</p>'+
-        '</div>'+
-  
-        '<div class="modal-footer" id="delete-node-footer-btn">'+
-          '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-          '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-delete-node" onclick="deployZeek(\''+uuid+'\')">Deploy</button>'+
-        '</div>'+
-  
-      '</div>'+
-    '</div>';
-}
-
-function deployZeek(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/deploy/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-    .then(function (response) {
-        return true;
-    })
-    .catch(function (error) {
-        return false;
-    });
-}
-
-function playCollector(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/collector/play/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-    .then(function (response) {
-        document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
-        document.getElementById('stap-collector-' + uuid).innerHTML = "ON";
-        return true;
-    })
-    .catch(function (error) {
-        return false;
-    });
-}
-
-function stopCollector(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/collector/stop/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-    .then(function (response) {
-        document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
-        document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";
-        return true;
-    })
-    .catch(function (error) {
-        return false;
-    });
-}
-
-function PingCollector(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var collectorStatus = document.getElementById('collector-status-'+uuid);
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-    .then(function (response) {
-        if (response.data != ""){
-            document.getElementById('stap-collector-' + uuid).className = "badge bg-success align-text-bottom text-white";
-            document.getElementById('stap-collector-' + uuid).innerHTML = "ON";            
-        }else{
-            document.getElementById('stap-collector-' + uuid).className = "badge bg-danger align-text-bottom text-white";
-            document.getElementById('stap-collector-' + uuid).innerHTML = "OFF";            
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            GetAllNodes()
         }
     })
     .catch(function (error) {
-        return false;
     });
 }
-
-function showCollector(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/collector/show/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-    .then(function (response) {
-        showModalCollector(response);
-    })
-    .catch(function (error) {
-        return false;
-    });
-}
-
-function showModalCollector(response){
-    var res = response.data.split("\n");
-    var html = '<div class="modal-dialog modal-lg">'+
-                    '<div class="modal-content">'+
-                
-                        '<div class="modal-header">'+
-                            '<h4 class="modal-title" id="modal-collector-header">STAP Collector status</h4>'+
-                            '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-                                '<span aria-hidden="true">&times;</span>'+
-                            '</button>'+
-                        '</div>'+
-                
-                        '<div class="modal-body">'
-                                if (response.data == ""){
-                                    html = html + '<p>There are no ports</p>';
-                                }else{
-                                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                                    '<thead>                                                      ' +
-                                        '<tr>                                                         ' +
-                                            '<th>Proto</th>                                             ' +
-                                            '<th>RECV</th>                                             ' +
-                                            '<th>SEND</th>                                             ' +
-                                            '<th style="width: 25%">LOCAL IP</th>                                             ' +
-                                            '<th style="width: 25%">REMOTE IP</th>                                             ' +
-                                            '<th style="width: 15%">STATUS</th>                                             ' +
-                                            '<th></th>                                             ' +
-                                        '</tr>                                                        ' +
-                                    '</thead>                                                     ' +
-                                    '<tbody>                                                     ' 
-                                    for(line in res) {
-                                        if (res[line] != ""){
-                                            var vregex = /([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.*)/;
-                                            var lineSplited = vregex.exec(res[line]);
-                                            html = html + '<tr><td>' +
-                                            lineSplited[1]+
-                                            '</td><td>     ' +
-                                            lineSplited[2]+
-                                            '</td><td>     ' +
-                                            lineSplited[3]+
-                                            '</td><td>     ' +
-                                            lineSplited[4]+
-                                            '</td><td>     ' +
-                                            lineSplited[5]+
-                                            '</td><td>     ' +
-                                            lineSplited[6]+
-                                            '</td><td>     ' +
-                                            lineSplited[7]+
-                                            '</td></tr>'
-                                        }
-                                    }
-                                }
-                        html = html +
-                        '</div>'+
-                
-                    '</div>'+
-                '</div>';
-    document.getElementById('modal-window').innerHTML = html;
-}
-
-
-function showPorts(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ports/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-    .then(function (response) {
-        showModalPorts(response, uuid);                
-    })
-    .catch(function (error) {
-        return false;
-    });
-}
-
-function showModalPorts(response, uuid){
-    var html = '<div class="modal-dialog modal-lg">'+
-        '<div class="modal-content">'+
-    
-            '<div class="modal-header">'+
-                '<h4 class="modal-title">PORTS</h4>'+
-                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-
-            if (response.data.ack=="false"){
-                html = html + '<div class="modal-body">  '+
-                    '<h5 class="modal-title" style="color:red;">Error retrieving ports...</h5>'+
-                '</div>';
-            }else{
-                html = html + '<div class="modal-body">  '+
-                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                        '<thead>                                                      ' +
-                            '<tr>                                                         ' +
-                                '<th width="30%">Portproto</th>                                    ' +
-                                '<th>First</th>                                         ' +
-                                '<th>Last</th>                                 ' +
-                                '<th width="10%">Select</th>                                 ' +
-                            '</tr>                                                        ' +
-                        '</thead>                                                     ' +
-                        '<tbody>                                                     ' 
-                            for(line in response.data){
-                                var first = new Date(response.data[line]["first"]*1000);
-                                var last = new Date(response.data[line]["last"]*1000);
-                                
-                                html = html + '<tr><td id="">                            ' +
-                                response.data[line]["portprot"]+'<br>'                    +
-                                '</td><td>'+
-                                first+
-                                '</td><td>'+
-                                last+
-                                '</td><td align="center">'+
-                                '<input class="form-check-input" type="checkbox" id="'+line+'"></input>'+
-                                '</td></tr>'
-                            }
-                    html = html +'</tbody>'+
-                    '</table>'+
-                '</div>'+
-
-                '<div class="modal-footer" id="ruleset-note-footer-btn">'+
-                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                    '<button type="button" class="btn btn-dark" data-dismiss="modal" onclick="deleteAllPorts(\''+uuid+'\')">Delete all</button>' +
-                    '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePorts(\''+uuid+'\')">Delete</button>' +
-                '</div>';
-            }
-
-        html = html + '</div>'+
-    '</div>';
-    document.getElementById('modal-window').innerHTML = html;
-}
-
-// function showModalPorts(response, uuid){
-//     var html = '<div class="modal-dialog modal-lg">'+
-//         '<div class="modal-content">'+
-    
-//             '<div class="modal-header">'+
-//                 '<h4 class="modal-title">Ports</h4>'+
-//                 '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-//                     '<span aria-hidden="true">&times;</span>'+
-//                 '</button>'+
-//             '</div>'+
-
-//             '<div class="modal-body">';
-
-//                 if(response.data.ack=="false"){
-//                     console.log(response.data.ack);
-//                     htlm = html + '<h4 class="modal-title" style="color:red;">Error retrieving ports...</h4>';
-//                 }else{
-//                     console.log(response);
-//                     htlm = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-//                             '<thead>                                                      ' +
-//                                 '<tr>                                                         ' +
-//                                     '<th width="30%">Portproto</th>                                    ' +
-//                                     '<th>First</th>                                         ' +
-//                                     '<th>Last</th>                                 ' +
-//                                     '<th width="10%">Select</th>                                 ' +
-//                                 '</tr>                                                        ' +
-//                             '</thead>                                                     ' +
-//                             '<tbody>                                                     ' ;
-//                                 for(line in response.data){
-//                                     var first = new Date(response.data[line]["first"]*1000);
-//                                     var last = new Date(response.data[line]["last"]*1000);
-                                    
-//                                     html = html + '<tr><td>                            ' +
-//                                     response.data[line]["portprot"]+
-//                                     '</td><td>'+
-//                                     first+
-//                                     '</td><td>'+
-//                                     last+
-//                                     '</td><td align="center">'+
-//                                         '<input class="form-check-input" type="checkbox" id="'+line+'"></input>'+
-//                                     '</td></tr>';
-//                                 }
-//                             html = html +'</tbody>'+
-//                         '</table>';
-//                 }
-//             html = html +'</div>'+
-
-//             '<div class="modal-footer" id="ruleset-note-footer-btn">'+
-//                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-//                 '<button type="button" class="btn btn-dark" data-dismiss="modal" onclick="deleteAllPorts(\''+uuid+'\')">Delete all</button>' +
-//                 '<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePorts(\''+uuid+'\')">Delete</button>' +
-//             '</div>'+
-
-
-//         '</div>'+
-//     '</div>';
-    
-//     document.getElementById('modal-window').innerHTML = html;
-// }
-
-function deletePorts(uuid){
-    var arrayLinesSelected = new Object();
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/ports/delete/'+uuid;
-    $('input:checkbox:checked').each(function() {
-        var CHuuid = $(this).prop("id");
-        arrayLinesSelected[CHuuid] = CHuuid;
-    });
-    var nodeJSON = JSON.stringify(arrayLinesSelected);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: nodeJSON
-        }).then(function (response) {
-        
-        }).catch(function (error) {
-
-        }); 
-
-}
-
-function deleteAllPorts(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/ports/deleteAll/'+uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000
-    }).then(function (response) {
-
-    }).catch(function (error) {
-
-    }); 
-
-}
-
-function sendRulesetToNode(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/set';
-
-    var jsonRuleUID = {}
-    jsonRuleUID["uuid"] = uuid;
-    jsonRuleUID["type"] = "node";
-    var dataJSON = JSON.stringify(jsonRuleUID);
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: dataJSON
-    })
-    .then(function (response) {
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> Suricata ruleset deployment complete.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Suricata deployment Error! </strong>'+response.data.error+''+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }
-    })
-    .catch(function (error) {
-        $('html,body').scrollTop(0);
-        var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong>'+response.data.error+''+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-    });
-}
-
-//Run suricata system
-function RunSuricata(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/RunSuricata/' + uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        //httpsAgent: agent,
-        timeout: 30000
-    })
-        .then(function (response) {
-            // GetAllNodes();
-        })
-        .catch(function error() {
-        });
-
-    setTimeout(function (){
-        GetAllNodes();
-    }, 1000);
-}
-
-//Stop suricata system
-function StopSuricata(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StopSuricata/' + uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-    })
-        .then(function (response) {
-            // GetAllNodes();
-        })
-        .catch(function error() {
-        });
-
-    setTimeout(function (){
-        GetAllNodes();
-    }, 1000);
-}
-
-function PingSuricata(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/suricata/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-            if (!response.data.path && !response.data.bin) {
-                document.getElementById(uuid + '-suricata').className = "badge bg-dark align-text-bottom text-white";
-                document.getElementById(uuid + '-suricata').innerHTML = "N/A";
-                document.getElementById(uuid + '-suricata-icon').className = "fas fa-play-circle";
-                document.getElementById(uuid + '-suricata-icon').onclick = function () { RunSuricata(uuid); };
-                document.getElementById(uuid + '-suricata-icon').title = "Run Suricata";
-                // document.getElementById('suricata-deploy-button').onclick = function () { };                
-                // document.getElementById('suricata-deploy-button').style.color = "grey";                
-            } else if (response.data.path || response.data.bin) {
-                if (response.data.running) {
-                    document.getElementById(uuid + '-suricata').className = "badge bg-success align-text-bottom text-white";
-                    document.getElementById(uuid + '-suricata').innerHTML = "ON";
-                    document.getElementById(uuid + '-suricata-icon').className = "fas fa-stop-circle";
-                    document.getElementById(uuid + '-suricata-icon').onclick = function () { StopSuricata(uuid); };
-                    document.getElementById(uuid + '-suricata-icon').title = "Stop Suricata";
-                } else {
-                    document.getElementById(uuid + '-suricata').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(uuid + '-suricata').innerHTML = "OFF";
-                    document.getElementById(uuid + '-suricata-icon').className = "fas fa-play-circle";
-                    document.getElementById(uuid + '-suricata-icon').onclick = function () { RunSuricata(uuid); };
-                    document.getElementById(uuid + '-suricata-icon').title = "Run Suricata";
-                }
-            }
-            return true;
-        })
-        .catch(function (error) {
-            document.getElementById(uuid + '-suricata').className = "badge bg-dark align-text-bottom text-white";
-            document.getElementById(uuid + '-suricata').innerHTML = "N/A";
-            return false;
-        });
-    return false;
-}
-
-function PingCheckDeploy(uuid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/checkDeploy/'+uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-    .then(function (response) {
-        for(deploy in response.data){
-            if(response.data[deploy] == "false"){
-                document.getElementById('deploy-node-'+deploy).style.display = "none";
-            }else{
-                document.getElementById('deploy-node-'+deploy).style.display = "block";
-            }
-        }        
-    })
-    .catch(function (error) {
-
-    });
-}
-
-//Run Zeek system
-function RunZeek(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/RunZeek/' + uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
-
-    GetAllNodes();
-}
-
-//Stop Zeek system
-function StopZeek(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StopZeek/' + uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-    })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
-
-    GetAllNodes();
-}
-
-function PingZeek(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-            if (!response.data.path && !response.data.bin) {
-                document.getElementById(uuid + '-zeek').className = "badge bg-dark align-text-bottom text-white";
-                document.getElementById(uuid + '-zeek').innerHTML = "N/A";
-                document.getElementById(uuid + '-zeek-icon').className = "fas fa-play-circle";
-                document.getElementById(uuid + '-zeek-icon').onclick = function () { RunZeek(uuid); };
-                document.getElementById(uuid + '-zeek-icon').title = "Run zeek";
-            } else if (response.data.path || response.data.bin) {
-                if (response.data.running) {
-                    document.getElementById(uuid + '-zeek').className = "badge bg-success align-text-bottom text-white";
-                    document.getElementById(uuid + '-zeek').innerHTML = "ON";
-                    document.getElementById(uuid + '-zeek-icon').className = "fas fa-stop-circle";
-                    document.getElementById(uuid + '-zeek-icon').onclick = function () { StopZeek(uuid); };
-                    document.getElementById(uuid + '-zeek-icon').title = "Stop Zeek";
-                } else {
-                    document.getElementById(uuid + '-zeek').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(uuid + '-zeek').innerHTML = "OFF";
-                    document.getElementById(uuid + '-zeek-icon').className = "fas fa-play-circle";
-                    document.getElementById(uuid + '-zeek-icon').onclick = function () { RunZeek(uuid); };
-                    document.getElementById(uuid + '-zeek-icon').title = "Run Zeek";
-                }
-            }
-            return true;
-        })
-        .catch(function (error) {
-            document.getElementById(uuid + '-zeek').className = "badge bg-dark align-text-bottom text-white";
-            document.getElementById(uuid + '-zeek').innerHTML = "N/A";
-
-            return false;
-        });
-    return false;
-}
-
-//Run Zeek system
-function RunWazuh(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/RunWazuh/' + uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
-
-    GetAllNodes();
-}
-
-//Stop Wazuh system
-function StopWazuh(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/StopWazuh/' + uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-    })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
-
-    GetAllNodes();
-}
-
-function PingWazuh(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/wazuh/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-            if (!response.data.path && !response.data.bin) {
-                document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
-                document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
-                document.getElementById(uuid + '-wazuh-icon').className = "fas fa-play-circle";
-                document.getElementById(uuid + '-wazuh-icon').onclick = function () { RunWazuh(uuid); };
-                document.getElementById(uuid + '-wazuh-icon').title = "Run Wazuh";
-            } else if (response.data.path || response.data.bin) {
-                if (response.data.running) {
-                    document.getElementById(uuid + '-wazuh').className = "badge bg-success align-text-bottom text-white";
-                    document.getElementById(uuid + '-wazuh').innerHTML = "ON";
-                    document.getElementById(uuid + '-wazuh-icon').className = "fas fa-stop-circle";
-                    document.getElementById(uuid + '-wazuh-icon').onclick = function () { StopWazuh(uuid); };
-                    document.getElementById(uuid + '-wazuh-icon').title = "Stop Wazuh";
-                } else {
-                    document.getElementById(uuid + '-wazuh').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(uuid + '-wazuh').innerHTML = "OFF";
-                    document.getElementById(uuid + '-wazuh-icon').className = "fas fa-play-circle";
-                    document.getElementById(uuid + '-wazuh-icon').onclick = function () { RunWazuh(uuid); };
-                    document.getElementById(uuid + '-wazuh-icon').title = "Run Wazuh";
-                }
-            }
-            return true;
-        })
-        .catch(function (error) {
-            document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
-            document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
-            return false;
-        });
-    return false;
-}
-
-//Run stap system
-function RunStap(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/stap/RunStap/' + uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
-    GetAllNodes();
-}
-
-//Stop stap system
-function StopStap(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/stap/StopStap/' + uuid;
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-    })
-        .then(function (response) {
-        })
-        .catch(function error() {
-        });
-    GetAllNodes();
-}
-
-function PingStap(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/stap/stap/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-            if (!response.data.stapStatus) {
-                document.getElementById(uuid + '-stap').className = "badge bg-danger align-text-bottom text-white";
-                document.getElementById(uuid + '-stap').innerHTML = "OFF";
-                document.getElementById(uuid + '-stap-icon').className = "fas fa-play-circle";
-                document.getElementById(uuid + '-stap-icon').onclick = function () { RunStap(uuid); };
-                document.getElementById(uuid + '-stap-icon').title = "Run stap";
-            } else {
-                document.getElementById(uuid + '-stap').className = "badge bg-success align-text-bottom text-white";
-                document.getElementById(uuid + '-stap').innerHTML = "ON";
-                document.getElementById(uuid + '-stap-icon').className = "fas fa-stop-circle";
-                document.getElementById(uuid + '-stap-icon').onclick = function () { StopStap(uuid); };
-                document.getElementById(uuid + '-stap-icon').title = "Stop stap";
-            }
-        })
-        .catch(function (error) {
-            document.getElementById(uuid + '-stap').className = "badge bg-dark align-text-bottom text-white";
-            document.getElementById(uuid + '-stap').innerHTML = "N/A";
-            return false;
-        });
-    return false;
-}
-
-function PingPorts(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingPorts/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-            for(line in response.data){
-                if (response.data[line]["status"] == "Enabled"){
-                    document.getElementById('ports-status-'+uuid).innerHTML = "ON";
-                }else if (response.data[line]["status"] == "Disabled"){
-                    document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
-                }
-                document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-                
-                if (response.data[line]["status"] == "Enabled"){
-                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
-                    document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-                }else{
-                    document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
-                    document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                }                
-            }
-            return true;
-        })
-        .catch(function (error) {
-            
-            return false;            
-        });
-    return false;
-}
-
-function PingAnalyzer(uuid) {
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/PingAnalyzer/' + uuid;
-    axios({
-        method: 'get',
-        url: nodeurl,
-        timeout: 30000
-    })
-        .then(function (response) {
-            if (response.data["status"] == "Enabled"){
-                document.getElementById('analyzer-status-'+uuid).innerHTML = "ON";
-                document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-stop-circle";
-                document.getElementById('analyzer-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-            }else{
-                document.getElementById('analyzer-status-'+uuid).innerHTML = "OFF";
-                document.getElementById('analyzer-status-btn-'+uuid).className = "fas fa-play-circle";
-                document.getElementById('analyzer-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-            }                
-            return true;
-        })
-        .catch(function (error) {
-            
-            return false;            
-        });
-    return false;
-}
-
 
 function getRulesetUID(uuid) {
     var ipmaster = document.getElementById('ip-master').value;
@@ -1368,11 +657,21 @@ function getRulesetUID(uuid) {
     axios({
         method: 'get',
         url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         timeout: 30000
     })
     .then(function (response) {
-        getRuleName(response.data, uuid);
-        return true;
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            getRuleName(response.data, uuid);
+            return true;
+        }
     })
     .catch(function (error) {
         return false;
@@ -1386,17 +685,27 @@ function getRuleName(uuidRuleset, uuid) {
     axios({
         method: 'get',
         url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         timeout: 30000
     })
         .then(function (response) {
-            if (typeof response.data.error != "undefined") {
-                document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
-                document.getElementById(uuid + '-ruleset').className = "text-danger";
-            } else {
-                document.getElementById(uuid + '-ruleset').innerHTML = response.data;
-                document.getElementById(uuid + '-ruleset').className = "text-muted-small";
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (typeof response.data.error != "undefined") {
+                    document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
+                    document.getElementById(uuid + '-ruleset').className = "text-danger";
+                } else {
+                    document.getElementById(uuid + '-ruleset').innerHTML = response.data;
+                    document.getElementById(uuid + '-ruleset').className = "text-muted-small";
+                }
+                return response.data;
             }
-            return response.data;
         })
         .catch(function (error) {
             return false;
@@ -1503,3 +812,409 @@ function sortTableIP() {
         document.getElementById('sort-nodes-ip').setAttribute("sort", "asc");
     }
 }
+
+function addNode() {
+    var nname = document.getElementById('nodename').value.trim();
+    var nip = document.getElementById('nodeip').value.trim();
+    var nport = document.getElementById('nodeport').value.trim();
+    var nuser = document.getElementById('nodeuser').value.trim();
+    var npass = document.getElementById('nodepass').value.trim();
+    if(nname=="" || nip=="" || nport==""){
+		$('html,body').scrollTop(0);
+		var alert = document.getElementById('floating-alert');
+		alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+			'<strong>Error!</strong> Please, insert a name, port and IP for add a new node.'+
+			'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+				'<span aria-hidden="true">&times;</span>'+
+			'</button>'+
+		'</div>';
+      setTimeout(function() {$(".alert").alert('close')}, 5000);
+    }else{
+		formAddNids();//close add nids form
+		var nodejson = {}
+		nodejson["nodepass"] = npass;
+		nodejson["nodeuser"] = nuser;
+		nodejson["name"] = nname;
+		nodejson["port"] = nport;
+		nodejson["ip"] = nip;
+		var nodeJSON = JSON.stringify(nodejson);
+		var ipmaster = document.getElementById('ip-master').value;
+		var portmaster = document.getElementById('port-master').value;
+		var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node/';
+		axios({
+			method: 'post',
+            url: nodeurl,
+            headers:{
+                'token': document.cookie,
+                'user': payload.user,
+                'uuid': payload.uuid,
+            },
+			timeout: 30000,
+			data: nodeJSON
+		})
+		.then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if(response.data.ack == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error adding node!</strong> '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> Node added successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
+                GetAllNodes();
+            }
+		})
+		.catch(function (error) {
+			$('html,body').scrollTop(0);
+			var alert = document.getElementById('floating-alert');
+			alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+				'<strong>Error adding node!</strong> '+error+'.'+
+				'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+					'<span aria-hidden="true">&times;</span>'+
+				'</button>'+
+			'</div>';
+			setTimeout(function() {$(".alert").alert('close')}, 5000);
+		});   
+    }
+}
+
+function modifyNodeInformation() {
+    var name = document.getElementById('cfgnodename').value;
+    var ip = document.getElementById('cfgnodeip').value;
+    var port = document.getElementById('cfgnodeport').value;
+    var nid = document.getElementById('cfgnodeid').value;
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
+    
+    if(name=="" || ip=="" || port==""){
+      if(name == ""){$('#cfgnodename').attr("placeholder", "Please, insert a valid name"); $('#cfgnodename').css('border', '2px solid red'); }else{$('#cfgnodename').css('border', '2px solid #ced4da');}
+      if(ip == ""){$('#cfgnodeip').attr("placeholder", "Please, insert a valid ip"); $('#cfgnodeip').css('border', '2px solid red'); }else{$('#cfgnodeip').css('border', '2px solid #ced4da');}
+      if(port == ""){$('#cfgnodeport').attr("placeholder", "Please, insert a valid port"); $('#cfgnodeport').css('border', '2px solid red'); }else{$('#cfgnodeport').css('border', '2px solid #ced4da');}
+    }else{
+      var nodejson = {}
+      nodejson["name"] = name;
+      nodejson["port"] = port;
+      nodejson["ip"] = ip;
+      nodejson["id"] = nid;
+      var newValues = JSON.stringify(nodejson);
+
+      axios({
+        method: 'put',
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid,},
+        url: nodeurl,
+        timeout: 30000,
+        data: newValues
+        })
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if(response.data.ack == "false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Modify node error!</strong> '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    GetAllNodes();
+                }
+            }
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Modify node error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        });   
+        document.getElementById('divconfigform').style.display = "none";
+        return false;
+    }
+}
+
+function cancelNodeModification(){
+    document.getElementById('divconfigform').style.display = "none";
+}
+
+function loadBPF(nid, name){
+    var modalWindow = document.getElementById('modal-window');
+    modalWindow.innerHTML = '<div class="modal-dialog">'+
+                '<div class="modal-content">'+
+    
+                 '<div class="modal-header">'+
+                        '<h4 class="modal-title" id="bpf-header">BPF</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>'+
+    
+                    '<div class="modal-body" id="modal-footer-inputtext">'+
+                        '<input type="text" class="form-control" id="recipient-name">'+
+                    '</div>'+
+    
+                    '<div class="modal-footer" id="modal-footer-btn">'+
+                        '<!-- Buttons -->'+
+                    '</div>'+
+    
+                '</div>'+
+            '</div>';
+  var inputBPF = document.getElementById('recipient-name');
+  var headerBPF = document.getElementById('bpf-header');
+  var footerBPF = document.getElementById("modal-footer-btn");
+  headerBPF.innerHTML = "BPF - "+name;
+  footerBPF.innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveBPF(\''+nid+'\')" id="btn-save-changes">Save changes</button>';
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+nid+'/bpf';
+  axios({
+    method: 'get',
+    headers:{
+        'token': document.cookie,
+        'user': payload.user,
+        'uuid': payload.uuid,
+    },
+    url: nodeurl,
+    timeout: 3000
+  })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if('bpf' in response.data){
+                inputBPF.value=response.data.bpf;     
+            }else{
+                inputBPF.value='';
+                headerBPF.innerHTML = headerBPF.innerHTML + '<br>Not defined';
+            }
+        }
+    })
+    .catch(function (error) {
+      windowModalLog.innerHTML = error+"++<br>";
+    });   
+}
+
+
+
+function saveBPF(nid){
+  var inputBPF = document.getElementById('recipient-name');
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/'+nid+'/bpf';
+  var jsonbpfdata = {}
+  jsonbpfdata["nid"] = nid;
+  jsonbpfdata["bpf"] = inputBPF.value;
+  var bpfjson = JSON.stringify(jsonbpfdata);
+
+  axios({
+    method: 'put',
+    headers:{
+        'token': document.cookie,
+        'user': payload.user,
+        'uuid': payload.uuid,
+    },
+    url: nodeurl,
+    timeout: 30000,
+    data: bpfjson
+  })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            return true;
+        }
+    })
+    .catch(function (error) {
+      return false;
+    });   
+}
+
+function loadRuleset(nid){
+  var modalWindow = document.getElementById('modal-window');
+  modalWindow.innerHTML = 
+  '<div class="modal-dialog modal-lg">'+
+    '<div class="modal-content">'+
+
+      '<div class="modal-header">'+
+        '<h4 class="modal-title" id="ruleset-manager-header">Rules</h4>'+
+        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+      '</div>'+
+
+      '<div class="modal-body" id="ruleset-manager-footer-table">'+ 
+      '</div>'+
+
+      '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
+        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+      '</div>'+
+
+    '</div>'+
+  '</div>';
+  var resultElement = document.getElementById('ruleset-manager-footer-table');
+  var ipmaster = document.getElementById('ip-master').value;
+  var portmaster = document.getElementById('port-master').value;
+  axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
+    headers:{
+      'token': document.cookie,
+      'user': payload.user,
+      'uuid': payload.uuid,
+    },
+  })
+
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (typeof response.data.error != "undefined"){
+                resultElement.innerHTML = '<p>No rules available...</p>';
+            }else{
+                resultElement.innerHTML = generateAllRulesModal(response, nid);
+            }
+        }
+    })
+    .catch(function (error) {
+      resultElement.innerHTML = '<p>Error retrieving rules</p>';
+    }); 
+  
+}
+
+function generateAllRulesModal(response, nid) {
+    var rules = response.data;
+    var isEmpty = true;
+    var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                	'<thead>' +
+                		'<tr>' +
+							'<th width="30%">Name</th>' +
+							'<th>Description</th>' +
+							'<th width="15%">Options</th>' +
+                		'</tr>' +
+                	'</thead>' +
+                	'<tbody>';
+    for (rule in rules) {
+        isEmpty = false;
+        html = html + '<tr><td style="word-wrap: break-word;" width="30%"> ' +
+        rules[rule]["name"] +
+        '</td><td style="word-wrap: break-word;"> ' +
+        rules[rule]["desc"] +
+        '</td><td style="word-wrap: break-word;" width="15%"> ' +
+        	'<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button> ' +
+        '</td></tr> ';
+    }
+    html = html + '</tbody></table>';
+    
+    if (isEmpty){
+        return '<p>No rules available...</p>';
+    }else{
+        return html;
+    }
+}
+
+
+function saveRuleSelected(rule, nid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
+
+    var jsonRuleUID = {}
+    jsonRuleUID["nid"] = nid;
+    jsonRuleUID["rule_uid"] = rule;
+    var uidJSON = JSON.stringify(jsonRuleUID);
+    axios({
+        method: 'put',
+        url: urlSetRuleset,
+        headers:{
+          'token': document.cookie,
+          'user': payload.user,
+          'uuid': payload.uuid,
+        },
+        timeout: 30000,
+        data: uidJSON
+    })
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                getRulesetUID(nid);
+                return true;
+            }
+        })
+            .catch(function (error) {
+            return false;
+        }); 
+}
+
+function deleteNodeModal(node, name){
+  var modalWindow = document.getElementById('modal-window');
+  modalWindow.innerHTML = 
+  '<div class="modal-dialog">'+
+    '<div class="modal-content">'+
+    
+      '<div class="modal-header">'+
+        '<h4 class="modal-title" id="delete-node-header">Node</h4>'+
+        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+      '</div>'+
+
+      '<div class="modal-body" id="delete-node-footer-table" style="word-break: break-all;">'+ 
+        '<p>Do you want to delete <b>'+name+'</b> node?</p>'+
+      '</div>'+
+
+      '<div class="modal-footer" id="delete-node-footer-btn">'+
+        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+        '<button type="submit" class="btn btn-danger" data-dismiss="modal" id="btn-delete-node" onclick="deleteNode(\''+node+'\')">Delete</button>'+
+      '</div>'+
+
+    '</div>'+
+  '</div>';
+}
+
+function syncRulesetModal(node, name){
+    var modalWindow = document.getElementById('modal-window');
+    modalWindow.innerHTML = 
+    '<div class="modal-dialog">'+
+      '<div class="modal-content">'+
+      
+        '<div class="modal-header">'+
+          '<h4 class="modal-title" id="sync-node-header">Node</h4>'+
+          '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+        '</div>'+
+  
+        '<div class="modal-body" id="sync-node-footer-table" style="word-break: break-all;">'+ 
+          '<p>Do you want to sync ruleset for <b>'+name+'</b> node?</p>'+
+        '</div>'+
+  
+        '<div class="modal-footer" id="sync-node-footer-btn">'+
+          '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>'+
+          '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-sync-node" onclick="sendRulesetToNode(\''+node+'\')">sync</button>'+
+        '</div>'+
+  
+      '</div>'+
+    '</div>';
+  }

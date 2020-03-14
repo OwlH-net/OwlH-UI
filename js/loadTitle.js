@@ -10,8 +10,8 @@ function loadTitleJSONdata(){
         document.getElementById('current-version-show').innerHTML = data;        
         document.getElementById('current-version-show').onclick = function(){loadReadme();}; 
         document.getElementById('current-version-show').style.cursor = "pointer"; 
-        document.getElementById('current-version-text').onclick = function(){loadReadme();}; 
-        document.getElementById('current-version-text').style.cursor = "pointer"; 
+        // document.getElementById('current-version-text').onclick = function(){loadReadme();}; 
+        // document.getElementById('current-version-text').style.cursor = "pointer"; 
                
     }, 'text');
 
@@ -20,7 +20,7 @@ function loadTitleJSONdata(){
         url: urlSetRuleset,
         timeout: 30000
     })
-    .then(function (response) {
+   .then(function (response) {
         title.innerHTML = response.data;
         return true;
     })

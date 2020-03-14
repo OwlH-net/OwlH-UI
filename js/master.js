@@ -45,8 +45,8 @@ function loadPlugins(){
                 '<tr>'+
                     '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-random"></i> Dispatcher</td>'+
                     '<td width="25%">Status: <span id="dispatcher-status"></span></td>'+
-                    '<td width="25%">Start/Stop: <i style="color: grey;" class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i> </td>'+
-                    '<td width="25%">Dispatcher nodes: <i style="color: grey;" class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i></td>'+
+                    '<td width="25%">Start/Stop: <i style="color: grey;cursor:pointer;" class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i> </td>'+
+                    '<td width="25%">Dispatcher nodes: <i style="color: grey;cursor:pointer;" class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i></td>'+
                 '</tr>'+       
             '</table>'+
             // '<div id="ports-table2"></div>&nbsp &nbsp &nbsp'+
@@ -174,7 +174,8 @@ function loadPlugins(){
     // '</div>';
 
     // axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/showMasterCollector')
-    // .then(function (response) {
+    //.then(function (response) {
+    //    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
     //     if (response.data.ack){
     //         document.getElementById('ports-table').innerHTML = "No remote systems yet";
     //     }else if(response.data){
@@ -226,18 +227,13 @@ function loadPlugins(){
 }
 
 function showMasterFile(file){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit-master.html?file='+file;
+    document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+file;
 }
-
 function loadControlDataMaster(type){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/control-data.html?type='+type;
+    document.location.href = 'https://' + location.hostname + '/control-data.html?type='+type;
 }
-
 function loadIncidentMaster(type){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/incident-data.html?type='+type;
+    document.location.href = 'https://' + location.hostname + '/incident-data.html?type='+type;
 }
 
 function deployMaster(value){
@@ -252,29 +248,35 @@ function deployMaster(value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
-        if (response.data.ack == "true") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                '<strong>Success!</strong> '+value+' deployed successfully.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
         }else{
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> '+value+' has not been deployed.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> '+value+' deployed successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+value+' has not been deployed.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
     })
     .catch(function (error) {
@@ -288,60 +290,66 @@ function loadNetworkValues(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
-        var html = '<div class="modal-dialog modal-sm">'+
-            '<div class="modal-content">'+
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{
+            var html = '<div class="modal-dialog modal-sm">'+
+                '<div class="modal-content">'+
+            
+                    '<div class="modal-header">'+
+                        '<h4 class="modal-title" id="delete-node-header">Networks</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>'+
         
-                '<div class="modal-header">'+
-                    '<h4 class="modal-title" id="delete-node-header">Networks</h4>'+
-                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '<div class="modal-body" id="delete-node-footer-table">';
+                    
+                        if (response.data.ack == "false"){
+                            html = html + '<span><h6>Error loading interfaces</h6></span>';
+                        } else {
+                            html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                '<thead>              ' +
+                                '<tr>                 ' +
+                                '<th>Network</th>        ' +
+                                '<th>Select</th>     ' +
+                                '</tr>                ' +
+                                '</thead>             ' +
+                                '<tbody >             ' ;
+                                for (net in response.data){
+                                    html = html + 
+                                    '<tr>'+
+                                        '<td style="word-wrap: break-word;">' +
+                                            response.data[net]+
+                                        '</td><td style="word-wrap: break-word;">' +
+                                            '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                                        '</td>'+
+                                    '</tr>';
+                                }
+                                html = html + '</tbody>'+
+                                '</table>';
+                        }
+                    html = html + '</div>'+
+        
+                    '<div class="modal-footer" id="delete-node-footer-btn">'+
+                        '<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close-interface">Close</button>'+
+                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-update-interface" onclick="updateMasterNetworkInterface()">Deploy</button>'+
+                    '</div>'+
+        
                 '</div>'+
-    
-                '<div class="modal-body" id="delete-node-footer-table">';
-                
-                    if (response.data.ack == "false"){
-                        html = html + '<span><h6>Error loading interfaces</h6></span>';
-                    } else {
-                        html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                            '<thead>              ' +
-                            '<tr>                 ' +
-                            '<th>Network</th>        ' +
-                            '<th>Select</th>     ' +
-                            '</tr>                ' +
-                            '</thead>             ' +
-                            '<tbody >             ' ;
-                            for (net in response.data){
-                                html = html + 
-                                '<tr>'+
-                                    '<td style="word-wrap: break-word;">' +
-                                        response.data[net]+
-                                    '</td><td style="word-wrap: break-word;">' +
-                                        '<input type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
-                                    '</td>'+
-                                '</tr>';
-                            }
-                            html = html + '</tbody>'+
-                            '</table>';
-                    }
-                html = html + '</div>'+
-    
-                '<div class="modal-footer" id="delete-node-footer-btn">'+
-                    '<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close-interface">Close</button>'+
-                    '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-update-interface" onclick="updateMasterNetworkInterface()">Deploy</button>'+
-                '</div>'+
-    
-            '</div>'+
-        '</div>';
-        document.getElementById('modal-master').innerHTML = html;
-        //load interfaces
-        LoadMasterNetworkValuesSelected();   
-        //close modal     
-        // $('#btn-close-interface').click(function() {
-            // $('#modal-master').modal('hide');
-        $('#modal-master').modal().hide();
-        // });
+            '</div>';
+            document.getElementById('modal-master').innerHTML = html;
+            //load interfaces
+            LoadMasterNetworkValuesSelected();   
+            //close modal     
+            // $('#btn-close-interface').click(function() {
+                // $('#modal-master').modal('hide');
+            $('#modal-master').modal().hide();
+            // });
+        }
     })
     .catch(function (error) {
     });
@@ -354,54 +362,61 @@ function loadNetworkStapValues(uuid){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
-        var html = '<div class="modal-dialog modal-sm">'+
-            '<div class="modal-content">'+
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            $('#modal-master').modal().hide();
+            PrivilegesMessage();              
+        }else{
+            var html = '<div class="modal-dialog modal-sm">'+
+                '<div class="modal-content">'+
+            
+                    '<div class="modal-header">'+
+                        '<h4 class="modal-title" id="delete-node-header">STAP Networks</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>'+
         
-                '<div class="modal-header">'+
-                    '<h4 class="modal-title" id="delete-node-header">STAP Networks</h4>'+
-                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '<div class="modal-body" id="delete-node-footer-table">';
+                    
+                        if (response.data.ack == "false"){
+                            html = html + '<span><h6>Error loading interfaces</h6></span>';
+                        } else {
+                            html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                '<thead>              ' +
+                                '<tr>                 ' +
+                                '<th>Network</th>        ' +
+                                '<th>Select</th>     ' +
+                                '</tr>                ' +
+                                '</thead>             ' +
+                                '<tbody >             ' ;
+                                for (net in response.data){
+                                    html = html + 
+                                    '<tr>'+
+                                        '<td style="word-wrap: break-word;">' +
+                                            response.data[net]+
+                                        '</td><td style="word-wrap: break-word;">' +
+                                            '<input type="radio" id="stap-value-'+net+'" value="'+net+'" name="net-select">'+
+                                        '</td>'+
+                                    '</tr>';
+                                }
+                                html = html + '</tbody>'+
+                                '</table>';
+                        }
+                    html = html + '</div>'+
+        
+                    '<div class="modal-footer" id="delete-node-footer-btn">'+
+                        '<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close-interface">Close</button>'+
+                        '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-update-interface" onclick="updateMasterStapInterface(\''+uuid+'\')">Deploy</button>'+
+                    '</div>'+
+        
                 '</div>'+
-    
-                '<div class="modal-body" id="delete-node-footer-table">';
-                
-                    if (response.data.ack == "false"){
-                        html = html + '<span><h6>Error loading interfaces</h6></span>';
-                    } else {
-                        html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                            '<thead>              ' +
-                            '<tr>                 ' +
-                            '<th>Network</th>        ' +
-                            '<th>Select</th>     ' +
-                            '</tr>                ' +
-                            '</thead>             ' +
-                            '<tbody >             ' ;
-                            for (net in response.data){
-                                html = html + 
-                                '<tr>'+
-                                    '<td style="word-wrap: break-word;">' +
-                                        response.data[net]+
-                                    '</td><td style="word-wrap: break-word;">' +
-                                        '<input type="radio" id="stap-value-'+net+'" value="'+net+'" name="net-select">'+
-                                    '</td>'+
-                                '</tr>';
-                            }
-                            html = html + '</tbody>'+
-                            '</table>';
-                    }
-                html = html + '</div>'+
-    
-                '<div class="modal-footer" id="delete-node-footer-btn">'+
-                    '<button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close-interface">Close</button>'+
-                    '<button type="submit" class="btn btn-primary" data-dismiss="modal" id="btn-update-interface" onclick="updateMasterStapInterface(\''+uuid+'\')">Deploy</button>'+
-                '</div>'+
-    
-            '</div>'+
-        '</div>';
-        document.getElementById('modal-master').innerHTML = html;        
-        $('#modal-master').modal().hide();
+            '</div>';
+            document.getElementById('modal-master').innerHTML = html;        
+            $('#modal-master').modal().hide();
+        }
     })
     .catch(function (error) {
     });
@@ -427,11 +442,18 @@ function updateMasterStapInterface(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
-        $('#modal-master').modal('hide');
-        PingPlugins();
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            $('#modal-master').modal('hide');
+            PrivilegesMessage();              
+        }else{
+            $('#modal-master').modal('hide');
+            PingPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -457,10 +479,17 @@ function updateMasterNetworkInterface(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {        
-        $('#modal-master').modal('hide');
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}   
+        if(response.data.permissions == "none"){
+            $('#modal-master').modal('hide');
+            PrivilegesMessage();              
+        }else{
+            $('#modal-master').modal('hide');
+        }     
     })
     .catch(function (error) {
     });
@@ -473,13 +502,19 @@ function DeployServiceMaster(){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
-        if (response.data.ack == "true"){
-            document.getElementById('owlhMasterService').style.display = "none";
-        }else {
-            document.getElementById('owlhMasterService').style.display = "block";
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{
+            if (response.data.ack == "true"){
+                document.getElementById('owlhMasterService').style.display = "none";
+            }else {
+                document.getElementById('owlhMasterService').style.display = "block";
+            }
         }
     })
     .catch(function (error) {
@@ -493,14 +528,20 @@ function PingServiceMaster(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {        
-        if (response.data.ack == "true"){
-            document.getElementById('owlhMasterService').style.display = "none";
-        }else {
-            document.getElementById('owlhMasterService').style.display = "block";
-        }
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';} 
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{
+            if (response.data.ack == "true"){
+                document.getElementById('owlhMasterService').style.display = "none";
+            }else {
+                document.getElementById('owlhMasterService').style.display = "block";
+            }
+        }       
     })
     .catch(function (error) {
     });
@@ -514,10 +555,16 @@ function LoadMasterNetworkValuesSelected(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
-        document.getElementById('net-value-'+response.data["interface"]["value"]).checked = "true"
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{
+            document.getElementById('net-value-'+response.data["interface"]["value"]).checked = "true"
+        }
     })
     .catch(function (error) {
     });
@@ -530,7 +577,8 @@ function PingDataflow(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     }).then(function (response) {
         var flows = response.data;
         for (flow in flows){
@@ -550,151 +598,180 @@ function PingPlugins(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {   
-        for (line in response.data){
-            if (line == "dispatcher"){
-                if (response.data[line]["status"] == "enabled"){
-                    document.getElementById(line+'-status').style.color = "green";
-                    document.getElementById(line+'-status').value = "disabled";
-                    document.getElementById(line+'-status').className = "badge bg-success align-text-bottom text-white";
-                    document.getElementById(line+'-status').innerHTML = "ON";
-                    document.getElementById(line+'-button').title = "Stop "+line;
-                    document.getElementById(line+'-button').className = "fas fa-stop-circle";
-                }else if (response.data[line]["status"] == "disabled"){
-                    document.getElementById(line+'-status').style.color = "red";
-                    document.getElementById(line+'-status').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(line+'-status').innerHTML = "OFF";
-                    document.getElementById(line+'-status').value = "enabled";
-                    document.getElementById(line+'-button').title = "Play "+line;
-                    document.getElementById(line+'-button').className = "fas fa-play-circle";
-                }
-            }else if (response.data[line]["type"] == "socket-network"){                
-                tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
-                        if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
-                        }else{
-                            tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
-                        }                    
-                    tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
-                        if (response.data[line]["pid"] == "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
-                        }else if (response.data[line]["pid"] != "none"){
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey;" onclick="StopStapServiceMaster(\''+line+'\', \'socket-network\')"></i> &nbsp';
-                        }                        
-
-                        tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+                        
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
-                    '</td>'+
-                '</tr>'+
-                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="4">'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                            '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                            '</div>'+
-                            '<div class="col">'+
-                                'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+response.data[line]["name"]+'\', \''+line+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;" >'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                            '</div>'+
-                        '</div>'+
-                        '<br>'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-network\', \''+line+'\')">Save</button>'+    
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                '</tr>';
-
-            }else if (response.data[line]["type"] == "socket-pcap"){                
-                tableSocketPcap = tableSocketPcap + '<tr>'+
-                    '<td style="word-wrap: break-word;">';
-                    if (response.data[line]["pid"] == "none"){
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> '+ response.data[line]["name"]+'</td>';
-                    }else{
-                        tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span> '+ response.data[line]["name"]+'</td>';
+   .then(function (response) {
+       console.log(response.data);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{            
+            for (line in response.data){
+                if (line == "dispatcher"){
+                    if (response.data[line]["status"] == "enabled"){
+                        document.getElementById(line+'-status').style.color = "green";
+                        document.getElementById(line+'-status').value = "disabled";
+                        document.getElementById(line+'-status').className = "badge bg-success align-text-bottom text-white";
+                        document.getElementById(line+'-status').innerHTML = "ON";
+                        document.getElementById(line+'-button').title = "Stop "+line;
+                        document.getElementById(line+'-button').className = "fas fa-stop-circle";
+                    }else if (response.data[line]["status"] == "disabled"){
+                        document.getElementById(line+'-status').style.color = "red";
+                        document.getElementById(line+'-status').className = "badge bg-danger align-text-bottom text-white";
+                        document.getElementById(line+'-status').innerHTML = "OFF";
+                        document.getElementById(line+'-status').value = "enabled";
+                        document.getElementById(line+'-button').title = "Play "+line;
+                        document.getElementById(line+'-button').className = "fas fa-play-circle";
                     }
-                    tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
-                    '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
-                    '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                    '<td style="word-wrap: break-word;">';
+                }else if (response.data[line]["type"] == "socket-network"){                
+                    tableSocketNetwork = tableSocketNetwork + '<tr>'+
+                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }else{
+                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }                    
+                        tableSocketNetwork = tableSocketNetwork + '</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor:pointer;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
+                            }else if (response.data[line]["pid"] != "none"){
+                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor:pointer;" onclick="StopStapServiceMaster(\''+line+'\', \'socket-network\')"></i> &nbsp';
+                            }                        
+    
+                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor:pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+                        
+                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor:pointer;"></i>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                        '<td style="word-wrap: break-word;" colspan="4">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Interface: <i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+response.data[line]["name"]+'\', \''+line+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;" >'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                '</div>'+
+                            '</div>'+
+                            '<br>'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-network\', \''+line+'\')">Save</button>'+    
+                                '</div>'+
+                            '</div>'+
+                        '</td>'+
+                    '</tr>';
+    
+                }else if (response.data[line]["type"] == "socket-pcap"){                
+                    tableSocketPcap = tableSocketPcap + '<tr>'+
+                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
                         if (response.data[line]["pid"] == "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
-                        }else if (response.data[line]["pid"] != "none"){
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey;" onclick="StopStapServiceMaster( \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                            if(response.data[line]["running"]=="true"){
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            }else{
+                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            }
                         }
-                        tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red;"></i>'+
-                    '</td>'+
-                '</tr>'+
-                '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                    '<td style="word-wrap: break-word;" colspan="6">'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                        tableSocketPcap = tableSocketPcap + '</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
+                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
+                        '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                        '<td style="word-wrap: break-word;">';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey; cursor:pointer;" onclick="DeployStapServiceMaster(\''+line+'\', \''+response.data[line]["collector"]+'\', \''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["type"]+'\')"></i> &nbsp';
+                            }else if (response.data[line]["pid"] != "none"){
+                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor:pointer;" onclick="StopStapServiceMaster( \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                            }
+                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor:pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor:pointer;"></i>'+
+                        '</td>'+
+                    '</tr>'+
+                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                        '<td style="word-wrap: break-word;" colspan="6">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                '</div>'+
                             '</div>'+
-                            '<div class="col">'+
-                                'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
+                                '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                '</div>'+
+                                '<div class="col">'+
+                                    'BPF: <i class="fas fa-edit" style="cursor: pointer; color: Dodgerblue;" onclick="loadBPF(\''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                '</div>'+
                             '</div>'+
-                            '<div class="col">'+
-                                'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
+                        '</td>'+
+                        '<td style="word-wrap: break-word;" >'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                '</div>'+
                             '</div>'+
-                        '</div>'+
-                        '<div class="form-row">'+
-                            '<div class="col">'+
-                                'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                            '<br>'+
+                            '<div class="form-row text-center">'+
+                                '<div class="col">'+
+                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-pcap\', \''+line+'\')">Save</button>'+    
+                                '</div>'+
                             '</div>'+
-                            '<div class="col">'+
-                                'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue;" onclick="loadBPF(\''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                    '<td style="word-wrap: break-word;" >'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                            '</div>'+
-                        '</div>'+
-                        '<br>'+
-                        '<div class="form-row text-center">'+
-                            '<div class="col">'+
-                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\'socket-pcap\', \''+line+'\')">Save</button>'+    
-                            '</div>'+
-                        '</div>'+
-                    '</td>'+
-                '</tr>'; 
+                        '</td>'+
+                    '</tr>'; 
+                }
+                
+                document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
+                document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
             }
-            
-            document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
-            document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
-        }
+        } 
     })
     .catch(function (error) {
         // return false;
@@ -719,15 +796,15 @@ function saveStapChanges(type, uuid){
     jsonDeployService["uuid"] = uuid;
     jsonDeployService["type"] = type;
     if (type == "socket-network"){
-        jsonDeployService["name"] = document.getElementById('socket-network-name-'+uuid).value;
-        jsonDeployService["port"] = document.getElementById('socket-network-port-'+uuid).value;
-        jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+uuid).value;
+        jsonDeployService["name"] = document.getElementById('socket-network-name-'+uuid).value.trim();
+        jsonDeployService["port"] = document.getElementById('socket-network-port-'+uuid).value.trim();
+        jsonDeployService["cert"] = document.getElementById('socket-network-cert-'+uuid).value.trim();
     }else if (type == "socket-pcap"){        
-        jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+uuid).value;
-        jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+uuid).value;
-        jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+uuid).value;
-        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+uuid).value;
-        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+uuid).value;
+        jsonDeployService["name"] = document.getElementById('socket-pcap-name-'+uuid).value.trim();
+        jsonDeployService["port"] = document.getElementById('socket-pcap-port-'+uuid).value.trim();
+        jsonDeployService["cert"] = document.getElementById('socket-pcap-cert-'+uuid).value.trim();
+        jsonDeployService["pcap-path"] = document.getElementById('socket-pcap-pcap-path-'+uuid).value.trim();
+        jsonDeployService["pcap-prefix"] = document.getElementById('socket-pcap-pcap-prefix-'+uuid).value.trim();
     }
     var dataJSON = JSON.stringify(jsonDeployService);
 
@@ -735,10 +812,16 @@ function saveStapChanges(type, uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
-        loadPlugins();
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{            
+            loadPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -784,15 +867,21 @@ function saveBPF(uuid, value){
     var bpfjson = JSON.stringify(jsonbpfdata);
 
     axios({
-      method: 'put',
-      url: nodeurl,
-      timeout: 30000,
-      data: bpfjson
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        data: bpfjson
     })
-      .then(function (response) {
-        document.getElementById('socket-pcap-bpf-'+uuid).value = value;
-        document.getElementById('socket-pcap-bpf-default-'+uuid).innerHTML = value;
-        //   loadPlugins();
+     .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{            
+            document.getElementById('socket-pcap-bpf-'+uuid).value = value;
+            document.getElementById('socket-pcap-bpf-default-'+uuid).innerHTML = value;
+            //   loadPlugins();
+        }
       })
       .catch(function (error) {
       });
@@ -839,10 +928,16 @@ function deleteServiceMaster(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
-        loadPlugins();
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{            
+            loadPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -863,10 +958,16 @@ function changePluginStatus(uuid,param,value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
-        loadPlugins();
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{            
+            loadPlugins();
+        }
     })
     .catch(function (error) {
         // return false;
@@ -887,10 +988,16 @@ function changeDataflowStatus(uuid,param,value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
-        loadPlugins();
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{            
+            loadPlugins();
+        }
     })
     .catch(function (error) {
         // return false;
@@ -906,23 +1013,29 @@ function PingCollector(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Master STAP Collector is not available.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else if (response.data != ""){
-            collectorMasterStatus.style.color="green";
-        }else{
-            collectorMasterStatus.style.color="red";
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{            
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Master STAP Collector is not available.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else if (response.data != ""){
+                collectorMasterStatus.style.color="green";
+            }else{
+                collectorMasterStatus.style.color="red";
+            }
         }
     })
     .catch(function (error) {
@@ -937,24 +1050,28 @@ function playMasterCollector(){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Can\'t start Master STAP Collector.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Can\'t start Master STAP Collector.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }
         }
-        return true;
     })
     .catch(function (error) {
-        return false;
     });
 }
 
@@ -965,21 +1082,27 @@ function stopMasterCollector(){
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Can\'t stop Master STAP Collector.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            return true;
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Can\'t stop Master STAP Collector.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                return true;
+            }
         }
     })
     .catch(function (error) {
@@ -994,22 +1117,28 @@ function showMasterCollector(){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {
-        if (response.data.ack == "false"){
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Can\'t retrieve data from Master STAP Collector.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            showMasterModalCollector(response);
-            return true;
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Can\'t retrieve data from Master STAP Collector.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                showMasterModalCollector(response);
+                return true;
+            }
         }
     })
     .catch(function (error) {
@@ -1117,26 +1246,31 @@ function AddSTAPModal(type){
                     '<tbody id="socket-network-modal-table-master">' +
                     '</tbody>'+
                 '</table>';   
-                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface')
-                .then(function (response) {
-                    var isChecked = false;
-                    var inner = "";
-                    for (net in response.data){
-                        inner = inner + '<tr>'+
-                            '<td style="word-wrap: break-word;">' +
-                                '<p class="ml-4">'+response.data[net]+'</p>'+
-                            '</td>'+
-                            '<td style="word-wrap: break-word;">';
-                                if (!isChecked){
-                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
-                                    isChecked = true;
-                                }else{
-                                    inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
-                                }
-                            inner = inner + '</td>'+
-                        '</tr>';
+                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
+               .then(function (response) {
+                    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                    if(response.data.permissions == "none"){
+                        PrivilegesMessage();              
+                    }else{   
+                        var isChecked = false;
+                        var inner = "";
+                        for (net in response.data){
+                            inner = inner + '<tr>'+
+                                '<td style="word-wrap: break-word;">' +
+                                    '<p class="ml-4">'+response.data[net]+'</p>'+
+                                '</td>'+
+                                '<td style="word-wrap: break-word;">';
+                                    if (!isChecked){
+                                        inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select" checked>';                        
+                                        isChecked = true;
+                                    }else{
+                                        inner = inner + '<input class="socket-network-radio-stap" type="radio" id="create-socket-network-'+net+'" value="'+net+'" name="net-select">';                        
+                                    }
+                                inner = inner + '</td>'+
+                            '</tr>';
+                        }
+                        document.getElementById('socket-network-modal-table-master').innerHTML = inner;
                     }
-                    document.getElementById('socket-network-modal-table-master').innerHTML = inner;
                 });   
             }
         html = html + '</div>'+
@@ -1233,42 +1367,48 @@ function saveSoftwareTAP(type){
         });
 
         var jsonSave = {}
-        jsonSave["name"] = document.getElementById('soft-tap-name-master').value;
+        jsonSave["name"] = document.getElementById('soft-tap-name-master').value.trim();
         jsonSave["type"] = type;
-        jsonSave["cert"] = document.getElementById('soft-tap-cert-master').value;
-        jsonSave["port"] = document.getElementById('soft-tap-port-master').value;
+        jsonSave["cert"] = document.getElementById('soft-tap-cert-master').value.trim();
+        jsonSave["port"] = document.getElementById('soft-tap-port-master').value.trim();
         jsonSave["interface"] = valueSelected;
-        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path-master').value; jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix-master').value; jsonSave["bpf"] = document.getElementById('soft-tap-bpf-master').value;}
+        if (type == "socket-pcap"){ jsonSave["pcap-path"] = document.getElementById('soft-tap-pcap-path-master').value.trim(); jsonSave["pcap-prefix"] = document.getElementById('soft-tap-pcap-prefix-master').value.trim(); jsonSave["bpf"] = document.getElementById('soft-tap-bpf-master').value.trim();}
         var dataJSON = JSON.stringify(jsonSave);
         axios({
             method: 'put',
             url: nodeurl,
             timeout: 30000,
+            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
             data: dataJSON
         })
-        .then(function (response) {
-            if (response.data.ack == "true") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> '+type+' service added successfully.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error adding service: </strong>'+response.data.error+''+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+       .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                if (response.data.ack == "true") {
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                        '<strong>Success!</strong> '+type+' service added successfully.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }else{
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error adding service: </strong>'+response.data.error+''+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                }
+                loadPlugins();
             }
-            loadPlugins();
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -1302,21 +1442,27 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
-        if (response.data.ack == "false") {
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
-        }else{
-            loadPlugins();
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                loadPlugins();
+            }
         }
     })
     .catch(function (error) {
@@ -1346,10 +1492,16 @@ function StopStapServiceMaster(uuid, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
-        loadPlugins();
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            loadPlugins();
+        }
     })
     .catch(function (error) {
     });
@@ -1378,63 +1530,66 @@ function loadNetworkValuesService(name, service){
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
-    .then(function (response) {        
-        var html = '<div class="modal-dialog" id="network-modal-master">'+
-          '<div class="modal-content">'+
-
-            '<div class="modal-header" style="word-break: break-all;">'+
-              '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
-              '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
-            '</div>'+
-
-            '<div class="modal-body" id="delete-node-footer-table">';
-
-                if (response.data.ack == "false"){
-                    html = html + '<span><h6>Error loading interfaces</h6></span>';
-                } else {
-                    html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                    '<thead>              ' +
-                    '<tr>                 ' +
-                    '<th>Network</th>        ' +
-                    '<th>Select</th>     ' +
-                    '</tr>                ' +
-                    '</thead>             ' +
-                    '<tbody >             ' ;
-                    for (net in response.data){
-                        html = html +
-                        '<tr>'+
-                            '<td style="word-wrap: break-word;">' +
-                                response.data[net]+
-                            '</td><td style="word-wrap: break-word;">' +
-                                '<input class="suricata-interface" type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
-                            '</td>'+
-                        '</tr>';
-                    }
-                    html = html + '</tbody>'+
-                    '</table>';
-                }
-            html = html + '</div>'+
-
-            '<div class="modal-footer" id="delete-node-footer-btn">'+
-                '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
-                    if (response.data.ack != "false"){
-                            html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="SaveStapInterface(\''+service+'\')">Save</button>';
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var html = '<div class="modal-dialog" id="network-modal-master">'+
+              '<div class="modal-content">'+
+    
+                '<div class="modal-header" style="word-break: break-all;">'+
+                  '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
+                  '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
+                '</div>'+
+    
+                '<div class="modal-body" id="delete-node-footer-table">';
+    
+                    if (response.data.ack == "false"){
+                        html = html + '<span><h6>Error loading interfaces</h6></span>';
+                    } else {
+                        html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>              ' +
+                        '<tr>                 ' +
+                        '<th>Network</th>        ' +
+                        '<th>Select</th>     ' +
+                        '</tr>                ' +
+                        '</thead>             ' +
+                        '<tbody >             ' ;
+                        for (net in response.data){
+                            html = html +
+                            '<tr>'+
+                                '<td style="word-wrap: break-word;">' +
+                                    response.data[net]+
+                                '</td><td style="word-wrap: break-word;">' +
+                                    '<input class="suricata-interface" type="radio" id="net-value-'+net+'" value="'+net+'" name="net-select">'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                        html = html + '</tbody>'+
+                        '</table>';
                     }
                 html = html + '</div>'+
-            '</div>'+
-
-          '</div>'+
-        '</div>';
-        console.log(response);
-        document.getElementById('modal-master').innerHTML = html;
-        console.log(document.getElementById('modal-master').innerHTML);
-        // LoadNetworkValuesSelected(uuid);
-
-        $('#modal-master').modal("show");
-        $('#btn-select-interface-cross').click(function(){ $('#modal-master').modal("hide"); });
-        $('#btn-select-interface-close').click(function(){ $('#modal-master').modal("hide"); });        
+    
+                '<div class="modal-footer" id="delete-node-footer-btn">'+
+                    '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
+                        if (response.data.ack != "false"){
+                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="SaveStapInterface(\''+service+'\')">Save</button>';
+                        }
+                    html = html + '</div>'+
+                '</div>'+
+    
+              '</div>'+
+            '</div>';
+            document.getElementById('modal-master').innerHTML = html;
+    
+            $('#modal-master').modal("show");
+            $('#btn-select-interface-cross').click(function(){ $('#modal-master').modal("hide"); });
+            $('#btn-select-interface-close').click(function(){ $('#modal-master').modal("hide"); });        
+        }      
     })
     .catch(function (error) {
     });
@@ -1463,12 +1618,18 @@ function SaveStapInterface(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
         data: dataJSON
     })
-    .then(function (response) {
-        // loadPlugins();
-        document.getElementById('socket-network-interface-default-'+uuid).innerHTML = valueSelected;
-        document.getElementById('socket-network-interface-'+uuid).value = valueSelected;
+   .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            // loadPlugins();
+            document.getElementById('socket-network-interface-default-'+uuid).innerHTML = valueSelected;
+            document.getElementById('socket-network-interface-'+uuid).value = valueSelected;
+        }
     })
     .catch(function (error) {
     });
@@ -1476,6 +1637,19 @@ function SaveStapInterface(uuid){
 
 function loadJSONdata(){
     $.getJSON('../conf/ui.conf', function(data) {
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                 
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
@@ -1484,4 +1658,5 @@ function loadJSONdata(){
         loadTitleJSONdata();
     });
 }
+var payload = "";
 loadJSONdata();

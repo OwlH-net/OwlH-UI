@@ -30,12 +30,22 @@ function addServerToNode() {
     axios({
         method: 'post',
         url: urlServer,
-        timeout: 3000,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: nodeJSON
     })
         .then(function (response) {
-            GetAllServers();
-            return true;
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllServers();
+                return true;
+            }
         })
         .catch(function (error) {
             return false;
@@ -55,11 +65,21 @@ function GetAllServers() {
     axios({
         method: 'get',
         url: urlServer,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
     .then(function (response) {
-        tableServer.innerHTML = generateAllServerHTMLOutput(response);
-        return true;
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            tableServer.innerHTML = generateAllServerHTMLOutput(response);
+            return true;
+        }
     })
     .catch(function (error) {
         tableServer.innerHTML = generateAllServerHTMLOutput(error);
@@ -166,40 +186,50 @@ function generateAllServerHTMLOutput(response) {
     axios({
         method: 'get',
         url: urlServer,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
     .then(function (response) {
-        var htmDetails =
-        '<div>'+
-            '<h3 class="mb-0 low-blue lh-100" style="display: inline-block;">Values for server: '+response.data[server]['name']+'</h3>                '+
-            '<button type="button" style="float:right; margin-bottom:30px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
-        '</div>'+
-        '<table class="table table-hover" id="server-details">                                      ' +    
-            '<thead>                                                            '+
-                '<tr>                                                         ' +
-                    '<th scope="col">Param</th>                                    ' +
-                    '<th scope="col">Value</th>                                  ' +
-                    '<th scope="col" colspan="15%">Actions</th>                                 ' +
-                '</tr>                                                        ' +
-            '</thead>                                                                           '+
-            '</tbody>                                                                   ';
-                for (nameDetail in response.data[server]){                                                                        
-                    htmDetails = htmDetails +
-                    '<tr>                                                                                                   ' +
-                        '<td style="word-wrap: break-word;" id class="align-middle">'+nameDetail+'</td>                                                    ' +
-                        '<td style="word-wrap: break-word;" id class="align-middle" >'+response.data[server][nameDetail]+'</td>                            ' +
-                        '<td style="word-wrap: break-word;"><i class="fas fa-sticky-note low-blue" title="Edit" data-toggle="modal" data-target="#modal-edit-stap-server" onclick="ModalEditStapServer(\''+server+'\',\''+nameDetail+'\',\''+response.data[server][nameDetail]+'\',\''+response.data[server]['name']+'\')"></i></td>                                  ' +
-                    '</tr>                                                                                                  ' ;
-                }
-            htmDetails = htmDetails +
-            '<tr><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td></tr>'+
-            '</tbody>                                                                                                   ' +
-        '</table>                                                                                                       ' +
-        '<div>                                                                                                          '+
-            '<button type="button" style="float:right; margin-bottom:50px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
-        '</div>                                                                                                         ';
-        serverDetails.innerHTML = htmDetails;
-        return true;   
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            var htmDetails =
+            '<div>'+
+                '<h3 class="mb-0 low-blue lh-100" style="display: inline-block;">Values for server: '+response.data[server]['name']+'</h3>                '+
+                '<button type="button" style="float:right; margin-bottom:30px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
+            '</div>'+
+            '<table class="table table-hover" id="server-details">                                      ' +    
+                '<thead>                                                            '+
+                    '<tr>                                                         ' +
+                        '<th scope="col">Param</th>                                    ' +
+                        '<th scope="col">Value</th>                                  ' +
+                        '<th scope="col" colspan="15%">Actions</th>                                 ' +
+                    '</tr>                                                        ' +
+                '</thead>                                                                           '+
+                '</tbody>                                                                   ';
+                    for (nameDetail in response.data[server]){                                                                        
+                        htmDetails = htmDetails +
+                        '<tr>                                                                                                   ' +
+                            '<td style="word-wrap: break-word;" id class="align-middle">'+nameDetail+'</td>                                                    ' +
+                            '<td style="word-wrap: break-word;" id class="align-middle" >'+response.data[server][nameDetail]+'</td>                            ' +
+                            '<td style="word-wrap: break-word;"><i class="fas fa-sticky-note low-blue" title="Edit" data-toggle="modal" data-target="#modal-edit-stap-server" onclick="ModalEditStapServer(\''+server+'\',\''+nameDetail+'\',\''+response.data[server][nameDetail]+'\',\''+response.data[server]['name']+'\')"></i></td>                                  ' +
+                        '</tr>                                                                                                  ' ;
+                    }
+                htmDetails = htmDetails +
+                '<tr><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td><td style="word-wrap: break-word;"></td></tr>'+
+                '</tbody>                                                                                                   ' +
+            '</table>                                                                                                       ' +
+            '<div>                                                                                                          '+
+                '<button type="button" style="float:right; margin-bottom:50px;" class="btn btn-secondary" onclick="CloseServerDetails()">Close</button>'+
+            '</div>                                                                                                         ';
+            serverDetails.innerHTML = htmDetails;
+            return true;   
+        }
     })
     .catch(function (error) {
         return false;
@@ -282,11 +312,21 @@ function EditStapServer(server, param){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
         data: nodeJSON
     })
         .then(function (response) {
-            //GetAllServers();
-            loadServerDetails(server);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                //GetAllServers();
+                loadServerDetails(server);
+            }
         })
         .catch(function error() {
         });
@@ -301,10 +341,20 @@ function RunStapServer(server) {
     axios({
         method: 'put',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        }
     })
         .then(function (response) {
-            GetAllServers();
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllServers();
+            }
         })
         .catch(function error() {
         });
@@ -321,9 +371,19 @@ function StopStapServer(server) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
     })
         .then(function (response) {
-            GetAllServers();
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllServers();
+            }
         })
         .catch(function error() {
         });
@@ -340,9 +400,19 @@ function DeleteStapServer(server) {
         method: 'put',
         url: nodeurl,
         timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user,
+            'uuid': payload.uuid,
+        },
     })
         .then(function (response) {
-            GetAllServers();
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                GetAllServers();
+            }
         })
         .catch(function error() {
         });
@@ -350,6 +420,19 @@ function DeleteStapServer(server) {
 
 function loadJSONdata() {
     $.getJSON('../conf/ui.conf', function (data) {
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                 
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
@@ -358,5 +441,5 @@ function loadJSONdata() {
         GetAllServers();
     });
 }
-
+var payload = "";
 loadJSONdata();

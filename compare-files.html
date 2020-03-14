@@ -52,7 +52,17 @@
                         <a class="nav-link" href="config.html">Config</a>
                     </li>
                 </ul>
-                <p id="current-version-text" class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+                        <!-- loged button -->
+        <div class="dropdown mr-4">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Loged as: </b></button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
+            <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" style="cursor:pointer;" onclick="Logout()">Logout</a>
+          </div>
+        </div>
+        <!-- current version -->
+        <p id="current-version-text" class="text-justify align-middle text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
             </div>
         </nav>
 
@@ -66,8 +76,9 @@
             </div>
                 
             <!--Every line row-->
-            <div class="container" id="compare-lines-table">
-            </div>
+            <div class="container" id="compare-lines-table"></div>
+            <!-- Modal -->
+            <div class="modal fade" id="modal-window"></div>
 
             <!-- Load master ip/port -->
             <div id="load-json-data" style="display: none;">
@@ -89,5 +100,6 @@
         <script src="js/footer.js"></script>
         <script src="js/compare-files.js"></script>
         <script src="js/loadTitle.js"></script>
+        <script src="js/loginButton.js"></script>
     </body>
 </html>

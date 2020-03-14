@@ -1,4 +1,33 @@
-getAllFiles()
+
+var payload = "";
+loadJSONdata();
+
+function loadJSONdata() {
+    $.getJSON('../conf/ui.conf', function (data) {
+        //token check
+        var tokens = document.cookie.split(".");
+        if (tokens.length != 3){
+            document.cookie = "";
+        }
+        if(document.cookie == ""){
+            document.location.href='https://'+location.hostname+'/login.html';
+        }
+        try {payload = JSON.parse(atob(tokens[1]));}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        //login button
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                 
+        var ipLoad = document.getElementById('ip-master');
+        ipLoad.value = data.master.ip;
+        var portLoad = document.getElementById('port-master');
+        portLoad.value = data.master.port;
+        
+        loadTitleJSONdata();
+        getAllFiles();
+    });
+}
+// }getAllFiles()
+
 function getAllFiles() {
     var urlData = new URL(window.location.href);
     var uuid = urlData.searchParams.get("uuid");
@@ -15,10 +44,16 @@ function getAllFiles() {
     axios({
         method: 'get',
         url: nodeurl,
-        timeout: 30000
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
         .then(function (response) {
-            files.innerHTML = generateAllFilesOutput(response, node);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{
+                files.innerHTML = generateAllFilesOutput(response, node);
+            }
         })
         .catch(function (error) {
             files.innerHTML = '<h3 align="center">No connection</h3>'+
@@ -64,8 +99,7 @@ function generateAllFilesOutput(response, node) {
 }
 
 function loadEditURL(uuid, file, nodeName){
-    var ipmaster = document.getElementById('ip-master').value;
-    document.location.href = 'https://' + ipmaster + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
 
 function checkStatus() {
@@ -74,15 +108,3 @@ function checkStatus() {
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/home';
     document.getElementById('check-status-config').href = nodeurl;
 }
-
-function loadJSONdata() {
-    $.getJSON('../conf/ui.conf', function (data) {
-        var ipLoad = document.getElementById('ip-master');
-        ipLoad.value = data.master.ip;
-        var portLoad = document.getElementById('port-master');
-        portLoad.value = data.master.port;
-        loadTitleJSONdata();
-        getAllFiles();
-    });
-}
-loadJSONdata();

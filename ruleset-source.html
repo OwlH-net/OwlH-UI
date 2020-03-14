@@ -55,7 +55,17 @@
                     <a class="nav-link" href="config.html">Config</a>
                 </li>
             </ul>
-            <p id="current-version-text" class="text-justify text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+                    <!-- loged button -->
+        <div class="dropdown mr-4">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Loged as: </b></button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
+            <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" style="cursor:pointer;" onclick="Logout()">Logout</a>
+          </div>
+        </div>
+        <!-- current version -->
+        <p id="current-version-text" class="text-justify align-middle text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
         </div>
     </nav>
 
@@ -80,14 +90,14 @@
         <br>
 
         <div class="text-decoration-none text-primary" style="width:20%; float:right;">
-                <a class="text-white btn btn-primary float-right" onclick="formAddRulesetSource()" id="ruleset-source-text-top" style="display: block; cursor: default; float:right;">Add new ruleset source</a> 
+                <a class="text-white btn btn-primary float-right" onclick="formAddRulesetSource()" id="ruleset-source-text-top" style="display: block; cursor: pointer; float:right;">Add new ruleset source</a> 
         </div><br><br>
 
         <div id="list-ruleset-source">
         </div><br>
 
         <div class="text-decoration-none text-primary" style="width:20%; float:right;">
-                <a class="text-white btn btn-primary float-right" onclick="formAddRulesetSource()" id="ruleset-source-text-bot" style="display: block; cursor: default; float:right;">Add new ruleset source</a> 
+                <a class="text-white btn btn-primary float-right" onclick="formAddRulesetSource()" id="ruleset-source-text-bot" style="display: block; cursor: pointer; float:right;">Add new ruleset source</a> 
         </div><br><br><br>
         
         <!-- Form for add new groups -->
@@ -165,8 +175,8 @@
                     </div>
                 </div>
                 <div class="text-primary form-group col-md-6">
-                    <a href="#" onclick="editRulesetSourceData()">Modify</a>
-                    <a href="#" onclick="editRulesetSourceClose()">Close</a>
+                    <a class="text-white btn btn-primary float-right ml-0" href="#" onclick="editRulesetSourceData()">Modify</a>
+                    <a class="text-white btn btn-secondary float-right mr-1" href="#" onclick="editRulesetSourceClose()">Close</a>
                 </div>
             </form>
         </div>
@@ -175,8 +185,9 @@
         <div id="footer"></div>
 
         <!-- Modal delete ruleset source -->
-        <div class="modal fade" id="modal-delete-source">
-        </div>
+        <div class="modal fade" id="modal-delete-source"></div>
+        <!-- Modal -->
+        <div class="modal fade" id="modal-window"></div>
 
         <!-- Load master ip/port and download status-->
         <div id="load-json-data" style="display: none;">
@@ -197,6 +208,7 @@
     <script src="js/ruleset-source.js"></script>
     <script src="js/loadTitle.js"></script>
     <script src="js/footer.js"></script>
+    <script src="js/loginButton.js"></script>
   </body>
 </html>
 

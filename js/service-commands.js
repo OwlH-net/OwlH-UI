@@ -64,23 +64,14 @@ function getServideCommands(){
             PrivilegesMessage();
         }else{
             if (response.data.ack == "false") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Get commands error: '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
+                document.getElementById("command-content").innerHTML = '<h3 class="text-center">There are not commands executred for node <b>'+name+'</b></h3>';
             }else{
-                console.log(response.data);
                 var isEmpty = true;
 
                 html = '<div class="input-group" width="100%">'+
-                    '<input class="form-control mx-3 searchInputValue" type="text" placeholder="Search by name..." aria-label="Search" id="search-value-details">'+
+                    '<input class="form-control mx-3" type="text" placeholder="Search by date..." aria-label="Search" id="search-value-details">'+
                     '<a type="button" class="btn btn-primary" id="command-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
                 '</div><br>'+
                 '<div>'+
@@ -92,6 +83,7 @@ function getServideCommands(){
                         '<tr>'+
                             '<th onclick="sortTable()">Date</td>'+
                             '<th>Type</td>'+
+                            '<th>Status</td>'+
                             '<th>Actions</td>'+
                         '</tr>'+
                     '</thead>'+
@@ -100,11 +92,18 @@ function getServideCommands(){
                             isEmpty = false;    
                             html = html + '<tr date="'+response.data[data]["date"]+'">'+
                                 '<td>'+response.data[data]["date"]+'</td>'+
-                                '<td>'+response.data[data]["type"]+'</td>'+                       
-                                '<td><i class="fas fa-chevron-circle-down" style="cursor:pointer;" onclick="showCommandDetails(\''+data+'\')" id="details-show-'+data+'"></i></td>'+
+                                '<td>'+response.data[data]["type"]+'</td>';
+                                if(response.data[data]["status"] == "Error"){
+                                    html = html + '<td style="color: Red;"><b>'+response.data[data]["status"]+'</b></td>';                       
+                                }else if(response.data[data]["status"] == "Stop"){
+                                    html = html + '<td style="color: Black;"><b>'+response.data[data]["status"]+'</b></td>';                       
+                                }else{
+                                    html = html + '<td style="color: Green;"><b>'+response.data[data]["status"]+'</b></td>';                       
+                                }                       
+                                html = html + '<td><i class="fas fa-chevron-circle-down" style="cursor:pointer;" onclick="showCommandDetails(\''+data+'\')" id="details-show-'+data+'"></i></td>'+
                             '</tr>'+
                             '<tr date="'+response.data[data]["date"]+'">'+
-                                '<td colspan="3">'+
+                                '<td colspan="4">'+
                                     '<table id="command-'+data+'" style="display: none;" class="table" style="table-layout: fixed" style="width:100%">'+
                                         '<tr date="'+response.data[data]["date"]+'">'+
                                             '<td>';
@@ -122,34 +121,25 @@ function getServideCommands(){
                 '</table>';
 
                 if (isEmpty == true){
-                    html = '<h2 class="text-center">There is no service command executed</h2>';
+                    html = '<h2 class="text-center">There are no service commands executed for node <b>'+name+'</b></h2>';
                 }
                 document.getElementById("command-content").innerHTML = html;
-
-                //search bar
-                $('#command-search-value').click(function(){ loadValueBySearch(document.getElementById('search-value-details').value)});
-            
-                // listener for seach bar
-                document.getElementById('search-value-details').addEventListener('input', evt => {
-                    if (document.getElementById('search-value-details').value.trim() == ""){ showAllHiddenRows();} 
-                });
-
             }
         }
+        //search bar
+        $('#command-search-value').click(function(){ loadValueBySearch(document.getElementById('search-value-details').value)});
+        // listener for seach bar
+        document.getElementById('search-value-details').addEventListener('input', evt => {
+            if (document.getElementById('search-value-details').value.trim() == ""){ showAllHiddenRows();} 
+        });
+        sortTable();
+        var row = $(this).closest('table').children('tr:first');
+        console.log(row);
     })
     .catch(function (error) {
-        console.log(error);
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
-        $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Get commands error: '+error+'.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+        document.getElementById("command-content").innerHTML = '<h3 class="text-center">Error getting commands for service <b>'+name+'</b></h3>';
     });
 }
 

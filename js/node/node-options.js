@@ -351,7 +351,7 @@ function loadPlugins(){
     '</div>';
     //STAP - traffic management
     var htmlstap = ""+
-    '<div class="float-right" id="stap-installed-status">'+
+    '<div class="float-right" id="stap-installed-status" style="display:none;">'+
         '<b>SOCAT:</b> <span id="stap-installed-socat" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
         '<b>TCPREPLAY:</b> <span id="stap-installed-tcpreplay" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
         '<b>TCPDUMP:</b> <span id="stap-installed-tcpdump" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
@@ -4397,470 +4397,492 @@ function PingPluginsNode(uuid) {
                 'uuid': payload.uuid,
             }
     })
-    .then(function (response) {  
-        console.log(response.data);     
+    .then(function (response) {   
+        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
-            for(line in response.data){
-                // if (line == "knownports"){
-                //     if (response.data[line]["status"] == "Enabled"){
-                //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
-                //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
-                //         document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-                //     }else if (response.data[line]["status"] == "Disabled"){
-                //         document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
-                //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
-                //         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                //     }
-                //     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-                // }else if (response.data[line]["type"] == "suricata"){
-
-                //put if socat, tcpdump and tcpreplay are installed
-                if(response.data["installed"]["checkSocat"] == "false" || response.data["installed"]["checkTcpreplay"] == "false" || response.data["installed"]["checkTcpdump"] == "false"){
-                    if(response.data["installed"]["checkSocat"] == "true"){
-                        document.getElementById("stap-installed-socat").innerHTML = "Installed";
-                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-success align-text-bottom text-white';
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Ping Plugins: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 5000);
+            }else{
+                for(line in response.data){
+                    // if (line == "knownports"){
+                    //     if (response.data[line]["status"] == "Enabled"){
+                    //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
+                    //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
+                    //         document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+                    //     }else if (response.data[line]["status"] == "Disabled"){
+                    //         document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
+                    //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
+                    //         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+                    //     }
+                    //     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+                    // }else if (response.data[line]["type"] == "suricata"){
+    
+                    //put if socat, tcpdump and tcpreplay are installed
+                    if(response.data["installed"]["checkSocat"] == "false" || response.data["installed"]["checkTcpreplay"] == "false" || response.data["installed"]["checkTcpdump"] == "false"){
+                        document.getElementById('stap-installed-status').style.display = "block";
+                        if(response.data["installed"]["checkSocat"] == "true"){
+                            document.getElementById("stap-installed-socat").innerHTML = "Installed";
+                            document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                        }else{
+                            document.getElementById("stap-installed-socat").innerHTML = "Not installed";
+                            document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                        }
+                        if(response.data["installed"]["checkTcpreplay"] == "true"){
+                            document.getElementById("stap-installed-tcpreplay").innerHTML = "Installed";
+                            document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                        }else{
+                            document.getElementById("stap-installed-tcpreplay").innerHTML = "Not installed";
+                            document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                        }
+                        if(response.data["installed"]["checkTcpdump"] == "true"){
+                            document.getElementById("stap-installed-tcpdump").innerHTML = "Installed";
+                            document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                        }else{
+                            document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
+                            document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                        }
+    
                     }else{
-                        document.getElementById("stap-installed-socat").innerHTML = "Not installed";
-                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                        document.getElementById("stap-installed-status").style.display = "none";
                     }
-                    if(response.data["installed"]["checkTcpreplay"] == "true"){
-                        document.getElementById("stap-installed-tcpreplay").innerHTML = "Installed";
-                        document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-success align-text-bottom text-white';
-                    }else{
-                        document.getElementById("stap-installed-tcpreplay").innerHTML = "Not installed";
-                        document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-danger align-text-bottom text-white';
-                    }
-                    if(response.data["installed"]["checkTcpdump"] == "true"){
-                        document.getElementById("stap-installed-tcpdump").innerHTML = "Installed";
-                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-success align-text-bottom text-white';
-                    }else{
-                        document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
-                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
-                    }
-
-                }else{
-                    document.getElementById("stap-installed-status").style.display = "none";
-                }
-
-                //put suricata parameters
-                if (response.data[line]["type"] == "suricata"){
-                    if (response.data[line]["command"]){
-                        tableSuricataCommand = tableSuricataCommand + '<tr>'+
-                            '<td>'+response.data[line]["pid"]+'</td>'+
-                            '<td>'+response.data[line]["command"]+'</td>'+
-                            '<td>'+
-                                '<span style="cursor: pointer;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
-                                '<span style="cursor: pointer;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Reload</span>'+
-                            '</td>'+
-
-                        '<tr>';
-                    }else{
-                        tableSuricata = tableSuricata + '<tr>'+
+    
+                    //put suricata parameters
+                    if (response.data[line]["type"] == "suricata"){
+                        if (response.data[line]["command"]){
+                            tableSuricataCommand = tableSuricataCommand + '<tr>'+
+                                '<td>'+response.data[line]["pid"]+'</td>'+
+                                '<td>'+response.data[line]["command"]+'</td>'+
+                                '<td>'+
+                                    '<span style="cursor: pointer;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
+                                    '<span style="cursor: pointer;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Reload</span>'+
+                                '</td>'+
+    
+                            '<tr>';
+                        }else{
+                            tableSuricata = tableSuricata + '<tr>'+
+                                '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                                '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
+                                    if(response.data[line]["status"]=="enabled"){
+                                        tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                        if(response.data[line]["running"]=="true"){
+                                            tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                        }else{
+                                            tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                        }
+                                    }else if (response.data[line]["status"]=="disabled"){
+                                        tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                        if(response.data[line]["running"]=="true"){
+                                            tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                        }else{
+                                            tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                        }
+                                    }
+                                    tableSuricata = tableSuricata + '</td>'+
+                                '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                                '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'"></td>';
+                                tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                                '<td style="word-wrap: break-word;">';
+                                    if(response.data[line]["status"]=="enabled"){
+                                        tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                                    }else if (response.data[line]["status"]=="disabled"){
+                                        tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
+                                    }
+                                    tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                    // '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
+                                    // '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
+                                    // '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> &nbsp'+
+                                    '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                    '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                                '</td>'+
+                            '</tr>'+
+                            '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                                '<td style="word-wrap: break-word;" colspan="5">'+
+                                    '<div class="form-row">'+
+                                        '<div class="col">'+
+                                            'Description: <input class="form-control" id="suricata-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                        '</div>'+
+                                        '<div class="col">'+
+                                            // 'BPF: <i class="fas fa-edit" id="suricata-bpf-icon-'+line+'" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF"></i>'+
+                                            'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"></i>'+
+                                            '<input class="form-control" id="suricata-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '<div class="form-row">'+
+                                        '<div class="col">'+
+                                            'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
+                                            '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="" disabled>'+
+                                        '</div>'+
+                                        '<div class="col">'+
+                                            'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
+                                            '<input class="form-control" id="suricata-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</td>'+
+                                '<td style="word-wrap: break-word;" >'+
+                                    '<div class="form-row text-center">'+
+                                        '<div class="col">'+
+                                            '<button class="btn btn-seconday" id="modify-stap-cancel-suricata-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '<br>'+
+                                    '<div class="form-row text-center">'+
+                                        '<div class="col">'+
+                                            '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                    }else if (response.data[line]["type"] == "zeek"){
+                        tableZeek = tableZeek + '<tr>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
-                            '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
+                            '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
                                 if(response.data[line]["status"]=="enabled"){
-                                    tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                    tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
                                     if(response.data[line]["running"]=="true"){
-                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                        tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
                                     }else{
-                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                        tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
                                     }
                                 }else if (response.data[line]["status"]=="disabled"){
-                                    tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                    tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                                     if(response.data[line]["running"]=="true"){
-                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                        tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
                                     }else{
-                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                        tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
                                     }
                                 }
-                                tableSuricata = tableSuricata + '</td>'+
-                            '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                            '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'"></td>';
-                            tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                                tableZeek = tableZeek + '</td>'+
+                            '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
                             '<td style="word-wrap: break-word;">';
-                                if(response.data[line]["status"]=="enabled"){
-                                    tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
-                                }else if (response.data[line]["status"]=="disabled"){
-                                    tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
-                                }
-                                tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
-                                // '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
-                                // '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
-                                // '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> &nbsp'+
-                                '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                                '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                                // if(response.data[line]["status"]=="enabled"){
+                                //     tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                                // }else if (response.data[line]["status"]=="disabled"){
+                                //     tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                                // }
+                                tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                '<i class="fas fa-trash-alt" style="color: red; cursor: pointer;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                             '</td>'+
                         '</tr>'+
                         '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                            '<td style="word-wrap: break-word;" colspan="5">'+
+                            '<td style="word-wrap: break-word;" colspan="4">'+
                                 '<div class="form-row">'+
                                     '<div class="col">'+
-                                        'Description: <input class="form-control" id="suricata-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                        'Description: <input class="form-control" id="zeek-name-'+line+'" value="'+response.data[line]["name"]+'">'+
                                     '</div>'+
                                     '<div class="col">'+
-                                        // 'BPF: <i class="fas fa-edit" id="suricata-bpf-icon-'+line+'" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF"></i>'+
-                                        'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"></i>'+
-                                        '<input class="form-control" id="suricata-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
+                                        '<input class="form-control" type="text" id="zeek-interface-config" value="" disabled>'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        '<div class="form-row text-center">'+
+                                            '<div class="col">'+
+                                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                            '</div>'+
+                                            '<div class="col">'+
+                                                '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+
+                                            '</div>'+
+                                        '</div>'+
+                                        '<br>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                        '</tr>';
+    
+                    }else if (response.data[line]["type"] == "socket-network"){
+                        tableSocketNetwork = tableSocketNetwork + '<tr>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }else{
+                                    tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }
+                                if((response.data[line]["pid"] == "none" && response.data[line]["running"] == "true") || (response.data[line]["pid"] != "none" && response.data[line]["running"] != "true")){
+                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <i class="fas fa-exclamation-triangle" style="color:Orange; cursor:pointer;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i>';
+                                }
+                            tableSocketNetwork = tableSocketNetwork + '</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                            '<td style="word-wrap: break-word;">';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
+                                }else if (response.data[line]["pid"] != "none"){
+                                    tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
+                                }
+                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
+                                '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                            '<td style="word-wrap: break-word;" colspan="4">'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
                                     '</div>'+
                                 '</div>'+
                                 '<div class="form-row">'+
                                     '<div class="col">'+
-                                        'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
-                                        '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="" disabled>'+
+                                        'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                                     '</div>'+
                                     '<div class="col">'+
-                                        'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
-                                        '<input class="form-control" id="suricata-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                        'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
                                     '</div>'+
                                 '</div>'+
                             '</td>'+
                             '<td style="word-wrap: break-word;" >'+
                                 '<div class="form-row text-center">'+
                                     '<div class="col">'+
-                                        '<button class="btn btn-seconday" id="modify-stap-cancel-suricata-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                        '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
                                     '</div>'+
                                 '</div>'+
                                 '<br>'+
                                 '<div class="form-row text-center">'+
                                     '<div class="col">'+
-                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+
+                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                        '</tr>';
+                    }else if (response.data[line]["type"] == "socket-pcap"){
+                        tableSocketPcap = tableSocketPcap + '<tr>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                            if (response.data[line]["pid"] == "none"){
+                                tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }else{
+                                tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                if(response.data[line]["running"]=="true"){
+                                    tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }
+                            if((response.data[line]["pid"] == "none" && response.data[line]["running"] == "true") || (response.data[line]["pid"] != "none" && response.data[line]["running"] != "true")){
+                                tableSocketPcap = tableSocketPcap + '&nbsp <i class="fas fa-exclamation-triangle" style="color:Orange; cursor:pointer;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i>';
+                            }
+                            tableSocketPcap = tableSocketPcap + '</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                            '<td style="word-wrap: break-word;">';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;cursor: pointer; " onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \'none\',\'socket-pcap\')"></i> &nbsp';
+                                }else if (response.data[line]["pid"] != "none"){
+                                    tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                                }
+                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
+                                '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                            '<td style="word-wrap: break-word;" colspan="6">'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;" >'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<br>'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                        '</tr>';
+                    }else if (response.data[line]["type"] == "network-socket"){
+                        tableNetworkSocket = tableNetworkSocket + '<tr>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                            if (response.data[line]["pid"] == "none"){
+                                tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
+                                if(response.data[line]["running"]=="true"){
+                                    tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }else{
+                                tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> ';
+                                if(response.data[line]["running"]=="true"){
+                                    tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                }else{
+                                    tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                }
+                            }
+                            if((response.data[line]["pid"] == "none" && response.data[line]["running"] == "true") || (response.data[line]["pid"] != "none" && response.data[line]["running"] != "true")){
+                                tableNetworkSocket = tableNetworkSocket + '&nbsp <i class="fas fa-exclamation-triangle" style="color:Orange; cursor:pointer;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i>';
+                            }
+                            tableNetworkSocket = tableNetworkSocket + '</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="network-socket-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="network-socket-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                            '<td style="word-wrap: break-word;">';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \''+response.data[line]["collector"]+'\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'network-socket\')"></i> &nbsp';
+                                }else if (response.data[line]["pid"] != "none"){
+                                    tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
+                                }
+                                tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
+                                '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                            '<td style="word-wrap: break-word;" colspan="6">'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Description: <input class="form-control" id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Port: <input class="form-control" id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Collector: <input class="form-control" id="network-socket-collector-'+line+'" value="'+response.data[line]["collector"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Certificate: <input class="form-control" id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'BPF: <i class="fas fa-edit" title="BPF" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;" >'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-seconday" id="modify-stap-cancel-network-socket-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<br>'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+
                                     '</div>'+
                                 '</div>'+
                             '</td>'+
                         '</tr>';
                     }
-                }else if (response.data[line]["type"] == "zeek"){
-                    tableZeek = tableZeek + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
-                            if(response.data[line]["status"]=="enabled"){
-                                tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }else if (response.data[line]["status"]=="disabled"){
-                                tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }
-                            tableZeek = tableZeek + '</td>'+
-                        '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            // if(response.data[line]["status"]=="enabled"){
-                            //     tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
-                            // }else if (response.data[line]["status"]=="disabled"){
-                            //     tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
-                            // }
-                            tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                            '<i class="fas fa-trash-alt" style="color: red; cursor: pointer;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                        '<td style="word-wrap: break-word;" colspan="4">'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Description: <input class="form-control" id="zeek-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
-                                    '<input class="form-control" type="text" id="zeek-interface-config" value="" disabled>'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    '<div class="form-row text-center">'+
-                                        '<div class="col">'+
-                                            '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                                        '</div>'+
-                                        '<div class="col">'+
-                                            '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+
-                                        '</div>'+
-                                    '</div>'+
-                                    '<br>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                    '</tr>';
-
-                }else if (response.data[line]["type"] == "socket-network"){
-                    tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
-                            if (response.data[line]["pid"] == "none"){
-                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }else{
-                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }
-                        tableSocketNetwork = tableSocketNetwork + '</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            if (response.data[line]["pid"] == "none"){
-                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
-                            }else if (response.data[line]["pid"] != "none"){
-                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
-                            }
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                            '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
-                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                        '<td style="word-wrap: break-word;" colspan="4">'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                        '<td style="word-wrap: break-word;" >'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                                '</div>'+
-                            '</div>'+
-                            '<br>'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                    '</tr>';
-                }else if (response.data[line]["type"] == "socket-pcap"){
-                    tableSocketPcap = tableSocketPcap + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
-                        if (response.data[line]["pid"] == "none"){
-                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                            if(response.data[line]["running"]=="true"){
-                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                            }
-                        }else{
-                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                            if(response.data[line]["running"]=="true"){
-                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                    document.getElementById('zeek-table-services').innerHTML = tableZeek;
+                    document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
+                    document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
+                    document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
+                    document.getElementById('suricata-table-services').innerHTML = tableSuricata;
+                    document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;
+                }
+    
+                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid, {
+                    headers:{
+                        'token': document.cookie,
+                        'user': payload.user,
+                        'uuid': payload.uuid,
+                    }
+                })
+                .then(function (response) {
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.permissions == "none"){
+                    PrivilegesMessage();
+                }else{
+                    if (response.data.ack == "false") {
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong> Load interfaces: '+response.data.error+'.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    }else{
+                        if (document.getElementById('zeek-interface') != null){
+                            for (net in response.data){
+                                document.getElementById('zeek-interface').value = response.data[net]["interface"];
                             }
                         }
-                        tableSocketPcap = tableSocketPcap + '</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            if (response.data[line]["pid"] == "none"){
-                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;cursor: pointer; " onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \'none\',\'socket-pcap\')"></i> &nbsp';
-                            }else if (response.data[line]["pid"] != "none"){
-                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
-                            }
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                            '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
-                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                        '<td style="word-wrap: break-word;" colspan="6">'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                        '<td style="word-wrap: break-word;" >'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                                '</div>'+
-                            '</div>'+
-                            '<br>'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                    '</tr>';
-                }else if (response.data[line]["type"] == "network-socket"){
-                    tableNetworkSocket = tableNetworkSocket + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
-                        if (response.data[line]["pid"] == "none"){
-                            tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
-                            if(response.data[line]["running"]=="true"){
-                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                            }
-                        }else{
-                            tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> ';
-                            if(response.data[line]["running"]=="true"){
-                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                            }
-                        }
-                        tableNetworkSocket = tableNetworkSocket + '</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="network-socket-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="network-socket-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            if (response.data[line]["pid"] == "none"){
-                                tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \''+response.data[line]["collector"]+'\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'network-socket\')"></i> &nbsp';
-                            }else if (response.data[line]["pid"] != "none"){
-                                tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
-                            }
-                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                            '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
-                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                        '<td style="word-wrap: break-word;" colspan="6">'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Description: <input class="form-control" id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Port: <input class="form-control" id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Collector: <input class="form-control" id="network-socket-collector-'+line+'" value="'+response.data[line]["collector"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Certificate: <input class="form-control" id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'BPF: <i class="fas fa-edit" title="BPF" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                        '<td style="word-wrap: break-word;" >'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-seconday" id="modify-stap-cancel-network-socket-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                                '</div>'+
-                            '</div>'+
-                            '<br>'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                    '</tr>';
+                    }
                 }
-                document.getElementById('zeek-table-services').innerHTML = tableZeek;
-                document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
-                document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
-                document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
-                document.getElementById('suricata-table-services').innerHTML = tableSuricata;
-                document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;
-            }
-
-            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid, {
-                headers:{
-                    'token': document.cookie,
-                    'user': payload.user,
-                    'uuid': payload.uuid,
-                }
-            })
-            .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();
-            }else{
-                if (response.data.ack == "false") {
+                })
+                .catch(function (error){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Load interfaces: '+response.data.error+'.'+
+                        '<strong>Error!</strong> Load interfaces: '+error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
                     setTimeout(function() {$(".alert").alert('close')}, 5000);
-                }else{
-                    if (document.getElementById('zeek-interface') != null){
-                        for (net in response.data){
-                            document.getElementById('zeek-interface').value = response.data[net]["interface"];
-                        }
-                    }
-                }
+                });
             }
-            })
-            .catch(function (error){
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Load interfaces: '+error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            });
         }
     })
     .catch(function (error) {

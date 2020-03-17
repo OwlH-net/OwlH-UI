@@ -4962,6 +4962,10 @@ function saveStapChanges(uuid, type, service){
             PrivilegesMessage();
         }else{
             if (response.data.ack == "false") {
+                // if(type == "socket-network"){document.getElementById('soc-net-exclamation-'+service).style.display = "block";}
+                // if(type == "socket-pcap"){document.getElementById('soc-pcap-exclamation-'+service).style.display = "block";}
+                // if(type == "network-socket"){document.getElementById('net-soc-exclamation-'+service).style.display = "block";}
+
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -4970,7 +4974,7 @@ function saveStapChanges(uuid, type, service){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 30000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);                
                 loadPlugins();
             }else{
                 loadPlugins();

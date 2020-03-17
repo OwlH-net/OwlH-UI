@@ -4620,7 +4620,7 @@ function PingPluginsNode(uuid) {
                                         tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
                                     }
                                 }
-                                tableSocketNetwork = tableSocketNetwork + '<div id="soc-net-exclamation" style="cursor:pointer; display:none;">'+
+                                tableSocketNetwork = tableSocketNetwork + '<div id="soc-net-exclamation-'+line+'" style="cursor:pointer; display:none;">'+
                                     '&nbsp <i class="fas fa-exclamation-triangle fa-lg" style="color:Orange;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                                     '<span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
                                 '</div>'+
@@ -4690,7 +4690,7 @@ function PingPluginsNode(uuid) {
                                         tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
                                     }
                                 }
-                                tableSocketPcap = tableSocketPcap + '<div id="soc-pcap-exclamation" style="cursor:pointer; display:none;">'+
+                                tableSocketPcap = tableSocketPcap + '<div id="soc-pcap-exclamation-'+line+'" style="cursor:pointer; display:none;">'+
                                     '&nbsp <i class="fas fa-exclamation-triangle fa-lg" style="color:Orange;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                                     '<span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
                                 '</div>'+
@@ -4770,7 +4770,7 @@ function PingPluginsNode(uuid) {
                                         tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
                                     }
                                 }
-                                tableNetworkSocket = tableNetworkSocket + '<div id="net-soc-exclamation" style="cursor:pointer; display:none;">'+
+                                tableNetworkSocket = tableNetworkSocket + '<div id="net-soc-exclamation-'+line+'" style="cursor:pointer; display:none;">'+
                                     '&nbsp <i class="fas fa-exclamation-triangle fa-lg" style="color:Orange;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                                     '<span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
                                 '</div>'+
@@ -5019,9 +5019,9 @@ function ModalDeleteService(uuid, service, type, name){
 }
 
 function deployStapService(uuid, service, collector,port,interface, type){
-    document.getElementById('soc-net-exclamation').style.display = "none";
-    document.getElementById('soc-pcap-exclamation').style.display = "none";
-    document.getElementById('net-soc-exclamation').style.display = "none";
+    if(type == "socket-network"){document.getElementById('soc-net-exclamation-'+service).style.display = "none";}
+    if(type == "socket-pcap"){document.getElementById('soc-pcap-exclamation-'+service).style.display = "none";}
+    if(type == "network-socket"){document.getElementById('net-soc-exclamation-'+service).style.display = "none";}
     
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -5055,9 +5055,9 @@ function deployStapService(uuid, service, collector,port,interface, type){
             PrivilegesMessage();
         }else{
             if (response.data.ack == "false") {
-                if(type == "socket-network"){document.getElementById('soc-net-exclamation').style.display = "block";}
-                if(type == "socket-pcap"){document.getElementById('soc-pcap-exclamation').style.display = "block";}
-                if(type == "network-socket"){document.getElementById('net-soc-exclamation').style.display = "block";}
+                if(type == "socket-network"){document.getElementById('soc-net-exclamation-'+service).style.display = "block";}
+                if(type == "socket-pcap"){document.getElementById('soc-pcap-exclamation-'+service).style.display = "block";}
+                if(type == "network-socket"){document.getElementById('net-soc-exclamation-'+service).style.display = "block";}
 
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');

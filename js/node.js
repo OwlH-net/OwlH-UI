@@ -11,7 +11,7 @@
 // 				'<span aria-hidden="true">&times;</span>'+
 // 			'</button>'+
 // 		'</div>';
-//       setTimeout(function() {$(".alert").alert('close')}, 5000);
+//       setTimeout(function() {$(".alert").alert('close')}, 30000);
 //     }else{
 // 		formAddNids();//close add nids form
 // 		var nodejson = {}
@@ -43,7 +43,7 @@
 // 						'<span aria-hidden="true">&times;</span>'+
 // 					'</button>'+
 // 				'</div>';
-// 				setTimeout(function() {$(".alert").alert('close')}, 5000);
+// 				setTimeout(function() {$(".alert").alert('close')}, 30000);
 // 			}else{
 // 				$('html,body').scrollTop(0);
 // 				var alert = document.getElementById('floating-alert');
@@ -53,7 +53,7 @@
 // 						'<span aria-hidden="true">&times;</span>'+
 // 					'</button>'+
 // 				'</div>';
-// 				setTimeout(function() {$(".alert").alert('close')}, 5000);
+// 				setTimeout(function() {$(".alert").alert('close')}, 30000);
 // 			}
 // 			GetAllNodes();
 // 		})
@@ -66,7 +66,7 @@
 // 					'<span aria-hidden="true">&times;</span>'+
 // 				'</button>'+
 // 			'</div>';
-// 			setTimeout(function() {$(".alert").alert('close')}, 5000);
+// 			setTimeout(function() {$(".alert").alert('close')}, 30000);
 // 		});   
 //     }
 // }
@@ -115,7 +115,7 @@
 //                         '<span aria-hidden="true">&times;</span>'+
 //                     '</button>'+
 //                 '</div>';
-//                 setTimeout(function() {$(".alert").alert('close')}, 5000);
+//                 setTimeout(function() {$(".alert").alert('close')}, 30000);
 //         });   
 //         document.getElementById('divconfigform').style.display = "none";
 //         return false;

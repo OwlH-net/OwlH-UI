@@ -366,7 +366,7 @@ function GetAllNodes() {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);   
+            setTimeout(function() {$(".alert").alert('close')}, 30000);   
 
             document.getElementById('progressBar-node').style.display = "none";
             document.getElementById('progressBar-node-div').style.display = "none";
@@ -551,7 +551,7 @@ function deployNode(value,uuid,nodeName){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -561,7 +561,7 @@ function deployNode(value,uuid,nodeName){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -828,7 +828,7 @@ function addNode() {
 				'<span aria-hidden="true">&times;</span>'+
 			'</button>'+
 		'</div>';
-      setTimeout(function() {$(".alert").alert('close')}, 5000);
+      setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else{
 		formAddNids();//close add nids form
 		var nodejson = {}
@@ -866,7 +866,7 @@ function addNode() {
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -876,7 +876,7 @@ function addNode() {
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }
                 GetAllNodes();
             }
@@ -890,7 +890,7 @@ function addNode() {
 					'<span aria-hidden="true">&times;</span>'+
 				'</button>'+
 			'</div>';
-			setTimeout(function() {$(".alert").alert('close')}, 5000);
+			setTimeout(function() {$(".alert").alert('close')}, 30000);
 		});   
     }
 }
@@ -937,7 +937,7 @@ function modifyNodeInformation() {
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     GetAllNodes();
                 }
@@ -952,7 +952,7 @@ function modifyNodeInformation() {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });   
         document.getElementById('divconfigform').style.display = "none";
         return false;

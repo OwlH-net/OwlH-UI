@@ -72,7 +72,7 @@ function LoadFileLastLines(uuid, line, path) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else if (line != "none") {
                 document.getElementById('inputTextTailLines').disabled='true';
                 document.getElementById('inputTextTailLines').style.backgroundColor='white';

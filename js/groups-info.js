@@ -398,7 +398,7 @@ async function ChangeAnalyzerStatus(nodes, status){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }
             }
         })
@@ -411,7 +411,7 @@ async function ChangeAnalyzerStatus(nodes, status){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
     GetGroupsDetails();
@@ -427,7 +427,7 @@ function editAnalyzer(node, type, name){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else{
         var ipmaster = document.getElementById('ip-master').value;
         document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+node+'&file='+type+'&node='+name;
@@ -460,7 +460,7 @@ function SuricataNodesStatus(guuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 var html = '';
                 for(x in response.data){
@@ -492,7 +492,7 @@ function SuricataNodesStatus(guuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -552,7 +552,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
             }else{
@@ -571,7 +571,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
     });
@@ -614,7 +614,7 @@ async function syncAnalyzer(nodes){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -624,7 +624,7 @@ async function syncAnalyzer(nodes){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -634,7 +634,7 @@ async function syncAnalyzer(nodes){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -647,7 +647,7 @@ async function syncAnalyzer(nodes){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
     GetGroupsDetails();
 }
@@ -702,7 +702,7 @@ function syncAllGroupElements(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 GetGroupsDetails();
             }else{
                 $('html,body').scrollTop(0);
@@ -713,7 +713,7 @@ function syncAllGroupElements(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }  
         }
     })
@@ -726,7 +726,7 @@ function syncAllGroupElements(uuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -801,7 +801,7 @@ function changePaths(guuid, type){
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                         GetGroupsDetails();
                     }else{
                         $('html,body').scrollTop(0);
@@ -812,7 +812,7 @@ function changePaths(guuid, type){
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                     }            
                 }           
             })
@@ -825,7 +825,7 @@ function changePaths(guuid, type){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }); 
     }
 }
@@ -844,7 +844,7 @@ function SyncPathGroup(guuid, type){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
 
     }else{
         hideEditGroup(type);
@@ -884,7 +884,7 @@ function SyncPathGroup(guuid, type){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                     GetGroupsDetails();
                 }else{
                     $('html,body').scrollTop(0);
@@ -895,7 +895,7 @@ function SyncPathGroup(guuid, type){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }            
             }      
         })
@@ -908,7 +908,7 @@ function SyncPathGroup(guuid, type){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         }); 
     }
 }
@@ -1027,7 +1027,7 @@ function syncSuricataGroupService(guuid){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1037,7 +1037,7 @@ function syncSuricataGroupService(guuid){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }
             }
         })
@@ -1050,7 +1050,7 @@ function syncSuricataGroupService(guuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         }); 
 }
 
@@ -1139,7 +1139,7 @@ function SyncClusterFile(uuid, type){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1149,7 +1149,7 @@ function SyncClusterFile(uuid, type){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }
                 GetGroupsDetails();
             }
@@ -1163,7 +1163,7 @@ function SyncClusterFile(uuid, type){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 }
 
@@ -1203,7 +1203,7 @@ function changeClusterValue(guuid, uuid){
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                     }else{
                         $('html,body').scrollTop(0);
                         var alert = document.getElementById('floating-alert');
@@ -1213,7 +1213,7 @@ function changeClusterValue(guuid, uuid){
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                         GetGroupsDetails();
                     }
                 }
@@ -1227,7 +1227,7 @@ function changeClusterValue(guuid, uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             });
     }
 }
@@ -1451,7 +1451,7 @@ function deleteNodeForGroup(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 GetGroupsDetails();
             }
@@ -1466,7 +1466,7 @@ function deleteNodeForGroup(uuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1542,7 +1542,7 @@ function SyncRulesetToAllGroupNodes(guuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1552,7 +1552,7 @@ function SyncRulesetToAllGroupNodes(guuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -1568,7 +1568,7 @@ function SyncRulesetToAllGroupNodes(guuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1632,7 +1632,7 @@ function updateGroupService(uuid, type, value){
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1642,7 +1642,7 @@ function updateGroupService(uuid, type, value){
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                         GetGroupsDetails();
                 }
             }
@@ -1656,7 +1656,7 @@ function updateGroupService(uuid, type, value){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 }
 
@@ -1719,7 +1719,7 @@ function addCluster(uuid, path){
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1729,7 +1729,7 @@ function addCluster(uuid, path){
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                         GetGroupsDetails();
                 }
             }
@@ -1743,7 +1743,7 @@ function addCluster(uuid, path){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 } 
 
@@ -1826,7 +1826,7 @@ function ChangeGroupConfigTable(tab){
 //                             '<span aria-hidden="true">&times;</span>'+
 //                         '</button>'+
 //                     '</div>';
-//                     setTimeout(function() {$(".alert").alert('close')}, 5000);
+//                     setTimeout(function() {$(".alert").alert('close')}, 30000);
 //             }else{
 //                 $('html,body').scrollTop(0);
 //                 var alert = document.getElementById('floating-alert');
@@ -1836,7 +1836,7 @@ function ChangeGroupConfigTable(tab){
 //                             '<span aria-hidden="true">&times;</span>'+
 //                         '</button>'+
 //                     '</div>';
-//                     setTimeout(function() {$(".alert").alert('close')}, 5000);
+//                     setTimeout(function() {$(".alert").alert('close')}, 30000);
 //                     GetGroupsDetails();
 //             }
 //         })
@@ -1849,6 +1849,6 @@ function ChangeGroupConfigTable(tab){
 //                         '<span aria-hidden="true">&times;</span>'+
 //                     '</button>'+
 //                 '</div>';
-//                 setTimeout(function() {$(".alert").alert('close')}, 5000);
+//                 setTimeout(function() {$(".alert").alert('close')}, 30000);
 //         });
 // }

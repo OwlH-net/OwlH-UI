@@ -96,7 +96,7 @@ function addRulesetSource() {
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     GetAllRulesetSource();
                 }
@@ -110,7 +110,7 @@ function addRulesetSource() {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
         GetAllRulesetSource();
     }
@@ -537,7 +537,7 @@ function downloadFile(name, path, url, sourceUUID){
                         '</div>';
                         icon.style.color="Dodgerblue";
                         downloadStatus.value = "true";
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
     
                         document.getElementById('progressBar-create').style.display = "none";
                         document.getElementById('progressBar-create-div').style.display = "none";
@@ -551,7 +551,7 @@ function downloadFile(name, path, url, sourceUUID){
                             '</button>'+
                         '</div>';
                         downloadStatus.value = "false";
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
     
                         document.getElementById('progressBar-create').style.display = "none";
                         document.getElementById('progressBar-create-div').style.display = "none";
@@ -568,7 +568,7 @@ function downloadFile(name, path, url, sourceUUID){
                     '</button>'+
                 '</div>';
                 downloadStatus.value = "false";
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
 
                 document.getElementById('progressBar-create').style.display = "none";
                 document.getElementById('progressBar-create-div').style.display = "none";
@@ -646,7 +646,7 @@ function overwriteDownload(name, path, url, uuid){
                 '</div>';
                 icon.style.color="Dodgerblue";
                 downloadStatus.value = "true";
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
     
                 document.getElementById('progressBar-create').style.display = "none";
                 document.getElementById('progressBar-create-div').style.display = "none";
@@ -660,7 +660,7 @@ function overwriteDownload(name, path, url, uuid){
                 '</div>';
                 // icon.style.color="Grey";
                 // downloadStatus.value = "false";
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
     
                 document.getElementById('progressBar-create').style.display = "none";
                 document.getElementById('progressBar-create-div').style.display = "none";
@@ -677,7 +677,7 @@ function overwriteDownload(name, path, url, uuid){
         '</div>';
         // icon.style.color="Grey";
         // downloadStatus.value = "false";
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
 
         document.getElementById('progressBar-create').style.display = "none";
         document.getElementById('progressBar-create-div').style.display = "none";

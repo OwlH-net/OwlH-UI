@@ -610,7 +610,7 @@ function SyncZeekValues(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
             }else{
@@ -622,7 +622,7 @@ function SyncZeekValues(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
             }
@@ -639,7 +639,7 @@ function SyncZeekValues(uuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
     });
@@ -706,7 +706,7 @@ function changeSuricataTable(uuid){
                 '</div>';
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
@@ -725,7 +725,7 @@ function changeSuricataTable(uuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
     });
@@ -789,7 +789,7 @@ function PingPluginsMaster(){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 for(id in response.data){
                     if(id=="zeek"){
@@ -821,7 +821,7 @@ function PingPluginsMaster(){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -867,7 +867,7 @@ function ChangeZeekMode(uuid, mode){
                 '</div>';
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
@@ -886,7 +886,7 @@ function ChangeZeekMode(uuid, mode){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
     });
@@ -939,7 +939,7 @@ function ChangeMainServiceStatus(uuid, param, service){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
@@ -958,7 +958,7 @@ function ChangeMainServiceStatus(uuid, param, service){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1132,7 +1132,7 @@ async function GetMainconfData(uuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1336,7 +1336,7 @@ function saveZeekValues(uuid, param){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1346,7 +1346,7 @@ function saveZeekValues(uuid, param){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
 
                     PingPluginsMaster();
                 }
@@ -1361,7 +1361,7 @@ function saveZeekValues(uuid, param){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -1400,7 +1400,7 @@ function SyncCluster(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1410,7 +1410,7 @@ function SyncCluster(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -1423,7 +1423,7 @@ function SyncCluster(uuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1486,7 +1486,7 @@ function AddClusterValue(uuid, type, host, interface){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     loadPlugins();
                 }
@@ -1501,7 +1501,7 @@ function AddClusterValue(uuid, type, host, interface){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -1534,7 +1534,7 @@ function PingCluster(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 for(elem in response.data){
                     if(elem == "logger"){
@@ -1569,7 +1569,7 @@ function PingCluster(uuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1695,7 +1695,7 @@ function EditClusterValue(uuid, type, host, interface, cluster){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     loadPlugins();
                 }
@@ -1710,7 +1710,7 @@ function EditClusterValue(uuid, type, host, interface, cluster){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -1750,7 +1750,7 @@ function DeleteClusterValue(uuid, type){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -1765,7 +1765,7 @@ function DeleteClusterValue(uuid, type){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1848,7 +1848,7 @@ function ChangeAnalyzerStatus(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -1863,7 +1863,7 @@ function ChangeAnalyzerStatus(uuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1915,7 +1915,7 @@ function deployNode(value,uuid,nodeName){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -1928,7 +1928,7 @@ function deployNode(value,uuid,nodeName){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1973,7 +1973,7 @@ function LaunchZeekMainConf(uuid, param) {
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                     progressBar.style.display = "none";
                     progressBarDiv.style.display = "none";
                 }
@@ -1991,7 +1991,7 @@ function LaunchZeekMainConf(uuid, param) {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
         });
@@ -2034,7 +2034,7 @@ function StartSuricataMainConf(uuid) {
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);   
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);   
                 }else{
                     location.reload(); 
                 }
@@ -2051,7 +2051,7 @@ function StartSuricataMainConf(uuid) {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 }
 
@@ -2092,7 +2092,7 @@ function StopSuricataMainConf(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     location.reload(); 
                 }
@@ -2109,7 +2109,7 @@ function StopSuricataMainConf(uuid) {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 }
 
@@ -2151,7 +2151,7 @@ function KillSuricataMainConf(uuid, pid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 location.reload(); 
             }
@@ -2168,7 +2168,7 @@ function KillSuricataMainConf(uuid, pid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -2210,7 +2210,7 @@ function ReloadSuricataMainConf(uuid, pid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 location.reload(); 
             }
@@ -2227,7 +2227,7 @@ function ReloadSuricataMainConf(uuid, pid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -2265,7 +2265,7 @@ function StopSuricata(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -2284,7 +2284,7 @@ function StopSuricata(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 
 }
@@ -2558,7 +2558,7 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2568,7 +2568,7 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
             loadPlugins();
         }
@@ -2582,7 +2582,7 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -2627,7 +2627,7 @@ function AddPluginService(uuid, name, type){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -2637,7 +2637,7 @@ function AddPluginService(uuid, name, type){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
             loadPlugins();
         }
@@ -2651,7 +2651,7 @@ function AddPluginService(uuid, name, type){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -2778,7 +2778,7 @@ function saveBPF(uuid, value, service, type){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 // loadPlugins();
             }
@@ -2793,7 +2793,7 @@ function saveBPF(uuid, value, service, type){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -2897,7 +2897,7 @@ function deployZeek(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -2911,7 +2911,7 @@ function deployZeek(uuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         }
     });
 }
@@ -2982,7 +2982,7 @@ function saveRuleSelected(rule, nid, source, name, service){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
             if (source == "main"){
                 loadPlugins();
@@ -3000,7 +3000,7 @@ function saveRuleSelected(rule, nid, source, name, service){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 }
 
@@ -3271,7 +3271,7 @@ function ChangeStatus(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -3286,7 +3286,7 @@ function ChangeStatus(uuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -3331,7 +3331,7 @@ function ChangeMode(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -3346,7 +3346,7 @@ function ChangeMode(uuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -3531,7 +3531,7 @@ function sendRulesetToNode(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -3541,7 +3541,7 @@ function sendRulesetToNode(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -3554,7 +3554,7 @@ function sendRulesetToNode(uuid){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -3588,7 +3588,7 @@ function RunSuricata(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3605,7 +3605,7 @@ function RunSuricata(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 
 }
@@ -3639,7 +3639,7 @@ function StopSuricata(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3656,7 +3656,7 @@ function StopSuricata(uuid) {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 
 }
@@ -3742,7 +3742,7 @@ function RunZeek(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3792,7 +3792,7 @@ function StopZeek(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3809,7 +3809,7 @@ function StopZeek(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
 
     });
 
@@ -3870,7 +3870,7 @@ function PingZeek(uuid) {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
         });
@@ -3905,7 +3905,7 @@ function RunWazuh(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3922,7 +3922,7 @@ function RunWazuh(uuid) {
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 
     loadPlugins();
@@ -3957,7 +3957,7 @@ function StopWazuh(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3974,7 +3974,7 @@ function StopWazuh(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4115,7 +4115,7 @@ function PingWazuhFiles(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
             var isError = false;
             for(obj in response.data){
@@ -4128,7 +4128,7 @@ function PingWazuhFiles(uuid) {
                     //         '<span aria-hidden="true">&times;</span>'+
                     //     '</button>'+
                     // '</div>';
-                    // setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    // setTimeout(function() {$(".alert").alert('close')}, 30000);
                     isError = true;
                 }
             }
@@ -4178,7 +4178,7 @@ function PingWazuhFiles(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4266,7 +4266,7 @@ function RunStap(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -4281,7 +4281,7 @@ function RunStap(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4314,7 +4314,7 @@ function StopStap(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 // setTimeout(function (){
                     loadPlugins();
@@ -4331,7 +4331,7 @@ function StopStap(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4412,7 +4412,7 @@ function PingPluginsNode(uuid) {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 for(line in response.data){
                     // if (line == "knownports"){
@@ -4620,10 +4620,11 @@ function PingPluginsNode(uuid) {
                                         tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
                                     }
                                 }
-                                if((response.data[line]["pid"] == "none" && response.data[line]["running"] == "true") || (response.data[line]["pid"] != "none" && response.data[line]["running"] != "true")){
-                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <i class="fas fa-exclamation-triangle" style="color:Orange; cursor:pointer;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i>';
-                                }
-                            tableSocketNetwork = tableSocketNetwork + '</td>'+
+                                tableSocketNetwork = tableSocketNetwork + '<div id="soc-net-exclamation" style="cursor:pointer; display:none;">'+
+                                    '&nbsp <i class="fas fa-exclamation-triangle fa-lg" style="color:Orange;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                    '<span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
+                                '</div>'+
+                            '</td>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                             '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
@@ -4674,25 +4675,26 @@ function PingPluginsNode(uuid) {
                     }else if (response.data[line]["type"] == "socket-pcap"){
                         tableSocketPcap = tableSocketPcap + '<tr>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
-                            if (response.data[line]["pid"] == "none"){
-                                tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
                                 }else{
-                                    tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
                                 }
-                            }else{
-                                tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }
-                            if((response.data[line]["pid"] == "none" && response.data[line]["running"] == "true") || (response.data[line]["pid"] != "none" && response.data[line]["running"] != "true")){
-                                tableSocketPcap = tableSocketPcap + '&nbsp <i class="fas fa-exclamation-triangle" style="color:Orange; cursor:pointer;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i>';
-                            }
-                            tableSocketPcap = tableSocketPcap + '</td>'+
+                                tableSocketPcap = tableSocketPcap + '<div id="soc-pcap-exclamation" style="cursor:pointer; display:none;">'+
+                                    '&nbsp <i class="fas fa-exclamation-triangle fa-lg" style="color:Orange;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                    '<span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
+                                '</div>'+
+                            '</td>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
@@ -4753,25 +4755,26 @@ function PingPluginsNode(uuid) {
                     }else if (response.data[line]["type"] == "network-socket"){
                         tableNetworkSocket = tableNetworkSocket + '<tr>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
-                            if (response.data[line]["pid"] == "none"){
-                                tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
-                                if(response.data[line]["running"]=="true"){
-                                    tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
                                 }else{
-                                    tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> ';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
                                 }
-                            }else{
-                                tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> ';
-                                if(response.data[line]["running"]=="true"){
-                                    tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }
-                            if((response.data[line]["pid"] == "none" && response.data[line]["running"] == "true") || (response.data[line]["pid"] != "none" && response.data[line]["running"] != "true")){
-                                tableNetworkSocket = tableNetworkSocket + '&nbsp <i class="fas fa-exclamation-triangle" style="color:Orange; cursor:pointer;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i>';
-                            }
-                            tableNetworkSocket = tableNetworkSocket + '</td>'+
+                                tableNetworkSocket = tableNetworkSocket + '<div id="net-soc-exclamation" style="cursor:pointer; display:none;">'+
+                                    '&nbsp <i class="fas fa-exclamation-triangle fa-lg" style="color:Orange;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                    '<span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
+                                '</div>'+
+                            '</td>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
                             '<td style="word-wrap: break-word;" id="network-socket-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
@@ -4861,7 +4864,7 @@ function PingPluginsNode(uuid) {
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                     }else{
                         if (document.getElementById('zeek-interface') != null){
                             for (net in response.data){
@@ -4880,7 +4883,7 @@ function PingPluginsNode(uuid) {
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 });
             }
         }
@@ -4894,7 +4897,7 @@ function PingPluginsNode(uuid) {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4967,7 +4970,7 @@ function saveStapChanges(uuid, type, service){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 loadPlugins();
             }else{
                 loadPlugins();
@@ -4983,7 +4986,7 @@ function saveStapChanges(uuid, type, service){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -5016,6 +5019,10 @@ function ModalDeleteService(uuid, service, type, name){
 }
 
 function deployStapService(uuid, service, collector,port,interface, type){
+    document.getElementById('soc-net-exclamation').style.display = "none";
+    document.getElementById('soc-pcap-exclamation').style.display = "none";
+    document.getElementById('net-soc-exclamation').style.display = "none";
+    
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deployStapService';
@@ -5048,6 +5055,10 @@ function deployStapService(uuid, service, collector,port,interface, type){
             PrivilegesMessage();
         }else{
             if (response.data.ack == "false") {
+                if(type == "socket-network"){document.getElementById('soc-net-exclamation').style.display = "block";}
+                if(type == "socket-pcap"){document.getElementById('soc-pcap-exclamation').style.display = "block";}
+                if(type == "network-socket"){document.getElementById('net-soc-exclamation').style.display = "block";}
+
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -5056,7 +5067,7 @@ function deployStapService(uuid, service, collector,port,interface, type){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -5071,7 +5082,7 @@ function deployStapService(uuid, service, collector,port,interface, type){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -5111,7 +5122,7 @@ function stopStapService(uuid, service, type){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -5126,7 +5137,7 @@ function stopStapService(uuid, service, type){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -5165,7 +5176,7 @@ function deleteService(uuid, service){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -5180,7 +5191,7 @@ function deleteService(uuid, service){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -5194,7 +5205,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else{
         //desplegar load bar
         var progressBar = document.getElementById('progressBar-options');
@@ -5246,7 +5257,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                     }else{
                         progressBar.style.display = "none";
                         progressBarDiv.style.display = "none";
@@ -5264,7 +5275,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
         });

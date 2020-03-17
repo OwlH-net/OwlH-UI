@@ -90,7 +90,7 @@ function ChangePasswordLogin(){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -100,7 +100,7 @@ function ChangePasswordLogin(){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }
             }
         })
@@ -113,7 +113,7 @@ function ChangePasswordLogin(){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -132,5 +132,5 @@ function PrivilegesMessage(){
             '<span aria-hidden="true">&times;</span>'+
         '</button>'+
     '</div>';
-    setTimeout(function() {$(".alert").alert('close')}, 5000);
+    setTimeout(function() {$(".alert").alert('close')}, 30000);
 }

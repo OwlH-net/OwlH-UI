@@ -38,7 +38,7 @@ function loadFileIntoTextarea(){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 return '<div style="text-align:center"><h3 style="color:red;">Error retrieving '+file+' content.</h3></div>';
             }else{
                 txtArea.innerHTML = response.data.fileContent;
@@ -61,7 +61,7 @@ function loadFileIntoTextarea(){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
         return '<div style="text-align:center"><h3 style="color:red;">Error retrieving '+file+' content.</h3></div>';
     });
      
@@ -101,7 +101,7 @@ function saveFileChanged() {
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 window.history.back();
             }
@@ -116,7 +116,7 @@ function saveFileChanged() {
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 

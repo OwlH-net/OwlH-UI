@@ -90,7 +90,7 @@ function showActions(action){
 //                     '<span aria-hidden="true">&times;</span>'+
 //                 '</button>'+
 //             '</div>';
-//             setTimeout(function() {$(".alert").alert('close')}, 5000);
+//             setTimeout(function() {$(".alert").alert('close')}, 30000);
 //     });
 // }
 

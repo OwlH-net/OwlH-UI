@@ -83,8 +83,9 @@ function getServideCommands(){
                         '<tr>'+
                             '<th onclick="sortTable()">Date</td>'+
                             '<th>Type</td>'+
+                            '<th>Action</td>'+
                             '<th>Status</td>'+
-                            '<th>Actions</td>'+
+                            '<th>Details</td>'+
                         '</tr>'+
                     '</thead>'+
                     '<tbody>';
@@ -92,7 +93,8 @@ function getServideCommands(){
                             isEmpty = false;    
                             html = html + '<tr date="'+response.data[data]["date"]+'">'+
                                 '<td>'+response.data[data]["date"]+'</td>'+
-                                '<td>'+response.data[data]["type"]+'</td>';
+                                '<td>'+response.data[data]["type"]+'</td>'+
+                                '<td>'+response.data[data]["action"]+'</td>';
                                 if(response.data[data]["status"] == "Error"){
                                     html = html + '<td style="color: Red;"><b>'+response.data[data]["status"]+'</b></td>';                       
                                 }else if(response.data[data]["status"] == "Stop"){
@@ -103,7 +105,7 @@ function getServideCommands(){
                                 html = html + '<td><i class="fas fa-chevron-circle-down" style="cursor:pointer;" onclick="showCommandDetails(\''+data+'\')" id="details-show-'+data+'"></i></td>'+
                             '</tr>'+
                             '<tr date="'+response.data[data]["date"]+'">'+
-                                '<td colspan="4">'+
+                                '<td colspan="5">'+
                                     '<table id="command-'+data+'" style="display: none;" class="table" style="table-layout: fixed" style="width:100%">'+
                                         '<tr date="'+response.data[data]["date"]+'">'+
                                             '<td>';

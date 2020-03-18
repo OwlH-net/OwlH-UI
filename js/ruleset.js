@@ -50,7 +50,9 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
     if(type == "ruleset" && !isCustomSourceType){
         html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="getToCustomRuleset(\''+rulesetuuid+'\')">Add to custom</button><br><br>';
     }else if(type == "custom"){
-        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+fileuuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
+        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+fileuuid+'\', \''+ruleName+'\')">Edit ruleset</button>'+
+            '<button class="btn btn-success mx-1" id="refresh-custom-ruleset" style="float: right; display: none;" onclick="GetAllRuleset()">Refresh</button>'+
+            '<br><br>';
     }       
     html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
@@ -123,6 +125,7 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
 }
 
 function editRuleset(fileuuid, nodeName){
+    document.getElementById('refresh-custom-ruleset').style.display = "block";
     document.location.href = 'https://' + location.hostname + '/edit-ruleset.html?fileuuid='+fileuuid+'&file='+nodeName;
 }
 

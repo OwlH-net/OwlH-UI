@@ -19,6 +19,7 @@ function loadJSONdata(){
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;      
         loadRulesData();
+
         loadTitleJSONdata();      
     });
 }
@@ -26,6 +27,11 @@ var payload = "";
 loadJSONdata();
 
 function loadRulesData(){
+    var urlData = new URL(window.location.href);
+    var rulesetUuid = urlData.searchParams.get("uuid");
+    var rulesetName = urlData.searchParams.get("name");
+    var rulesetDesc = urlData.searchParams.get("desc");
+
     var result = document.getElementById('new-ruleset-table');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -44,7 +50,11 @@ function loadRulesData(){
             PrivilegesMessage();              
         }else{
             result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
-            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+            if(rulesetUuid != null && rulesetName != null){
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, "modify");});
+            }else{
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, "create");});
+            }
             for (source in response.data){
                 if (response.data[source]["type"] && document.getElementById('selector-checkbox-'+response.data[source]["sourceUUID"]) != null){
                     document.getElementById('selector-checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
@@ -53,8 +63,23 @@ function loadRulesData(){
                 }
             }         
         }
+
+        //check for modify status
+        if(rulesetUuid != null && rulesetName != null){
+            //change input name and desc
+            document.getElementById('new-ruleset-name-input').value = rulesetName;
+            document.getElementById('new-ruleset-description-input').value = rulesetDesc;
+            //change button text
+            document.getElementById('top-add-btn').innerHTML = "Modify";
+            document.getElementById('bot-add-btn').innerHTML = "Modify";
+            //change title and subtitle
+            document.getElementById('title-banner').innerHTML = "Modify ruleset";
+            document.getElementById('subtitle-banner').innerHTML = "Ruleset: "+rulesetName;
+            loadCurrentRules(rulesetUuid);
+        }
     })
     .catch(function (error) {
+        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
@@ -121,7 +146,7 @@ function generateAllRuleDataHTMLOutput(sources) {
     '</div>'+
     '<div class="mt-3">'+
         '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mb-0" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
-        '<button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
+        '<button id="top-add-btn" class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
     '</div>'+
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
         '<thead>                                                      ' +
@@ -161,7 +186,7 @@ function generateAllRuleDataHTMLOutput(sources) {
                 }
             }
     html = html + '</tbody></table>'+
-    '<br><button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
+    '<br><button id="bot-add-btn" class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
 
     if (isEmpty){
         return '<h3 style="text-align:center">No sources created</h3>';
@@ -237,7 +262,7 @@ function searchRuleset(rulesetNames, checkboxIds){
     });
 }
 
-function modalAddNewRuleset(){   
+function modalAddNewRuleset(rulesetUuid, status){   
     $(".createNewRulesetLocal").unbind("click");
 
     //show progress-bar
@@ -249,6 +274,7 @@ function modalAddNewRuleset(){
         var uuid = $(this).prop("id");
         var value = $(this).prop("value");
         if (value == "table-elements"){
+            console.log(uuid);
             newRuleset[uuid] = new Map();
             newRuleset[uuid]["sourceName"] = document.getElementById('nameNewRuleset-'+uuid+'').innerHTML;
             newRuleset[uuid]["fileName"] = document.getElementById('fileNewRuleset-'+uuid+'').innerHTML;
@@ -256,6 +282,7 @@ function modalAddNewRuleset(){
             newRuleset[uuid]["rulesetName"] = document.getElementById('new-ruleset-name-input').value.trim();
             newRuleset[uuid]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value.trim();
             newRuleset[uuid]["sourceType"] = document.getElementById('source-type-'+uuid).innerHTML;
+            newRuleset[uuid]["uuid"] = rulesetUuid;
             length++;
         }
     });
@@ -281,7 +308,7 @@ function modalAddNewRuleset(){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
             setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else if (isDuplicated){      
         document.getElementById('progressBar-create-div').style.display="none";
@@ -308,17 +335,21 @@ function modalAddNewRuleset(){
         '</div>';
 
         $('#modal-window').modal('show');
-        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});     
+        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});     
     } else {        
         $('#modal-window').modal('dispose');        
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
-        var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
+        if(status == "modify"){
+            var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/modify';
+        }else{
+            var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
+        }
         var nodeJSON = JSON.stringify(newRuleset);
         if (length == 0){
             document.getElementById('progressBar-create-div').style.display="none";
             document.getElementById('progressBar-create').style.display="none";
-            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
             
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
@@ -349,7 +380,7 @@ function modalAddNewRuleset(){
                         document.getElementById('progressBar-create').style.display="none";
                         document.location.href = 'https://' + location.hostname + '/rulesets.html';
                     }else if (response.data.ack == "false"){
-                        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
                         document.getElementById('progressBar-create-div').style.display="none";
                         document.getElementById('progressBar-create').style.display="none";
         
@@ -370,7 +401,7 @@ function modalAddNewRuleset(){
                         //     }
                         // }
                         // if (enabled){
-                            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
                             document.getElementById('progressBar-create-div').style.display="none";
                             document.getElementById('progressBar-create').style.display="none";
                                 
@@ -433,6 +464,7 @@ function modalAddNewRuleset(){
                 }
             })
             .catch(function (error) {
+                console.log(error);
             });
         }
     }
@@ -482,4 +514,34 @@ function sortTableName() {
     }else{
         document.getElementById('sort-nodes-name').setAttribute("sort", "asc");
     }
+}
+
+function loadCurrentRules(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/getDetails/'+uuid;
+    axios({
+        method: 'get',
+        url: sourceurl,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{
+           console.log(response.data);
+           $('input:checkbox:not(checked)').each(function() {
+                var id = $(this).prop("id");
+                for(x in response.data){
+                    if(id == response.data[x]["sourceFileUUID"]){
+                        $(this).prop("checked", true);                      
+                    }
+                }
+            });        
+        }
+    })
+    .catch(function (error) {
+    });
 }

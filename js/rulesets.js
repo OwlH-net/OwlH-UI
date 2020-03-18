@@ -13,21 +13,25 @@ function GetAllRulesets() {
             'uuid': payload.uuid,
         }
     })
-        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
-            }
-        })
-        .catch(function (error) {
-            resultElement.innerHTML = '<div style="text-align:center"><h3>No connection</h3></div>'+
-            '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
-            checkStatus();
-        });
-    }
-    
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            resultElement.innerHTML = generateAllRulesetsHTMLOutput(response);
+        }
+    })
+    .catch(function (error) {
+        resultElement.innerHTML = '<div style="text-align:center"><h3>No connection</h3></div>'+
+        '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
+        checkStatus();
+    });
+}
+
+function EditExistingRuleset(name,uuid, desc){
+    document.location.href = 'https://' + location.hostname + '/create-ruleset.html?name='+name+'&uuid='+uuid+'&desc='+desc;
+}
+
 function generateAllRulesetsHTMLOutput(response) {
     if (response.data.ack == "false") {
         return '<div style="text-align:center"><h3 style="color:red;">Error retrieving data for rulesets</h3></div>';
@@ -58,16 +62,16 @@ function generateAllRulesetsHTMLOutput(response) {
                     '<i class="fas fa-info-circle" title="Details" style="cursor:pointer;" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
                     '<i class="fas fa-sync-alt" style="cursor:pointer;" title="Sync ruleset files" id="sync-ruleset-files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     if(ruleset[uuid]["status"]=="enabled"){
-                        html = html + '<i class="fas fa-stopwatch" style="color:green;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
+                        html = html + '<i class="fas fa-stopwatch" style="color:green; cursor:pointer;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
                         '<i class="far fa-clipboard" style="cursor:pointer;" title="Scheduler LOG" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else if(ruleset[uuid]["status"]=="disabled"){
-                        html = html + '<i class="fas fa-stopwatch" style="color:red;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
-                        // '<i class="far fa-clipboard" title="Scheduler LOG" data-toggle="modal" data-target="#modal-ruleset" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
+                        html = html + '<i class="fas fa-stopwatch" style="color:red; cursor:pointer;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
                         '<i class="far fa-clipboard" style="cursor:pointer;" title="Scheduler LOG" onclick="modalShowLog(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     }else{
-                        html = html + '<i class="fas fa-stopwatch" style="color:grey;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp';                        
+                        html = html + '<i class="fas fa-stopwatch" style="color:grey; cursor:pointer;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp';                        
                     }
-                    html = html + '| <i class="fas fa-trash-alt" style="color: red;" title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
+                    html = html + '<i class="fas fa-edit" style="color: dodgerblue; cursor:pointer;" title="Edit ruleset" onclick="EditExistingRuleset(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\', \''+ruleset[uuid]["desc"]+'\')"></i>&nbsp'+
+                    '<i class="fas fa-trash-alt" style="color: red; cursor:pointer; title="Delete source" data-toggle="modal" data-target="#modal-ruleset" onclick="deleteRulesetModal(\''+ruleset[uuid]["name"]+'\',\''+uuid+'\')"></i>'+
                 '</span>'+
             '</td></tr>';
     }

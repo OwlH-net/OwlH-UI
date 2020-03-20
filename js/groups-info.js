@@ -497,10 +497,6 @@ function SuricataNodesStatus(guuid){
 }
 
 function ChangeSuricataGroupService(uuid,action){
-    // var ipmaster = document.getElementById('ip-master').value;
-    // var portmaster = document.getElementById('port-master').value;
-    // var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/group/suricata/';
-
     $('#group-suricata-list > tr').each(function() {
         if(action == "start"){
             ChangeServiceStatus($(this).attr('uuid'), $(this).attr('guuid'), 'status', 'enabled', $(this).attr('interface'), $(this).attr('bpf'), 'suricata');

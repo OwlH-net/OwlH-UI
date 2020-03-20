@@ -4399,6 +4399,7 @@ function PingPluginsNode(uuid) {
     })
     .then(function (response) {   
         console.log(response.data);
+        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -5253,6 +5254,8 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                     PrivilegesMessage();
                 }else{
                     if (response.data.ack == "false") {
+                        progressBar.style.display = "none";
+                        progressBarDiv.style.display = "none";
                         $('html,body').scrollTop(0);
                         var alert = document.getElementById('floating-alert');
                         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

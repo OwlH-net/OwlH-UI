@@ -144,7 +144,7 @@ function GetAllRulesetSource(){
         headers:{
             'token': document.cookie,
             'user': payload.user,
-            'uuid': payload.uuid,
+            'uuid': payload.uuid
         }
     })
     .then(function (response) {

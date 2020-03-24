@@ -211,7 +211,8 @@ function generateAllRulesetSourceHTMLOutput(response) {
         '<tbody>                                                      '
     for (source in sources) {
         isEmpty = false;
-        html = html + '<tr><td style="word-wrap: break-word;">'+
+        html = html + '<tr>'+
+            '<td style="word-wrap: break-word;">'+
             sources[source]['name']+
             '</td><td style="word-wrap: break-word;">'+
             sources[source]['desc']+

@@ -189,7 +189,13 @@ function generateAllRuleDataHTMLOutput(sources) {
     '<br><button id="bot-add-btn" class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
 
     if (isEmpty){
-        return '<h3 style="text-align:center">No sources created</h3>';
+        return '<h3 style="text-align:center">There are no ruleset sources created</h3>'+
+        '<br>'+
+        '<h3 style="text-align:center">Please, create a new ruleset source first</h3>'+
+        '<br>'+
+        '<div class="text-center">'+
+            '<a class="text-white btn btn-primary" href="ruleset-source.html">Edit ruleset source</a>'+
+        '</div>';
     }else{
         return html;
     }

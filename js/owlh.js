@@ -32,6 +32,9 @@ function loadJSONdata() {
 }
 
 function showConfig(oip, oname, oport, ouuid){
+    document.getElementById('nidsform').style.display = "none";
+    document.getElementById('add-nid-top').innerHTML = "Add NID";
+    document.getElementById('add-nid-bottom').innerHTML = "Add NID";
     document.getElementById('divconfigform').style.display = "block";
     document.getElementById('divconfigform').scrollIntoView();
 
@@ -476,6 +479,7 @@ function formAddNids(){
     var addnidsbot = document.getElementById('add-nid-bottom');
     var addnidstop = document.getElementById('add-nid-top');
     var nform = document.getElementById('nidsform');
+    document.getElementById('divconfigform').style.display = "none";
 
     if (nform.style.display == "none") {
         nform.style.display = "block";

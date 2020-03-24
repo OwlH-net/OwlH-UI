@@ -73,7 +73,7 @@ function loadMonitor(){
                         '<th>Path</th>'+
                         '<th width="10%">Rotation</th>'+
                         '<th width="15%">Status</th>'+
-                        '<th width="20%">Actions</th>'+
+                        '<th width="25%">Actions</th>'+
                     '</tr>'+
                 '</thead>'+
                 '<tbody id="file-data-monitor">'+
@@ -359,7 +359,8 @@ function PingMonitorFiles(uuid){
                                 '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[file]["path"]+'\')">50</span> &nbsp'+
                                 '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[file]["path"]+'\')">100</span> &nbsp';
                             }
-                            html = html + '<i class="fas fa-sync-alt" style="color:dodgerblue;cursor: pointer;" title="Change rotation file status" onclick="ChangeRotationStatus(\''+uuid+'\', \''+file+'\', \''+response.data[file]["rotate"]+'\')"></i> &nbsp'+
+                            html = html + '<i class="fas fa-exchange-alt" style="color:dodgerblue;cursor: pointer;" title="Change rotation file status" onclick="ChangeRotationStatus(\''+uuid+'\', \''+file+'\', \''+response.data[file]["rotate"]+'\')"></i> &nbsp'+
+                            '<i class="fas fa-sync-alt" style="color:dodgerblue;cursor: pointer;" title="Reload files" onclick="loadMonitor()"></i> &nbsp'+
                             '<i class="fas fa-edit" style="color:dodgerblue;cursor: pointer;" title="Edit rotation file values" onclick="showModifyRotation(\''+file+'\')"></i> &nbsp'+
                             '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteMonitorFile(\''+uuid+'\', \''+file+'\', \''+response.data[file]["path"]+'\')"></i>'+
                         '</td>'+

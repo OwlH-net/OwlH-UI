@@ -90,7 +90,8 @@ function loadPlugins(){
                     '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'deploy\')">Deploy</span> &nbsp '+
-                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp'+
+                    // '<input class="form-check-input mx-2" type="checkbox" id="save-zeek-values"><label class="form-check-label" for="save-zeek-values">&nbsp Save Zeek data?</label>'+
                 '</span>'+
                 '&nbsp <span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+
                     '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
@@ -241,7 +242,6 @@ function loadPlugins(){
                     '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
                     '<thead id="">'+
                         '<th>Description</th>'+
-                        '<th>Status</th>'+
                         '<th>Interface</th>'+
                         '<th>Actions</th>'+
                     '</thead>'+
@@ -1141,32 +1141,36 @@ function ModalAddClusterValue(uuid, type){
       '<div class="modal-content">'+
 
         '<div class="modal-header">'+
-          '<h4 class="modal-title">Add '+type+'</h4>'+
-          '<button type="button" class="close" id="add-cluster-modal-cross">&times;</button>'+
+            '<h4 class="modal-title">Add '+type+'</h4>'+
+            '<button type="button" class="close" id="add-cluster-modal-cross">&times;</button>'+
         '</div>'+
 
         '<div class="modal-body">'+
-          '<p>Insert the host:</p>'+
-          '<input type="text" class="form-control" id="new-cluster-host" value=""><br>';
-          if (type == "worker"){
-            html = html + '<p>Insert the interface:</p>'+
-              '<input type="text" class="form-control" id="new-cluster-interface" value="">';
-          }else{
-            html = html + '<div id="new-cluster-interface"></div>';
-          }
-          html = html + '</div>'+
+            '<p>Insert the host:</p>'+
+            '<input type="text" class="form-control" id="new-cluster-host" value=""><br>';
+            if (type == "worker"){
+                html = html + '<p>Insert the interface:</p>'+
+                    '<input type="text" class="form-control" id="new-cluster-interface" value="">';
+            }else{
+                    html = html + '<div id="new-cluster-interface"></div>';
+            }
+            html = html + '</div>'+
 
         '<div class="modal-footer" id="sync-node-footer-btn">'+
-          '<button type="button" class="btn btn-secondary" id="add-cluster-modal-close">Cancel</button>'+
-          '<button type="button" class="btn btn-primary" id="add-cluster-modal">Add</button>'+
+            '<button type="button" class="btn btn-secondary" id="add-cluster-modal-close">Cancel</button>'+
+            '<button type="button" class="btn btn-primary" id="add-cluster-modal">Add</button>'+
         '</div>'+
 
       '</div>'+
     '</div>';
-
     document.getElementById('modal-window').innerHTML = html;
+
     $('#modal-window').modal("show");
-    $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value.trim(), document.getElementById('new-cluster-interface').value.trim()); });
+    if(type == "proxy"){
+        $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value.trim(), ""); });
+    }else if(type == "worker"){
+        $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value.trim(), document.getElementById('new-cluster-interface').value.trim()); });
+    }     
     $('#add-cluster-modal-close').click(function(){ $('#modal-window').modal("hide");});
     $('#add-cluster-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
@@ -1428,7 +1432,7 @@ function SyncCluster(uuid){
 }
 
 function AddClusterValue(uuid, type, host, interface){
-    if (host == "" ||  interface == ""){
+    if (((type == "proxy")&&(host == ""))||(((type == "worker")&&(host == "" || interface == "")))){
         if ((type == "proxy")&&(host == "")){
             $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");
             $('#new-cluster-host').css('border', '2px solid red');
@@ -1941,6 +1945,9 @@ function LaunchZeekMainConf(uuid, param) {
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/LaunchZeekMainConf';
 
+    // //get save zeek status
+    // console.log($("save-zeek-values").prop("checked"));
+
     var jsonValues = {}
     jsonValues["uuid"] = uuid;
     jsonValues["param"] = param;
@@ -1978,6 +1985,7 @@ function LaunchZeekMainConf(uuid, param) {
                     progressBarDiv.style.display = "none";
                 }
             }else{
+                PingZeek(uuid);
                 loadPlugins();
             }
         }
@@ -4546,23 +4554,23 @@ function PingPluginsNode(uuid) {
                     }else if (response.data[line]["type"] == "zeek"){
                         tableZeek = tableZeek + '<tr>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
-                            '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
-                                if(response.data[line]["status"]=="enabled"){
-                                    tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                                    if(response.data[line]["running"]=="true"){
-                                        tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                    }else{
-                                        tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                    }
-                                }else if (response.data[line]["status"]=="disabled"){
-                                    tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                                    if(response.data[line]["running"]=="true"){
-                                        tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                    }else{
-                                        tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                    }
-                                }
-                                tableZeek = tableZeek + '</td>'+
+                            // '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
+                            //     if(response.data[line]["status"]=="enabled"){
+                            //         tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                            //         if(response.data[line]["running"]=="true"){
+                            //             tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            //         }else{
+                            //             tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            //         }
+                            //     }else if (response.data[line]["status"]=="disabled"){
+                            //         tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                            //         if(response.data[line]["running"]=="true"){
+                            //             tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            //         }else{
+                            //             tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            //         }
+                            //     }
+                            //     tableZeek = tableZeek + '</td>'+
                             '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
                             '<td style="word-wrap: break-word;">';
                                 // if(response.data[line]["status"]=="enabled"){

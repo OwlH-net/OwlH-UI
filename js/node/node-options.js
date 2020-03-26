@@ -91,7 +91,7 @@ function loadPlugins(){
                     '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'deploy\')">Deploy</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp'+
-                    // '<input class="form-check-input mx-2" type="checkbox" id="save-zeek-values"><label class="form-check-label" for="save-zeek-values">&nbsp Save Zeek data?</label>'+
+                    ' Save Zeek Data? &nbsp &nbsp &nbsp &nbsp<input class="form-check-input my-0" type="checkbox" id="save-zeek-values">'+
                 '</span>'+
                 '&nbsp <span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+
                     '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
@@ -1945,10 +1945,16 @@ function LaunchZeekMainConf(uuid, param) {
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/LaunchZeekMainConf';
 
-    // //get save zeek status
-    // console.log($("save-zeek-values").prop("checked"));
-
+    
     var jsonValues = {}
+    //get save zeek status
+    $('input[type=checkbox]').each(function () {
+        if ($(this).prop("checked")){
+            jsonValues["saveZeek"] = "true";
+        }else{
+            jsonValues["saveZeek"] = "false";
+        }
+    });
     jsonValues["uuid"] = uuid;
     jsonValues["param"] = param;
     var dataJSON = JSON.stringify(jsonValues);
@@ -1985,7 +1991,7 @@ function LaunchZeekMainConf(uuid, param) {
                     progressBarDiv.style.display = "none";
                 }
             }else{
-                PingZeek(uuid);
+                // PingZeek(uuid);
                 loadPlugins();
             }
         }

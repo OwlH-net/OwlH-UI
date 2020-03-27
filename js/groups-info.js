@@ -112,7 +112,7 @@ function GetGroupsDetails(){
                                 '</span>'+
                                 '<br><br>'+
                                 '<span id="suricata-configure" class="badge badge-pill bg-dark align-text-bottom text-white" style="display:none;">Mode: &nbsp '+  
-                                    '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'standalone-suricata-group-table\')">Standalon</span> &nbsp '+
+                                    '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'standalone-suricata-group-table\')">Standalone</span> &nbsp '+
                                     '<span id="suricata-group-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'expert-suricata-group-table\')">Expert</span>'+
                                 '</span> &nbsp'+ 
                                 '<button id="group-suricata-sync-btn" class="btn btn-primary float-right text-decoration-none text-white" style="display:none;" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+

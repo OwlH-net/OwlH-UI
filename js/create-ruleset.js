@@ -99,19 +99,19 @@ function generateAllRuleDataHTMLOutput(sources) {
     html = html + 
     '<div>'+
         '<div class="input-group col-md-6">'+
-        '<div class="input-group-prepend">'+
-            '<span class="input-group-text">New Name</span>'+
+            '<div class="input-group-prepend">'+
+                '<span class="input-group-text">New Name</span>'+
+            '</div>'+
+            '<input type="text" class="form-control" placeholder="Ruleset name" id="new-ruleset-name-input">'+
         '</div>'+
-        '<input type="text" class="form-control" placeholder="Ruleset name" id="new-ruleset-name-input">'+
-    '</div>'+
-    '<br>'+
-    '<div class="input-group col-md-6">'+
-        '<div class="input-group-prepend">'+
-            '<span class="input-group-text">New Description</span>'+
+        '<br>'+
+        '<div class="input-group col-md-6">'+
+            '<div class="input-group-prepend">'+
+                '<span class="input-group-text">New Description</span>'+
+            '</div>'+
+            '<input type="text" class="form-control" placeholder="Ruleset description" id="new-ruleset-description-input">'+
         '</div>'+
-        '<input type="text" class="form-control" placeholder="Ruleset description" id="new-ruleset-description-input">'+
-    '</div>'+
-    '<br>'+
+        '<br>'+
     '</div>'+
     '<br><br><br>'+
 

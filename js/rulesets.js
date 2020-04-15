@@ -745,7 +745,7 @@ function syncRuleset(uuid){
                     var alert = document.getElementById('floating-alert');
                     $('html,body').scrollTop(0);
                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> The ruleset could not be synchronized.'+
+                        '<strong>Error Sync Ruleset: </strong> '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+

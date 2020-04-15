@@ -25,7 +25,7 @@ function GetAllRulesetDetails(){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack){
-                result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
+                result.innerHTML = '<h3 align="center" style="color: red;">Error retrieving files</h3>';
             }else{
                 result.innerHTML = generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid);
                 // changeIconAttributes(response.data);

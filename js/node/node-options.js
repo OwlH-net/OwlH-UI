@@ -4420,7 +4420,7 @@ function PingPluginsNode(uuid) {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Ping Plugins: '+response.data.error+'.'+
+                    '<strong>Error Ping Plugins:</strong> '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -4902,6 +4902,7 @@ function PingPluginsNode(uuid) {
         }
     })
     .catch(function (error) {
+        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

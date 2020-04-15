@@ -118,13 +118,6 @@ function GetAllUsers(){
                                     }
                                 html = html + '</table>'+
                             '</td>'+
-                            // '<td>';
-                            //     if(response.data[id]["ldap"] == "enabled"){
-                            //         html = html + '<p>LDAP</p>';
-                            //     }else if(response.data[id]["ldap"] == "disabled"){
-                            //         html = html + '<p>Local</p>';
-                            //     }
-                            // html = html + '</td>'+
                         '</tr>';
                     }
                     html = html + '</tbody>'+

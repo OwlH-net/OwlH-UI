@@ -27,6 +27,9 @@ loadJSONdata();
 
 
 function LoadFileLastLines(uuid, line, path) {
+    document.getElementById('progressBar-options-div').style.display = "block";
+    document.getElementById('progressBar-options').style.display = "block";
+
     var url = new URL(window.location.href);
     var uuid = url.searchParams.get("uuid");
     var line = url.searchParams.get("line");
@@ -59,6 +62,8 @@ function LoadFileLastLines(uuid, line, path) {
         data: dataJSON
     })
         .then(function (response) {
+        document.getElementById('progressBar-options-div').style.display = "none";
+        document.getElementById('progressBar-options').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -87,12 +92,24 @@ function LoadFileLastLines(uuid, line, path) {
         }
         })
         .catch(function (error) {
-
+            document.getElementById('progressBar-options-div').style.display = "none";
+            document.getElementById('progressBar-options').style.display = "none";
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>'+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     return false;
 }
 
 function saveCurrentContent() {
+    document.getElementById('progressBar-options-div').style.display = "block";
+    document.getElementById('progressBar-options').style.display = "block";
     var url = new URL(window.location.href);
     var uuid = url.searchParams.get("uuid");
     var path = url.searchParams.get("path");
@@ -119,14 +136,49 @@ function saveCurrentContent() {
         data: dataJSON
     })
     .then(function (response) {
+        document.getElementById('progressBar-options-div').style.display = "none";
+        document.getElementById('progressBar-options').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
-            LoadFileLastLines(uuid, "none", path);
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error! </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success! </strong>File modified successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+    
+                LoadFileLastLines(uuid, "none", path);
+            }
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options-div').style.display = "none";
+        document.getElementById('progressBar-options').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error! </strong>'+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 

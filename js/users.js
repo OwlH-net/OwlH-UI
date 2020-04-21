@@ -587,9 +587,9 @@ function modalAddUser(){
             
             '<div id="local-values" style="display:none">'+
                 '<p>Insert user password:</p>'+
-                '<input type="text" class="form-control" id="user-pass" placeholder="Insert here the new user password"><br>'+
+                '<input type="password" class="form-control" id="user-pass" placeholder="Insert here the new user password"><br>'+
                 '<p>Insert user password again:</p>'+
-                '<input type="text" class="form-control" id="user-pass-again" placeholder="Insert here the new user password"><br>'+            
+                '<input type="password" class="form-control" id="user-pass-again" placeholder="Insert here the new user password"><br>'+            
             '</div>'+
             
         '</div>'+

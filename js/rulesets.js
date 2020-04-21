@@ -708,6 +708,7 @@ function deleteRuleset(name, uuid) {
 // }
 
 function syncRuleset(uuid){
+    console.log(uuid);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/synchronize';

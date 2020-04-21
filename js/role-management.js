@@ -43,6 +43,7 @@ function GetAllRoles(){
         }
     })
     .then(function (response) {
+        console.log(response.data);
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -72,63 +73,63 @@ function GetAllRoles(){
                         html = html + '<tr>'+
                             '<td>'+response.data[id]["role"]+'</td>'+
                             '<td>'+
-                                '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowRoleDetails(\''+id+'\')"></i> &nbsp'+
+                                // '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowRoleDetails(\''+id+'\')"></i> &nbsp'+
                                 // '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalEditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="EditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteRole(\''+id+'\', \''+response.data[id]["role"]+'\')"></i>'+                                
                             '</td>'+
-                        '</tr>'+
-                        '<tr id="role-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                                     
-                            '<td>'+
-                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                                    '<tr>'+
-                                        '<th width="20%">Permissions</th>'+
-                                    '</tr>';
-                                    var roles = response.data[id]["permissions"].split(",");
-                                    for (x in roles){
-                                        if(roles[x] != ""){
-                                            html = html + '<tr>'+
-                                                '<td>'+roles[x]+'</td>'+
-                                            '</tr>';
-                                        }
-                                    }
-                                html = html + '</table>'+
-                            '</td>'+
-                            '<td>'+
-                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                                    '<tr>'+
-                                        '<th>Users</th>'+
-                                        '<th>Actions</th>'+
-                                    '</tr>';
-                                    var users = response.data[id]["users"].split(",");
-                                    for (x in users){
-                                        if(users[x] != ""){
-                                            html = html + '<tr>'+
-                                                '<td>'+users[x]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleUser(\''+id+'\', \''+users[x]+'\')"></i></td>';                                                
-                                            '</tr>';
-                                        }
-                                    }
-                                html = html + '</table>'+
-                            '</td>'+
-                            '<td>'+
-                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                                    '<tr>'+
-                                        '<th>Groups</th>'+
-                                        '<th>Actions</th>'+
-                                    '</tr>';
-                                    var groups = response.data[id]["groups"].split(",");
-                                    for (x in groups){
-                                        if(groups[x] != ""){
-                                            html = html + '<tr>'+
-                                                '<td>'+groups[x]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleGroup(\''+id+'\', \''+groups[x]+'\')"></i></td>';
-                                            '</tr>';
-                                        }
-                                    }
-                                html = html + '</table>'+
-                            '</td>'+
                         '</tr>';
+                        // '<tr id="role-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                                     
+                        //     '<td>'+
+                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                        //             '<tr>'+
+                        //                 '<th width="20%">Permissions</th>'+
+                        //             '</tr>';
+                        //             var roles = response.data[id]["permissions"].split(",");
+                        //             for (x in roles){
+                        //                 if(roles[x] != ""){
+                        //                     html = html + '<tr>'+
+                        //                         '<td>'+roles[x]+'</td>'+
+                        //                     '</tr>';
+                        //                 }
+                        //             }
+                        //         html = html + '</table>'+
+                        //     '</td>'+
+                        //     '<td>'+
+                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                        //             '<tr>'+
+                        //                 '<th>Users</th>'+
+                        //                 '<th>Actions</th>'+
+                        //             '</tr>';
+                        //             var users = response.data[id]["users"].split(",");
+                        //             for (x in users){
+                        //                 if(users[x] != ""){
+                        //                     html = html + '<tr>'+
+                        //                         '<td>'+users[x]+'</td>'+
+                        //                         '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleUser(\''+id+'\', \''+users[x]+'\')"></i></td>';                                                
+                        //                     '</tr>';
+                        //                 }
+                        //             }
+                        //         html = html + '</table>'+
+                        //     '</td>'+
+                        //     '<td>'+
+                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                        //             '<tr>'+
+                        //                 '<th>Groups</th>'+
+                        //                 '<th>Actions</th>'+
+                        //             '</tr>';
+                        //             var groups = response.data[id]["groups"].split(",");
+                        //             for (x in groups){
+                        //                 if(groups[x] != ""){
+                        //                     html = html + '<tr>'+
+                        //                         '<td>'+groups[x]+'</td>'+
+                        //                         '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleGroup(\''+id+'\', \''+groups[x]+'\')"></i></td>';
+                        //                     '</tr>';
+                        //                 }
+                        //             }
+                        //         html = html + '</table>'+
+                        //     '</td>'+
+                        // '</tr>';
                     }
                     html = html + '</tbody>'+
                 '</table>';
@@ -278,14 +279,14 @@ function AddRole(){
     }
 }
 
-function ShowRoleDetails(id){
-    var info = document.getElementById('role-info-'+id);
-    if(info.style.display == "block"){
-        info.style.display = "none"
-    }else if(info.style.display == "none"){
-        info.style.display = "block"
-    }
-}
+// function ShowRoleDetails(id){
+//     var info = document.getElementById('role-info-'+id);
+//     if(info.style.display == "block"){
+//         info.style.display = "none"
+//     }else if(info.style.display == "none"){
+//         info.style.display = "block"
+//     }
+// }
 
 
 function modalDeleteRole(id, user){

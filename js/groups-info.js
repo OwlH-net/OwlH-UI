@@ -671,10 +671,10 @@ function syncAllGroupElements(uuid){
     newSyn["suricata-services"]["configFile"] =document.getElementById('service-configfile').getAttribute("value");
     newSyn["suricata-services"]["commandLine"]=document.getElementById('service-commandline').getAttribute("value");
 
-    //sync zeek policies  
-    newSyn["zeek-policies"] = new Map();
-    newSyn["zeek-policies"]["masterzeek"] = document.getElementById('group-zeek-master-path').getAttribute("value");
-    newSyn["zeek-policies"]["nodezeek"] = document.getElementById('group-zeek-node-path').getAttribute("value");
+    // //sync zeek policies  
+    // newSyn["zeek-policies"] = new Map();
+    // newSyn["zeek-policies"]["masterzeek"] = document.getElementById('group-zeek-master-path').getAttribute("value");
+    // newSyn["zeek-policies"]["nodezeek"] = document.getElementById('group-zeek-node-path').getAttribute("value");
 
     var dataJSON = JSON.stringify(newSyn);
     axios({
@@ -1623,7 +1623,7 @@ function updateGroupService(uuid, type, value){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
                         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                            '<strong>Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
+                            '<strong>Error updateGroupService!</strong> '+response.data.error+''+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
@@ -1817,7 +1817,7 @@ function ChangeGroupConfigTable(tab){
 //                 $('html,body').scrollTop(0);
 //                 var alert = document.getElementById('floating-alert');
 //                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-//                         '<strong>Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
+//                         '<strong>InsertCluster Error!</strong> '+response.data.error+''+
 //                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 //                             '<span aria-hidden="true">&times;</span>'+
 //                         '</button>'+

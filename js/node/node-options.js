@@ -540,16 +540,16 @@ function loadPlugins(){
     document.getElementById('pills-analyzer').innerHTML = htmlanalyzer;
 
     PingWazuh(uuid);
-    PingWazuhFiles(uuid);
-    PingAnalyzer(uuid);
-    // PingPorts(uuid);
-    GetMainconfData(uuid);
-    // PingDataflow(uuid);
-    PingPluginsNode(uuid);
-    PingPluginsMaster();
-    PingCluster(uuid);
-    getCurrentRulesetName(uuid);
-    PingZeek(uuid);
+    // PingWazuhFiles(uuid);
+    // PingAnalyzer(uuid);
+    // // PingPorts(uuid);
+    // GetMainconfData(uuid);
+    // // PingDataflow(uuid);
+    // PingPluginsNode(uuid);
+    // PingPluginsMaster();
+    // PingCluster(uuid);
+    // getCurrentRulesetName(uuid);
+    // PingZeek(uuid);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
@@ -4215,33 +4215,34 @@ function PingWazuh(uuid) {
             }
     })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.permissions == "none"){
-            PrivilegesMessage();
-        }else{
-            if (!response.data.path && !response.data.bin) {
-                document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
-                document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
-                document.getElementById(uuid + '-wazuh-icon').className = "fas fa-play-circle";
-                document.getElementById(uuid + '-wazuh-icon').onclick = function () { RunWazuh(uuid); };
-                document.getElementById(uuid + '-wazuh-icon').title = "Run Wazuh";
-            } else if (response.data.path || response.data.bin) {
-                if (response.data.running) {
-                    document.getElementById(uuid + '-wazuh').className = "badge bg-success align-text-bottom text-white";
-                    document.getElementById(uuid + '-wazuh').innerHTML = "ON";
-                    document.getElementById(uuid + '-wazuh-icon').className = "fas fa-stop-circle";
-                    document.getElementById(uuid + '-wazuh-icon').onclick = function () { StopWazuh(uuid); };
-                    document.getElementById(uuid + '-wazuh-icon').title = "Stop Wazuh";
-                } else {
-                    document.getElementById(uuid + '-wazuh').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(uuid + '-wazuh').innerHTML = "OFF";
+            console.log(response.data);
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();
+            }else{
+                if (!response.data.path && !response.data.bin) {
+                    document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
+                    document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
                     document.getElementById(uuid + '-wazuh-icon').className = "fas fa-play-circle";
                     document.getElementById(uuid + '-wazuh-icon').onclick = function () { RunWazuh(uuid); };
                     document.getElementById(uuid + '-wazuh-icon').title = "Run Wazuh";
+                } else if (response.data.path || response.data.bin) {
+                    if (response.data.running) {
+                        document.getElementById(uuid + '-wazuh').className = "badge bg-success align-text-bottom text-white";
+                        document.getElementById(uuid + '-wazuh').innerHTML = "ON";
+                        document.getElementById(uuid + '-wazuh-icon').className = "fas fa-stop-circle";
+                        document.getElementById(uuid + '-wazuh-icon').onclick = function () { StopWazuh(uuid); };
+                        document.getElementById(uuid + '-wazuh-icon').title = "Stop Wazuh";
+                    } else {
+                        document.getElementById(uuid + '-wazuh').className = "badge bg-danger align-text-bottom text-white";
+                        document.getElementById(uuid + '-wazuh').innerHTML = "OFF";
+                        document.getElementById(uuid + '-wazuh-icon').className = "fas fa-play-circle";
+                        document.getElementById(uuid + '-wazuh-icon').onclick = function () { RunWazuh(uuid); };
+                        document.getElementById(uuid + '-wazuh-icon').title = "Run Wazuh";
+                    }
                 }
+                return true;
             }
-            return true;
-        }
         })
         .catch(function (error) {
             document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
@@ -4411,7 +4412,7 @@ function PingPluginsNode(uuid) {
                 'uuid': payload.uuid,
             }
     })
-    .then(function (response) {   
+    .then(function (response) {  
         console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){

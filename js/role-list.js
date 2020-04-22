@@ -49,14 +49,25 @@ function EditRoleDetails(editRoleID, editRoleName, editRolePerms){
         
         $('input[type=checkbox]').each(function(index){
             for(x in allRoles){
+                console.log(allRoles[x] == $(this).attr('role'));
                 if($(this).attr('role') == allRoles[x]){
                     $(this).prop('checked', true);
                 }
             }
         });
 
-    }).catch(err => {
-        console.log(err);
+    }).catch(error => {
+        document.getElementById('progressBar-create').style.display = "none";
+        document.getElementById('progressBar-create-div').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error role details Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -79,7 +90,6 @@ function EditCurrentRole(uuid){
     jsonData["permissions"] = list.toString();
     var dataValues = JSON.stringify(jsonData);
 
-    console.log(jsonData);
     axios({
         method: 'put',
         url: nodeurl,

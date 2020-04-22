@@ -540,16 +540,16 @@ function loadPlugins(){
     document.getElementById('pills-analyzer').innerHTML = htmlanalyzer;
 
     PingWazuh(uuid);
-    // PingWazuhFiles(uuid);
-    // PingAnalyzer(uuid);
-    // // PingPorts(uuid);
-    // GetMainconfData(uuid);
-    // // PingDataflow(uuid);
-    // PingPluginsNode(uuid);
-    // PingPluginsMaster();
-    // PingCluster(uuid);
-    // getCurrentRulesetName(uuid);
-    // PingZeek(uuid);
+    PingWazuhFiles(uuid);
+    PingAnalyzer(uuid);
+    // PingPorts(uuid);
+    GetMainconfData(uuid);
+    // PingDataflow(uuid);
+    PingPluginsNode(uuid);
+    PingPluginsMaster();
+    PingCluster(uuid);
+    getCurrentRulesetName(uuid);
+    PingZeek(uuid);
 
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
@@ -1054,6 +1054,15 @@ async function GetMainconfData(uuid){
         }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>GetMainconfData Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 
     var ipmaster = document.getElementById('ip-master').value;
@@ -4215,7 +4224,6 @@ function PingWazuh(uuid) {
             }
     })
         .then(function (response) {
-            console.log(response.data);
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
@@ -4413,7 +4421,6 @@ function PingPluginsNode(uuid) {
             }
     })
     .then(function (response) {  
-        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -4904,7 +4911,6 @@ function PingPluginsNode(uuid) {
         }
     })
     .catch(function (error) {
-        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

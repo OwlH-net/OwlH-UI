@@ -79,7 +79,6 @@ function loadRulesData(){
         }
     })
     .catch(function (error) {
-        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
@@ -280,7 +279,6 @@ function modalAddNewRuleset(rulesetUuid, status){
         var uuid = $(this).prop("id");
         var value = $(this).prop("value");
         if (value == "table-elements"){
-            console.log(uuid);
             newRuleset[uuid] = new Map();
             newRuleset[uuid]["sourceName"] = document.getElementById('nameNewRuleset-'+uuid+'').innerHTML;
             newRuleset[uuid]["fileName"] = document.getElementById('fileNewRuleset-'+uuid+'').innerHTML;
@@ -470,7 +468,6 @@ function modalAddNewRuleset(rulesetUuid, status){
                 }
             })
             .catch(function (error) {
-                console.log(error);
             });
         }
     }
@@ -537,7 +534,6 @@ function loadCurrentRules(uuid){
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
-           console.log(response.data);
            $('input:checkbox:not(checked)').each(function() {
                 var id = $(this).prop("id");
                 for(x in response.data){

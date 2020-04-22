@@ -283,7 +283,6 @@ function GetAllGroups(){
 
     })
     .catch(function (error) {
-        console.log(error);
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none"; 
         $('html,body').scrollTop(0);

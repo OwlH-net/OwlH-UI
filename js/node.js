@@ -364,7 +364,6 @@
 
 // function loadJSONdata(){
 //   $.getJSON('../conf/ui.conf', function(data) {
-//         console.log(data);
 //         //token check
 //         var tokens = document.cookie.split(".");
 //         if (tokens.length != 3){

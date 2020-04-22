@@ -602,7 +602,6 @@ function PingPlugins(){
         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
     })
    .then(function (response) {
-       console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
         if(response.data.permissions == "none"){
             PrivilegesMessage();              

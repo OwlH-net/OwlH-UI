@@ -43,7 +43,6 @@ function GetAllUsers(){
         }
     })
     .then(function (response) {
-        console.log(response.data);
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}

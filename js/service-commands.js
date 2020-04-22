@@ -136,7 +136,6 @@ function getServideCommands(){
         });
         sortTable();
         var row = $(this).closest('table').children('tr:first');
-        console.log(row);
     })
     .catch(function (error) {
         progressBar.style.display = "none";

@@ -346,7 +346,7 @@ function GetAllNodes() {
                         //search bar
                         $('#node-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-node-details').value)});
                     
-                        //listener for seach bar
+                        //listener for search bar
                         document.getElementById('search-node-details').addEventListener('input', evt => {
                             if (document.getElementById('search-node-details').value.trim() == ""){ showAllHiddenNodes();} 
                         });

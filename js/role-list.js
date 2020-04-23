@@ -49,7 +49,6 @@ function EditRoleDetails(editRoleID, editRoleName, editRolePerms){
         
         $('input[type=checkbox]').each(function(index){
             for(x in allRoles){
-                console.log(allRoles[x] == $(this).attr('role'));
                 if($(this).attr('role') == allRoles[x]){
                     $(this).prop('checked', true);
                 }
@@ -139,7 +138,6 @@ async function GetAllPermissions(){
         }
     })
     .then(function (response) {
-        console.log(response.data);
         document.getElementById('progressBar-create').style.display = "none";
         document.getElementById('progressBar-create-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -148,12 +146,20 @@ async function GetAllPermissions(){
         }else{   
             //get groups
             var html = "";
-            html = html = '<br>'+
-                '<div>'+
-                    '<button id="btn-role" type="button" class="btn btn-primary" style="float: right;" onclick="addNewRole()">Add role</button>'+
-                    '<input type="text" class="form-control" id="role-name-input" placeholder="Insert here the new role name"><br>'+
+            html = html = 
+            // '<div class="input-group" style="width:100%;">'+
+            //     '<input class="form-control mx-3" type="text" placeholder="Search by permission..." aria-label="Search" id="search-permission-details">'+
+            //     '<a type="button" class="btn btn-primary mr-2" id="permission-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
+            // '</div>'+
+            '<br>'+
+            '<div class="input-group col-md-6" inline>'+
+                '<div class="input-group-prepend">'+
+                    '<span class="input-group-text">New Name</span>'+
                 '</div>'+
-                '<br>';
+                '<input type="text" class="form-control" placeholder="New role name" id="role-name-input">'+
+            '</div>'+
+            '<button id="btn-role" type="button" class="btn btn-primary float-right" onclick="addNewRole()">Add role</button>'+
+            '<br>';
             var groups = [];
             for(id in response.data){
                 if(!groups.includes(response.data[id]["permissionGroup"])){
@@ -161,40 +167,51 @@ async function GetAllPermissions(){
                 }
             }            
             
-            //list permissions for every group
-            for(group in groups){
-                html = html + '<div>'+
-                '<h3>'+groups[group]+'</h3>';
-                for(id in response.data){
-                    if(response.data[id]["permissionGroup"] == groups[group]){
-                        html = html + '<h6>'+response.data[id]["groupDesc"]+'</h6>';
-                        break;
+            html = html + '<table id="permissions-table">';
+
+                //list permissions for every group
+                for(group in groups){
+                    html = html + '<div id="group-titles-'+groups[group]+'">'+
+                    '<h3>'+groups[group]+'</h3>';
+                    for(id in response.data){
+                        if(response.data[id]["permissionGroup"] == groups[group]){
+                            html = html + '<h6>'+response.data[id]["groupDesc"]+'</h6>';
+                            break;
+                        }
                     }
-                }
-                html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                '<thead>' +
-                    '<tr>'+
-                        '<th style="width: 10%"></th>' +
-                        '<th style="width: 30%">Permission name</th>' +
-                        '<th>Permission description</th>' +
-                    '</tr>' +
-                '</thead>' +
-                '<tbody>';
-                for(id in response.data){
-                    if(response.data[id]["permissionGroup"] == groups[group]){
-                        html = html + '<tr>'+
-                            '<td><input type="checkbox" role="'+id+'"></td>'+
-                            '<td>'+id+'</td>'+
-                            '<td>'+response.data[id]["desc"]+'</td>'+
-                        '</tr>';
+                    html = html + '</div>'+
+                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                    '<thead>' +
+                        '<tr id="'+groups[group]+'">'+
+                            '<th style="width: 10%"> <input type="checkbox" id="select-all-'+groups[group]+'" onclick="CheckAll(\''+groups[group]+'\')"> </th>' +
+                            '<th style="width: 30%">Permission name</th>' +
+                            '<th>Permission description</th>' +
+                        '</tr>' +
+                    '</thead>' +
+                    '<tbody>';
+                    for(id in response.data){
+                        if(response.data[id]["permissionGroup"] == groups[group]){
+                            html = html + '<tr role="'+id+'" permissionGroup="'+groups[group]+'">'+
+                                '<td style="width: 10%"><input type="checkbox" id="role-permission-'+id+'" role="'+id+'" group="'+groups[group]+'"></td>'+
+                                '<td style="width: 30%">'+id+'</td>'+
+                                '<td>'+response.data[id]["desc"]+'</td>'+
+                            '</tr>';
+                        }
                     }
+                    html = html + '</tbody>'+
+                    '</table>';
                 }
-                html = html + '</tbody>'+
-                '</table></div>';
-            }
+            html = html + '</table>';
             document.getElementById('role-list-table').innerHTML = html;
         }
-        return true;
+
+        // //onclick for search bar
+        // $('#permission-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-permission-details').value)});
+        // //listener for search bar
+        // document.getElementById('search-permission-details').addEventListener('input', evt => {
+        //     if (document.getElementById('search-permission-details').value.trim() == ""){ showAllHiddenPermissions();} 
+        // });
+
     })
     .catch(function (error) {
         document.getElementById('progressBar-create').style.display = "block";
@@ -209,9 +226,6 @@ async function GetAllPermissions(){
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 30000);
     })
-//     .finally(() => {
-//         return data;
-//     });
 }
 
 function addNewRole(){
@@ -283,5 +297,60 @@ function addNewRole(){
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
             });
         }
+    }
+}
+
+function CheckAll(group){  
+    if($("#select-all-"+group).prop("checked")){    
+        $('input:checkbox:not(checked)').each(function() {
+            console.log($(this).attr("group"));
+            if ($(this).attr("group") == group){                
+                $(this).prop("checked", true);
+            }
+        });
+    }else{
+        $('input:checkbox:checked').each(function() {
+            console.log($(this).attr("group"));
+            if ($(this).attr("group") == group){                
+                $(this).prop("checked", false);
+            }
+        });
+    }     
+}
+
+function showAllHiddenPermissions(){
+    $('#permissions-table').each(function(){
+        $(this).find('tr').each(function(){
+            $(this).show();
+        })
+    })
+}
+
+function loadNodeBySearch(search){
+    showAllHiddenPermissions();
+    if (search.length == 0){
+        $('#search-permission-details').css('border', '2px solid red');
+        $('#search-permission-details').attr("placeholder", "Insert a valid name for search...");
+    }else{
+        $('#search-permission-details').css('border', '2px solid #ced4da');
+        $('#search-permission-details').attr("placeholder", "");
+        $('permissions-table').each(function(){
+            $(this).find('tr').each(function(){     
+                group = $(this).attr("permissionGroup")                
+                $('#'+group).hide();
+                $('#group-titles-'+group).hide();
+                $(this).hide();
+
+                if ($(this).attr("role").toLowerCase().includes(search.toLowerCase())){     
+                    $(this).show();
+                    $('#group-titles-'+group).attr('checkedSearch', true);
+                    $('#'+group).attr('checkedSearch', true);                    
+                }
+                if ($('#group-titles-'+group).attr('checkedSearch') && $('#'+group).attr('checkedSearch')){
+                    $('#'+group).show();
+                    $('#group-titles-'+group).show();
+                }
+            })
+        })
     }
 }

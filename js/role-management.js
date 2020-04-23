@@ -73,7 +73,7 @@ function GetAllRoles(){
                         html = html + '<tr>'+
                             '<td>'+response.data[id]["role"]+'</td>'+
                             '<td>'+
-                                // '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowRoleDetails(\''+id+'\')"></i> &nbsp'+
+                                '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowRoleDetails(\''+id+'\', \''+response.data[id]["role"]+'\')"></i> &nbsp'+
                                 // '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalEditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="EditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteRole(\''+id+'\', \''+response.data[id]["role"]+'\')"></i>'+                                
@@ -158,6 +158,10 @@ function EditRole(id, role, permissions){
 
 function RoleDetails(){
     document.location.href = 'https://' + location.hostname + '/role-list.html';
+}
+
+function ShowRoleDetails(id, role){
+    document.location.href = 'https://' + location.hostname + '/role-details.html?id='+id+'&role='+role;
 }
 
 function modalAddRole(){
@@ -278,16 +282,6 @@ function AddRole(){
         });
     }
 }
-
-// function ShowRoleDetails(id){
-//     var info = document.getElementById('role-info-'+id);
-//     if(info.style.display == "block"){
-//         info.style.display = "none"
-//     }else if(info.style.display == "none"){
-//         info.style.display = "block"
-//     }
-// }
-
 
 function modalDeleteRole(id, user){
     var modalWindow = document.getElementById('modal-window');

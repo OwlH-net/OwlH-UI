@@ -26,7 +26,7 @@ function loadJSONdata(){
         var editRolePerms = urlData.searchParams.get("permissions");
 
         if(editRoleID == null){ 
-            GetAllRoles(); 
+            GetAllPermissions(); 
         }else{
             EditRoleDetails(editRoleID, editRoleName, editRolePerms);
         }
@@ -40,7 +40,7 @@ loadJSONdata();
 function EditRoleDetails(editRoleID, editRoleName, editRolePerms){
     var allRoles = editRolePerms.split(",");
 
-    GetAllRoles().then(result => {
+    GetAllPermissions().then(result => {
         document.getElementById('title-banner').innerHTML = "Edit "+document.getElementById('title-banner').innerHTML;
         document.getElementById('subtitle-banner').innerHTML = "Role "+editRoleName;
         document.getElementById('role-name-input').value = editRoleName;
@@ -121,12 +121,12 @@ function EditCurrentRole(uuid){
     })
 }
 
-async function GetAllRoles(){
+async function GetAllPermissions(){
     document.getElementById('progressBar-create-div').style.display = "block";
     document.getElementById('progressBar-create').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/getRolePermissions';
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/getPermissions';
 
     await axios({
         method: 'get',
@@ -139,6 +139,7 @@ async function GetAllRoles(){
         }
     })
     .then(function (response) {
+        console.log(response.data);
         document.getElementById('progressBar-create').style.display = "none";
         document.getElementById('progressBar-create-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -155,26 +156,32 @@ async function GetAllRoles(){
                 '<br>';
             var groups = [];
             for(id in response.data){
-                if(!groups.includes(response.data[id]["permisionGroup"])){
-                    groups.push(response.data[id]["permisionGroup"])
+                if(!groups.includes(response.data[id]["permissionGroup"])){
+                    groups.push(response.data[id]["permissionGroup"])
                 }
             }            
             
             //list permissions for every group
             for(group in groups){
-                html = html+ '<div>'+
-                '<h3>'+groups[group]+'</h3>'+
-                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                html = html + '<div>'+
+                '<h3>'+groups[group]+'</h3>';
+                for(id in response.data){
+                    if(response.data[id]["permissionGroup"] == groups[group]){
+                        html = html + '<h6>'+response.data[id]["groupDesc"]+'</h6>';
+                        break;
+                    }
+                }
+                html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
                 '<thead>' +
                     '<tr>'+
                         '<th style="width: 10%"></th>' +
-                        '<th style="width: 30%">Role name</th>' +
-                        '<th>Role description</th>' +
+                        '<th style="width: 30%">Permission name</th>' +
+                        '<th>Permission description</th>' +
                     '</tr>' +
                 '</thead>' +
                 '<tbody>';
                 for(id in response.data){
-                    if(response.data[id]["permisionGroup"] == groups[group]){
+                    if(response.data[id]["permissionGroup"] == groups[group]){
                         html = html + '<tr>'+
                             '<td><input type="checkbox" role="'+id+'"></td>'+
                             '<td>'+id+'</td>'+

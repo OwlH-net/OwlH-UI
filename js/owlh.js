@@ -818,6 +818,8 @@ function sortTableIP() {
 }
 
 function addNode() {
+    document.getElementById('progressBar-node').style.display = "block";
+    document.getElementById('progressBar-node-div').style.display = "block";
     var nname = document.getElementById('nodename').value.trim();
     var nip = document.getElementById('nodeip').value.trim();
     var nport = document.getElementById('nodeport').value.trim();
@@ -857,6 +859,8 @@ function addNode() {
 			data: nodeJSON
 		})
 		.then(function (response) {
+            document.getElementById('progressBar-node').style.display = "none";
+            document.getElementById('progressBar-node-div').style.display = "none";
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
@@ -886,6 +890,8 @@ function addNode() {
             }
 		})
 		.catch(function (error) {
+            document.getElementById('progressBar-node').style.display = "none";
+            document.getElementById('progressBar-node-div').style.display = "none";
 			$('html,body').scrollTop(0);
 			var alert = document.getElementById('floating-alert');
 			alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+

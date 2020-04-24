@@ -147,10 +147,10 @@ async function GetAllPermissions(){
             //get groups
             var html = "";
             html = html = 
-            // '<div class="input-group" style="width:100%;">'+
-            //     '<input class="form-control mx-3" type="text" placeholder="Search by permission..." aria-label="Search" id="search-permission-details">'+
-            //     '<a type="button" class="btn btn-primary mr-2" id="permission-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
-            // '</div>'+
+            '<div class="input-group" style="width:100%;">'+
+                '<input class="form-control mx-3" type="text" placeholder="Search by permission..." aria-label="Search" id="search-permission-details">'+
+                '<a type="button" class="btn btn-primary mr-2" id="permission-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
+            '</div>'+
             '<br>'+
             '<div class="input-group col-md-6" inline>'+
                 '<div class="input-group-prepend">'+
@@ -171,46 +171,46 @@ async function GetAllPermissions(){
 
                 //list permissions for every group
                 for(group in groups){
-                    html = html + '<div id="group-titles-'+groups[group]+'">'+
-                    '<h3>'+groups[group]+'</h3>';
-                    for(id in response.data){
-                        if(response.data[id]["permissionGroup"] == groups[group]){
-                            html = html + '<h6>'+response.data[id]["groupDesc"]+'</h6>';
-                            break;
+                    html = html + '<div istitlechecked="false" id="group-titles-'+groups[group]+'">'+
+                        '<h3>'+groups[group]+'</h3>';
+                        for(id in response.data){
+                            if(response.data[id]["permissionGroup"] == groups[group]){
+                                html = html + '<h6>'+response.data[id]["groupDesc"]+'</h6>';
+                                break;
+                            }
                         }
-                    }
-                    html = html + '</div>'+
-                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                    '<thead>' +
-                        '<tr id="'+groups[group]+'">'+
-                            '<th style="width: 10%"> <input type="checkbox" id="select-all-'+groups[group]+'" onclick="CheckAll(\''+groups[group]+'\')"> </th>' +
-                            '<th style="width: 30%">Permission name</th>' +
-                            '<th>Permission description</th>' +
-                        '</tr>' +
-                    '</thead>' +
-                    '<tbody>';
-                    for(id in response.data){
-                        if(response.data[id]["permissionGroup"] == groups[group]){
-                            html = html + '<tr role="'+id+'" permissionGroup="'+groups[group]+'">'+
-                                '<td style="width: 10%"><input type="checkbox" id="role-permission-'+id+'" role="'+id+'" group="'+groups[group]+'"></td>'+
-                                '<td style="width: 30%">'+id+'</td>'+
-                                '<td>'+response.data[id]["desc"]+'</td>'+
-                            '</tr>';
+                        html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                        '<thead>' +
+                            '<tr isheaderchecked="false" id="thead-'+groups[group]+'">'+
+                                '<th style="width: 10%"> <input type="checkbox" id="select-all-'+groups[group]+'" onclick="CheckAll(\''+groups[group]+'\')"> </th>' +
+                                '<th style="width: 30%">Permission name</th>' +
+                                '<th>Permission description</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                        for(id in response.data){
+                            if(response.data[id]["permissionGroup"] == groups[group]){
+                                html = html + '<tr class="permission-row" role="'+id+'" permissionGroup="'+groups[group]+'">'+
+                                    '<td style="width: 10%"><input type="checkbox" id="role-permission-'+id+'" role="'+id+'" group="'+groups[group]+'"></td>'+
+                                    '<td style="width: 30%">'+id+'</td>'+
+                                    '<td>'+response.data[id]["desc"]+'</td>'+
+                                '</tr>';
+                            }
                         }
-                    }
-                    html = html + '</tbody>'+
-                    '</table>';
+                        html = html + '</tbody>'+
+                        '</table>'+
+                    '</div>';
                 }
             html = html + '</table>';
             document.getElementById('role-list-table').innerHTML = html;
         }
 
-        // //onclick for search bar
-        // $('#permission-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-permission-details').value)});
-        // //listener for search bar
-        // document.getElementById('search-permission-details').addEventListener('input', evt => {
-        //     if (document.getElementById('search-permission-details').value.trim() == ""){ showAllHiddenPermissions();} 
-        // });
+        //onclick for search bar
+        $('#permission-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-permission-details').value)});
+        //listener for search bar
+        document.getElementById('search-permission-details').addEventListener('input', evt => {
+            if (document.getElementById('search-permission-details').value.trim() == ""){ showAllHiddenPermissions();} 
+        });
 
     })
     .catch(function (error) {
@@ -318,11 +318,14 @@ function CheckAll(group){
     }     
 }
 
+//show all table elements hidden after search
 function showAllHiddenPermissions(){
-    $('#permissions-table').each(function(){
-        $(this).find('tr').each(function(){
-            $(this).show();
-        })
+    $('.permission-row').each(function(){
+        $(this).show();
+        $('#thead-'+$(this).attr("permissionGroup")).show();
+        $('#group-titles-'+$(this).attr("permissionGroup")).show();
+        $('#thead-'+$(this).attr("permissionGroup")).attr("isheaderchecked","false");
+        $('#group-titles-'+$(this).attr("permissionGroup")).attr("istitlechecked","false");
     })
 }
 
@@ -334,23 +337,26 @@ function loadNodeBySearch(search){
     }else{
         $('#search-permission-details').css('border', '2px solid #ced4da');
         $('#search-permission-details').attr("placeholder", "");
-        $('permissions-table').each(function(){
-            $(this).find('tr').each(function(){     
-                group = $(this).attr("permissionGroup")                
-                $('#'+group).hide();
-                $('#group-titles-'+group).hide();
-                $(this).hide();
 
-                if ($(this).attr("role").toLowerCase().includes(search.toLowerCase())){     
-                    $(this).show();
-                    $('#group-titles-'+group).attr('checkedSearch', true);
-                    $('#'+group).attr('checkedSearch', true);                    
-                }
-                if ($('#group-titles-'+group).attr('checkedSearch') && $('#'+group).attr('checkedSearch')){
-                    $('#'+group).show();
-                    $('#group-titles-'+group).show();
-                }
-            })
+        $('.permission-row').each(function(){
+            $(this).hide();
+            var per = $(this).attr("permissionGroup");
+
+            //hide table thead
+            if( $('#thead-'+per).attr('isheaderchecked') == "false" && $('#group-titles-'+per).attr('istitlechecked') == "false"){
+                $('#thead-'+per).hide();
+                $('#group-titles-'+per).hide();
+            }else{
+                $('#group-titles-'+per).show();
+                $('#thead-'+per).show();
+            }   
+
+            //check if <tr> has part of search string
+            if ($(this).attr("role").toLowerCase().includes(search.toLowerCase())){    
+                $(this).show();
+                $('#thead-'+per).attr("isheaderchecked","true");
+                $('#group-titles-'+per).attr("istitlechecked","true");
+            }
         })
     }
 }

@@ -183,6 +183,9 @@ function GetGroupsDetails(){
                                                     '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
                                                 '</td>'+
                                             '</tr>'+
+                                            // '<tr id="suricata-expert-sync-table">'+
+                                            //     //Put here the list for show which nodes has sync  the suricata expert path
+                                            // '</tr>'+
                                         '</tbody>'+
                                     '</table>'+
                                 '</div>'+
@@ -327,6 +330,7 @@ function GetGroupsDetails(){
             LoadAnalyzerNodeStatus(allNodes);
             GetAllClusterFiles(uuid);
             SuricataNodesStatus(uuid);
+            //SuricataPathSyncStatus(uuid);//suricata-expert-sync-table
         }
 
     })

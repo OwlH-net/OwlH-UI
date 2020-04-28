@@ -942,10 +942,10 @@ async function GetMD5files(guuid, type){
                                     '<td><b>Node MD5:</b> '+responseBody.data[id][file]["nodeMD5"]+'</td>'+
                                     '<td>';
                                         if(responseBody.data[id][file]["equals"] == "true"){
-                                            html2 = html2 + '<span class="badge bg-success align-text-bottom text-white">Equals</span>';
+                                            html2 = html2 + '<span class="badge-pill badge bg-success align-text-bottom text-white"> &nbsp </span>';
                                         }else{
-                                            html2 = html2 + '<span class="badge bg-danger align-text-bottom text-white">Not equals</span>';
-                                            $('#global-files-status-'+id).attr('class', 'badge badge-pill  bg-danger align-text-bottom text-white');
+                                            html2 = html2 + '<span class="badge-pill badge bg-danger align-text-bottom text-white"> &nbsp </span>';
+                                            $('#global-files-status-'+id).attr('class', 'badge badge-pill bg-danger align-text-bottom text-white');
                                         }
                                     html2 = html2 + '</td>'+
                                 '</tr>'+

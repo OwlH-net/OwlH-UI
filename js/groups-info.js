@@ -159,7 +159,11 @@ function GetGroupsDetails(){
                                                 htmlsuricata = htmlsuricata + '<td></td>'+
                                             '</tr>'+                                       
                                             '<tr>'+
-                                                '<td class="align-middle" rowspan="2">Configuration &nbsp <i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> <i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i></td>'+
+                                                '<td class="align-middle" rowspan="2">Configuration &nbsp '+
+                                                    '<i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> '+
+                                                    '<i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i> '+
+                                                    '<i class="fas fa-folder-open" title="Check if master and node file are equals" style="color:Dodgerblue; cursor: pointer;" onclick="GetMD5files(\''+groups['guuid']+'\', \'suricata\')"></i>'+
+                                                '</td>'+
                                                 '<td>Master path:</td>';
                                                 if(groups["mastersuricata"] == ""){
                                                     htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
@@ -182,12 +186,12 @@ function GetGroupsDetails(){
                                                     '<button class="btn btn-primary float-right text-decoration-none text-white mr-2" onclick="changePaths(\''+groups['guuid']+'\', \'suricata\')">Save</button>'+
                                                     '<button class="btn btn-secondary float-right text-decoration-none text-white mr-2" onclick="hideEditGroup(\'suricata\')">Cancel</button> &nbsp '+
                                                 '</td>'+
-                                            '</tr>'+
-                                            // '<tr id="suricata-expert-sync-table">'+
-                                            //     //Put here the list for show which nodes has sync  the suricata expert path
-                                            // '</tr>'+
+                                            '</tr>'+                                            
                                         '</tbody>'+
                                     '</table>'+
+                                    //here goes MD5 files for master and every group node 
+                                    '<br>'+
+                                    '<div id="suricata-expert-sync-table"></div>'+
                                 '</div>'+
     
                                 //Suricata standalone
@@ -330,7 +334,7 @@ function GetGroupsDetails(){
             LoadAnalyzerNodeStatus(allNodes);
             GetAllClusterFiles(uuid);
             SuricataNodesStatus(uuid);
-            //SuricataPathSyncStatus(uuid);//suricata-expert-sync-table
+            GetMD5files(uuid,"suricata")
         }
 
     })
@@ -829,6 +833,330 @@ function changePaths(guuid, type){
             }); 
     }
 }
+
+function ShowFilesMd5(nuuid){
+    $('.node').each(function() {
+        if($(this).attr('node') == nuuid){
+            if($(this).is(':visible')){
+                console.log("HIDE")
+                $(this).hide();
+            }else{
+                console.log("show")
+                $(this).show();
+            }
+        }
+    });
+}
+
+async function GetMD5files(guuid, type){    
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    //load MD5 files
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/getMD5files';
+    var groupjson = {}
+    groupjson["uuid"] = guuid;
+    groupjson["type"] = type;
+    if(type == "suricata"){
+        groupjson["mastersuricata"] = document.getElementById('group-suricata-master-path').getAttribute("value");
+        groupjson["nodesuricata"] = document.getElementById('group-suricata-node-path').getAttribute("value");
+    }else{
+        groupjson["masterzeek"] = document.getElementById('group-zeek-master-path').getAttribute("value");
+        groupjson["nodezeek"] = document.getElementById('group-zeek-node-path').getAttribute("value");
+    }
+    var grJSON = JSON.stringify(groupjson);
+
+    //load all nodes for a group
+    var groupurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/';
+    await axios({
+        method: 'get',
+        url: groupurl,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{
+            var html = '<table class="table" width="100%" style="table-layout: fixed">'+
+                '<thead>'+
+                    '<tr>'+
+                        '<th colspan="2">Node name</th>'+
+                        '<th>Node IP</th>'+
+                        '<th>Actions</th>'+
+                    '</tr>'+
+                '</thead>'+
+                '<tbody id="files-checked-list">';
+                    for(x in response.data){
+                        for(y in response.data[x].Nodes){                            
+                            html = html + '<tr>'+
+                                    '<td colspan="2">'+response.data[x].Nodes[y]["nname"]+'</td>'+
+                                    '<td>'+response.data[x].Nodes[y]["nip"]+'</td>'+
+                                    '<td>'+
+                                        '<i style="color: dodgerblue; cursor:pointer;" class="fas fa-info-circle" onclick="ShowFilesMd5(\''+response.data[x].Nodes[y]["nuuid"]+'\')"></i> '+
+                                        '<span id="global-files-status-'+response.data[x].Nodes[y]["nuuid"]+'" class="badge badge-pill bg-success align-text-bottom text-white">&nbsp</span>'+
+                                    '</td>'+
+                                '</tr>'+
+                                '<tr>'+
+                                    '<td colspan="4" id="files-'+response.data[x].Nodes[y]["nuuid"]+'"></td>'+
+                                '</tr>';
+                        }                  
+                    html = html + '</tbody>'+
+                    '</table>';
+                    document.getElementById('suricata-expert-sync-table').innerHTML = html;
+                } 
+        }
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error checking files!</strong> Sync path: '+error+''+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
+    })
+
+    //Put all files into table 
+    await axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        data: grJSON
+    })
+    .then(function (responseBody) {
+        if(responseBody.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(responseBody.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{
+                     //PUT ALL FILES LIST
+                     for(id in responseBody.data){    
+                         for(file in responseBody.data[id]){
+                            var html2 = '<table style="display:none;" width="100%" bgcolor="AliceBlue" class="node" node="'+id+'">'+
+                                '<tr>'+
+                                    '<td><b>File:</b> '+responseBody.data[id][file]["path"]+'</td>'+
+                                    '<td><b>Master MD5:</b> '+responseBody.data[id][file]["masterMD5"]+'</td>'+
+                                    '<td><b>Node MD5:</b> '+responseBody.data[id][file]["nodeMD5"]+'</td>'+
+                                    '<td>';
+                                        if(responseBody.data[id][file]["equals"] == "true"){
+                                            html2 = html2 + '<span class="badge bg-success align-text-bottom text-white">Equals</span>';
+                                        }else{
+                                            html2 = html2 + '<span class="badge bg-danger align-text-bottom text-white">Not equals</span>';
+                                            $('#global-files-status-'+id).attr('class', 'badge badge-pill  bg-danger align-text-bottom text-white');
+                                        }
+                                    html2 = html2 + '</td>'+
+                                '</tr>'+
+                            '</table>';
+                            document.getElementById('files-'+id).innerHTML = document.getElementById('files-'+id).innerHTML + html2;       
+                        }   
+                    }    
+        }      
+    })
+    .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error checking all files!</strong> Sync path: '+error+''+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
+    }); 
+}
+
+// async function GetMD5files(guuid, type){    
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     //load all nodes for a group
+//     var groupurl = 'https://' + ipmaster + ':' + portmaster + '/v1/group/';
+
+//     await axios({
+//         method: 'get',
+//         url: groupurl,
+//         timeout: 30000,
+//         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+//     })
+//     .then(function (response) {
+//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(response.data.permissions == "none"){
+//             PrivilegesMessage();              
+//         }else{
+//             var html = '<table class="table" width="100%" style="table-layout: fixed">'+
+//                 '<thead>'+
+//                     '<tr>'+
+//                         '<th colspan="2">Node name</th>'+
+//                         '<th>Node IP</th>'+
+//                         '<th>Actions</th>'+
+//                     '</tr>'+
+//                 '</thead>'+
+//                 '<tbody id="files-checked-list">';
+//                     for(x in response.data){    
+//                         for(y in response.data[x].Nodes){                           
+//                             html = html + '<tr>'+
+//                                 '<td colspan="2">'+response.data[x].Nodes[y]["nname"]+'</td>'+
+//                                 '<td>'+response.data[x].Nodes[y]["nip"]+'</td>'+
+//                                 '<td><i style="color: dodgerblue;" class="fas fa-info-circle" onclick="ShowFilesMd5(\''+response.data[x].Nodes[y]["nuuid"]+'\')"></i></td>'+
+//                             '</tr>'+
+//                             '<tr id="file-row-'+response.data[x].Nodes[y]["nuuid"]+'">'+                                
+//                             '</tr>';
+//                         }                  
+//                     } 
+//                 html = html + '</tbody>'+
+//                 '</table>';
+//                 document.getElementById('suricata-expert-sync-table').innerHTML = html;                
+//         }
+//     })
+//     .catch(function (error) {
+//         console.log(error);
+//         $('html,body').scrollTop(0);
+//         var alert = document.getElementById('floating-alert');
+//         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//             '<strong>Error checking files!</strong> Sync path: '+error+''+
+//             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                 '<span aria-hidden="true">&times;</span>'+
+//             '</button>'+
+//         '</div>';
+//         setTimeout(function() {$(".alert").alert('close')}, 30000);
+//     })
+    
+    
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     //load MD5 files
+//     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/getMD5files';
+//     var groupjson = {}
+//     groupjson["uuid"] = guuid;
+//     groupjson["type"] = type;
+//     if(type == "suricata"){
+//         groupjson["mastersuricata"] = document.getElementById('group-suricata-master-path').getAttribute("value");
+//         groupjson["nodesuricata"] = document.getElementById('group-suricata-node-path').getAttribute("value");
+//     }else{
+//         groupjson["masterzeek"] = document.getElementById('group-zeek-master-path').getAttribute("value");
+//         groupjson["nodezeek"] = document.getElementById('group-zeek-node-path').getAttribute("value");
+//     }
+//     var grJSON = JSON.stringify(groupjson);
+
+//     await axios({
+//         method: 'put',
+//         url: nodeurl,
+//         timeout: 30000,
+//         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+//         data: grJSON
+//     })
+//     .then(function (responseBody) {               
+//         if(responseBody.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(responseBody.data.permissions == "none"){
+//             PrivilegesMessage();              
+//         }else{
+//             //PUT ALL FILES LIST
+//             for(id in responseBody.data){ 
+//                 var html2 = ''; 
+//                 for(file in responseBody.data[id]){
+//                     html2 = html2 + '<table>'+
+//                         '<tr>'+
+//                             '<td>File: '+responseBody.data[id][file]["path"]+'</td>'+
+//                             '<td>Master MD5: '+responseBody.data[id][file]["md5"]+'</td>'+
+//                             '<td>Node MD5: '+responseBody.data[id][file]["md5"]+'</td>'+
+//                             '<td>';
+//                                 if(responseBody.data[id][file]["equals"] == "true"){
+//                                     html2 = html2 + '<span class="badge bg-success align-text-bottom text-white">Equals</span>';
+//                                 }else{
+//                                     html2 = html2 + '<span class="badge bg-danger align-text-bottom text-white">Not equals</span>';
+//                                 }
+//                             html2 = html2 + '</td>'+
+//                         '</tr>'+
+//                     '</table>';
+//                 }   
+
+//                 console.log('file-row-'+id+"   -----   "+document.getElementById('file-row-'+id).innerHTML);
+//                 document.getElementById('file-row-'+id).innerHTML + html2;       
+//             }    
+//         }      
+//     })
+//     .catch(function (error) {
+//         console.log(error);
+//         $('html,body').scrollTop(0);
+//         var alert = document.getElementById('floating-alert');
+//         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//             '<strong>Error checking all files!</strong> Sync path: '+error+''+
+//             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                 '<span aria-hidden="true">&times;</span>'+
+//             '</button>'+
+//         '</div>';
+//         setTimeout(function() {$(".alert").alert('close')}, 30000);
+//     }); 
+
+// }
+
+// async function GetAllFiles(guuid, type){    
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     //load MD5 files
+//     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/group/getMD5files';
+//     var groupjson = {}
+//     groupjson["uuid"] = guuid;
+//     groupjson["type"] = type;
+//     if(type == "suricata"){
+//         groupjson["mastersuricata"] = document.getElementById('group-suricata-master-path').getAttribute("value");
+//         groupjson["nodesuricata"] = document.getElementById('group-suricata-node-path').getAttribute("value");
+//     }else{
+//         groupjson["masterzeek"] = document.getElementById('group-zeek-master-path').getAttribute("value");
+//         groupjson["nodezeek"] = document.getElementById('group-zeek-node-path').getAttribute("value");
+//     }
+//     var grJSON = JSON.stringify(groupjson);
+
+//     await axios({
+//         method: 'put',
+//         url: nodeurl,
+//         timeout: 30000,
+//         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+//         data: grJSON
+//     })
+//     .then(function (responseBody) {
+//         if(responseBody.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(responseBody.data.permissions == "none"){
+//             PrivilegesMessage();              
+//         }else{
+//                     //PUT ALL FILES LIST
+//                     for(id in responseBody.data){   
+//                         var html2 = ''; 
+//                         for(file in responseBody.data[id]){
+//                             html2 = html2 + '<table>'+
+//                                 '<tr>'+
+//                                     '<td>File: '+responseBody.data[id][file]["path"]+'</td>'+
+//                                     '<td>Master MD5: '+responseBody.data[id][file]["md5"]+'</td>'+
+//                                     '<td>Node MD5: '+responseBody.data[id][file]["md5"]+'</td>'+
+//                                     '<td>';
+//                                         if(responseBody.data[id][file]["equals"] == "true"){
+//                                             html2 = html2 + '<span class="badge bg-success align-text-bottom text-white">Equals</span>';
+//                                         }else{
+//                                             html2 = html2 + '<span class="badge bg-danger align-text-bottom text-white">Not equals</span>';
+//                                         }
+//                                         html2 = html2 + '</td>'+
+//                                 '</tr>'+
+//                             '</table>';
+//                         }   
+//                         document.getElementById('file-row-'+id).innerHTML = document.getElementById('file-row-'+id).innerHTML + html2;       
+//                     }    
+//         }      
+//     })
+//     .catch(function (error) {
+//         console.log(error);
+//         $('html,body').scrollTop(0);
+//         var alert = document.getElementById('floating-alert');
+//         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//             '<strong>Error checking all files!</strong> Sync path: '+error+''+
+//             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                 '<span aria-hidden="true">&times;</span>'+
+//             '</button>'+
+//         '</div>';
+//         setTimeout(function() {$(".alert").alert('close')}, 30000);
+//     }); 
+// }
 
 function SyncPathGroup(guuid, type){
     if(type == "suricata" && document.getElementById('group-suricata-master-path').getAttribute("value") == "" ||

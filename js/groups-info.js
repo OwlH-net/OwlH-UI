@@ -162,9 +162,9 @@ function GetGroupsDetails(){
                                                 '<td class="align-top" rowspan="3">Configuration &nbsp '+
                                                     '<i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> '+
                                                     '<i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i> '+
-                                                    '<i class="fas fa-folder-open" title="Check if master and node file are equals" style="color:Dodgerblue; cursor: pointer;" onclick="GetMD5files(\''+groups['guuid']+'\', \'suricata\')"></i>'+
+                                                    '<span class="badge bg-primary align-text-bottom text-white" title="Check if master and node file are equals" style="color:Dodgerblue; cursor: pointer;" onclick="GetMD5files(\''+groups['guuid']+'\', \'suricata\')">Reload</span>'+
                                                 '</td>'+
-                                                '<td>Master path: <i class="fas fa-info-circle" style="color:dodgerblue; cursor:pointer;" onclick="ShowMasterFiles()"></i></td>';
+                                                '<td>Master path: <i class="fas fa-folder-open" style="color:dodgerblue; cursor:pointer;" onclick="ShowMasterFiles()"></i></td>';
                                                 if(groups["mastersuricata"] == ""){
                                                     htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
                                                 }else{
@@ -904,7 +904,7 @@ async function GetMD5files(guuid, type){
                                     '<td colspan="2">'+response.data[x].Nodes[y]["nname"]+'</td>'+
                                     '<td>'+response.data[x].Nodes[y]["nip"]+'</td>'+
                                     '<td>'+
-                                        '<i style="color: dodgerblue; cursor:pointer;" class="fas fa-info-circle" onclick="ShowFilesMd5(\''+response.data[x].Nodes[y]["nuuid"]+'\')"></i> '+
+                                        '<i style="color: dodgerblue; cursor:pointer;" class="fas fa-folder-open" onclick="ShowFilesMd5(\''+response.data[x].Nodes[y]["nuuid"]+'\')"></i> '+
                                         '<span id="global-files-status-'+response.data[x].Nodes[y]["nuuid"]+'" class="badge badge-pill bg-success align-text-bottom text-white">&nbsp</span>'+
                                     '</td>'+
                                 '</tr>'+
@@ -984,10 +984,11 @@ async function GetMD5files(guuid, type){
                     }
                     masterFiles = masterFiles + '</table>';
                     console.log(masterFiles);
-                    document.getElementById('master-md5-files').innerHTML = document.getElementById('master-md5-files').innerHTML + masterFiles;       
+                    document.getElementById('master-md5-files').innerHTML = masterFiles;       
         }      
     })
     .catch(function (error) {
+        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -1031,7 +1032,7 @@ async function GetMD5files(guuid, type){
 //                             html = html + '<tr>'+
 //                                 '<td colspan="2">'+response.data[x].Nodes[y]["nname"]+'</td>'+
 //                                 '<td>'+response.data[x].Nodes[y]["nip"]+'</td>'+
-//                                 '<td><i style="color: dodgerblue;" class="fas fa-info-circle" onclick="ShowFilesMd5(\''+response.data[x].Nodes[y]["nuuid"]+'\')"></i></td>'+
+//                                 '<td><i style="color: dodgerblue;" class="fas fa-folder-open" onclick="ShowFilesMd5(\''+response.data[x].Nodes[y]["nuuid"]+'\')"></i></td>'+
 //                             '</tr>'+
 //                             '<tr id="file-row-'+response.data[x].Nodes[y]["nuuid"]+'">'+                                
 //                             '</tr>';

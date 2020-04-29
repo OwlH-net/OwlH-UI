@@ -112,7 +112,7 @@ function GetGroupsDetails(){
                                 '</span>'+
                                 '<br><br>'+
                                 '<span id="suricata-configure" class="badge badge-pill bg-dark align-text-bottom text-white" style="display:none;">Mode: &nbsp '+  
-                                    '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'standalone-suricata-group-table\')">Standalone</span> &nbsp '+
+                                    // '<span id="suricata-group-mode-standalone" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'standalone-suricata-group-table\')">Standalone</span> &nbsp '+
                                     '<span id="suricata-group-mode-expert" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeGroupConfigTable(\'expert-suricata-group-table\')">Expert</span>'+
                                 '</span> &nbsp'+ 
                                 '<button id="group-suricata-sync-btn" class="btn btn-primary float-right text-decoration-none text-white" style="display:none;" onclick="syncAllSuricataGroup(\''+uuid+'\')">Sync</button>'+
@@ -164,7 +164,7 @@ function GetGroupsDetails(){
                                                     '<i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i> '+
                                                     '<i class="fas fa-folder-open" title="Check if master and node file are equals" style="color:Dodgerblue; cursor: pointer;" onclick="GetMD5files(\''+groups['guuid']+'\', \'suricata\')"></i>'+
                                                 '</td>'+
-                                                '<td>Master path:</td>';
+                                                '<td>Master path: <i class="fas fa-info-circle" style="color:dodgerblue; cursor:pointer;" onclick="ShowMasterFiles()"></i></td>';
                                                 if(groups["mastersuricata"] == ""){
                                                     htmlsuricata = htmlsuricata + '<td style="color: red;" id="group-suricata-master-path" value="">No Suricata master path...</td>';
                                                 }else{
@@ -173,7 +173,7 @@ function GetGroupsDetails(){
                                             htmlsuricata = htmlsuricata + '</tr>'+
                                             '<tr>'+
                                                 //here goes master files and their MD5
-                                                '<td colspan="2" id="master-md5-files"></td>'+
+                                                '<td colspan="2" id="master-md5-files" style="display:none;"></td>'+
                                             '</tr>'+                           
                                             '<tr>'+                           
                                                 '<td>Node path:</td>';
@@ -839,14 +839,20 @@ function changePaths(guuid, type){
     }
 }
 
+function ShowMasterFiles(){
+    if($("#master-md5-files").is(':visible')){
+        $("#master-md5-files").hide();
+    }else{
+        $("#master-md5-files").show();
+    }
+}
+
 function ShowFilesMd5(nuuid){
     $('.node').each(function() {
         if($(this).attr('node') == nuuid){
             if($(this).is(':visible')){
-                console.log("HIDE")
                 $(this).hide();
             }else{
-                console.log("show")
                 $(this).show();
             }
         }
@@ -2113,7 +2119,7 @@ function ChangeGroupConfigTable(tab){
         document.getElementById('default-suricata-group-table').style.display = 'none';
         document.getElementById('group-suricata-sync-btn').style.display = 'none';
 
-        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-primary align-text-bottom text-white';
+        // document.getElementById('suricata-group-mode-standalone').className = 'badge bg-primary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
     } else if (tab == "expert-suricata-group-table") {
@@ -2123,7 +2129,7 @@ function ChangeGroupConfigTable(tab){
         document.getElementById('group-suricata-sync-btn').style.display = 'block';
 
         document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
-        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        // document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-expert').className = 'badge bg-primary align-text-bottom text-white';
     } else if (tab == "default-suricata-group-table") {
         $("#suricata-configure").hide();
@@ -2134,7 +2140,7 @@ function ChangeGroupConfigTable(tab){
 
         document.getElementById('suricata-group-mode-default').className = 'badge bg-primary align-text-bottom text-white';
         document.getElementById('suricata-mode').className = 'badge bg-secondary align-text-bottom text-white';
-        document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
+        // document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
         document.getElementById('suricata-group-mode-expert').className = 'badge bg-secondary align-text-bottom text-white';
     }else if (tab == "expert-zeek-table") {
         $("#group-zeek-add-cluster-btn").hide();

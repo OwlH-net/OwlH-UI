@@ -159,7 +159,7 @@ function GetGroupsDetails(){
                                                 htmlsuricata = htmlsuricata + '<td></td>'+
                                             '</tr>'+                                       
                                             '<tr>'+
-                                                '<td class="align-middle" rowspan="2">Configuration &nbsp '+
+                                                '<td class="align-top" rowspan="3">Configuration &nbsp '+
                                                     '<i class="fas fa-edit" style="color:Dodgerblue; cursor: pointer;" title="Change Suricata paths" onclick="showEditGroup(\'suricata\', \''+groups['guuid']+'\')"></i> '+
                                                     '<i class="fas fa-sync-alt" title="Sync Suricata files to all nodes" style="color:Dodgerblue; cursor: pointer;" onclick="SyncPathGroup(\''+groups['guuid']+'\', \'suricata\')"></i> '+
                                                     '<i class="fas fa-folder-open" title="Check if master and node file are equals" style="color:Dodgerblue; cursor: pointer;" onclick="GetMD5files(\''+groups['guuid']+'\', \'suricata\')"></i>'+
@@ -171,6 +171,10 @@ function GetGroupsDetails(){
                                                     htmlsuricata = htmlsuricata + '<td id="group-suricata-master-path" value="'+groups["mastersuricata"]+'">'+groups["mastersuricata"]+'</td>';
                                                 }
                                             htmlsuricata = htmlsuricata + '</tr>'+
+                                            '<tr>'+
+                                                //here goes master files and their MD5
+                                                '<td colspan="2" id="master-md5-files"></td>'+
+                                            '</tr>'+                           
                                             '<tr>'+                           
                                                 '<td>Node path:</td>';
                                                 if(groups["nodesuricata"] == ""){
@@ -189,6 +193,7 @@ function GetGroupsDetails(){
                                             '</tr>'+                                            
                                         '</tbody>'+
                                     '</table>'+
+                                    
                                     //here goes MD5 files for master and every group node 
                                     '<br>'+
                                     '<div id="suricata-expert-sync-table"></div>'+
@@ -933,11 +938,20 @@ async function GetMD5files(guuid, type){
             PrivilegesMessage();              
         }else{
                      //PUT ALL FILES LIST
+                     var masterPaths = [];
+                     var masterMD5 = [];
                      for(id in responseBody.data){    
-                         for(file in responseBody.data[id]){
+                         for(file in responseBody.data[id]){                             
+                            //get all master files
+                            if(!masterPaths.includes(responseBody.data[id][file]["masterPath"])){ 
+                                masterPaths.push(responseBody.data[id][file]["masterPath"]); 
+                                masterMD5.push(responseBody.data[id][file]["masterMD5"]);
+                            }
+
+                            //node files
                             var html2 = '<table style="display:none;" width="100%" bgcolor="AliceBlue" class="node" node="'+id+'">'+
                                 '<tr>'+
-                                    '<td><b>File:</b> '+responseBody.data[id][file]["path"]+'</td>'+
+                                    '<td><b>File:</b> '+responseBody.data[id][file]["nodePath"]+'</td>'+
                                     '<td><b>Master MD5:</b> '+responseBody.data[id][file]["masterMD5"]+'</td>'+
                                     '<td><b>Node MD5:</b> '+responseBody.data[id][file]["nodeMD5"]+'</td>'+
                                     '<td>';
@@ -952,7 +966,19 @@ async function GetMD5files(guuid, type){
                             '</table>';
                             document.getElementById('files-'+id).innerHTML = document.getElementById('files-'+id).innerHTML + html2;       
                         }   
-                    }    
+                    }  
+
+                    //Master files and their MD5
+                    var masterFiles = '<table width="100%" class="table" style="table-layout: fixed;">';
+                    for(x in masterPaths)  {
+                        masterFiles = masterFiles + '<tr>'+
+                            '<td><b>Path:</b> '+masterPaths[x]+'</td>'+
+                            '<td><b>MD5:</b> '+masterMD5[x]+'</td>'+
+                        '<tr>';
+                    }
+                    masterFiles = masterFiles + '</table>';
+                    console.log(masterFiles);
+                    document.getElementById('master-md5-files').innerHTML = document.getElementById('master-md5-files').innerHTML + masterFiles;       
         }      
     })
     .catch(function (error) {

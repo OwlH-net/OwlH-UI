@@ -978,17 +978,15 @@ async function GetMD5files(guuid, type){
                     var masterFiles = '<table width="100%" class="table" style="table-layout: fixed;">';
                     for(x in masterPaths)  {
                         masterFiles = masterFiles + '<tr>'+
-                            '<td><b>Path:</b> '+masterPaths[x]+'</td>'+
+                            '<td><i class="fas fa-file" style="color:dodgerblue; cursor:pointer;" onclick="loadClusterFile(\'none\',\''+masterPaths[x]+'\',\'Master File\')"></i> <b>Path:</b> '+masterPaths[x]+'</td>'+
                             '<td><b>MD5:</b> '+masterMD5[x]+'</td>'+
                         '<tr>';
                     }
                     masterFiles = masterFiles + '</table>';
-                    console.log(masterFiles);
                     document.getElementById('master-md5-files').innerHTML = masterFiles;       
         }      
     })
     .catch(function (error) {
-        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -1000,6 +998,11 @@ async function GetMD5files(guuid, type){
         setTimeout(function() {$(".alert").alert('close')}, 30000);
     }); 
 }
+
+// function loadClusterFile(uuid, path, type){
+//     var ipmaster = document.getElementById('ip-master').value;
+//     document.location.hostname.href = 'https://' + ipmaster + '/show-file-content.html?type='+type+'&uuid='+uuid+'&path='+path;
+// }
 
 // async function GetMD5files(guuid, type){    
 //     var ipmaster = document.getElementById('ip-master').value;
@@ -1293,7 +1296,7 @@ function backButton(){
 }
 
 function loadClusterFile(uuid, path, type){
-    document.location.hostname.href = 'https://' + ipmaster + '/show-file-content.html?type='+type+'&uuid='+uuid+'&path='+path;
+    document.location.href = 'https://' + location.hostname + '/show-file-content.html?type='+type+'&uuid='+uuid+'&path='+path;
 }
 
 function modalLoadRuleset(group){

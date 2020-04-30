@@ -82,7 +82,7 @@ function EditCurrentRole(uuid){
     $('input[type=checkbox]:checked').each(function(index){
         list.push($(this).attr('role'));
     });
-        
+       console.log(list); 
     var jsonData = {}
     jsonData["id"] = uuid;
     jsonData["role"] = document.getElementById('role-name-input').value.trim();

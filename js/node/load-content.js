@@ -26,7 +26,7 @@ var payload = "";
 loadJSONdata();
 
 
-function LoadFileLastLines(uuid, line, path) {
+function LoadFileLastLines() {
     document.getElementById('progressBar-options-div').style.display = "block";
     document.getElementById('progressBar-options').style.display = "block";
 
@@ -163,7 +163,7 @@ function saveCurrentContent() {
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
     
-                LoadFileLastLines(uuid, "none", path);
+                LoadFileLastLines();
             }
         }
     })

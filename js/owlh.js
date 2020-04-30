@@ -79,7 +79,7 @@ async function PingNode(uuid, token) {
                 }else{
                     document.getElementById('node-monitor-'+uuid).onclick = "";
                     document.getElementById('node-services-'+uuid).onclick = "";
-                    document.getElementById('node-modify-'+uuid).onclick = "";
+                    // document.getElementById('node-modify-'+uuid).onclick = "";
                     document.getElementById('node-config-'+uuid).onclick = "";
                     document.getElementById('node-files-'+uuid).onclick = "";
                     document.getElementById('node-change-'+uuid).onclick = "";
@@ -88,7 +88,7 @@ async function PingNode(uuid, token) {
     
                     document.getElementById('node-monitor-'+uuid).style.cursor = " default";
                     document.getElementById('node-services-'+uuid).style.cursor = "default";
-                    document.getElementById('node-modify-'+uuid).style.cursor = "default";
+                    // document.getElementById('node-modify-'+uuid).style.cursor = "default";
                     document.getElementById('node-config-'+uuid).style.cursor = "default";
                     document.getElementById('node-files-'+uuid).style.cursor = "default";
                     document.getElementById('node-change-'+uuid).style.cursor = "default";
@@ -109,7 +109,7 @@ async function PingNode(uuid, token) {
         .catch(function (error) {
             document.getElementById('node-monitor-'+uuid).onclick = "";
             document.getElementById('node-services-'+uuid).onclick = "";
-            document.getElementById('node-modify-'+uuid).onclick = "";
+            // document.getElementById('node-modify-'+uuid).onclick = "";
             document.getElementById('node-config-'+uuid).onclick = "";
             document.getElementById('node-files-'+uuid).onclick = "";
             document.getElementById('node-change-'+uuid).onclick = "";
@@ -118,7 +118,7 @@ async function PingNode(uuid, token) {
 
             document.getElementById('node-monitor-'+uuid).style.cursor = " default";
             document.getElementById('node-services-'+uuid).style.cursor = "default";
-            document.getElementById('node-modify-'+uuid).style.cursor = "default";
+            // document.getElementById('node-modify-'+uuid).style.cursor = "default";
             document.getElementById('node-config-'+uuid).style.cursor = "default";
             document.getElementById('node-files-'+uuid).style.cursor = "default";
             document.getElementById('node-change-'+uuid).style.cursor = "default";
@@ -324,14 +324,16 @@ function GetAllNodes() {
                                     '<td></td>'+        
                                     '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+                                   
                                         '<span style="font-size: 15px; color: Grey;" id="node-actions-'+uuid+'">'+                                                                          
-                                            '<i id="node-monitor-'+uuid+'" class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring' +
-                                            '<br><i id="node-services-'+uuid+'" class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration' +
-                                            '<br><i id="node-modify-'+uuid+'" class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node' +
+                                            '<i id="node-services-'+uuid+'" class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration' +
+                                            '<br><i id="node-monitor-'+uuid+'" class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring' +
                                             '<br><i id="node-config-'+uuid+'" class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration' +
                                             '<br><i id="node-files-'+uuid+'" class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files' +
                                             '<br><i id="node-change-'+uuid+'" class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\', \''+nodes[node]['name']+'\')"></i> | Change control' +
                                             '<br><i id="node-incident-'+uuid+'" class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\', \''+nodes[node]['name']+'\')"></i> | Incident data' +
-                                            '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node';
+                                            '<div style="color:dodgerblue; border-top: 1px solid">'+
+                                                '<i id="node-modify-'+uuid+'" class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node' +
+                                                '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node'+
+                                            '</div>';
                                         '</span>'+
                                     '</td> ' +
                                 '</tr>';                             
@@ -910,20 +912,26 @@ function modifyNodeInformation() {
     var ip = document.getElementById('cfgnodeip').value;
     var port = document.getElementById('cfgnodeport').value;
     var nid = document.getElementById('cfgnodeid').value;
+    var usr = document.getElementById('cfgnodeuser').value;
+    var pass = document.getElementById('cfgnodepass').value;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
     
-    if(name=="" || ip=="" || port==""){
+    if(name=="" || ip=="" || port=="" || usr=="" || pass==""){
       if(name == ""){$('#cfgnodename').attr("placeholder", "Please, insert a valid name"); $('#cfgnodename').css('border', '2px solid red'); }else{$('#cfgnodename').css('border', '2px solid #ced4da');}
       if(ip == ""){$('#cfgnodeip').attr("placeholder", "Please, insert a valid ip"); $('#cfgnodeip').css('border', '2px solid red'); }else{$('#cfgnodeip').css('border', '2px solid #ced4da');}
       if(port == ""){$('#cfgnodeport').attr("placeholder", "Please, insert a valid port"); $('#cfgnodeport').css('border', '2px solid red'); }else{$('#cfgnodeport').css('border', '2px solid #ced4da');}
+      if(usr == ""){$('#cfgnodeuser').attr("placeholder", "Please, insert a valid user"); $('#cfgnodeuser').css('border', '2px solid red'); }else{$('#cfgnodeuser').css('border', '2px solid #ced4da');}
+      if(pass == ""){$('#cfgnodepass').attr("placeholder", "Please, insert a valid pass"); $('#cfgnodepass').css('border', '2px solid red'); }else{$('#cfgnodepass').css('border', '2px solid #ced4da');}
     }else{
       var nodejson = {}
       nodejson["name"] = name;
       nodejson["port"] = port;
       nodejson["ip"] = ip;
       nodejson["id"] = nid;
+      nodejson["user"] = usr;
+      nodejson["pass"] = pass;
       var newValues = JSON.stringify(nodejson);
 
       axios({

@@ -1879,6 +1879,7 @@ function SyncRulesetToAllGroupNodes(guuid){
 
     var jsonRuleUID = {}
     jsonRuleUID["uuid"] = guuid;
+    jsonRuleUID["name"] = document.getElementById('ruleset-group-'+guuid).innerHTML;
     var dataJSON = JSON.stringify(jsonRuleUID);
     axios({
         method: 'put',

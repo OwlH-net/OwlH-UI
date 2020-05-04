@@ -15,10 +15,12 @@ function formAddRulesetSource(){
     }
 }
 
-function addRulesetSource() {
+function addRulesetSource() {    
     var formName = document.getElementById('ruleset-source-name').value.trim();
     var formDesc = document.getElementById('ruleset-source-desc').value.trim();
     var formUrl = document.getElementById('ruleset-source-url').value.trim();
+    var formUser = document.getElementById('ruleset-source-user').value.trim();
+    var formPasswd = document.getElementById('ruleset-source-passwd').value.trim();
     var fileName = formUrl.split(/[\s/]+/);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -31,7 +33,7 @@ function addRulesetSource() {
         sourceType = $(this).prop("value");
     });
 
-    if ((sourceType == "url" || sourceType == "threat") && (formName == "" || formDesc == "" || formUrl == "")){
+    if ((sourceType == "url" || sourceType == "threat") && (formName == "" || formDesc == "" || formUrl == "" || ((formUser == ""  && formPasswd != "") || (formUser != ""  && formPasswd == "")))){
         if(formName == ""){
             document.getElementById('ruleset-source-name').placeholder = "Please, insert a valid name.";
             document.getElementById('ruleset-source-name').required = "true";
@@ -44,6 +46,16 @@ function addRulesetSource() {
             document.getElementById('ruleset-source-url').placeholder = "Please, insert a valid url.";
             document.getElementById('ruleset-source-url').required = "true";
         }
+        if(formUser == "" ){
+            document.getElementById('ruleset-source-user').placeholder = "Please, insert a valid username and password.";
+            document.getElementById('ruleset-source-user').value = "";
+            document.getElementById('ruleset-source-user').required = "true";
+        }
+        if(formPasswd == ""){
+            document.getElementById('ruleset-source-user').placeholder = "Please, insert a valid username and password.";
+            document.getElementById('ruleset-source-user').value = "";
+            document.getElementById('ruleset-source-user').required = "true";
+        }
     }else if ((sourceType == "custom") && (formName == "" || formDesc == "")){
         document.getElementById('ruleset-source-url').required = "";
         if(formName == ""){
@@ -55,6 +67,9 @@ function addRulesetSource() {
             document.getElementById('ruleset-source-desc').required = "true";
         }
     }else{
+        document.getElementById('progressBar-create-div').style.display = "block";
+        document.getElementById('progressBar-create').style.display = "block";
+
         if (sourceType == "url" || sourceType == "threat"){
             sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
         }else  if (sourceType == "custom"){
@@ -63,6 +78,10 @@ function addRulesetSource() {
         formAddRulesetSource();//close add ruleset source form
 
         var nodejson = {}
+        if(document.getElementById('ruleset-source-user').value != "" || document.getElementById('ruleset-source-passwd').value != ""){
+            nodejson["user"] = formUser;
+            nodejson["passwd"] = formPasswd;
+        }
         nodejson["name"] = formName;
         nodejson["desc"] = formDesc;
         nodejson["url"] = formUrl;
@@ -84,6 +103,9 @@ function addRulesetSource() {
             data: nodeJSON
         })
         .then(function (response) {
+            document.getElementById('progressBar-create-div').style.display = "none";
+            document.getElementById('progressBar-create').style.display = "none";
+
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
@@ -91,7 +113,7 @@ function addRulesetSource() {
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error! </strong>'+response.data.error+
+                        '<strong>Error adding ruleset! </strong>'+response.data.error+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
@@ -103,9 +125,12 @@ function addRulesetSource() {
             }
         })
         .catch(function (error) {
+            document.getElementById('progressBar-create-div').style.display = "none";
+            document.getElementById('progressBar-create').style.display = "none";
+
             $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error! </strong>'+error+
+                '<strong>Error adding ruleset! </strong>'+error+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -130,12 +155,18 @@ function GetAllRulesetSource(){
     document.getElementById('ruleset-source-name').value = "";
     document.getElementById('ruleset-source-desc').value = "";
     document.getElementById('ruleset-source-url').value = "";
+    document.getElementById('ruleset-source-user').value =  "";
+    document.getElementById('ruleset-source-passwd').value =  "";
     document.getElementById('ruleset-source-name').required = "";
     document.getElementById('ruleset-source-desc').required = "";
     document.getElementById('ruleset-source-url').required =  "";
+    document.getElementById('ruleset-source-user').required =  "";
+    document.getElementById('ruleset-source-passwd').required =  "";
     document.getElementById('ruleset-source-name').placeholder = "Name";
     document.getElementById('ruleset-source-desc').placeholder = "Description";
     document.getElementById('ruleset-source-url').placeholder =  "url";
+    document.getElementById('ruleset-source-user').placeholder =  "User";
+    document.getElementById('ruleset-source-passwd').placeholder =  "Password";
 
     axios({
         method: 'get',
@@ -171,8 +202,12 @@ function RadioButtonListener(){
         var inputRadioClicked = $(e.currentTarget);
         if (inputRadioClicked.attr('value') == "custom"){
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
+            document.getElementById("ruleset-source-user").style.display = "none";
+            document.getElementById("ruleset-source-passwd").style.display = "none";
         }else if (inputRadioClicked.attr('value') == "url"){
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
         }else if (inputRadioClicked.attr('value') == "thread"){
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
         }
@@ -193,6 +228,7 @@ function changeIconAttributes(sources){
 }
 
 function generateAllRulesetSourceHTMLOutput(response) {
+    console.log(response.data);
     if (response.data.ack == "false") {
         return '<div style="text-align:center"><h3 style="color:red;">Error retrieving data for ruleset source</h3></div>';
     }
@@ -546,7 +582,7 @@ function downloadFile(name, path, url, sourceUUID){
                         var alert = document.getElementById('floating-alert');
                         $('html,body').scrollTop(0);
                         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                            '<strong>Error!</strong>'+response.data.error+''+
+                            '<strong>Error downloading!</strong>'+response.data.error+''+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
@@ -563,7 +599,7 @@ function downloadFile(name, path, url, sourceUUID){
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Can not complete the download...'+
+                    '<strong>Error downloading!</strong> Can not complete the download...'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -640,7 +676,7 @@ function overwriteDownload(name, path, url, uuid){
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> Download complete.'+
+                    '<strong>Success!</strong> Overwrite complete.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -654,7 +690,7 @@ function overwriteDownload(name, path, url, uuid){
             }else{
                 $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong>'+response.data.error+''+
+                    '<strong>Error overwrite!</strong>'+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
@@ -671,7 +707,7 @@ function overwriteDownload(name, path, url, uuid){
     .catch(function error(error) {
         $('html,body').scrollTop(0);
         alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
-            '<strong>Error!</strong> Can not complete the download...'+
+            '<strong>Error overwrite!</strong> Can not complete the download...'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+

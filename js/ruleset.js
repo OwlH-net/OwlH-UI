@@ -11,7 +11,7 @@ function GetAllRuleset() {
     bannerTitle.innerHTML = "Ruleset: " + rule;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid,{headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
+    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid,{headers:{'token': document.cookie,'user': payload.user}})
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
@@ -161,8 +161,8 @@ function getToCustomRuleset(rulesetuuid){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
         })
         .then(function (response) {
@@ -240,8 +240,8 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: bpfjson
     })
@@ -286,8 +286,8 @@ function changeRulesetStatus(sid, fileuuid, action) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: bpfjson
     })
@@ -348,8 +348,8 @@ function getRuleNote(elementID, fileuuid, sid) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
         .then(function (response) {
@@ -387,8 +387,8 @@ function rulesetNotes(sid, fileuuid) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: bpfjson
     })

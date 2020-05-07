@@ -45,7 +45,7 @@ function getAllFiles() {
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}

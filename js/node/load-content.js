@@ -56,8 +56,8 @@ function LoadFileLastLines() {
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -130,8 +130,8 @@ function saveCurrentContent() {
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })

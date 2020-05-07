@@ -49,7 +49,7 @@ function GetGroupsDetails(){
         method: 'get',
         url: groupurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -391,12 +391,12 @@ async function ChangeAnalyzerStatus(nodes, status){
         var dataJSON = JSON.stringify(jsonAnalyzer);
 
         // let response = await axios.put('https://'+ ipmaster + ':' + portmaster + '/v1/node/analyzer',{timeout: 30000,
-        // headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}, data: dataJSON});
+        // headers:{'token': document.cookie,'user': payload.user}, data: dataJSON});
         await axios({
             method: 'put',
             url: nodeurl,
             timeout: 30000,
-            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+            headers:{'token': document.cookie,'user': payload.user},
             data: dataJSON
         })
         .then(function (response) {
@@ -459,7 +459,7 @@ function SuricataNodesStatus(guuid){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -544,7 +544,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
     .then(function (response) {
@@ -602,7 +602,7 @@ async function syncAnalyzer(group){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
     .then(function (response) {
@@ -696,7 +696,7 @@ function syncAllGroupElements(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         // data: dataJSON
     })
     .then(function (response) {
@@ -795,7 +795,7 @@ function changePaths(guuid, type){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
-            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+            headers:{'token': document.cookie,'user': payload.user},
             data: grJSON
             })
             .then(function (response) {
@@ -884,7 +884,7 @@ async function GetMD5files(guuid, type){
         method: 'get',
         url: groupurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -937,7 +937,7 @@ async function GetMD5files(guuid, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: grJSON
     })
     .then(function (responseBody) {
@@ -1016,7 +1016,7 @@ async function GetMD5files(guuid, type){
 //         method: 'get',
 //         url: groupurl,
 //         timeout: 30000,
-//         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+//         headers:{'token': document.cookie,'user': payload.user}
 //     })
 //     .then(function (response) {
 //         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1082,7 +1082,7 @@ async function GetMD5files(guuid, type){
 //         method: 'put',
 //         url: nodeurl,
 //         timeout: 30000,
-//         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+//         headers:{'token': document.cookie,'user': payload.user},
 //         data: grJSON
 //     })
 //     .then(function (responseBody) {
@@ -1151,7 +1151,7 @@ async function GetMD5files(guuid, type){
 //         method: 'put',
 //         url: nodeurl,
 //         timeout: 30000,
-//         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+//         headers:{'token': document.cookie,'user': payload.user},
 //         data: grJSON
 //     })
 //     .then(function (responseBody) {
@@ -1233,7 +1233,7 @@ function SyncPathGroup(guuid, type){
             method: 'post',
             url: nodeurl,
             timeout: 30000,
-            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+            headers:{'token': document.cookie,'user': payload.user},
             data: grJSON
         })
         .then(function (response) {
@@ -1325,7 +1325,7 @@ function modalLoadRuleset(group){
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
+    axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {headers:{'token': document.cookie,'user': payload.user}})
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
@@ -1376,7 +1376,7 @@ function syncSuricataGroupService(guuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: grJSON
         })
         .then(function (response) {
@@ -1429,7 +1429,7 @@ function GetAllClusterFiles(guuid){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1488,7 +1488,7 @@ function SyncClusterFile(uuid, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: grJSON
     })
         .then(function (response) {
@@ -1552,7 +1552,7 @@ function changeClusterValue(guuid, uuid){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
-            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+            headers:{'token': document.cookie,'user': payload.user},
             data: grJSON
         })
             .then(function (response) {
@@ -1637,7 +1637,7 @@ function deleteCluster(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: grJSON
     })
         .then(function (response) {
@@ -1667,7 +1667,7 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: grJSON
         })
         .then(function (response) {
@@ -1695,7 +1695,7 @@ function modalSelectNodeGroup(uuid){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1777,7 +1777,7 @@ function addNodesToGroup(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: nodeJSON
         })
         .then(function (response) {
@@ -1801,7 +1801,7 @@ function deleteNodeForGroup(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1887,7 +1887,7 @@ function SyncRulesetToAllGroupNodes(guuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
     .then(function (response) {
@@ -1982,7 +1982,7 @@ function updateGroupService(uuid, type, value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: grJSON
     })
         .then(function (response) {
@@ -2069,7 +2069,7 @@ function addCluster(uuid, path){
         method: 'post',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: grJSON
     })
         .then(function (response) {
@@ -2179,7 +2179,7 @@ function ChangeGroupConfigTable(tab){
 //         method: 'post',
 //         url: nodeurl,
 //         timeout: 30000,
-            // headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+            // headers:{'token': document.cookie,'user': payload.user},
 //         data: grJSON
 //     })
 //         .then(function (response) {
@@ -2239,7 +2239,7 @@ function addRulesetsToGroup(group){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: nodeJSON
         })
         .then(function (response) {
@@ -2290,7 +2290,7 @@ function modalAddRuleset(group){
 
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://'+ipmaster+':'+portmaster+'/v1/group/getGroupSelectedRulesets/'+group, {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
+    axios.get('https://'+ipmaster+':'+portmaster+'/v1/group/getGroupSelectedRulesets/'+group, {headers:{'token': document.cookie,'user': payload.user}})
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
@@ -2345,7 +2345,7 @@ function modalAddRuleset(group){
 function loadGroupRulesets(group){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://'+ipmaster+':'+portmaster+'/v1/group/getGroupSelectedRulesets/'+group, {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
+    axios.get('https://'+ipmaster+':'+portmaster+'/v1/group/getGroupSelectedRulesets/'+group, {headers:{'token': document.cookie,'user': payload.user}})
     .then(function (response) {
         console.log(response.data);
         var rulesetNames = [];
@@ -2415,7 +2415,7 @@ function deleteExpertGroupRuleset(group, id){
     var valuesJSON = JSON.stringify(values);
 
     axios.delete('https://'+ipmaster+':'+portmaster+'/v1/group/deleteExpertGroupRuleset', {timeout: 30000, data: valuesJSON,
-    headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
+    headers:{'token': document.cookie,'user': payload.user}})
     .then(function (response) {
         document.getElementById('progressBar-options-div').style.display="none";
         document.getElementById('progressBar-options').style.display="none";

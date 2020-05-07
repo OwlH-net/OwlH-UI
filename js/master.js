@@ -248,7 +248,7 @@ function deployMaster(value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -291,7 +291,7 @@ function loadNetworkValues(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -363,7 +363,7 @@ function loadNetworkStapValues(uuid){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -442,7 +442,7 @@ function updateMasterStapInterface(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -479,7 +479,7 @@ function updateMasterNetworkInterface(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -503,7 +503,7 @@ function DeployServiceMaster(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -529,7 +529,7 @@ function PingServiceMaster(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';} 
@@ -556,7 +556,7 @@ function LoadMasterNetworkValuesSelected(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -578,7 +578,7 @@ function PingDataflow(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     }).then(function (response) {
         var flows = response.data;
         for (flow in flows){
@@ -599,7 +599,7 @@ function PingPlugins(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
@@ -811,7 +811,7 @@ function saveStapChanges(type, uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -869,7 +869,7 @@ function saveBPF(uuid, value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: bpfjson
     })
      .then(function (response) {
@@ -927,7 +927,7 @@ function deleteServiceMaster(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -957,7 +957,7 @@ function changePluginStatus(uuid,param,value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -987,7 +987,7 @@ function changeDataflowStatus(uuid,param,value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -1013,7 +1013,7 @@ function PingCollector(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1050,7 +1050,7 @@ function playMasterCollector(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1082,7 +1082,7 @@ function stopMasterCollector(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1117,7 +1117,7 @@ function showMasterCollector(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1245,7 +1245,7 @@ function AddSTAPModal(type){
                     '<tbody id="socket-network-modal-table-master">' +
                     '</tbody>'+
                 '</table>';   
-                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
+                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user}})
                .then(function (response) {
                     if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                     if(response.data.permissions == "none"){
@@ -1377,7 +1377,7 @@ function saveSoftwareTAP(type){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
-            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+            headers:{'token': document.cookie,'user': payload.user},
             data: dataJSON
         })
        .then(function (response) {
@@ -1441,7 +1441,7 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -1491,7 +1491,7 @@ function StopStapServiceMaster(uuid, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -1530,7 +1530,7 @@ function loadNetworkValuesService(name, service){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
@@ -1617,7 +1617,7 @@ function SaveStapInterface(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {

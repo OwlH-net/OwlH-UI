@@ -39,8 +39,8 @@ function GetAllGroups(){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -194,8 +194,8 @@ function AddGroup(){
             data: userDelete,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
         })
         .then(function (response) {
@@ -299,8 +299,8 @@ function DeleteGroup(id){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -414,8 +414,8 @@ function EditGroup(id, name){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -474,8 +474,8 @@ function modalAddRoleToGroup(idUser, name){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -550,8 +550,8 @@ function AddRoleToGroup(id){
         data: userTo,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -619,8 +619,8 @@ function DeleteGroupUser(id, user){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -688,8 +688,8 @@ function DeleteGroupRole(id, role){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {

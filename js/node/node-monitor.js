@@ -184,8 +184,8 @@ function DeleteMonitorFile(uuid, file){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -272,8 +272,8 @@ function AddMonitorFile(uuid, path){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -322,8 +322,8 @@ function PingMonitorFiles(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -441,8 +441,8 @@ function PingMonitor(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -643,8 +643,8 @@ function ChangeRotationStatus(uuid, file, status){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -727,8 +727,8 @@ function EditRotation(uuid, file){
             timeout: 30000,
                 headers:{
                     'token': document.cookie,
-                    'user': payload.user,
-                    'uuid': payload.uuid,
+                    'user': payload.user
+                    
                 },
             data: dataJSON
         })

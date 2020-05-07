@@ -9,8 +9,8 @@ function GetAllRulesets() {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -109,8 +109,8 @@ function modalShowLog(uuid, name){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
         .then(function (response) {
@@ -440,8 +440,8 @@ function timeSchedule(uuid, status){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: schedulejson
     })
@@ -574,8 +574,8 @@ function synchronizeAllRulesets() {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
         .then(function (response) {
@@ -633,8 +633,8 @@ function deleteRuleset(name, uuid) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: bpfjson
     })
@@ -690,8 +690,8 @@ function deleteRuleset(name, uuid) {
 //             timeout: 30000,
         // headers:{
         //     'token': document.cookie,
-        //     'user': payload.user,
-        //     'uuid': payload.uuid,
+        //     'user': payload.user
+        //     
         // },
 //             data: bpfjson
 //         })
@@ -721,8 +721,8 @@ function syncRuleset(uuid){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: dataJSON
     })

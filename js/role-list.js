@@ -96,8 +96,8 @@ function EditCurrentRole(uuid){
         data: dataValues,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {    
@@ -133,8 +133,8 @@ async function GetAllPermissions(){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -273,8 +273,8 @@ function addNewRole(){
                 data: newData,
                 headers:{
                     'token': document.cookie,
-                    'user': payload.user,
-                    'uuid': payload.uuid,
+                    'user': payload.user
+                    
                 }
             })
             .then(function (response) {

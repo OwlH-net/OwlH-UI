@@ -33,8 +33,8 @@ function addServerToNode() {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: nodeJSON
     })
@@ -68,8 +68,8 @@ function GetAllServers() {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -189,8 +189,8 @@ function generateAllServerHTMLOutput(response) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -314,8 +314,8 @@ function EditStapServer(server, param){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: nodeJSON
     })
@@ -344,8 +344,8 @@ function RunStapServer(server) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
         .then(function (response) {
@@ -373,8 +373,8 @@ function StopStapServer(server) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
     })
         .then(function (response) {
@@ -402,8 +402,8 @@ function DeleteStapServer(server) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
     })
         .then(function (response) {

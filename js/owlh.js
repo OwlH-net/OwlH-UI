@@ -59,8 +59,8 @@ async function PingNode(uuid, token) {
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -137,8 +137,8 @@ function PingService(uuid){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
         .then(function (response) {
@@ -168,8 +168,8 @@ function PingMonitor(uuid){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -200,8 +200,8 @@ function DeployService(uuid) {
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -240,8 +240,8 @@ function GetAllNodes() {
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/node', {
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }//Authorization
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
@@ -458,8 +458,8 @@ function deleteNode(node) {
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -504,8 +504,8 @@ function PingDataflow(uuid){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -537,8 +537,8 @@ function deployNode(value,uuid,nodeName){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000,
         data: dataJSON
@@ -638,8 +638,8 @@ function ChangeStatus(uuid){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000,
         data: dataJSON
@@ -665,8 +665,8 @@ function getRulesetUID(uuid) {
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -693,8 +693,8 @@ function getRuleName(uuidRuleset, uuid) {
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -854,8 +854,8 @@ function addNode() {
             url: nodeurl,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
 			timeout: 30000,
 			data: nodeJSON
@@ -936,7 +936,7 @@ function modifyNodeInformation() {
 
       axios({
         method: 'put',
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid,},
+        headers:{'token': document.cookie,'user': payload.user},
         url: nodeurl,
         timeout: 30000,
         data: newValues
@@ -1014,8 +1014,8 @@ function loadBPF(nid, name){
     method: 'get',
     headers:{
         'token': document.cookie,
-        'user': payload.user,
-        'uuid': payload.uuid,
+        'user': payload.user
+        
     },
     url: nodeurl,
     timeout: 3000
@@ -1054,8 +1054,8 @@ function saveBPF(nid){
     method: 'put',
     headers:{
         'token': document.cookie,
-        'user': payload.user,
-        'uuid': payload.uuid,
+        'user': payload.user
+        
     },
     url: nodeurl,
     timeout: 30000,
@@ -1100,8 +1100,8 @@ function loadRuleset(nid){
   axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
     headers:{
       'token': document.cookie,
-      'user': payload.user,
-      'uuid': payload.uuid,
+      'user': payload.user
+      
     },
   })
 
@@ -1169,8 +1169,8 @@ function saveRuleSelected(rule, nid){
         url: urlSetRuleset,
         headers:{
           'token': document.cookie,
-          'user': payload.user,
-          'uuid': payload.uuid,
+          'user': payload.user
+          
         },
         timeout: 30000,
         data: uidJSON

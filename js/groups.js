@@ -99,7 +99,7 @@ function addGroup() {
             method: 'post',
             url: groupurl,
             timeout: 30000,
-            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+            headers:{'token': document.cookie,'user': payload.user},
             data: nodeJSON
         })
        .then(function (response) {
@@ -159,8 +159,8 @@ function GetAllGroups(){
         timeout: 60000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
    .then(function (response) {
@@ -383,7 +383,7 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: grJSON
         })
        .then(function (response) {
@@ -427,7 +427,7 @@ function modalSelectNodeGroup(uuid){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
        .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -527,7 +527,7 @@ function addNodesToGroup(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: nodeJSON
         })
        .then(function (response) {
@@ -630,7 +630,7 @@ function EditGroupData(uuid){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
-            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+            headers:{'token': document.cookie,'user': payload.user},
             data: nodeJSON
             })
            .then(function (response) {
@@ -676,7 +676,7 @@ function deleteGroup(groupID){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
     })
        .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -720,7 +720,7 @@ function deleteNodeForGroup(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
        .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -810,7 +810,7 @@ function SyncRulesetToAllGroupNodes(groupID){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {

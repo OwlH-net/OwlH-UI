@@ -27,8 +27,8 @@
 //       url: nodeurl,
 //       headers:{
 //         'token': document.cookie,
-//         'user': payload.user,
-//         'uuid': payload.uuid,
+//         'user': payload.user
+//         
 //     },
 // 			timeout: 30000,
 // 			data: nodeJSON
@@ -96,8 +96,8 @@
 //         method: 'put',
 //         headers:{
 //           'token': document.cookie,
-//           'user': payload.user,
-//           'uuid': payload.uuid,
+//           'user': payload.user
+//           
 //       },
 //         url: nodeurl,
 //         timeout: 30000,
@@ -159,8 +159,8 @@
 //     method: 'get',
 //     headers:{
 //       'token': document.cookie,
-//       'user': payload.user,
-//       'uuid': payload.uuid,
+//       'user': payload.user
+//       
 //   },
 //     url: nodeurl,
 //     timeout: 3000
@@ -194,8 +194,8 @@
 //     method: 'put',
 //     headers:{
 //       'token': document.cookie,
-//       'user': payload.user,
-//       'uuid': payload.uuid,
+//       'user': payload.user
+//       
 //   },
 //     url: nodeurl,
 //     timeout: 30000,
@@ -235,8 +235,8 @@
 //   axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
 //     headers:{
 //       'token': document.cookie,
-//       'user': payload.user,
-//       'uuid': payload.uuid,
+//       'user': payload.user
+//       
 //     },
 //   })
 
@@ -299,8 +299,8 @@
 //         url: urlSetRuleset,
 //         headers:{
 //           'token': document.cookie,
-//           'user': payload.user,
-//           'uuid': payload.uuid,
+//           'user': payload.user
+//           
 //       },
 //         timeout: 30000,
 //         data: uidJSON

@@ -97,8 +97,8 @@ function addRulesetSource() {
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: nodeJSON
         })
@@ -174,8 +174,8 @@ function GetAllRulesetSource(){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -299,8 +299,8 @@ function loadCustomRulesetRules(uuid,path,type){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -359,8 +359,8 @@ function loadCustomRulesetRules(uuid,path,type){
 //         timeout: 30000,
         // headers:{
         //     'token': document.cookie,
-        //     'user': payload.user,
-        //     'uuid': payload.uuid,
+        //     'user': payload.user
+        //     
         // },
 //         data: dataJSON
 //     })
@@ -386,8 +386,8 @@ function loadCustomRulesetRules(uuid,path,type){
 //         timeout: 30000,
         // headers:{
         //     'token': document.cookie,
-        //     'user': payload.user,
-        //     'uuid': payload.uuid,
+        //     'user': payload.user
+        //     
         // },
 //         data: nodeJSON
 //         })
@@ -477,8 +477,8 @@ function editRulesetSourceData(){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: nodeJSON
             })
@@ -512,8 +512,8 @@ function deleteRulesetSource(sourceUUID,sourceType){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: nodeJSON
     })
@@ -553,8 +553,8 @@ function downloadFile(name, path, url, sourceUUID){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: nodeJSON
         })
@@ -661,8 +661,8 @@ function overwriteDownload(name, path, url, uuid){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: nodeJSON
     })

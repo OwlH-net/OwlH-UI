@@ -589,8 +589,8 @@ function SyncZeekValues(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -683,8 +683,8 @@ function changeSuricataTable(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -771,8 +771,8 @@ function PingPluginsMaster(){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -844,8 +844,8 @@ function ChangeZeekMode(uuid, mode){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -918,8 +918,8 @@ function ChangeMainServiceStatus(uuid, param, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -972,8 +972,8 @@ function getCurrentRulesetName(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -984,8 +984,8 @@ function getCurrentRulesetName(uuid) {
             axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
                 headers:{
                     'token': document.cookie,
-                    'user': payload.user,
-                    'uuid': payload.uuid,
+                    'user': payload.user
+                    
                 }
             })
             .then(function (response2) {
@@ -999,8 +999,8 @@ function getCurrentRulesetName(uuid) {
                     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid, {
                         headers:{
                             'token': document.cookie,
-                            'user': payload.user,
-                            'uuid': payload.uuid,
+                            'user': payload.user
+                            
                         }
                     })
                     .then(function (response) {
@@ -1038,8 +1038,8 @@ async function GetMainconfData(uuid){
     await axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid, {
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -1074,8 +1074,8 @@ async function GetMainconfData(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -1330,8 +1330,8 @@ function saveZeekValues(uuid, param){
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -1394,8 +1394,8 @@ function SyncCluster(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -1480,8 +1480,8 @@ function AddClusterValue(uuid, type, host, interface){
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -1529,8 +1529,8 @@ function PingCluster(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -1689,8 +1689,8 @@ function EditClusterValue(uuid, type, host, interface, cluster){
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -1744,8 +1744,8 @@ function DeleteClusterValue(uuid, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -1792,8 +1792,8 @@ function PingDataflow(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -1842,8 +1842,8 @@ function ChangeAnalyzerStatus(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -1909,8 +1909,8 @@ function deployNode(value,uuid,nodeName){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -1973,8 +1973,8 @@ function LaunchZeekMainConf(uuid, param) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -2036,8 +2036,8 @@ function StartSuricataMainConf(uuid) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: dataJSON
     })
@@ -2094,8 +2094,8 @@ function StopSuricataMainConf(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -2153,8 +2153,8 @@ function KillSuricataMainConf(uuid, pid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -2212,8 +2212,8 @@ function ReloadSuricataMainConf(uuid, pid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -2268,8 +2268,8 @@ function StopSuricata(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -2384,8 +2384,8 @@ function AddSTAPModal(uuid, type){
             axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid, {
                 headers:{
                     'token': document.cookie,
-                    'user': payload.user,
-                    'uuid': payload.uuid,
+                    'user': payload.user
+                    
                 }
             })
             .then(function (response) {
@@ -2562,8 +2562,8 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -2629,8 +2629,8 @@ function AddPluginService(uuid, name, type){
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataMap
         })
@@ -2689,8 +2689,8 @@ function AddPluginService(uuid, name, type){
 //         timeout: 30000,
         // headers:{
         //         'token': document.cookie,
-        //         'user': payload.user,
-        //         'uuid': payload.uuid,
+        //         'user': payload.user
+        //         
         //     }
 //     })
 //     .then(function (response) {
@@ -2782,8 +2782,8 @@ function saveBPF(uuid, value, service, type){
       timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
       data: bpfjson
     })
@@ -2846,8 +2846,8 @@ function loadRuleset(uuid, source, service){
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
       .then(function (response) {
@@ -2902,8 +2902,8 @@ function deployZeek(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -2997,8 +2997,8 @@ function saveSurictaRulesetSelected(rule, nid, source, name, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: uidJSON
     })
@@ -3057,8 +3057,8 @@ function saveRulesetSelected(rule, nid, source, name, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: uidJSON
     })
@@ -3112,8 +3112,8 @@ function playCollector(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3141,8 +3141,8 @@ function stopCollector(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3170,8 +3170,8 @@ function showCollector(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3260,8 +3260,8 @@ function PingCollector(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3293,8 +3293,8 @@ function PingPorts(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -3346,8 +3346,8 @@ function ChangeStatus(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -3406,8 +3406,8 @@ function ChangeMode(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -3454,8 +3454,8 @@ function showPorts(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3550,8 +3550,8 @@ function deletePorts(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: nodeJSON
         }).then(function (response) {
@@ -3576,8 +3576,8 @@ function deleteAllPorts(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     }).then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -3610,8 +3610,8 @@ function sendRulesetToNode(uuid, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -3672,8 +3672,8 @@ function RunSuricata(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3723,8 +3723,8 @@ function StopSuricata(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
         .then(function (response) {
@@ -3773,8 +3773,8 @@ function PingSuricata(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -3826,8 +3826,8 @@ function RunZeek(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3876,8 +3876,8 @@ function StopZeek(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -3931,8 +3931,8 @@ function PingZeek(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -3989,8 +3989,8 @@ function RunWazuh(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -4041,8 +4041,8 @@ function StopWazuh(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -4102,8 +4102,8 @@ function addWazuhFile(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -4172,8 +4172,8 @@ function DeleteWazuhFile(uuid, count){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -4199,8 +4199,8 @@ function PingWazuhFiles(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -4298,8 +4298,8 @@ function PingWazuh(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -4350,8 +4350,8 @@ function RunStap(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -4398,8 +4398,8 @@ function StopStap(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -4447,8 +4447,8 @@ function PingStap(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -4495,8 +4495,8 @@ function PingPluginsNode(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {  
@@ -4951,8 +4951,8 @@ function PingPluginsNode(uuid) {
                 axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid, {
                     headers:{
                         'token': document.cookie,
-                        'user': payload.user,
-                        'uuid': payload.uuid,
+                        'user': payload.user
+                        
                     }
                 })
                 .then(function (response) {
@@ -5062,8 +5062,8 @@ function modifyNodeOptionValues(uuid, type, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -5155,8 +5155,8 @@ function deployStapService(uuid, service, collector,port,interface, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -5214,8 +5214,8 @@ function stopStapService(uuid, service, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -5268,8 +5268,8 @@ function deleteService(uuid, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -5342,8 +5342,8 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -5405,8 +5405,8 @@ function PingAnalyzer(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -5459,8 +5459,8 @@ function ReloadFilesData(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -5532,8 +5532,8 @@ function loadNetworkValuesService(uuid, name, service, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -5632,8 +5632,8 @@ function updateNetworkInterface(uuid, type, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -5684,8 +5684,8 @@ function UpdateSuricataValue(uuid, name, service, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })

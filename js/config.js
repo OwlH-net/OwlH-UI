@@ -69,7 +69,7 @@ function showActions(action){
 //         method: 'put',
 //         url: nodeurl,
 //         timeout: 30000,
-//         headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+//         headers:{'token': document.cookie,'user': payload.user},
 //         data: fileContent
 //     })
 //     .then(function (response) {

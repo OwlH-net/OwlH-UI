@@ -38,8 +38,8 @@ function GetAllRoles(){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -231,8 +231,8 @@ function AddRole(){
             data: userDelete,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
         })
         .then(function (response) {
@@ -327,8 +327,8 @@ function DeleteRole(id){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -452,8 +452,8 @@ function DeleteRole(id){
 //         data: userDelete,
 //         headers:{
 //             'token': document.cookie,
-//             'user': payload.user,
-//             'uuid': payload.uuid,
+//             'user': payload.user
+//             
 //         }
 //     })
 //     .then(function (response) {
@@ -521,8 +521,8 @@ function DeleteRoleUser(id, user){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -590,8 +590,8 @@ function DeleteRoleGroup(id, group){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {

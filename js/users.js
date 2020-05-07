@@ -38,8 +38,8 @@ function GetAllUsers(){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -176,8 +176,8 @@ function DeleteUserRole(userID, role){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -245,8 +245,8 @@ function DeleteUserGroup(userID, group){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -314,8 +314,8 @@ function DeleteUser(id){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -374,8 +374,8 @@ function modalAddUserToGroup(idUser, name){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -433,8 +433,8 @@ function modalAddUserToRole(idUser, name){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -510,8 +510,8 @@ function addUsersTo(id, type){
         data: userTo,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -764,8 +764,8 @@ function AddUser(){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -854,8 +854,8 @@ function ChangePassword(id){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })

@@ -1074,120 +1074,120 @@ function saveBPF(nid){
     });   
 }
 
-function loadRuleset(nid){
-  var modalWindow = document.getElementById('modal-window');
-  modalWindow.innerHTML = 
-  '<div class="modal-dialog modal-lg">'+
-    '<div class="modal-content">'+
+// function loadRuleset(nid){
+//   var modalWindow = document.getElementById('modal-window');
+//   modalWindow.innerHTML = 
+//   '<div class="modal-dialog modal-lg">'+
+//     '<div class="modal-content">'+
 
-      '<div class="modal-header">'+
-        '<h4 class="modal-title" id="ruleset-manager-header">Rules</h4>'+
-        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-      '</div>'+
+//       '<div class="modal-header">'+
+//         '<h4 class="modal-title" id="ruleset-manager-header">Rules</h4>'+
+//         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+//       '</div>'+
 
-      '<div class="modal-body" id="ruleset-manager-footer-table">'+ 
-      '</div>'+
+//       '<div class="modal-body" id="ruleset-manager-footer-table">'+ 
+//       '</div>'+
 
-      '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
-        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-      '</div>'+
+//       '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
+//         '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+//       '</div>'+
 
-    '</div>'+
-  '</div>';
-  var resultElement = document.getElementById('ruleset-manager-footer-table');
-  var ipmaster = document.getElementById('ip-master').value;
-  var portmaster = document.getElementById('port-master').value;
-  axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
-    headers:{
-      'token': document.cookie,
-      'user': payload.user
+//     '</div>'+
+//   '</div>';
+//   var resultElement = document.getElementById('ruleset-manager-footer-table');
+//   var ipmaster = document.getElementById('ip-master').value;
+//   var portmaster = document.getElementById('port-master').value;
+//   axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
+//     headers:{
+//       'token': document.cookie,
+//       'user': payload.user
       
-    },
-  })
+//     },
+//   })
 
-    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
-            if (typeof response.data.error != "undefined"){
-                resultElement.innerHTML = '<p>No rules available...</p>';
-            }else{
-                resultElement.innerHTML = generateAllRulesModal(response, nid);
-            }
-        }
-    })
-    .catch(function (error) {
-      resultElement.innerHTML = '<p>Error retrieving rules</p>';
-    }); 
+//     .then(function (response) {
+//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(response.data.permissions == "none"){
+//             PrivilegesMessage();              
+//         }else{   
+//             if (typeof response.data.error != "undefined"){
+//                 resultElement.innerHTML = '<p>No rules available...</p>';
+//             }else{
+//                 resultElement.innerHTML = generateAllRulesModal(response, nid);
+//             }
+//         }
+//     })
+//     .catch(function (error) {
+//       resultElement.innerHTML = '<p>Error retrieving rules</p>';
+//     }); 
   
-}
+// }
 
-function generateAllRulesModal(response, nid) {
-    var rules = response.data;
-    var isEmpty = true;
-    var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                	'<thead>' +
-                		'<tr>' +
-							'<th width="30%">Name</th>' +
-							'<th>Description</th>' +
-							'<th width="15%">Options</th>' +
-                		'</tr>' +
-                	'</thead>' +
-                	'<tbody>';
-    for (rule in rules) {
-        isEmpty = false;
-        html = html + '<tr><td style="word-wrap: break-word;" width="30%"> ' +
-        rules[rule]["name"] +
-        '</td><td style="word-wrap: break-word;"> ' +
-        rules[rule]["desc"] +
-        '</td><td style="word-wrap: break-word;" width="15%"> ' +
-        	'<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button> ' +
-        '</td></tr> ';
-    }
-    html = html + '</tbody></table>';
+// function generateAllRulesModal(response, nid) {
+//     var rules = response.data;
+//     var isEmpty = true;
+//     var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+//                 	'<thead>' +
+//                 		'<tr>' +
+// 							'<th width="30%">Name</th>' +
+// 							'<th>Description</th>' +
+// 							'<th width="15%">Options</th>' +
+//                 		'</tr>' +
+//                 	'</thead>' +
+//                 	'<tbody>';
+//     for (rule in rules) {
+//         isEmpty = false;
+//         html = html + '<tr><td style="word-wrap: break-word;" width="30%"> ' +
+//         rules[rule]["name"] +
+//         '</td><td style="word-wrap: break-word;"> ' +
+//         rules[rule]["desc"] +
+//         '</td><td style="word-wrap: break-word;" width="15%"> ' +
+//         	'<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button> ' +
+//         '</td></tr> ';
+//     }
+//     html = html + '</tbody></table>';
     
-    if (isEmpty){
-        return '<p>No rules available...</p>';
-    }else{
-        return html;
-    }
-}
+//     if (isEmpty){
+//         return '<p>No rules available...</p>';
+//     }else{
+//         return html;
+//     }
+// }
 
 
-function saveRuleSelected(rule, nid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
+// function saveRuleSelected(rule, nid){
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
 
-    var jsonRuleUID = {}
-    jsonRuleUID["nid"] = nid;
-    jsonRuleUID["rule_uid"] = rule;
-    var uidJSON = JSON.stringify(jsonRuleUID);
-    axios({
-        method: 'put',
-        url: urlSetRuleset,
-        headers:{
-          'token': document.cookie,
-          'user': payload.user
+//     var jsonRuleUID = {}
+//     jsonRuleUID["nid"] = nid;
+//     jsonRuleUID["rule_uid"] = rule;
+//     var uidJSON = JSON.stringify(jsonRuleUID);
+//     axios({
+//         method: 'put',
+//         url: urlSetRuleset,
+//         headers:{
+//           'token': document.cookie,
+//           'user': payload.user
           
-        },
-        timeout: 30000,
-        data: uidJSON
-    })
-        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                getRulesetUID(nid);
-                return true;
-            }
-        })
-            .catch(function (error) {
-            return false;
-        }); 
-}
+//         },
+//         timeout: 30000,
+//         data: uidJSON
+//     })
+//         .then(function (response) {
+//             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//             if(response.data.permissions == "none"){
+//                 PrivilegesMessage();              
+//             }else{   
+//                 getRulesetUID(nid);
+//                 return true;
+//             }
+//         })
+//             .catch(function (error) {
+//             return false;
+//         }); 
+// }
 
 function deleteNodeModal(node, name){
   var modalWindow = document.getElementById('modal-window');

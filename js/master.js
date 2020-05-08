@@ -269,7 +269,7 @@ function deployMaster(value){
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+value+' has not been deployed.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -1023,7 +1023,7 @@ function PingCollector(){
             if (response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Master STAP Collector is not available.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -1060,7 +1060,7 @@ function playMasterCollector(){
             if (response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Can\'t start Master STAP Collector.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -1092,7 +1092,7 @@ function stopMasterCollector(){
             if (response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Can\'t stop Master STAP Collector.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -1127,7 +1127,7 @@ function showMasterCollector(){
             if (response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Can\'t retrieve data from Master STAP Collector.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -1398,7 +1398,7 @@ function saveSoftwareTAP(type){
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error adding service: </strong>'+response.data.error+''+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -1412,7 +1412,7 @@ function saveSoftwareTAP(type){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error adding service: </strong>'+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -1452,7 +1452,7 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -1467,7 +1467,7 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Deploy STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+

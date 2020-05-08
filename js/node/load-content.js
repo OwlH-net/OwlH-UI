@@ -71,7 +71,7 @@ function LoadFileLastLines() {
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error: </strong>'+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -96,7 +96,7 @@ function LoadFileLastLines() {
             document.getElementById('progressBar-options').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error: </strong>'+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -145,7 +145,7 @@ function saveCurrentContent() {
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error! </strong>'+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -172,7 +172,7 @@ function saveCurrentContent() {
         document.getElementById('progressBar-options').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error! </strong>'+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+

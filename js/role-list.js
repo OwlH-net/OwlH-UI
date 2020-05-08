@@ -60,7 +60,7 @@ function EditRoleDetails(editRoleID, editRoleName, editRolePerms){
         document.getElementById('progressBar-create-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error role details Error!</strong> '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -110,7 +110,7 @@ function EditCurrentRole(uuid){
         document.getElementById('progressBar-create-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error editing role!</strong> '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -218,7 +218,7 @@ async function GetAllPermissions(){
         document.getElementById('progressBar-create-div').style.display = "block";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Get all roles: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -253,7 +253,7 @@ function addNewRole(){
             document.getElementById('progressBar-create').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Can\'t create role without permissions.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -288,7 +288,7 @@ function addNewRole(){
                 document.getElementById('progressBar-create').style.display = "none";
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error adding new role: </strong> '+error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+

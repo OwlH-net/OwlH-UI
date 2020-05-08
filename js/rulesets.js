@@ -596,7 +596,7 @@ function synchronizeAllRulesets() {
                 }else{
                     var alert = document.getElementById('floating-alert');
                     $('html,body').scrollTop(0);
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -609,7 +609,7 @@ function synchronizeAllRulesets() {
         .catch(function (error) {
             var alert = document.getElementById('floating-alert');
             $('html,body').scrollTop(0);
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -744,7 +744,7 @@ function syncRuleset(uuid){
                 }else{
                     var alert = document.getElementById('floating-alert');
                     $('html,body').scrollTop(0);
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error Sync Ruleset: </strong> '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -771,7 +771,7 @@ function loadJSONdata(){
     if(searchError == "error"){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Search error: No data found.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+

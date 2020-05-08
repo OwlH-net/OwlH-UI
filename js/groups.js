@@ -110,7 +110,7 @@ function addGroup() {
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Add group Error: </strong> Add group error: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -134,7 +134,7 @@ function addGroup() {
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Add group Error: </strong> Add group error: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -287,7 +287,7 @@ function GetAllGroups(){
         document.getElementById('progressBar-create').style.display="none"; 
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>GetAllGroups Error: </strong>'+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -356,7 +356,7 @@ function modalLoadRuleset(group){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Load ruleset Error: </strong>'+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -394,7 +394,7 @@ function selectGroupRuleset(group, ruleset, rulesetID){
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Group ruleset Error: </strong>'+error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -409,7 +409,7 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Group ruleset Error: </strong>'+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -437,7 +437,7 @@ function modalSelectNodeGroup(uuid){
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Select group node Error: </strong>'+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -498,7 +498,7 @@ function modalSelectNodeGroup(uuid){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Select group node Error: </strong>'+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -538,7 +538,7 @@ function addNodesToGroup(uuid){
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Add nodes to group Error: </strong>'+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -553,7 +553,7 @@ function addNodesToGroup(uuid){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Add nodes to group Error: </strong>'+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -641,7 +641,7 @@ function EditGroupData(uuid){
                     if(response.data.ack == "false"){
                         $('html,body').scrollTop(0);
                         var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                             '<strong>Edit group Error: </strong>'+response.data.error+'.'+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
@@ -656,7 +656,7 @@ function EditGroupData(uuid){
             .catch(function (error) {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Edit group Error: </strong>'+error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -686,7 +686,7 @@ function deleteGroup(groupID){
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Delete group Error: </strong>'+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -701,7 +701,7 @@ function deleteGroup(groupID){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Delete group Error: </strong>'+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -730,7 +730,7 @@ function deleteNodeForGroup(uuid){
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Delete node for group Error: </strong>'+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -745,7 +745,7 @@ function deleteNodeForGroup(uuid){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Delete node for group Error: </strong>'+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -836,7 +836,7 @@ function SyncRulesetToAllGroupNodes(groupID){
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Ruleset Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -852,7 +852,7 @@ function SyncRulesetToAllGroupNodes(groupID){
 
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Synchronize for all group nodes: '+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+

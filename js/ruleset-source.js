@@ -112,7 +112,7 @@ function addRulesetSource() {
             }else{   
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error adding ruleset! </strong>'+response.data.error+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -129,7 +129,7 @@ function addRulesetSource() {
             document.getElementById('progressBar-create').style.display = "none";
 
             $('html,body').scrollTop(0);
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error adding ruleset! </strong>'+error+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -581,7 +581,7 @@ function downloadFile(name, path, url, sourceUUID){
                     }else{
                         var alert = document.getElementById('floating-alert');
                         $('html,body').scrollTop(0);
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                             '<strong>Error downloading!</strong>'+response.data.error+''+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
@@ -689,7 +689,7 @@ function overwriteDownload(name, path, url, uuid){
                 document.getElementById('progressBar-create-div').style.display = "none";
             }else{
                 $('html,body').scrollTop(0);
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error overwrite!</strong>'+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+

@@ -197,7 +197,7 @@ function DeleteMonitorFile(uuid, file){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error: </strong>Delete monitor file: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -212,7 +212,7 @@ function DeleteMonitorFile(uuid, file){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error: </strong>Delete monitor file: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -285,7 +285,7 @@ function AddMonitorFile(uuid, path){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error: </strong>AddMonitorFile '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -300,7 +300,7 @@ function AddMonitorFile(uuid, path){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error: </strong>AddMonitorFile '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -406,7 +406,7 @@ function PingMonitorFiles(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error: </strong>PingMonitorFiles '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -603,7 +603,7 @@ function PingMonitor(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error: </strong>PingMonitor '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -656,7 +656,7 @@ function ChangeRotationStatus(uuid, file, status){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error: </strong>Change rotation status: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -671,7 +671,7 @@ function ChangeRotationStatus(uuid, file, status){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error: </strong>Change rotation status: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -740,7 +740,7 @@ function EditRotation(uuid, file){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error: </strong>Edit rotation: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -755,7 +755,7 @@ function EditRotation(uuid, file){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error: </strong>Edit rotation: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+

@@ -52,7 +52,7 @@ function GetAllRoles(){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Get all roles: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -141,7 +141,7 @@ function GetAllRoles(){
         document.getElementById('progressBar-options-div').style.display = "block";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Get all roles: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -245,7 +245,7 @@ function AddRole(){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Add Role: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -271,7 +271,7 @@ function AddRole(){
             document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Add Role: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -341,7 +341,7 @@ function DeleteRole(id){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete role: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -367,7 +367,7 @@ function DeleteRole(id){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete role: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -466,7 +466,7 @@ function DeleteRole(id){
 //             if (response.data.ack == "false") {
 //                 $('html,body').scrollTop(0);
 //                 var alert = document.getElementById('floating-alert');
-//                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//                 alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 //                     '<strong>Error!</strong> Edit role: '+response.data.error+'.'+
 //                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 //                         '<span aria-hidden="true">&times;</span>'+
@@ -492,7 +492,7 @@ function DeleteRole(id){
 //         document.getElementById('progressBar-options-div').style.display = "none";
 //         $('html,body').scrollTop(0);
 //         var alert = document.getElementById('floating-alert');
-//         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 //             '<strong>Error!</strong> Edit role: '+error+'.'+
 //             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 //                 '<span aria-hidden="true">&times;</span>'+
@@ -535,7 +535,7 @@ function DeleteRoleUser(id, user){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete role user: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -561,7 +561,7 @@ function DeleteRoleUser(id, user){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete role user: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -604,7 +604,7 @@ function DeleteRoleGroup(id, group){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete role group: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -630,7 +630,7 @@ function DeleteRoleGroup(id, group){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete role group: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+

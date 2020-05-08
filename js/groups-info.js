@@ -407,7 +407,7 @@ async function ChangeAnalyzerStatus(nodes, status){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Change analyzer status: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -420,7 +420,7 @@ async function ChangeAnalyzerStatus(nodes, status){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong>  Change analyzer status: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -469,7 +469,7 @@ function SuricataNodesStatus(guuid){
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error Suricata: </strong> '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -501,7 +501,7 @@ function SuricataNodesStatus(guuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error Suricata: </strong> '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -557,7 +557,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Change group service status: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -576,7 +576,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Change group service status: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -629,7 +629,7 @@ async function syncAnalyzer(group){
             }else if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Sync analyzer: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -652,7 +652,7 @@ async function syncAnalyzer(group){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Sync analyzer status: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -718,7 +718,7 @@ function syncAllGroupElements(uuid){
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Sync all: '+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -731,7 +731,7 @@ function syncAllGroupElements(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong>  Sync all: '+error+''+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -817,7 +817,7 @@ function changePaths(guuid, type){
                     }else{
                         $('html,body').scrollTop(0);
                         var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                             '<strong>Error!</strong> Change paths: '+response.data.error+''+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
@@ -830,7 +830,7 @@ function changePaths(guuid, type){
             .catch(function (error) {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Change paths: '+error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -907,7 +907,7 @@ async function GetMD5files(guuid, type){
                                     '<td>'+response.data[x].Nodes[y]["nip"]+'</td>'+
                                     '<td>'+
                                         '<i style="color: dodgerblue; cursor:pointer;" class="fas fa-folder-open" onclick="ShowFilesMd5(\''+response.data[x].Nodes[y]["nuuid"]+'\')"></i> '+
-                                        '<span id="global-files-status-'+response.data[x].Nodes[y]["nuuid"]+'" class="badge badge-pill bg-success align-text-bottom text-white">&nbsp</span>'+
+                                        '<span id="global-files-status-'+response.data[x].Nodes[y]["nuuid"]+'" class="badge badge-pill bg-secondary align-text-bottom text-white">&nbsp</span>'+
                                     '</td>'+
                                 '</tr>'+
                                 '<tr>'+
@@ -923,7 +923,7 @@ async function GetMD5files(guuid, type){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error checking files!</strong> Sync path: '+error+''+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -949,6 +949,7 @@ async function GetMD5files(guuid, type){
                      var masterPaths = [];
                      var masterMD5 = [];
                      for(id in responseBody.data){
+                         var MD5PathError = false;
                          for(file in responseBody.data[id]){
                             //get all master files
                             if(!masterPaths.includes(responseBody.data[id][file]["masterPath"])){
@@ -967,12 +968,19 @@ async function GetMD5files(guuid, type){
                                             html2 = html2 + '<span class="badge-pill badge bg-success align-text-bottom text-white"> &nbsp </span>';
                                         }else{
                                             html2 = html2 + '<span class="badge-pill badge bg-danger align-text-bottom text-white"> &nbsp </span>';
-                                            $('#global-files-status-'+id).attr('class', 'badge badge-pill bg-danger align-text-bottom text-white');
+                                            MD5PathError = true;
+                                            // $('#global-files-status-'+id).attr('class', 'badge badge-pill bg-danger align-text-bottom text-white');
                                         }
                                     html2 = html2 + '</td>'+
                                 '</tr>'+
                             '</table>';
                             document.getElementById('files-'+id).innerHTML = document.getElementById('files-'+id).innerHTML + html2;
+                        }
+                        //cehck if there are error for change main pill color
+                        if(MD5PathError){
+                            $('#global-files-status-'+id).attr('class', 'badge badge-pill bg-danger align-text-bottom text-white');
+                        }else{
+                            $('#global-files-status-'+id).attr('class', 'badge badge-pill bg-success align-text-bottom text-white');
                         }
                     }
 
@@ -991,7 +999,7 @@ async function GetMD5files(guuid, type){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error checking all files!</strong> Sync path: '+error+''+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -1052,7 +1060,7 @@ async function GetMD5files(guuid, type){
 //         console.log(error);
 //         $('html,body').scrollTop(0);
 //         var alert = document.getElementById('floating-alert');
-//         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 //             '<strong>Error checking files!</strong> Sync path: '+error+''+
 //             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 //                 '<span aria-hidden="true">&times;</span>'+
@@ -1119,7 +1127,7 @@ async function GetMD5files(guuid, type){
 //         console.log(error);
 //         $('html,body').scrollTop(0);
 //         var alert = document.getElementById('floating-alert');
-//         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 //             '<strong>Error checking all files!</strong> Sync path: '+error+''+
 //             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 //                 '<span aria-hidden="true">&times;</span>'+
@@ -1186,7 +1194,7 @@ async function GetMD5files(guuid, type){
 //         console.log(error);
 //         $('html,body').scrollTop(0);
 //         var alert = document.getElementById('floating-alert');
-//         alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 //             '<strong>Error checking all files!</strong> Sync path: '+error+''+
 //             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 //                 '<span aria-hidden="true">&times;</span>'+
@@ -1204,7 +1212,7 @@ function SyncPathGroup(guuid, type){
 
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Paths are void. Please, insert a valid path.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -1255,7 +1263,7 @@ function SyncPathGroup(guuid, type){
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Sync path: '+response.data.error+''+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -1268,7 +1276,7 @@ function SyncPathGroup(guuid, type){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Sync path: '+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -1387,7 +1395,7 @@ function syncSuricataGroupService(guuid){
                 if(response.data.acke == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Sync group: '+error+''+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -1410,7 +1418,7 @@ function syncSuricataGroupService(guuid){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Sync group: '+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -1499,7 +1507,7 @@ function SyncClusterFile(uuid, type){
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Sync cluster file: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -1523,7 +1531,7 @@ function SyncClusterFile(uuid, type){
         .catch(function error() {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Sync cluster file: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -1563,7 +1571,7 @@ function changeClusterValue(guuid, uuid){
                     if(response.data.ack == "false"){
                         $('html,body').scrollTop(0);
                         var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                             '<strong>Error!</strong> '+response.data.error+'.'+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
@@ -1587,7 +1595,7 @@ function changeClusterValue(guuid, uuid){
             .catch(function error() {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -1811,7 +1819,7 @@ function deleteNodeForGroup(uuid){
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Delete group error!</strong> '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -1826,7 +1834,7 @@ function deleteNodeForGroup(uuid){
     .catch(function error(error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Delete group error!</strong> '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -1913,7 +1921,7 @@ function SyncRulesetToAllGroupNodes(guuid){
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Synchronize for all group nodes: '+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -1929,7 +1937,7 @@ function SyncRulesetToAllGroupNodes(guuid){
 
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Synchronize for all group nodes: '+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -1993,7 +2001,7 @@ function updateGroupService(uuid, type, value){
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                             '<strong>Error updateGroupService!</strong> '+response.data.error+''+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
@@ -2017,7 +2025,7 @@ function updateGroupService(uuid, type, value){
         .catch(function error(error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error updating Values! </strong> '+error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -2080,7 +2088,7 @@ function addCluster(uuid, path){
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                             '<strong>Error!</strong> Add cluster: '+response.data.error+''+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
@@ -2104,7 +2112,7 @@ function addCluster(uuid, path){
         .catch(function error(error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error! </strong> Add cluster: '+error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -2187,7 +2195,7 @@ function ChangeGroupConfigTable(tab){
 //             if(response.data.ack == "false"){
 //                 $('html,body').scrollTop(0);
 //                 var alert = document.getElementById('floating-alert');
-//                     alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//                     alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 //                         '<strong>InsertCluster Error!</strong> '+response.data.error+''+
 //                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 //                             '<span aria-hidden="true">&times;</span>'+
@@ -2210,7 +2218,7 @@ function ChangeGroupConfigTable(tab){
 //         .catch(function error(error) {
 //             $('html,body').scrollTop(0);
 //             var alert = document.getElementById('floating-alert');
-//                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//                 alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 //                     '<strong>Error updating Values! </strong> '+error+''+
 //                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 //                         '<span aria-hidden="true">&times;</span>'+
@@ -2253,7 +2261,7 @@ function addRulesetsToGroup(group){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error adding rulesets to group:</strong> '+error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -2332,7 +2340,7 @@ function modalAddRuleset(group){
             document.getElementById('add-group-ruleset-values').innerHTML = '<p>Error retrieving rules</p>';
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error retrieving group rulesets:</strong> '+error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -2354,7 +2362,7 @@ function loadGroupRulesets(group){
         for(id in response.data){
             if(response.data[id]["checked"] == "true"){
                rulesetNames.push(response.data[id]["name"]);
-               html = html + response.data[id]["name"]+' <i class="fas fa-trash-alt" style="color:red; cursor: pointer;" onclick="modalDeleteExpertGroupRuleset(\''+response.data[id]["name"]+'\', \''+group+'\', \''+id+'\')"></i><br>';
+               html = html + '<span class="badge badge-pill bg-dark align-text-bottom text-white">'+response.data[id]["name"]+'</span> | <i class="fas fa-trash-alt" style="color:red; cursor: pointer;" onclick="modalDeleteExpertGroupRuleset(\''+response.data[id]["name"]+'\', \''+group+'\', \''+id+'\')"></i><br>';
             }
         }
 
@@ -2367,7 +2375,7 @@ function loadGroupRulesets(group){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error retrieving group rulesets:</strong> '+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
@@ -2426,7 +2434,7 @@ function deleteExpertGroupRuleset(group, id){
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error deleting group rulesets:</strong> '+response.data.error+''+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
@@ -2443,7 +2451,7 @@ function deleteExpertGroupRuleset(group, id){
         document.getElementById('progressBar-options').style.display="none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error deleting group rulesets:</strong> '+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+

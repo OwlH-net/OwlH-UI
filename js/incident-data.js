@@ -28,6 +28,7 @@ function loadIncidentData(){
     var urlData = new URL(window.location.href);
     var type = urlData.searchParams.get("type");
     var uuid = urlData.searchParams.get("uuid");
+    var name = urlData.searchParams.get("node");
 
     var progressBar = document.getElementById('progressBar-incident');
     var progressBarDiv = document.getElementById('progressBar-incident-div');
@@ -48,7 +49,7 @@ function loadIncidentData(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -60,7 +61,7 @@ function loadIncidentData(){
             if(response.data.ack == "false"){
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
-                document.getElementById("incident-data-content").innerHTML = '<h3 class="text-center">There are not incidents</h3>';
+                document.getElementById("incident-data-content").innerHTML = '<h3 class="text-center">There are not incidents for node <b>'+name+'</b></h3>';
             }else{
                 var isEmpty = true;
                 progressBar.style.display = "none";
@@ -113,7 +114,7 @@ function loadIncidentData(){
                 '</table>';
         
                 if (isEmpty == true){
-                    html = '<h2 class="text-center">There are no incidents available</h2>';
+                    html = '<h2 class="text-center">There are no incidents available for node <b>'+name+'</b></h2>';
                 }
                 document.getElementById("incident-data-content").innerHTML = html;
     
@@ -131,6 +132,9 @@ function loadIncidentData(){
         }
     })
     .catch(function (error) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        document.getElementById("command-content").innerHTML = '<h3 class="text-center">Error getting incidents for node <b>'+name+'</b></h3>';
     });
 }
 

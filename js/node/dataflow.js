@@ -10,8 +10,8 @@ function loadNetworkValues(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -91,8 +91,8 @@ function LoadAllVxLAN(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -322,8 +322,8 @@ function SaveVxLAN(uuid){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -357,8 +357,8 @@ function LoadAllNewLocal(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -515,8 +515,8 @@ function SaveNewLocal(uuid){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -555,8 +555,8 @@ function selectNewLocal(uuid, nodeUUID){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -581,8 +581,8 @@ function LoadNetworkValuesSelected(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -620,8 +620,8 @@ function updateNetworkInterface(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -659,8 +659,8 @@ function SocketToNetworkList(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -883,8 +883,8 @@ function saveSocketToNetwork(uuid){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -922,8 +922,8 @@ function saveSocketToNetworkSelected(uuid, nodeUUID){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -960,8 +960,8 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -1001,8 +1001,8 @@ function changeDataflowValues(FlowUUID, param, value, uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })

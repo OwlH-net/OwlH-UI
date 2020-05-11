@@ -248,7 +248,7 @@ function deployMaster(value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -265,17 +265,17 @@ function deployMaster(value){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+value+' has not been deployed.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -291,7 +291,7 @@ function loadNetworkValues(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -363,7 +363,7 @@ function loadNetworkStapValues(uuid){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -442,7 +442,7 @@ function updateMasterStapInterface(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -479,7 +479,7 @@ function updateMasterNetworkInterface(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -503,7 +503,7 @@ function DeployServiceMaster(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -529,7 +529,7 @@ function PingServiceMaster(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';} 
@@ -556,7 +556,7 @@ function LoadMasterNetworkValuesSelected(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -578,7 +578,7 @@ function PingDataflow(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     }).then(function (response) {
         var flows = response.data;
         for (flow in flows){
@@ -599,10 +599,9 @@ function PingPlugins(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-       console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -812,7 +811,7 @@ function saveStapChanges(type, uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -870,7 +869,7 @@ function saveBPF(uuid, value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: bpfjson
     })
      .then(function (response) {
@@ -928,7 +927,7 @@ function deleteServiceMaster(uuid){
         method: 'delete',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -958,7 +957,7 @@ function changePluginStatus(uuid,param,value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -988,7 +987,7 @@ function changeDataflowStatus(uuid,param,value){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -1014,7 +1013,7 @@ function PingCollector(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1024,13 +1023,13 @@ function PingCollector(){
             if (response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Master STAP Collector is not available.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else if (response.data != ""){
                 collectorMasterStatus.style.color="green";
             }else{
@@ -1051,7 +1050,7 @@ function playMasterCollector(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1061,13 +1060,13 @@ function playMasterCollector(){
             if (response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Can\'t start Master STAP Collector.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -1083,7 +1082,7 @@ function stopMasterCollector(){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1093,13 +1092,13 @@ function stopMasterCollector(){
             if (response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Can\'t stop Master STAP Collector.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 return true;
             }
@@ -1118,7 +1117,7 @@ function showMasterCollector(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -1128,13 +1127,13 @@ function showMasterCollector(){
             if (response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Can\'t retrieve data from Master STAP Collector.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 showMasterModalCollector(response);
                 return true;
@@ -1246,7 +1245,7 @@ function AddSTAPModal(type){
                     '<tbody id="socket-network-modal-table-master">' +
                     '</tbody>'+
                 '</table>';   
-                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
+                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user}})
                .then(function (response) {
                     if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                     if(response.data.permissions == "none"){
@@ -1378,7 +1377,7 @@ function saveSoftwareTAP(type){
             method: 'put',
             url: nodeurl,
             timeout: 30000,
-            headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+            headers:{'token': document.cookie,'user': payload.user},
             data: dataJSON
         })
        .then(function (response) {
@@ -1395,17 +1394,17 @@ function saveSoftwareTAP(type){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error adding service: </strong>'+response.data.error+''+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }
                 loadPlugins();
             }
@@ -1413,13 +1412,13 @@ function saveSoftwareTAP(type){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error adding service: </strong>'+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -1442,7 +1441,7 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -1453,13 +1452,13 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -1468,13 +1467,13 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Deploy STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1492,7 +1491,7 @@ function StopStapServiceMaster(uuid, type){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {
@@ -1531,7 +1530,7 @@ function loadNetworkValuesService(name, service){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
@@ -1618,7 +1617,7 @@ function SaveStapInterface(uuid){
         method: 'put',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        headers:{'token': document.cookie,'user': payload.user},
         data: dataJSON
     })
    .then(function (response) {

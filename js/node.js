@@ -5,13 +5,13 @@
 //     if(nname=="" || nip=="" || nport==""){
 // 		$('html,body').scrollTop(0);
 // 		var alert = document.getElementById('floating-alert');
-// 		alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+// 		alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 // 			'<strong>Error!</strong> Please, insert a name, port and IP for add a new node.'+
 // 			'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 // 				'<span aria-hidden="true">&times;</span>'+
 // 			'</button>'+
 // 		'</div>';
-//       setTimeout(function() {$(".alert").alert('close')}, 5000);
+//       setTimeout(function() {$(".alert").alert('close')}, 30000);
 //     }else{
 // 		formAddNids();//close add nids form
 // 		var nodejson = {}
@@ -27,8 +27,8 @@
 //       url: nodeurl,
 //       headers:{
 //         'token': document.cookie,
-//         'user': payload.user,
-//         'uuid': payload.uuid,
+//         'user': payload.user
+//         
 //     },
 // 			timeout: 30000,
 // 			data: nodeJSON
@@ -37,13 +37,13 @@
 // 			if(response.data.ack == "false"){
 // 				$('html,body').scrollTop(0);
 // 				var alert = document.getElementById('floating-alert');
-// 				alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+// 				alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 // 					'<strong>Error adding node!</strong> '+response.data.error+'.'+
 // 					'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 // 						'<span aria-hidden="true">&times;</span>'+
 // 					'</button>'+
 // 				'</div>';
-// 				setTimeout(function() {$(".alert").alert('close')}, 5000);
+// 				setTimeout(function() {$(".alert").alert('close')}, 30000);
 // 			}else{
 // 				$('html,body').scrollTop(0);
 // 				var alert = document.getElementById('floating-alert');
@@ -53,20 +53,20 @@
 // 						'<span aria-hidden="true">&times;</span>'+
 // 					'</button>'+
 // 				'</div>';
-// 				setTimeout(function() {$(".alert").alert('close')}, 5000);
+// 				setTimeout(function() {$(".alert").alert('close')}, 30000);
 // 			}
 // 			GetAllNodes();
 // 		})
 // 		.catch(function (error) {
 // 			$('html,body').scrollTop(0);
 // 			var alert = document.getElementById('floating-alert');
-// 			alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+// 			alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 // 				'<strong>Error adding node!</strong> '+error+'.'+
 // 				'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 // 					'<span aria-hidden="true">&times;</span>'+
 // 				'</button>'+
 // 			'</div>';
-// 			setTimeout(function() {$(".alert").alert('close')}, 5000);
+// 			setTimeout(function() {$(".alert").alert('close')}, 30000);
 // 		});   
 //     }
 // }
@@ -96,8 +96,8 @@
 //         method: 'put',
 //         headers:{
 //           'token': document.cookie,
-//           'user': payload.user,
-//           'uuid': payload.uuid,
+//           'user': payload.user
+//           
 //       },
 //         url: nodeurl,
 //         timeout: 30000,
@@ -109,13 +109,13 @@
 //         .catch(function (error) {
 //             $('html,body').scrollTop(0);
 //             var alert = document.getElementById('floating-alert');
-//                 alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+//                 alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 //                     '<strong>Error!</strong> '+error+'.'+
 //                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 //                         '<span aria-hidden="true">&times;</span>'+
 //                     '</button>'+
 //                 '</div>';
-//                 setTimeout(function() {$(".alert").alert('close')}, 5000);
+//                 setTimeout(function() {$(".alert").alert('close')}, 30000);
 //         });   
 //         document.getElementById('divconfigform').style.display = "none";
 //         return false;
@@ -159,8 +159,8 @@
 //     method: 'get',
 //     headers:{
 //       'token': document.cookie,
-//       'user': payload.user,
-//       'uuid': payload.uuid,
+//       'user': payload.user
+//       
 //   },
 //     url: nodeurl,
 //     timeout: 3000
@@ -194,8 +194,8 @@
 //     method: 'put',
 //     headers:{
 //       'token': document.cookie,
-//       'user': payload.user,
-//       'uuid': payload.uuid,
+//       'user': payload.user
+//       
 //   },
 //     url: nodeurl,
 //     timeout: 30000,
@@ -235,8 +235,8 @@
 //   axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
 //     headers:{
 //       'token': document.cookie,
-//       'user': payload.user,
-//       'uuid': payload.uuid,
+//       'user': payload.user
+//       
 //     },
 //   })
 
@@ -299,8 +299,8 @@
 //         url: urlSetRuleset,
 //         headers:{
 //           'token': document.cookie,
-//           'user': payload.user,
-//           'uuid': payload.uuid,
+//           'user': payload.user
+//           
 //       },
 //         timeout: 30000,
 //         data: uidJSON
@@ -364,7 +364,6 @@
 
 // function loadJSONdata(){
 //   $.getJSON('../conf/ui.conf', function(data) {
-//         console.log(data);
 //         //token check
 //         var tokens = document.cookie.split(".");
 //         if (tokens.length != 3){

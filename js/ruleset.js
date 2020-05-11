@@ -11,7 +11,7 @@ function GetAllRuleset() {
     bannerTitle.innerHTML = "Ruleset: " + rule;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid,{headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}})
+    axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid,{headers:{'token': document.cookie,'user': payload.user}})
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
@@ -50,7 +50,9 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
     if(type == "ruleset" && !isCustomSourceType){
         html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="getToCustomRuleset(\''+rulesetuuid+'\')">Add to custom</button><br><br>';
     }else if(type == "custom"){
-        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+fileuuid+'\', \''+ruleName+'\')">Edit ruleset</button><br><br>';
+        html = html + '<button class="btn btn-primary" id="edit-custom-ruleset" style="float: right;" onclick="editRuleset(\''+fileuuid+'\', \''+ruleName+'\')">Edit ruleset</button>'+
+            // '<button class="btn btn-success mx-1" id="refresh-custom-ruleset" style="float: right; display: none;" onclick="GetAllRuleset()">Refresh</button>'+
+            '<br><br>';
     }       
     html = html + '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
         '<thead>                                                      ' +
@@ -123,6 +125,7 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
 }
 
 function editRuleset(fileuuid, nodeName){
+    // document.getElementById('refresh-custom-ruleset').style.display = "block";
     document.location.href = 'https://' + location.hostname + '/edit-ruleset.html?fileuuid='+fileuuid+'&file='+nodeName;
 }
 
@@ -150,7 +153,7 @@ function getToCustomRuleset(rulesetuuid){
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else{
         axios({
             method: 'get',
@@ -158,8 +161,8 @@ function getToCustomRuleset(rulesetuuid){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
         })
         .then(function (response) {
@@ -237,8 +240,8 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: bpfjson
     })
@@ -262,7 +265,7 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 }
 
@@ -283,8 +286,8 @@ function changeRulesetStatus(sid, fileuuid, action) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: bpfjson
     })
@@ -345,8 +348,8 @@ function getRuleNote(elementID, fileuuid, sid) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
         .then(function (response) {
@@ -384,8 +387,8 @@ function rulesetNotes(sid, fileuuid) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: bpfjson
     })

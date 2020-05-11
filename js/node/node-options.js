@@ -90,7 +90,8 @@ function loadPlugins(){
                     '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
                     '<span style="cursor: pointer;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'deploy\')">Deploy</span> &nbsp '+
-                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp '+
+                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp'+
+                    // ' Save Zeek Data? &nbsp &nbsp &nbsp &nbsp<input class="form-check-input my-0" type="checkbox" id="save-zeek-values">'+
                 '</span>'+
                 '&nbsp <span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+
                     '<span id="zeek-node-cfg" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="editFile(\''+uuid+'\', \'node.cfg\', \''+name+'\', \'disabled\')">Node.cfg</span> &nbsp '+
@@ -241,7 +242,6 @@ function loadPlugins(){
                     '<table class="table table-hover" style="table-layout: fixed;" width="100%">'+
                     '<thead id="">'+
                         '<th>Description</th>'+
-                        '<th>Status</th>'+
                         '<th>Interface</th>'+
                         '<th>Actions</th>'+
                     '</thead>'+
@@ -351,7 +351,7 @@ function loadPlugins(){
     '</div>';
     //STAP - traffic management
     var htmlstap = ""+
-    '<div class="float-right" id="stap-installed-status">'+
+    '<div class="float-right" id="stap-installed-status" style="display:none;">'+
         '<b>SOCAT:</b> <span id="stap-installed-socat" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
         '<b>TCPREPLAY:</b> <span id="stap-installed-tcpreplay" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
         '<b>TCPDUMP:</b> <span id="stap-installed-tcpdump" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
@@ -556,6 +556,9 @@ function loadPlugins(){
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
 
 }
+function GetCommandsLog(uuid,service, name){
+    document.location.href = 'https://' + location.hostname + '/service-commands.html?node='+uuid+'&service='+service+'&name='+name;
+}
 function showMasterFile(param){
     document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+param;
 }
@@ -586,8 +589,8 @@ function SyncZeekValues(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -601,13 +604,13 @@ function SyncZeekValues(uuid){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Sync Zeek values error: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
             }else{
@@ -619,7 +622,7 @@ function SyncZeekValues(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
             }
@@ -630,13 +633,13 @@ function SyncZeekValues(uuid){
         progressBarDiv.style.display = "none";
         $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Sync Zeek values error: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
     });
@@ -680,8 +683,8 @@ function changeSuricataTable(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -695,7 +698,7 @@ function changeSuricataTable(uuid){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Change plugin status error: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -703,7 +706,7 @@ function changeSuricataTable(uuid){
                 '</div>';
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
@@ -716,13 +719,13 @@ function changeSuricataTable(uuid){
         progressBarDiv.style.display = "none";
         $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Change plugin status error: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
     });
@@ -768,8 +771,8 @@ function PingPluginsMaster(){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -780,13 +783,13 @@ function PingPluginsMaster(){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> PingPluginsMaster error: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 for(id in response.data){
                     if(id=="zeek"){
@@ -812,13 +815,13 @@ function PingPluginsMaster(){
     .catch(function (error) {
         $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> PingPluginsMaster error: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -841,8 +844,8 @@ function ChangeZeekMode(uuid, mode){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -856,7 +859,7 @@ function ChangeZeekMode(uuid, mode){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Change Zeek mode error: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
@@ -864,7 +867,7 @@ function ChangeZeekMode(uuid, mode){
                 '</div>';
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
@@ -877,13 +880,13 @@ function ChangeZeekMode(uuid, mode){
         progressBarDiv.style.display = "none";
         $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Change Zeek mode error: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
     });
@@ -915,8 +918,8 @@ function ChangeMainServiceStatus(uuid, param, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -930,13 +933,13 @@ function ChangeMainServiceStatus(uuid, param, service){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
@@ -949,13 +952,13 @@ function ChangeMainServiceStatus(uuid, param, service){
         progressBarDiv.style.display = "none";
         $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Change main service status: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -969,8 +972,8 @@ function getCurrentRulesetName(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -981,23 +984,23 @@ function getCurrentRulesetName(uuid) {
             axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + response.data, {
                 headers:{
                     'token': document.cookie,
-                    'user': payload.user,
-                    'uuid': payload.uuid,
+                    'user': payload.user
+                    
                 }
             })
             .then(function (response2) {
                 if(response2.data.ack){
                     document.getElementById('current-ruleset-options').innerHTML = "No ruleset selected...";
                     document.getElementById('current-ruleset-options').style.color = "red";
-                    document.getElementById('current-ruleset').innerHTML = "No ruleset selected...";
-                    document.getElementById('current-ruleset').style.color = "red";
+                    // document.getElementById('current-ruleset').innerHTML = "No ruleset selected...";
+                    // document.getElementById('current-ruleset').style.color = "red";
                 }else{
                     document.getElementById('current-ruleset-options').innerHTML = response2.data;
                     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid, {
                         headers:{
                             'token': document.cookie,
-                            'user': payload.user,
-                            'uuid': payload.uuid,
+                            'user': payload.user
+                            
                         }
                     })
                     .then(function (response) {
@@ -1005,13 +1008,13 @@ function getCurrentRulesetName(uuid) {
                         if(response.data.permissions == "none"){
                             PrivilegesMessage();
                         }else{
-                            for (line in response.data){
-                                if (response.data[line]["type"] == "suricata"){
-                                    document.getElementById('suricata-ruleset-'+line).innerHTML = response2.data;
-                                    document.getElementById('suricata-ruleset-edit-'+line).value = response2.data;
+                            // for (line in response.data){
+                            //     if (response.data[line]["type"] == "suricata"){
+                            //         // document.getElementById('suricata-ruleset-'+line).innerHTML = response2.data;
+                            //         // document.getElementById('suricata-ruleset-edit-'+line).value = response2.data;
 
-                                }
-                            }
+                            //     }
+                            // }
                         }
                     })
                     .catch(function (error) {
@@ -1035,8 +1038,8 @@ async function GetMainconfData(uuid){
     await axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/PingPluginsNode/'+uuid, {
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -1051,6 +1054,15 @@ async function GetMainconfData(uuid){
         }
     })
     .catch(function (error) {
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>GetMainconfData Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 
     var ipmaster = document.getElementById('ip-master').value;
@@ -1062,8 +1074,8 @@ async function GetMainconfData(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -1123,13 +1135,13 @@ async function GetMainconfData(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Get main conf data'+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1138,32 +1150,36 @@ function ModalAddClusterValue(uuid, type){
       '<div class="modal-content">'+
 
         '<div class="modal-header">'+
-          '<h4 class="modal-title">Add '+type+'</h4>'+
-          '<button type="button" class="close" id="add-cluster-modal-cross">&times;</button>'+
+            '<h4 class="modal-title">Add '+type+'</h4>'+
+            '<button type="button" class="close" id="add-cluster-modal-cross">&times;</button>'+
         '</div>'+
 
         '<div class="modal-body">'+
-          '<p>Insert the host:</p>'+
-          '<input type="text" class="form-control" id="new-cluster-host" value=""><br>';
-          if (type == "worker"){
-            html = html + '<p>Insert the interface:</p>'+
-              '<input type="text" class="form-control" id="new-cluster-interface" value="">';
-          }else{
-            html = html + '<div id="new-cluster-interface"></div>';
-          }
-          html = html + '</div>'+
+            '<p>Insert the host:</p>'+
+            '<input type="text" class="form-control" id="new-cluster-host" value=""><br>';
+            if (type == "worker"){
+                html = html + '<p>Insert the interface:</p>'+
+                    '<input type="text" class="form-control" id="new-cluster-interface" value="">';
+            }else{
+                    html = html + '<div id="new-cluster-interface"></div>';
+            }
+            html = html + '</div>'+
 
         '<div class="modal-footer" id="sync-node-footer-btn">'+
-          '<button type="button" class="btn btn-secondary" id="add-cluster-modal-close">Cancel</button>'+
-          '<button type="button" class="btn btn-primary" id="add-cluster-modal">Add</button>'+
+            '<button type="button" class="btn btn-secondary" id="add-cluster-modal-close">Cancel</button>'+
+            '<button type="button" class="btn btn-primary" id="add-cluster-modal">Add</button>'+
         '</div>'+
 
       '</div>'+
     '</div>';
-
     document.getElementById('modal-window').innerHTML = html;
+
     $('#modal-window').modal("show");
-    $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value.trim(), document.getElementById('new-cluster-interface').value.trim()); });
+    if(type == "proxy"){
+        $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value.trim(), ""); });
+    }else if(type == "worker"){
+        $('#add-cluster-modal').click(function(){ AddClusterValue(uuid, type, document.getElementById('new-cluster-host').value.trim(), document.getElementById('new-cluster-interface').value.trim()); });
+    }     
     $('#add-cluster-modal-close').click(function(){ $('#modal-window').modal("hide");});
     $('#add-cluster-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
@@ -1314,8 +1330,8 @@ function saveZeekValues(uuid, param){
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -1327,13 +1343,13 @@ function saveZeekValues(uuid, param){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Save Zeek value: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -1343,7 +1359,7 @@ function saveZeekValues(uuid, param){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
 
                     PingPluginsMaster();
                 }
@@ -1352,13 +1368,13 @@ function saveZeekValues(uuid, param){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Save Zeek value: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -1378,8 +1394,8 @@ function SyncCluster(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -1391,13 +1407,13 @@ function SyncCluster(uuid){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete cluster value: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -1407,25 +1423,25 @@ function SyncCluster(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete cluster value: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
 function AddClusterValue(uuid, type, host, interface){
-    if (host == "" ||  interface == ""){
+    if (((type == "proxy")&&(host == ""))||(((type == "worker")&&(host == "" || interface == "")))){
         if ((type == "proxy")&&(host == "")){
             $('#new-cluster-host').attr("placeholder", "Please, insert a valid host");
             $('#new-cluster-host').css('border', '2px solid red');
@@ -1464,8 +1480,8 @@ function AddClusterValue(uuid, type, host, interface){
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -1477,13 +1493,13 @@ function AddClusterValue(uuid, type, host, interface){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Add cluster value: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     loadPlugins();
                 }
@@ -1492,13 +1508,13 @@ function AddClusterValue(uuid, type, host, interface){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Add cluster value: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -1513,8 +1529,8 @@ function PingCluster(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -1525,13 +1541,13 @@ function PingCluster(uuid){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Ping Zeek cluster: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 for(elem in response.data){
                     if(elem == "logger"){
@@ -1560,13 +1576,13 @@ function PingCluster(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Ping Zeek cluster: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1673,8 +1689,8 @@ function EditClusterValue(uuid, type, host, interface, cluster){
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -1686,13 +1702,13 @@ function EditClusterValue(uuid, type, host, interface, cluster){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Edit cluster value: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     loadPlugins();
                 }
@@ -1701,13 +1717,13 @@ function EditClusterValue(uuid, type, host, interface, cluster){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Edit cluster value: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -1728,8 +1744,8 @@ function DeleteClusterValue(uuid, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -1741,13 +1757,13 @@ function DeleteClusterValue(uuid, type){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete cluster value: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -1756,13 +1772,13 @@ function DeleteClusterValue(uuid, type){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete cluster value: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1776,8 +1792,8 @@ function PingDataflow(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -1826,8 +1842,8 @@ function ChangeAnalyzerStatus(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -1839,13 +1855,13 @@ function ChangeAnalyzerStatus(uuid){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Change analyzer status: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -1854,13 +1870,13 @@ function ChangeAnalyzerStatus(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong>  Change analyzer status: '+response.data.error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1893,8 +1909,8 @@ function deployNode(value,uuid,nodeName){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -1906,26 +1922,26 @@ function deployNode(value,uuid,nodeName){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Deploy node: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Deploy node: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -1938,7 +1954,16 @@ function LaunchZeekMainConf(uuid, param) {
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/LaunchZeekMainConf';
 
+    
     var jsonValues = {}
+    // //get save zeek status
+    // $('input[type=checkbox]').each(function () {
+    //     if ($(this).prop("checked")){
+    //         jsonValues["saveZeek"] = "true";
+    //     }else{
+    //         jsonValues["saveZeek"] = "false";
+    //     }
+    // });
     jsonValues["uuid"] = uuid;
     jsonValues["param"] = param;
     var dataJSON = JSON.stringify(jsonValues);
@@ -1948,8 +1973,8 @@ function LaunchZeekMainConf(uuid, param) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -1964,17 +1989,18 @@ function LaunchZeekMainConf(uuid, param) {
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Launch Zeek main conf: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                     progressBar.style.display = "none";
                     progressBarDiv.style.display = "none";
                 }
             }else{
+                // PingZeek(uuid);
                 loadPlugins();
             }
         }
@@ -1982,13 +2008,13 @@ function LaunchZeekMainConf(uuid, param) {
         .catch(function error(error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Launch Zeek main conf: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
         });
@@ -2010,8 +2036,8 @@ function StartSuricataMainConf(uuid) {
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: dataJSON
     })
@@ -2025,13 +2051,13 @@ function StartSuricataMainConf(uuid) {
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Start Suricata main conf: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);   
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);   
                 }else{
                     location.reload(); 
                 }
@@ -2042,13 +2068,13 @@ function StartSuricataMainConf(uuid) {
             document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Start Suricata main conf: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 }
 
@@ -2068,8 +2094,8 @@ function StopSuricataMainConf(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -2083,13 +2109,13 @@ function StopSuricataMainConf(uuid) {
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Stop Suricata main conf: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     location.reload(); 
                 }
@@ -2100,13 +2126,13 @@ function StopSuricataMainConf(uuid) {
             document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Stop Suricata main conf: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 }
 
@@ -2127,8 +2153,8 @@ function KillSuricataMainConf(uuid, pid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -2142,13 +2168,13 @@ function KillSuricataMainConf(uuid, pid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Kill Suricata main conf: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 location.reload(); 
             }
@@ -2159,13 +2185,13 @@ function KillSuricataMainConf(uuid, pid) {
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Kill Suricata main conf: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -2186,8 +2212,8 @@ function ReloadSuricataMainConf(uuid, pid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -2201,13 +2227,13 @@ function ReloadSuricataMainConf(uuid, pid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Reload Suricata main conf response: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 location.reload(); 
             }
@@ -2218,13 +2244,13 @@ function ReloadSuricataMainConf(uuid, pid) {
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Reload Suricata main conf: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -2242,8 +2268,8 @@ function StopSuricata(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -2256,13 +2282,13 @@ function StopSuricata(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Stop Suricata: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -2275,13 +2301,13 @@ function StopSuricata(uuid) {
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Stop Suricata: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 
 }
@@ -2358,8 +2384,8 @@ function AddSTAPModal(uuid, type){
             axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid, {
                 headers:{
                     'token': document.cookie,
-                    'user': payload.user,
-                    'uuid': payload.uuid,
+                    'user': payload.user
+                    
                 }
             })
             .then(function (response) {
@@ -2536,8 +2562,8 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -2555,17 +2581,17 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error adding service: Save STAP: </strong>'+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
             loadPlugins();
         }
@@ -2573,13 +2599,13 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error adding service: Save STAP: </strong>'+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -2603,8 +2629,8 @@ function AddPluginService(uuid, name, type){
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataMap
         })
@@ -2624,17 +2650,17 @@ function AddPluginService(uuid, name, type){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Add plugin service: '+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
             loadPlugins();
         }
@@ -2642,13 +2668,13 @@ function AddPluginService(uuid, name, type){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Add plugin service: '+error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -2663,8 +2689,8 @@ function AddPluginService(uuid, name, type){
 //         timeout: 30000,
         // headers:{
         //         'token': document.cookie,
-        //         'user': payload.user,
-        //         'uuid': payload.uuid,
+        //         'user': payload.user
+        //         
         //     }
 //     })
 //     .then(function (response) {
@@ -2674,7 +2700,7 @@ function AddPluginService(uuid, name, type){
 //     });
 // }
 
-function syncRulesetModal(node, name){
+function syncRulesetModal(node, serviceUuid, name){
   var modalWindow = document.getElementById('modal-window');
   modalWindow.innerHTML =
   '<div class="modal-dialog">'+
@@ -2697,7 +2723,7 @@ function syncRulesetModal(node, name){
     '</div>'+
   '</div>';
   $('#modal-window').modal("show");
-  $('#btn-sync-node').click(function(){ $('#modal-window').modal("hide"); sendRulesetToNode(node); });
+  $('#btn-sync-node').click(function(){ $('#modal-window').modal("hide"); sendRulesetToNode(node, serviceUuid); });
 }
 
 function loadBPF(uuid, bpf, service, name, type){
@@ -2756,8 +2782,8 @@ function saveBPF(uuid, value, service, type){
       timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
       data: bpfjson
     })
@@ -2769,13 +2795,13 @@ function saveBPF(uuid, value, service, type){
             if (response.data.error == "false"){
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Save BPF: '+response.data.error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 // loadPlugins();
             }
@@ -2784,13 +2810,13 @@ function saveBPF(uuid, value, service, type){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Save BPF: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -2820,8 +2846,8 @@ function loadRuleset(uuid, source, service){
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
       .then(function (response) {
@@ -2876,8 +2902,8 @@ function deployZeek(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -2888,13 +2914,13 @@ function deployZeek(uuid){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Error deploying Zeek: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -2902,13 +2928,13 @@ function deployZeek(uuid){
         if (response.data.ack == "false") {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Error deploying Zeek: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         }
     });
 }
@@ -2931,8 +2957,12 @@ function generateAllRulesModal(response, nid, source, service) {
         rules[rule]["name"]                                                     +
         '</td><td style="word-wrap: break-word;">                                                            ' +
         rules[rule]["desc"]                                                     +
-        '</td><td style="word-wrap: break-word;" width="15%">                                                ' +
-        '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\', \''+source+'\', \''+rules[rule]["name"]+'\', \''+service+'\' )">Select</button>        ' +
+        '</td><td style="word-wrap: break-word;" width="15%">';
+        if(source == "suricata"){
+            html = html + '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveSurictaRulesetSelected(\''+rule+'\', \''+nid+'\', \''+source+'\', \''+rules[rule]["name"]+'\', \''+service+'\' )">Select</button>';
+        }else{
+            html = html + '<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRulesetSelected(\''+rule+'\', \''+nid+'\', \''+source+'\', \''+rules[rule]["name"]+'\', \''+service+'\' )">Select</button>';
+        }
         '</td></tr>                                                           '
     }
     html = html + '</tbody></table>';
@@ -2945,9 +2975,76 @@ function generateAllRulesModal(response, nid, source, service) {
 }
 
 
-function saveRuleSelected(rule, nid, source, name, service){
+function saveSurictaRulesetSelected(rule, nid, source, name, service){
+    console.log(rule);
+    console.log(service);
+    console.log(source);
     var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
+    var portmaster = document.getElementById('port-master').value;      
+    var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/setRuleset';
+
+    var jsonRuleUID = {}
+    jsonRuleUID["uuid"] = nid;
+    jsonRuleUID["rulesetID"] = rule;
+    jsonRuleUID["rulesetName"] = name;
+    jsonRuleUID["service"] = service;
+
+    // jsonRuleUID["source"] = source;
+    var uidJSON = JSON.stringify(jsonRuleUID);
+    axios({
+        method: 'put',
+        url: urlSetRuleset,
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user
+                
+            },
+        data: uidJSON
+    })
+        .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.ack == "false") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Save suricata Ruleset: '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }else{
+                // if (source == "main"){
+                //     loadPlugins();
+                // }else if (source == "suricata"){
+                    document.getElementById('suricata-ruleset-'+service).innerHTML = name;
+                    document.getElementById('suricata-ruleset-edit-'+service).value = name;
+                    document.getElementById('suricata-ruleset-edit-id-'+service).value = rule;
+                // }
+
+            }
+        }
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Save suricata Ruleset: '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
+        });
+}
+
+function saveRulesetSelected(rule, nid, source, name, service){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;      
     var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
 
     var jsonRuleUID = {}
@@ -2960,8 +3057,8 @@ function saveRuleSelected(rule, nid, source, name, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: uidJSON
     })
@@ -2973,31 +3070,31 @@ function saveRuleSelected(rule, nid, source, name, service){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Save Ruleset: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
-            if (source == "main"){
+            // if (source == "main"){
                 loadPlugins();
-            }else if (source == "service"){
-                document.getElementById('suricata-ruleset-edit-'+service).value = name;
-            }
+            // }else if (source == "suricata"){
+            //     document.getElementById('suricata-ruleset-edit-'+service).value = name;
+            // }
         }
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Save Ruleset: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 }
 
@@ -3015,8 +3112,8 @@ function playCollector(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3044,8 +3141,8 @@ function stopCollector(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3073,8 +3170,8 @@ function showCollector(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3163,8 +3260,8 @@ function PingCollector(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3196,8 +3293,8 @@ function PingPorts(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -3249,8 +3346,8 @@ function ChangeStatus(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -3262,13 +3359,13 @@ function ChangeStatus(uuid){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Change status: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -3277,13 +3374,13 @@ function ChangeStatus(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Change status: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -3309,8 +3406,8 @@ function ChangeMode(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -3322,13 +3419,13 @@ function ChangeMode(uuid){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Change mode: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -3337,13 +3434,13 @@ function ChangeMode(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Change mode: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -3357,8 +3454,8 @@ function showPorts(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3453,8 +3550,8 @@ function deletePorts(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: nodeJSON
         }).then(function (response) {
@@ -3479,8 +3576,8 @@ function deleteAllPorts(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     }).then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -3494,13 +3591,17 @@ function deleteAllPorts(uuid){
 
 }
 
-function sendRulesetToNode(uuid){
+function sendRulesetToNode(uuid, service){
+    document.getElementById('progressBar-options').style.display = "block";
+    document.getElementById('progressBar-options-div').style.display = "block";
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/ruleset/set';
 
     var jsonRuleUID = {}
     jsonRuleUID["uuid"] = uuid;
+    jsonRuleUID["service"] = service;    
+    jsonRuleUID["ruleset"] = document.getElementById('suricata-ruleset-edit-id-'+service).value;    
     jsonRuleUID["type"] = "node";
     var dataJSON = JSON.stringify(jsonRuleUID);
     axios({
@@ -3509,12 +3610,14 @@ function sendRulesetToNode(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
     .then(function (response) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -3528,30 +3631,32 @@ function sendRulesetToNode(uuid){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Ruleset Error!</strong> Deploy ruleset: '+response.data.error+''+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options').style.display = "none";
+        document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Deploy ruleset: '+response.data.error+''+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -3567,8 +3672,8 @@ function RunSuricata(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3579,13 +3684,13 @@ function RunSuricata(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Run suricata: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3596,13 +3701,13 @@ function RunSuricata(uuid) {
     .catch(function error(error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Run suricata'+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 
 }
@@ -3618,8 +3723,8 @@ function StopSuricata(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
         .then(function (response) {
@@ -3630,13 +3735,13 @@ function StopSuricata(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Stop Suricata: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3647,13 +3752,13 @@ function StopSuricata(uuid) {
         .catch(function error(error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Stop Suricata: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 
 }
@@ -3668,8 +3773,8 @@ function PingSuricata(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -3721,8 +3826,8 @@ function RunZeek(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -3733,13 +3838,13 @@ function RunZeek(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Run Zeek: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3750,7 +3855,7 @@ function RunZeek(uuid) {
     .catch(function error(error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Run Zeek: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
@@ -3771,8 +3876,8 @@ function StopZeek(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -3783,13 +3888,13 @@ function StopZeek(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Stop Zeek: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3800,13 +3905,13 @@ function StopZeek(uuid) {
     .catch(function error(error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Stop Zeek: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
 
     });
 
@@ -3826,8 +3931,8 @@ function PingZeek(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -3861,13 +3966,13 @@ function PingZeek(uuid) {
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Ping Zeek: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
         });
@@ -3884,8 +3989,8 @@ function RunWazuh(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -3896,13 +4001,13 @@ function RunWazuh(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Run Wazuh: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3913,13 +4018,13 @@ function RunWazuh(uuid) {
         .catch(function error(error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Run Wazuh: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
 
     loadPlugins();
@@ -3936,8 +4041,8 @@ function StopWazuh(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -3948,13 +4053,13 @@ function StopWazuh(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Stop Wazuh: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 setTimeout(function (){
                     loadPlugins();
@@ -3965,13 +4070,13 @@ function StopWazuh(uuid) {
     .catch(function error(error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Stop Wazuh: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -3997,8 +4102,8 @@ function addWazuhFile(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -4067,8 +4172,8 @@ function DeleteWazuhFile(uuid, count){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -4094,8 +4199,8 @@ function PingWazuhFiles(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -4106,26 +4211,26 @@ function PingWazuhFiles(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong>Wazuh connect: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
             var isError = false;
             for(obj in response.data){
                 if (response.data[obj].ack == "false") {
                     // $('html,body').scrollTop(0);
                     // var alert = document.getElementById('floating-alert');
-                    // alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    // alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     //     '<strong>Error!</strong>Get Wazuh files: '+response.data[obj].error+'.'+
                     //     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     //         '<span aria-hidden="true">&times;</span>'+
                     //     '</button>'+
                     // '</div>';
-                    // setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    // setTimeout(function() {$(".alert").alert('close')}, 30000);
                     isError = true;
                 }
             }
@@ -4169,13 +4274,13 @@ function PingWazuhFiles(uuid) {
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong>Get Wazuh files: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4193,38 +4298,38 @@ function PingWazuh(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.permissions == "none"){
-            PrivilegesMessage();
-        }else{
-            if (!response.data.path && !response.data.bin) {
-                document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
-                document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
-                document.getElementById(uuid + '-wazuh-icon').className = "fas fa-play-circle";
-                document.getElementById(uuid + '-wazuh-icon').onclick = function () { RunWazuh(uuid); };
-                document.getElementById(uuid + '-wazuh-icon').title = "Run Wazuh";
-            } else if (response.data.path || response.data.bin) {
-                if (response.data.running) {
-                    document.getElementById(uuid + '-wazuh').className = "badge bg-success align-text-bottom text-white";
-                    document.getElementById(uuid + '-wazuh').innerHTML = "ON";
-                    document.getElementById(uuid + '-wazuh-icon').className = "fas fa-stop-circle";
-                    document.getElementById(uuid + '-wazuh-icon').onclick = function () { StopWazuh(uuid); };
-                    document.getElementById(uuid + '-wazuh-icon').title = "Stop Wazuh";
-                } else {
-                    document.getElementById(uuid + '-wazuh').className = "badge bg-danger align-text-bottom text-white";
-                    document.getElementById(uuid + '-wazuh').innerHTML = "OFF";
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();
+            }else{
+                if (!response.data.path && !response.data.bin) {
+                    document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
+                    document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
                     document.getElementById(uuid + '-wazuh-icon').className = "fas fa-play-circle";
                     document.getElementById(uuid + '-wazuh-icon').onclick = function () { RunWazuh(uuid); };
                     document.getElementById(uuid + '-wazuh-icon').title = "Run Wazuh";
+                } else if (response.data.path || response.data.bin) {
+                    if (response.data.running) {
+                        document.getElementById(uuid + '-wazuh').className = "badge bg-success align-text-bottom text-white";
+                        document.getElementById(uuid + '-wazuh').innerHTML = "ON";
+                        document.getElementById(uuid + '-wazuh-icon').className = "fas fa-stop-circle";
+                        document.getElementById(uuid + '-wazuh-icon').onclick = function () { StopWazuh(uuid); };
+                        document.getElementById(uuid + '-wazuh-icon').title = "Stop Wazuh";
+                    } else {
+                        document.getElementById(uuid + '-wazuh').className = "badge bg-danger align-text-bottom text-white";
+                        document.getElementById(uuid + '-wazuh').innerHTML = "OFF";
+                        document.getElementById(uuid + '-wazuh-icon').className = "fas fa-play-circle";
+                        document.getElementById(uuid + '-wazuh-icon').onclick = function () { RunWazuh(uuid); };
+                        document.getElementById(uuid + '-wazuh-icon').title = "Run Wazuh";
+                    }
                 }
+                return true;
             }
-            return true;
-        }
         })
         .catch(function (error) {
             document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
@@ -4245,8 +4350,8 @@ function RunStap(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -4257,13 +4362,13 @@ function RunStap(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Run STAP: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -4272,13 +4377,13 @@ function RunStap(uuid) {
     .catch(function error(error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Run STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4293,8 +4398,8 @@ function StopStap(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
     })
     .then(function (response) {
@@ -4305,13 +4410,13 @@ function StopStap(uuid) {
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Stop STAP: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 // setTimeout(function (){
                     loadPlugins();
@@ -4322,13 +4427,13 @@ function StopStap(uuid) {
     .catch(function error(error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Stop STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4342,8 +4447,8 @@ function PingStap(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -4390,483 +4495,514 @@ function PingPluginsNode(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {  
-        console.log(response.data);     
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
-            for(line in response.data){
-                // if (line == "knownports"){
-                //     if (response.data[line]["status"] == "Enabled"){
-                //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
-                //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
-                //         document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
-                //     }else if (response.data[line]["status"] == "Disabled"){
-                //         document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
-                //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
-                //         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
-                //     }
-                //     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
-                // }else if (response.data[line]["type"] == "suricata"){
-
-                //put if socat, tcpdump and tcpreplay are installed
-                if(response.data["installed"]["checkSocat"] == "false" || response.data["installed"]["checkTcpreplay"] == "false" || response.data["installed"]["checkTcpdump"] == "false"){
-                    if(response.data["installed"]["checkSocat"] == "true"){
-                        document.getElementById("stap-installed-socat").innerHTML = "Installed";
-                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-success align-text-bottom text-white';
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error Ping Plugins:</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }else{
+                for(line in response.data){
+                    // if (line == "knownports"){
+                    //     if (response.data[line]["status"] == "Enabled"){
+                    //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
+                    //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-stop-circle";
+                    //         document.getElementById('ports-status-'+uuid).className = "badge bg-success align-text-bottom text-white";
+                    //     }else if (response.data[line]["status"] == "Disabled"){
+                    //         document.getElementById('ports-status-'+uuid).innerHTML = "OFF";
+                    //         document.getElementById('ports-status-btn-'+uuid).className = "fas fa-play-circle";
+                    //         document.getElementById('ports-status-'+uuid).className = "badge bg-danger align-text-bottom text-white";
+                    //     }
+                    //     document.getElementById('ports-mode-'+uuid).innerHTML = response.data[line]["mode"];
+                    // }else if (response.data[line]["type"] == "suricata"){
+    
+                    //put if socat, tcpdump and tcpreplay are installed
+                    if(response.data["installed"]["checkSocat"] == "false" || response.data["installed"]["checkTcpreplay"] == "false" || response.data["installed"]["checkTcpdump"] == "false"){
+                        document.getElementById('stap-installed-status').style.display = "block";
+                        if(response.data["installed"]["checkSocat"] == "true"){
+                            document.getElementById("stap-installed-socat").innerHTML = "Installed";
+                            document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                        }else{
+                            document.getElementById("stap-installed-socat").innerHTML = "Not installed";
+                            document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                        }
+                        if(response.data["installed"]["checkTcpreplay"] == "true"){
+                            document.getElementById("stap-installed-tcpreplay").innerHTML = "Installed";
+                            document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                        }else{
+                            document.getElementById("stap-installed-tcpreplay").innerHTML = "Not installed";
+                            document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                        }
+                        if(response.data["installed"]["checkTcpdump"] == "true"){
+                            document.getElementById("stap-installed-tcpdump").innerHTML = "Installed";
+                            document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                        }else{
+                            document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
+                            document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                        }
+    
                     }else{
-                        document.getElementById("stap-installed-socat").innerHTML = "Not installed";
-                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                        document.getElementById("stap-installed-status").style.display = "none";
                     }
-                    if(response.data["installed"]["checkTcpreplay"] == "true"){
-                        document.getElementById("stap-installed-tcpreplay").innerHTML = "Installed";
-                        document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-success align-text-bottom text-white';
-                    }else{
-                        document.getElementById("stap-installed-tcpreplay").innerHTML = "Not installed";
-                        document.getElementById("stap-installed-tcpreplay").className = '"badge badge-pill bg-danger align-text-bottom text-white';
-                    }
-                    if(response.data["installed"]["checkTcpdump"] == "true"){
-                        document.getElementById("stap-installed-tcpdump").innerHTML = "Installed";
-                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-success align-text-bottom text-white';
-                    }else{
-                        document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
-                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
-                    }
-
-                }else{
-                    document.getElementById("stap-installed-status").style.display = "none";
-                }
-
-                //put suricata parameters
-                if (response.data[line]["type"] == "suricata"){
-                    if (response.data[line]["command"]){
-                        tableSuricataCommand = tableSuricataCommand + '<tr>'+
-                            '<td>'+response.data[line]["pid"]+'</td>'+
-                            '<td>'+response.data[line]["command"]+'</td>'+
-                            '<td>'+
-                                '<span style="cursor: pointer;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
-                                '<span style="cursor: pointer;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Reload</span>'+
-                            '</td>'+
-
-                        '<tr>';
-                    }else{
-                        tableSuricata = tableSuricata + '<tr>'+
+    
+                    //put suricata parameters
+                    if (response.data[line]["type"] == "suricata"){
+                        if (response.data[line]["command"]){
+                            tableSuricataCommand = tableSuricataCommand + '<tr>'+
+                                '<td>'+response.data[line]["pid"]+'</td>'+
+                                '<td>'+response.data[line]["command"]+'</td>'+
+                                '<td>'+
+                                    '<span style="cursor: pointer;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
+                                    '<span style="cursor: pointer;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Reload</span>'+
+                                '</td>'+
+    
+                            '<tr>';
+                        }else{
+                            tableSuricata = tableSuricata + '<tr>'+
+                                '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                                '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
+                                    if(response.data[line]["status"]=="enabled"){
+                                        tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                        if(response.data[line]["running"]=="true"){
+                                            tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                        }else{
+                                            tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                        }
+                                    }else if (response.data[line]["status"]=="disabled"){
+                                        tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                        if(response.data[line]["running"]=="true"){
+                                            tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                        }else{
+                                            tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                        }
+                                    }
+                                    tableSuricata = tableSuricata + '</td>'+
+                                '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                                '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'">'+response.data[line]["rulesetName"]+'</td>';
+                                tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                                '<td style="word-wrap: break-word;">';
+                                    if(response.data[line]["status"]=="enabled"){
+                                        tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                                    }else if (response.data[line]["status"]=="disabled"){
+                                        tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
+                                    }
+                                    tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                    '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                    '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                                '</td>'+
+                            '</tr>'+
+                            '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                                '<td style="word-wrap: break-word;" colspan="5">'+
+                                    '<div class="form-row">'+
+                                        '<div class="col">'+
+                                            'Description: <input class="form-control" id="suricata-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                        '</div>'+
+                                        '<div class="col">'+
+                                            'Configuration file: <input class="form-control" id="suricata-config-file-'+line+'" value="'+response.data[line]["configFile"]+'">'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '<div class="form-row">'+
+                                        '<div class="col">'+
+                                            'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["ruleset"]+' ruleset" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'suricata\', \''+line+'\')"></i>'+
+                                            '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="'+response.data[line]["rulesetName"]+'" disabled>'+
+                                            '<input class="form-control" id="suricata-ruleset-edit-id-'+line+'" value="'+response.data[line]["ruleset"]+'" style="display:none;" disabled>'+
+                                        '</div>'+
+                                        '<div class="col">'+
+                                            'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
+                                            '<input class="form-control" id="suricata-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '<div class="form-row">'+
+                                        '<div class="col">'+
+                                            'BPF: <input class="form-control" id="suricata-bpf-'+line+'" value="'+response.data[line]["bpf"]+'">'+
+                                        '</div>'+
+                                        '<div class="col">'+
+                                            'BPF File: <input class="form-control" id="suricata-bpf-file-'+line+'" value="'+response.data[line]["bpfFile"]+'">'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</td>'+
+                                '<td style="word-wrap: break-word;" >'+
+                                    '<div class="form-row text-center">'+
+                                        '<div class="col">'+
+                                            '<button class="btn btn-seconday" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                        '</div>'+
+                                    '</div>'+
+                                    '<br>'+
+                                    '<div class="form-row text-center">'+
+                                        '<div class="col">'+
+                                            '<button class="btn btn-primary" onclick="modifyNodeOptionValues(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</td>'+
+                            '</tr>';
+                        }
+                    }else if (response.data[line]["type"] == "zeek"){
+                        tableZeek = tableZeek + '<tr>'+
                             '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
-                            '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
-                                if(response.data[line]["status"]=="enabled"){
-                                    tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                                    if(response.data[line]["running"]=="true"){
-                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                    }else{
-                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                    }
-                                }else if (response.data[line]["status"]=="disabled"){
-                                    tableSuricata = tableSuricata + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                                    if(response.data[line]["running"]=="true"){
-                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                    }else{
-                                        tableSuricata = tableSuricata + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                    }
-                                }
-                                tableSuricata = tableSuricata + '</td>'+
-                            '<td style="word-wrap: break-word;" id="suricata-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                            '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'"></td>';
-                            tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                            // '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
+                            //     if(response.data[line]["status"]=="enabled"){
+                            //         tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                            //         if(response.data[line]["running"]=="true"){
+                            //             tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            //         }else{
+                            //             tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            //         }
+                            //     }else if (response.data[line]["status"]=="disabled"){
+                            //         tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                            //         if(response.data[line]["running"]=="true"){
+                            //             tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                            //         }else{
+                            //             tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                            //         }
+                            //     }
+                            //     tableZeek = tableZeek + '</td>'+
+                            '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
                             '<td style="word-wrap: break-word;">';
-                                if(response.data[line]["status"]=="enabled"){
-                                    tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
-                                }else if (response.data[line]["status"]=="disabled"){
-                                    tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
-                                }
-                                tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
-                                // '<span style="cursor: default;" title="Ruleset Management" class="badge bg-secondary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\')">Ruleset</span> &nbsp'+
-                                // '<i title="BPF" style="cursor: default;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">BPF</i> &nbsp'+
-                                // '<i class="fas fa-file" style="color:grey;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> &nbsp'+
-                                '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                                '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                                // if(response.data[line]["status"]=="enabled"){
+                                //     tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                                // }else if (response.data[line]["status"]=="disabled"){
+                                //     tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
+                                // }
+                                tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                '<i class="fas fa-trash-alt" style="color: red; cursor: pointer;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                             '</td>'+
                         '</tr>'+
                         '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                            '<td style="word-wrap: break-word;" colspan="5">'+
+                            '<td style="word-wrap: break-word;" colspan="4">'+
                                 '<div class="form-row">'+
                                     '<div class="col">'+
-                                        'Description: <input class="form-control" id="suricata-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                        'Description: <input class="form-control" id="zeek-name-'+line+'" value="'+response.data[line]["name"]+'">'+
                                     '</div>'+
                                     '<div class="col">'+
-                                        // 'BPF: <i class="fas fa-edit" id="suricata-bpf-icon-'+line+'" style="cursor: default; color: Dodgerblue;" title="Suricata '+response.data[line]["name"]+' BPF"></i>'+
-                                        'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\' , \''+response.data[line]["type"]+'\')"></i>'+
-                                        '<input class="form-control" id="suricata-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
+                                        '<input class="form-control" type="text" id="zeek-interface-config" value="" disabled>'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        '<div class="form-row text-center">'+
+                                            '<div class="col">'+
+                                                '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                            '</div>'+
+                                            '<div class="col">'+
+                                                '<button class="btn btn-primary" onclick="modifyNodeOptionValues(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+
+                                            '</div>'+
+                                        '</div>'+
+                                        '<br>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                        '</tr>';
+    
+                    }else if (response.data[line]["type"] == "socket-network"){
+                        tableSocketNetwork = tableSocketNetwork + '<tr>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }else{
+                                    tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }
+                                tableSocketNetwork = tableSocketNetwork + '<div id="soc-net-exclamation-'+line+'" style="cursor:pointer; display:none;">'+
+                                    '&nbsp <i class="fas fa-exclamation-triangle fa-lg" style="color:Orange;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                    '<span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
+                                '</div>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                            '<td style="word-wrap: break-word;">';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
+                                }else if (response.data[line]["pid"] != "none"){
+                                    tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
+                                }
+                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
+                                '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                            '<td style="word-wrap: break-word;" colspan="4">'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
                                     '</div>'+
                                 '</div>'+
                                 '<div class="form-row">'+
                                     '<div class="col">'+
-                                        'Ruleset: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' BPF" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'service\', \''+line+'\')"></i>'+
-                                        '<input class="form-control" id="suricata-ruleset-edit-'+line+'" value="" disabled>'+
+                                        'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
                                     '</div>'+
                                     '<div class="col">'+
-                                        'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Suricata '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i>'+
-                                        '<input class="form-control" id="suricata-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                        'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
                                     '</div>'+
                                 '</div>'+
                             '</td>'+
                             '<td style="word-wrap: break-word;" >'+
                                 '<div class="form-row text-center">'+
                                     '<div class="col">'+
-                                        '<button class="btn btn-seconday" id="modify-stap-cancel-suricata-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                        '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
                                     '</div>'+
                                 '</div>'+
                                 '<br>'+
                                 '<div class="form-row text-center">'+
                                     '<div class="col">'+
-                                        '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'suricata\', \''+line+'\')">Save</button>'+
+                                        '<button class="btn btn-primary" onclick="modifyNodeOptionValues(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                        '</tr>';
+                    }else if (response.data[line]["type"] == "socket-pcap"){
+                        tableSocketPcap = tableSocketPcap + '<tr>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }else{
+                                    tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }
+                                tableSocketPcap = tableSocketPcap + '<div id="soc-pcap-exclamation-'+line+'" style="cursor:pointer; display:none;">'+
+                                    '&nbsp <i class="fas fa-exclamation-triangle fa-lg" style="color:Orange;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                    '<span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
+                                '</div>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                            '<td style="word-wrap: break-word;">';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;cursor: pointer; " onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \'none\',\'socket-pcap\')"></i> &nbsp';
+                                }else if (response.data[line]["pid"] != "none"){
+                                    tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
+                                }
+                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
+                                '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                            '<td style="word-wrap: break-word;" colspan="6">'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;" >'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<br>'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-primary" onclick="modifyNodeOptionValues(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                        '</tr>';
+                    }else if (response.data[line]["type"] == "network-socket"){
+                        tableNetworkSocket = tableNetworkSocket + '<tr>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }else{
+                                    tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> ';
+                                    if(response.data[line]["running"]=="true"){
+                                        tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
+                                    }else{
+                                        tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                                    }
+                                }
+                                tableNetworkSocket = tableNetworkSocket + '<div id="net-soc-exclamation-'+line+'" style="cursor:pointer; display:none;">'+
+                                    '&nbsp <i class="fas fa-exclamation-triangle fa-lg" style="color:Orange;" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                    '<span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
+                                '</div>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="network-socket-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
+                            '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
+                            '<td style="word-wrap: break-word;" id="network-socket-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
+                            '<td style="word-wrap: break-word;">';
+                                if (response.data[line]["pid"] == "none"){
+                                    tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \''+response.data[line]["collector"]+'\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'network-socket\')"></i> &nbsp';
+                                }else if (response.data[line]["pid"] != "none"){
+                                    tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
+                                }
+                                tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                '<i class="fas fa-info-circle" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')" style="color: grey; cursor: pointer;">&nbsp</i>'+
+                                '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
+                            '<td style="word-wrap: break-word;" colspan="6">'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Description: <input class="form-control" id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Port: <input class="form-control" id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Collector: <input class="form-control" id="network-socket-collector-'+line+'" value="'+response.data[line]["collector"]+'">'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'Certificate: <input class="form-control" id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-row">'+
+                                    '<div class="col">'+
+                                        'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                        'BPF: <i class="fas fa-edit" title="BPF" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</td>'+
+                            '<td style="word-wrap: break-word;" >'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-seconday" id="modify-stap-cancel-network-socket-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<br>'+
+                                '<div class="form-row text-center">'+
+                                    '<div class="col">'+
+                                        '<button class="btn btn-primary" onclick="modifyNodeOptionValues(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+
                                     '</div>'+
                                 '</div>'+
                             '</td>'+
                         '</tr>';
                     }
-                }else if (response.data[line]["type"] == "zeek"){
-                    tableZeek = tableZeek + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="status-zeek-'+line+'">';
-                            if(response.data[line]["status"]=="enabled"){
-                                tableZeek = tableZeek + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }else if (response.data[line]["status"]=="disabled"){
-                                tableZeek = tableZeek + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableZeek = tableZeek + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }
-                            tableZeek = tableZeek + '</td>'+
-                        '<td style="word-wrap: break-word;" id="zeek-interface-default">'+response.data[line]["interface"]+'</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            // if(response.data[line]["status"]=="enabled"){
-                            //     tableZeek = tableZeek + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
-                            // }else if (response.data[line]["status"]=="disabled"){
-                            //     tableZeek = tableZeek + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'zeek\')"></i> &nbsp';
-                            // }
-                            tableZeek = tableZeek + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                            '<i class="fas fa-trash-alt" style="color: red; cursor: pointer;" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'zeek\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                        '<td style="word-wrap: break-word;" colspan="4">'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Description: <input class="form-control" id="zeek-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')" name="network" value="network"></i>  &nbsp'+
-                                    '<input class="form-control" type="text" id="zeek-interface-config" value="" disabled>'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    '<div class="form-row text-center">'+
-                                        '<div class="col">'+
-                                            '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                                        '</div>'+
-                                        '<div class="col">'+
-                                            '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'zeek\', \''+line+'\')">Save</button>'+
-                                        '</div>'+
-                                    '</div>'+
-                                    '<br>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                    '</tr>';
-
-                }else if (response.data[line]["type"] == "socket-network"){
-                    tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
-                            if (response.data[line]["pid"] == "none"){
-                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }else{
-                                tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                                if(response.data[line]["running"]=="true"){
-                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                                }else{
-                                    tableSocketNetwork = tableSocketNetwork + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                                }
-                            }
-                        tableSocketNetwork = tableSocketNetwork + '</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="socket-network-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            if (response.data[line]["pid"] == "none"){
-                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'socket-network\')"></i> &nbsp';
-                            }else if (response.data[line]["pid"] != "none"){
-                                tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-network\')"></i> &nbsp';
-                            }
-                            tableSocketNetwork = tableSocketNetwork + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-network\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                        '<td style="word-wrap: break-word;" colspan="4">'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Description: <input class="form-control" id="socket-network-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Port: <input class="form-control" id="socket-network-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Certificate: <input class="form-control" id="socket-network-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i><input class="form-control" id="socket-network-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                        '<td style="word-wrap: break-word;" >'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-network-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                                '</div>'+
-                            '</div>'+
-                            '<br>'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-network\', \''+line+'\')">Save</button>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                    '</tr>';
-                }else if (response.data[line]["type"] == "socket-pcap"){
-                    tableSocketPcap = tableSocketPcap + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
-                        if (response.data[line]["pid"] == "none"){
-                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
-                            if(response.data[line]["running"]=="true"){
-                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                            }
-                        }else{
-                            tableSocketPcap = tableSocketPcap + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
-                            if(response.data[line]["running"]=="true"){
-                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableSocketPcap = tableSocketPcap + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
+                    document.getElementById('zeek-table-services').innerHTML = tableZeek;
+                    document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
+                    document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
+                    document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
+                    document.getElementById('suricata-table-services').innerHTML = tableSuricata;
+                    document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;
+                }
+    
+                axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid, {
+                    headers:{
+                        'token': document.cookie,
+                        'user': payload.user
+                        
+                    }
+                })
+                .then(function (response) {
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.permissions == "none"){
+                    PrivilegesMessage();
+                }else{
+                    if (response.data.ack == "false") {
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong> Load interfaces: '+response.data.error+'.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
+                    }else{
+                        if (document.getElementById('zeek-interface') != null){
+                            for (net in response.data){
+                                document.getElementById('zeek-interface').value = response.data[net]["interface"];
                             }
                         }
-                        tableSocketPcap = tableSocketPcap + '</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-path"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["pcap-prefix"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="socket-pcap-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            if (response.data[line]["pid"] == "none"){
-                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-play" style="color: grey;cursor: pointer; " onclick="deployStapService(\''+uuid+'\', \''+line+'\', \'none\',\''+response.data[line]["port"]+'\', \'none\',\'socket-pcap\')"></i> &nbsp';
-                            }else if (response.data[line]["pid"] != "none"){
-                                tableSocketPcap = tableSocketPcap + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'socket-pcap\')"></i> &nbsp';
-                            }
-                            tableSocketPcap = tableSocketPcap + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'socket-pcap\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                        '<td style="word-wrap: break-word;" colspan="6">'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Description: <input class="form-control" id="socket-pcap-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Port: <input class="form-control" id="socket-pcap-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'PCAP-Path: <input class="form-control" id="socket-pcap-pcap-path-'+line+'" value="'+response.data[line]["pcap-path"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'PCAP-Prefix: <input class="form-control" id="socket-pcap-pcap-prefix-'+line+'" value="'+response.data[line]["pcap-prefix"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Certificate: <input class="form-control" id="socket-pcap-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'BPF: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="socket-pcap-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                        '<td style="word-wrap: break-word;" >'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-seconday" id="modify-stap-cancel-socket-pcap-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                                '</div>'+
-                            '</div>'+
-                            '<br>'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                    '</tr>';
-                }else if (response.data[line]["type"] == "network-socket"){
-                    tableNetworkSocket = tableNetworkSocket + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
-                        if (response.data[line]["pid"] == "none"){
-                            tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
-                            if(response.data[line]["running"]=="true"){
-                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                            }
-                        }else{
-                            tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-success align-text-bottom text-white">ON</span> ';
-                            if(response.data[line]["running"]=="true"){
-                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-success align-text-bottom text-white">Running</span>';
-                            }else{
-                                tableNetworkSocket = tableNetworkSocket + '&nbsp <span class="badge bg-danger align-text-bottom text-white">Stopped</span>';
-                            }
-                        }
-                        tableNetworkSocket = tableNetworkSocket + '</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["port"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["cert"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="network-socket-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
-                        '<td style="word-wrap: break-word;">'+response.data[line]["collector"]+'</td>'+
-                        '<td style="word-wrap: break-word;" id="network-socket-bpf-default-'+line+'">'+response.data[line]["bpf"]+'</td>'+
-                        '<td style="word-wrap: break-word;">';
-                            if (response.data[line]["pid"] == "none"){
-                                tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-play" style="color: grey; cursor: pointer;" onclick="deployStapService(\''+uuid+'\', \''+line+'\', \''+response.data[line]["collector"]+'\',\''+response.data[line]["port"]+'\', \''+response.data[line]["interface"]+'\',\'network-socket\')"></i> &nbsp';
-                            }else if (response.data[line]["pid"] != "none"){
-                                tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-stop" style="color: grey; cursor: pointer;" onclick="stopStapService(\''+uuid+'\', \''+line+'\', \'network-socket\')"></i> &nbsp';
-                            }
-                            tableNetworkSocket = tableNetworkSocket + '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                            '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'network-socket\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                        '</td>'+
-                    '</tr>'+
-                    '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
-                        '<td style="word-wrap: break-word;" colspan="6">'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Description: <input class="form-control" id="network-socket-name-'+line+'" value="'+response.data[line]["name"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Port: <input class="form-control" id="network-socket-port-'+line+'" value="'+response.data[line]["port"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Collector: <input class="form-control" id="network-socket-collector-'+line+'" value="'+response.data[line]["collector"]+'">'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'Certificate: <input class="form-control" id="network-socket-cert-'+line+'" value="'+response.data[line]["cert"]+'">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="form-row">'+
-                                '<div class="col">'+
-                                    'Interface: <i class="fas fa-edit" style="cursor: default; color: Dodgerblue; cursor: pointer;" title="Socket to network '+response.data[line]["name"]+' Interface" style="cursor: default;" onclick="loadNetworkValuesService(\''+uuid+'\', \''+response.data[line]["name"]+'\', \''+line+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-interface-'+line+'" value="'+response.data[line]["interface"]+'" disabled>'+
-                                '</div>'+
-                                '<div class="col">'+
-                                    'BPF: <i class="fas fa-edit" title="BPF" style="cursor: default; color: Dodgerblue; cursor: pointer;" onclick="loadBPF(\''+uuid+'\', \''+response.data[line]["bpf"]+'\', \''+line+'\', \''+response.data[line]["name"]+'\', \''+response.data[line]["type"]+'\')"></i> <input class="form-control" id="network-socket-bpf-'+line+'" value="'+response.data[line]["bpf"]+'" disabled>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                        '<td style="word-wrap: break-word;" >'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-seconday" id="modify-stap-cancel-network-socket-'+line+'" onclick="hideEditStap(\''+line+'\')">Cancel</button>'+
-                                '</div>'+
-                            '</div>'+
-                            '<br>'+
-                            '<div class="form-row text-center">'+
-                                '<div class="col">'+
-                                    '<button class="btn btn-primary" id="modify-stap-change-'+line+'" onclick="saveStapChanges(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+
-                                '</div>'+
-                            '</div>'+
-                        '</td>'+
-                    '</tr>';
+                    }
                 }
-                document.getElementById('zeek-table-services').innerHTML = tableZeek;
-                document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
-                document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
-                document.getElementById('network-socket-table').innerHTML = tableNetworkSocket;
-                document.getElementById('suricata-table-services').innerHTML = tableSuricata;
-                document.getElementById('suricata-table-services-command').innerHTML = tableSuricataCommand;
-            }
-
-            axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValuesSelected/'+uuid, {
-                headers:{
-                    'token': document.cookie,
-                    'user': payload.user,
-                    'uuid': payload.uuid,
-                }
-            })
-            .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();
-            }else{
-                if (response.data.ack == "false") {
+                })
+                .catch(function (error){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Load interfaces: '+response.data.error+'.'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error!</strong> Load interfaces: '+error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
-                }else{
-                    if (document.getElementById('zeek-interface') != null){
-                        for (net in response.data){
-                            document.getElementById('zeek-interface').value = response.data[net]["interface"];
-                        }
-                    }
-                }
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
+                });
             }
-            })
-            .catch(function (error){
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Load interfaces: '+error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            });
         }
     })
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Ping Plugins: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4878,11 +5014,11 @@ function showModifyStap(service){
     $('#edit-row-'+service).show();
 }
 
-function saveStapChanges(uuid, type, service){
+function modifyNodeOptionValues(uuid, type, service){
     $('#edit-row-'+service).hide();
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/modifyStapValues';
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/modifyNodeOptionValues';
 
     var jsonDeployService = {}
     jsonDeployService["uuid"] = uuid;
@@ -4895,6 +5031,12 @@ function saveStapChanges(uuid, type, service){
         jsonDeployService["interface"] = document.getElementById('socket-network-interface-'+service).value.trim();
     }else if (type == "suricata"){
         jsonDeployService["name"] = document.getElementById('suricata-name-'+service).value.trim();
+        jsonDeployService["configFile"] = document.getElementById('suricata-config-file-'+service).value.trim();
+        jsonDeployService["rulesetName"] = document.getElementById('suricata-ruleset-edit-'+service).value.trim();
+        jsonDeployService["ruleset"] = document.getElementById('suricata-ruleset-edit-id-'+service).value.trim();
+        jsonDeployService["interface"] = document.getElementById('suricata-bpf-'+service).value.trim();
+        jsonDeployService["bpf"] = document.getElementById('suricata-bpf-'+service).value.trim();
+        jsonDeployService["bpfFile"] = document.getElementById('suricata-bpf-file-'+service).value.trim();
     }else if (type == "zeek"){
         jsonDeployService["name"] = document.getElementById('zeek-name-'+service).value.trim();
     }else if (type == "socket-pcap"){
@@ -4920,8 +5062,8 @@ function saveStapChanges(uuid, type, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -4933,13 +5075,13 @@ function saveStapChanges(uuid, type, service){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Save STAP Changes: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);                
                 loadPlugins();
             }else{
                 loadPlugins();
@@ -4949,13 +5091,13 @@ function saveStapChanges(uuid, type, service){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Save STAP Changes: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -4988,6 +5130,10 @@ function ModalDeleteService(uuid, service, type, name){
 }
 
 function deployStapService(uuid, service, collector,port,interface, type){
+    if(type == "socket-network"){document.getElementById('soc-net-exclamation-'+service).style.display = "none";}
+    if(type == "socket-pcap"){document.getElementById('soc-pcap-exclamation-'+service).style.display = "none";}
+    if(type == "network-socket"){document.getElementById('net-soc-exclamation-'+service).style.display = "none";}
+    
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/deployStapService';
@@ -5009,8 +5155,8 @@ function deployStapService(uuid, service, collector,port,interface, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -5020,15 +5166,19 @@ function deployStapService(uuid, service, collector,port,interface, type){
             PrivilegesMessage();
         }else{
             if (response.data.ack == "false") {
+                if(type == "socket-network"){document.getElementById('soc-net-exclamation-'+service).style.display = "block";}
+                if(type == "socket-pcap"){document.getElementById('soc-pcap-exclamation-'+service).style.display = "block";}
+                if(type == "network-socket"){document.getElementById('net-soc-exclamation-'+service).style.display = "block";}
+
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Deploy STAP: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -5037,13 +5187,13 @@ function deployStapService(uuid, service, collector,port,interface, type){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Deploy STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -5064,8 +5214,8 @@ function stopStapService(uuid, service, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -5077,13 +5227,13 @@ function stopStapService(uuid, service, type){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Stop STAP: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -5092,13 +5242,13 @@ function stopStapService(uuid, service, type){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Stop STAP: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -5118,8 +5268,8 @@ function deleteService(uuid, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -5131,13 +5281,13 @@ function deleteService(uuid, service){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete service: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadPlugins();
             }
@@ -5146,13 +5296,13 @@ function deleteService(uuid, service){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete service: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -5160,13 +5310,13 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
     if (type == "suricata" && (interface == "" || bpf == "")){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Please, assign an interface and a BPF for deploy a suricata service.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else{
         //desplegar load bar
         var progressBar = document.getElementById('progressBar-options');
@@ -5192,8 +5342,8 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
             timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -5210,15 +5360,17 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                     PrivilegesMessage();
                 }else{
                     if (response.data.ack == "false") {
+                        progressBar.style.display = "none";
+                        progressBarDiv.style.display = "none";
                         $('html,body').scrollTop(0);
                         var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                             '<strong>Error!</strong> Change Service Status: '+response.data.error+'.'+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                     }else{
                         progressBar.style.display = "none";
                         progressBarDiv.style.display = "none";
@@ -5230,13 +5382,13 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Change Service Status: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
         });
@@ -5253,8 +5405,8 @@ function PingAnalyzer(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -5308,8 +5460,8 @@ function ReloadFilesData(uuid){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -5381,8 +5533,8 @@ function loadNetworkValuesService(uuid, name, service, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -5432,7 +5584,7 @@ function loadNetworkValuesService(uuid, name, service, type){
                             if(type == "zeek"){
                                 html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\', \''+service+'\')">Save</button>';
                             }else {
-                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="saveSuricataInterface(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Save</button>';
+                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="UpdateSuricataValue(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Save</button>';
                             }
                         }
                     html = html + '</div>'+
@@ -5481,8 +5633,8 @@ function updateNetworkInterface(uuid, type, service){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -5497,10 +5649,10 @@ function updateNetworkInterface(uuid, type, service){
     });
 }
 
-function saveSuricataInterface(uuid, name, service, type){
+function UpdateSuricataValue(uuid, name, service, type){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/saveSuricataInterface';
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/updateSuricataValue';
 
     var valueSelected = "";
     $('input:radio:checked').each(function() {
@@ -5524,7 +5676,7 @@ function saveSuricataInterface(uuid, name, service, type){
     var jsonSuricataInterface = {}
     jsonSuricataInterface["uuid"] = uuid;
     jsonSuricataInterface["service"] = service;
-    jsonSuricataInterface["interface"] = valueSelected;
+    jsonSuricataInterface["value"] = valueSelected;
     jsonSuricataInterface["param"] = "interface";
     var dataJSON = JSON.stringify(jsonSuricataInterface);
     axios({
@@ -5533,8 +5685,8 @@ function saveSuricataInterface(uuid, name, service, type){
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })

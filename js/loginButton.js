@@ -13,9 +13,9 @@ function modalChangePasswordLogin(){
             
             '<div class="modal-body">'+ 
                 '<p>Insert new password:</p>'+
-                '<input type="text" class="form-control" id="user-change-password" placeholder="new password..."><br>'+
+                '<input type="password" class="form-control" id="user-change-password" placeholder="new password..."><br>'+
                 '<p>Verify new password:</p>'+
-                '<input type="text" class="form-control" id="user-verify-password" placeholder="Verify password..."><br>'+
+                '<input type="password" class="form-control" id="user-verify-password" placeholder="Verify password..."><br>'+
             '</div>'+
 
             '<div class="modal-footer">'+
@@ -59,9 +59,9 @@ function ChangePasswordLogin(){
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/changePassword';
-    
+
         var jsonDeployService = {}
-        jsonDeployService["user"] = payload.uuid;
+        jsonDeployService["user"] = document.getElementById('loger-user-name').value.trim();
         jsonDeployService["pass"] = document.getElementById('user-verify-password').value.trim();
         var dataJSON = JSON.stringify(jsonDeployService);
     

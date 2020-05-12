@@ -12,7 +12,8 @@ function loadJSONdata(){
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
 
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
         
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
@@ -666,9 +667,9 @@ function modalChangePassword(id, name){
             
             '<div class="modal-body">'+ 
                 '<p>Insert new password:</p>'+
-                '<input type="text" class="form-control" id="user-change-password" placeholder="new password..."><br>'+
+                '<input type="password" class="form-control" id="user-change-password" placeholder="new password..."><br>'+
                 '<p>Verify new password:</p>'+
-                '<input type="text" class="form-control" id="user-verify-password" placeholder="Verify password..."><br>'+
+                '<input type="password" class="form-control" id="user-verify-password" placeholder="Verify password..."><br>'+
             '</div>'+
 
             '<div class="modal-footer">'+
@@ -844,7 +845,7 @@ function ChangePassword(id){
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/changePassword';
 
         var jsonDeployService = {}
-        jsonDeployService["user"] = id;
+        jsonDeployService["user"] = document.getElementById('loger-user-name').value.trim();
         jsonDeployService["pass"] = document.getElementById('user-verify-password').value.trim();
         var dataJSON = JSON.stringify(jsonDeployService);
     

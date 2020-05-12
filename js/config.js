@@ -131,7 +131,8 @@ function loadJSONdata() {
         try {
             payload = JSON.parse(atob(tokens[1]));
             //user banner button
-            document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                    document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
             //check user type for display button
             if(payload.user == "admin"){                
                 $("#admin-users-btn").show();

@@ -105,7 +105,8 @@ function GetGroupsDetails(){
                             htmlsuricata =
                                 '<b>Suricata</b> &nbsp'+
                                 '<span id="suricata-group-mode-default" style="cursor:pointer;" class="badge bg-primary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'default-suricata-group-table\')">Current status</span>&nbsp'+
-                                '<span id="suricata-mode" style="cursor:pointer;" class="badge bg-secondary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'suricata-mode\')">Mode</span>'+
+                                // '<span id="suricata-mode" style="cursor:pointer;" class="badge bg-secondary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'suricata-mode\')">Mode</span>'+
+                                '<span id="suricata-mode" style="cursor:pointer;" class="badge bg-secondary align-text-bottom text-white" onclick="ChangeGroupConfigTable(\'expert-suricata-group-table\')">Configuration</span>'+
                                 '&nbsp'+
                                 '<span id="suricata-configuration" class="badge badge-pill bg-dark align-text-bottom text-white">&nbsp Action: &nbsp '+
                                     '<span style="cursor: pointer;" title="Stop Suricata" class="badge bg-danger align-text-bottom text-white" onclick="ChangeSuricataGroupService(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
@@ -970,12 +971,14 @@ async function GetMD5files(guuid, type){
                                         }else{
                                             html2 = html2 + '<span class="badge-pill badge bg-danger align-text-bottom text-white"> &nbsp </span>';
                                             MD5PathError = true;
-                                            // $('#global-files-status-'+id).attr('class', 'badge badge-pill bg-danger align-text-bottom text-white');
                                         }
                                     html2 = html2 + '</td>'+
                                 '</tr>'+
                             '</table>';
-                            document.getElementById('files-'+id).innerHTML = document.getElementById('files-'+id).innerHTML + html2;
+                            //check if element exists. Then, put content
+                            if($('#files-'+id).length >0){
+                                document.getElementById('files-'+id).innerHTML = document.getElementById('files-'+id).innerHTML + html2;
+                            }
                         }
                         //cehck if there are error for change main pill color
                         if(MD5PathError){
@@ -998,6 +1001,7 @@ async function GetMD5files(guuid, type){
         }
     })
     .catch(function (error) {
+        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -2125,10 +2129,10 @@ function addCluster(uuid, path){
 
 function ChangeGroupConfigTable(tab){
     if (tab == "suricata-mode"){
-        $("#suricata-configure").show();
-        document.getElementById('suricata-mode').className = 'badge bg-primary align-text-bottom text-white';
-        document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
-        document.getElementById('group-suricata-sync-btn').style.display = 'none';
+        // $("#suricata-configure").show();
+        // document.getElementById('suricata-mode').className = 'badge bg-primary align-text-bottom text-white';
+        // document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
+        // document.getElementById('group-suricata-sync-btn').style.display = 'none';
     }else if (tab == "standalone-suricata-group-table"){
         document.getElementById('standalone-suricata-group-table').style.display = 'block';
         document.getElementById('expert-suricata-group-table').style.display = 'none';
@@ -2146,7 +2150,7 @@ function ChangeGroupConfigTable(tab){
 
         document.getElementById('suricata-group-mode-default').className = 'badge bg-secondary align-text-bottom text-white';
         // document.getElementById('suricata-group-mode-standalone').className = 'badge bg-secondary align-text-bottom text-white';
-        document.getElementById('suricata-group-mode-expert').className = 'badge bg-primary align-text-bottom text-white';
+        document.getElementById('suricata-mode').className = 'badge bg-primary align-text-bottom text-white';
     } else if (tab == "default-suricata-group-table") {
         $("#suricata-configure").hide();
         document.getElementById('standalone-suricata-group-table').style.display = 'none';

@@ -990,7 +990,7 @@ function getCurrentRulesetName(uuid) {
                 }
             })
             .then(function (response2) {
-                if(response2.data.ack){
+                if(response2.data == ""){
                     document.getElementById('current-ruleset-options').innerHTML = "No ruleset selected...";
                     document.getElementById('current-ruleset-options').style.color = "red";
                     // document.getElementById('current-ruleset').innerHTML = "No ruleset selected...";
@@ -2977,9 +2977,6 @@ function generateAllRulesModal(response, nid, source, service) {
 
 
 function saveSurictaRulesetSelected(rule, nid, source, name, service){
-    console.log(rule);
-    console.log(service);
-    console.log(source);
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;      
     var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/setRuleset';
@@ -4496,11 +4493,11 @@ function PingPluginsNode(uuid) {
         timeout: 30000,
         headers:{
                 'token': document.cookie,
-                'user': payload.user
-                
+                'user': payload.user                
             }
     })
     .then(function (response) {  
+        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -5445,7 +5442,6 @@ function PingAnalyzer(uuid) {
 
     })
     .catch(function (error) {
-        console.log("error analyzer file -> "+error)
     });
 }
 

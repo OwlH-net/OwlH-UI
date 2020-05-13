@@ -700,11 +700,12 @@ function getRuleName(uuidRuleset, uuid) {
         timeout: 30000
     })
         .then(function (response) {
+            console.log(response.data);
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
-                if (typeof response.data.error != "undefined") {
+                if (typeof response.data.error != "undefined" || response.data == ""){
                     document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
                     document.getElementById(uuid + '-ruleset').className = "text-danger";
                 } else {

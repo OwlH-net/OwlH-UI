@@ -58,6 +58,7 @@ loadJSONdata();
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
+            var existGroups = false;
             //get groups
             var html = "";
             var groups = [];
@@ -66,9 +67,11 @@ loadJSONdata();
                     groups.push(response.data[id]["permissionGroup"])
                 }
             }            
+           
             
             //list permissions for every group
             for(group in groups){
+                existGroups=true;
                 html = html + '<div>'+
                 '<h3>'+groups[group]+'</h3>';
                 for(id in response.data){
@@ -96,7 +99,12 @@ loadJSONdata();
                 html = html + '</tbody>'+
                 '</table></div>';
             }
-            document.getElementById('role-list-table').innerHTML = html;
+
+            if(!existGroups){
+                document.getElementById('role-list-table').innerHTML = '<h3 class="text-center" style="color: red;">This role has no groups assigned.</h3>';
+            }else{
+                document.getElementById('role-list-table').innerHTML = html;
+            }
         }
         return true;
     })

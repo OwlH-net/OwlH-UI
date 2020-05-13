@@ -12,7 +12,7 @@ function loadJSONdata(){
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
 
         //login button
-                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user
         
         var ipLoad = document.getElementById('ip-master');
@@ -83,7 +83,9 @@ function EditCurrentRole(uuid){
     $('input[type=checkbox]:checked').each(function(index){
         list.push($(this).attr('role'));
     });
-       console.log(list); 
+
+    console.log(list); 
+
     var jsonData = {}
     jsonData["id"] = uuid;
     jsonData["role"] = document.getElementById('role-name-input').value.trim();
@@ -104,7 +106,19 @@ function EditCurrentRole(uuid){
     .then(function (response) {    
         document.getElementById('progressBar-create-div').style.display = "none";
         document.getElementById('progressBar-create').style.display = "none";
-        document.location.href = 'https://' + location.hostname + '/role-management.html';
+        if(response.data.ack == "false"){
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error editing role!</strong> '+response.data.error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
+        }else{
+            document.location.href = 'https://' + location.hostname + '/role-management.html';
+        }
     })
     .catch(function (error) {
         document.getElementById('progressBar-create').style.display = "none";
@@ -279,10 +293,23 @@ function addNewRole(){
                 }
             })
             .then(function (response) {
+                console.log(response.data);
                 document.getElementById('progressBar-create-div').style.display = "none";
                 document.getElementById('progressBar-create').style.display = "none";
 
-                document.location.href = 'https://' + location.hostname + '/role-management.html';
+                if (response.data.ack=="false"){
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                        '<strong>Error adding new role: </strong> '+response.data.error+'.'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
+                }else{
+                    document.location.href = 'https://' + location.hostname + '/role-management.html';
+                }
             })
             .catch(function (error) {
                 document.getElementById('progressBar-create-div').style.display = "none";

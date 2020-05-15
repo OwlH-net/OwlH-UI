@@ -77,7 +77,7 @@ function loadPlugins(){
 
             //zeek
             var htmlzeek = ""+
-            '<div><img  src="img/bro.png" alt="" width="30"> &nbsp'+
+            '<div><img  src="img/zeek.png" alt="" width="30"> &nbsp'+
                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
                 '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp '+
                 '<span id="btn-zeek-node-status" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-status-tab\')">Current status</span> &nbsp '+
@@ -1957,14 +1957,6 @@ function LaunchZeekMainConf(uuid, param) {
 
     
     var jsonValues = {}
-    // //get save zeek status
-    // $('input[type=checkbox]').each(function () {
-    //     if ($(this).prop("checked")){
-    //         jsonValues["saveZeek"] = "true";
-    //     }else{
-    //         jsonValues["saveZeek"] = "false";
-    //     }
-    // });
     jsonValues["uuid"] = uuid;
     jsonValues["param"] = param;
     var dataJSON = JSON.stringify(jsonValues);
@@ -1980,33 +1972,43 @@ function LaunchZeekMainConf(uuid, param) {
         data: dataJSON
     })
         .then(function (response) {
-        progressBar.style.display = "none";
-        progressBarDiv.style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.permissions == "none"){
-            PrivilegesMessage();
-        }else{
-            if(response.data != null){
-                if (response.data.ack == "false") {
-                    $('html,body').scrollTop(0);
-                    var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error!</strong> Launch Zeek main conf: '+response.data.error+'.'+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 30000);
-                    progressBar.style.display = "none";
-                    progressBarDiv.style.display = "none";
-                }
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();
             }else{
-                // PingZeek(uuid);
-                loadPlugins();
+                if(response.data != null){
+                    if (response.data.ack == "false") {
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error!</strong> Launch Zeek main conf: '+response.data.error+'.'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
+                    }else{
+                        $('html,body').scrollTop(0);
+                        var alert = document.getElementById('floating-alert');
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-success alert-dismissible fade show">'+
+                            '<strong>Success!</strong> Zeek main conf changed successfully!'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
+
+                        //reload Zeek Status
+                        PingZeek(uuid);
+                    }
+                }
             }
-        }
         })
         .catch(function error(error) {
+            progressBar.style.display = "none";
+            progressBarDiv.style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
             alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -2016,8 +2018,6 @@ function LaunchZeekMainConf(uuid, param) {
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 30000);
-            progressBar.style.display = "none";
-            progressBarDiv.style.display = "none";
         });
 }
 
@@ -4497,7 +4497,6 @@ function PingPluginsNode(uuid) {
             }
     })
     .then(function (response) {  
-        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();

@@ -246,7 +246,8 @@ function GetAllNodes() {
             }//Authorization
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
-        .then(function (response) {    
+        .then(function (response) {   
+            console.log(response.data); 
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
             if(response.data.permissions == "none"){
                 document.getElementById('progressBar-node').style.display = "none";
@@ -700,7 +701,6 @@ function getRuleName(uuidRuleset, uuid) {
         timeout: 30000
     })
         .then(function (response) {
-            console.log(response.data);
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              

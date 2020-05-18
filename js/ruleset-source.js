@@ -30,8 +30,22 @@ function addRulesetSource() {
     var alert = document.getElementById('floating-alert');
 
     $('input:radio:checked').each(function() {
-        sourceType = $(this).prop("value");
+        
+        // if($(this).prop('main') == 'main-radio-buttons'){
+            // sourceType = $(this).prop("value");
+            // console.log(sourceType);
+            if($(this).attr('value') != null){
+                sourceType = $(this).attr("value");
+            }
+        // }  
+        // if($(this).hasClass("main-radio-buttons")){            
+        // if($(this).is(".main-radio-buttons")){            
+        //     sourceType = $(this).prop("value");
+        // }
     });
+
+    console.log(sourceType);
+
 
     if ((sourceType == "url" || sourceType == "threat") && (formName == "" || formDesc == "" || formUrl == "" || ((formUser == ""  && formPasswd != "") || (formUser != ""  && formPasswd == "")))){
         if(formName == ""){
@@ -70,7 +84,7 @@ function addRulesetSource() {
         document.getElementById('progressBar-create-div').style.display = "block";
         document.getElementById('progressBar-create').style.display = "block";
 
-        if (sourceType == "url" || sourceType == "threat"){
+        if (sourceType == "url" || sourceType == "defaults"){
             sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
         }else  if (sourceType == "custom"){
             sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/custom';
@@ -188,6 +202,7 @@ function GetAllRulesetSource(){
             result.innerHTML = generateAllRulesetSourceHTMLOutput(response);
             changeIconAttributes(response.data);
             RadioButtonListener();
+            DefaultRulesetRadioButtonListener();
         }
     })
     .catch(function (error) {
@@ -204,12 +219,93 @@ function RadioButtonListener(){
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
             document.getElementById("ruleset-source-user").style.display = "none";
             document.getElementById("ruleset-source-passwd").style.display = "none";
+            document.getElementById("default-rulesets").style.display = "none";
         }else if (inputRadioClicked.attr('value') == "url"){
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
             document.getElementById("ruleset-source-user").style.display = "block";
             document.getElementById("ruleset-source-passwd").style.display = "block";
-        }else if (inputRadioClicked.attr('value') == "thread"){
-            document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
+            document.getElementById("default-rulesets").style.display = "none";
+            // }else if (inputRadioClicked.attr('value') == "thread"){
+                //     document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
+                // }
+        }else if (inputRadioClicked.attr('value') == "defaults"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("default-rulesets").style.display = "block";
+            document.getElementById('ruleset-source-url').placeholder =  "url";
+        }
+    });
+}
+
+function DefaultRulesetRadioButtonListener(){
+    $('input:radio').on('click', function(e) {
+        var inputRadioClicked = $(e.currentTarget);
+        if (inputRadioClicked.attr('data') == "open-rules"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Emerging Threats Open Ruleset";
+            document.getElementById("ruleset-source-desc").value="Proofpoint ET Open is a timely and accurate rule set for detecting and blocking advanced threats";
+            document.getElementById("ruleset-source-url").value="https://rules.emergingthreats.net/open/suricata-%(__version__)s/emerging.rules.tar.gz";
+        }else if (inputRadioClicked.attr('data') == "pro-ruleset"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Emerging Threats Pro Ruleset";
+            document.getElementById("ruleset-source-desc").value="Proofpoint ET Pro is a timely and accurate rule set for detecting and blocking advanced threats";
+            document.getElementById("ruleset-source-url").value="https://rules.emergingthreatspro.com/%(secret-code)s/suricata-%(__version__)s/etpro.rules.tar.gz";
+        }else if (inputRadioClicked.attr('data') == "traffic-id"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Suricata Traffic ID ruleset";
+            document.getElementById("ruleset-source-desc").value="Suricata Traffic ID ruleset";
+            document.getElementById("ruleset-source-url").value="https://openinfosecfoundation.org/rules/trafficid/trafficid.rules";
+        }else if (inputRadioClicked.attr('data') == "attack-detection"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Positive Technologies Attack Detection Team ruleset";
+            document.getElementById("ruleset-source-desc").value="The Attack Detection Team searches for new vulnerabilities and 0-days, reproduces it and creates PoC exploits to understand how these security flaws work and how related attacks can be detected on the network layer. Additionally, we are interested in malware and hackersâ€™ TTPs, so we develop Suricata rules for detecting all sorts of such activities.";
+            document.getElementById("ruleset-source-url").value="https://raw.githubusercontent.com/ptresearch/AttackDetection/master/pt.rules.tar.gz";
+        }else if (inputRadioClicked.attr('data') == "suricata-latest"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Secureworks suricata-enhanced ruleset";
+            document.getElementById("ruleset-source-desc").value="Broad ruleset composed of malware rules and other security-related countermeasures, and curated by the Secureworks Counter Threat Unit research team.  This ruleset has been enhanced with comprehensive and fully standard-compliant BETTER metadata (https://better-schema.readthedocs.io/).";
+            document.getElementById("ruleset-source-url").value="https://ws.secureworks.com/ti/ruleset/%(secret-code)s/Suricata_suricata-enhanced_latest.tgz";
+        }else if (inputRadioClicked.attr('data') == "suricata-malware"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Secureworks suricata-malware ruleset";
+            document.getElementById("ruleset-source-desc").value="High-fidelity, high-priority ruleset composed mainly of malware-related countermeasures and curated by the Secureworks Counter Threat Unit research team.";
+            document.getElementById("ruleset-source-url").value="https://ws.secureworks.com/ti/ruleset/%(secret-code)s/Suricata_suricata-malware_latest.tgz";
+        }else if (inputRadioClicked.attr('data') == "threat-intelligence"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Secureworks suricata-security ruleset";
+            document.getElementById("ruleset-source-desc").value="Broad ruleset composed of malware rules and other security-related countermeasures, and curated by the Secureworks Counter Threat Unit research team.";
+            document.getElementById("ruleset-source-url").value="https://ws.secureworks.com/ti/ruleset/%(secret-code)s/Suricata_suricata-security_latest.tgz";
+        }else if (inputRadioClicked.attr('data') == "sslblacklist"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value=" Abuse.ch SSL Blacklist";
+            document.getElementById("ruleset-source-desc").value="The SSL Blacklist (SSLBL) is a project of abuse.ch with the goal of detecting malicious SSL connections, by identifying and blacklisting SSL certificates used by botnet C&C servers. In addition, SSLBL identifies JA3 fingerprints that helps you to detect & block malware botnet C&C communication on the TCP layer.";
+            document.getElementById("ruleset-source-url").value="https://sslbl.abuse.ch/blacklist/sslblacklist.rules";
+        }else if (inputRadioClicked.attr('data') == "ja3-fingerprint"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Abuse.ch Suricata JA3 Fingerprint Ruleset";
+            document.getElementById("ruleset-source-desc").value="If you are running Suricata, you can use the SSLBL's Suricata JA3 FingerprintRuleset to detect and/or block malicious SSL connections in your network based on the JA3 fingerprint. Please note that your need Suricata 4.1.0 or newer in order to use the JA3 fingerprint ruleset.";
+            document.getElementById("ruleset-source-url").value="https://sslbl.abuse.ch/blacklist/ja3_fingerprints.rules";
+        }else if (inputRadioClicked.attr('data') == "ip-blacklist"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Etnetera aggressive IP blacklist";
+            document.getElementById("ruleset-source-desc").value="Etnetera aggressive IP blacklist";
+            document.getElementById("ruleset-source-url").value="https://security.etnetera.cz/feeds/etn_aggressive.rules";
+        }else if (inputRadioClicked.attr('data') == "threat-hunting"){
+            document.getElementById("ruleset-source-user").style.display = "block";
+            document.getElementById("ruleset-source-passwd").style.display = "block";
+            document.getElementById("ruleset-source-name").value="Threat hunting rules";
+            document.getElementById("ruleset-source-desc").value="Heuristic ruleset for hunting. Focus on anomaly detection and showcasing latest engine features, not performance.";
+            document.getElementById("ruleset-source-url").value="https://raw.githubusercontent.com/travisbgreen/hunting-rules/master/hunting.rules";
         }
     });
 }

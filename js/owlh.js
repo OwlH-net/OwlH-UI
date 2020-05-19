@@ -247,7 +247,6 @@ function GetAllNodes() {
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
         .then(function (response) {   
-            console.log(response.data); 
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
             if(response.data.permissions == "none"){
                 document.getElementById('progressBar-node').style.display = "none";
@@ -306,11 +305,14 @@ function GetAllNodes() {
                                 
                                 html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
                                     '<td></td>'+
-                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
-                                        '<p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
-                                        '<i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
-                                        '<br><br>'+
-                                        '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
+                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'+
+                                        '<p class="text-muted">' + nodes[node]['ip'] + '</p>'+
+                                        // '<i class="fas fa-code" title="Ruleset Management"></i> '+
+                                        '<p><b>Rulesets</b></p>'+
+                                        '<span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
+                                        '<div id="all-data-'+uuid+'"></div>'+
+                                        '<br><br>'+                                        
+                                        // '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
                                     '</td>' +
                                     '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
                                         '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
@@ -363,6 +365,7 @@ function GetAllNodes() {
                 document.getElementById('progressBar-node').style.display = "none";
                 document.getElementById('progressBar-node-div').style.display = "none";
             }
+            GetAllGroupRulesetsForAllNodes();
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -476,6 +479,40 @@ function deleteNode(node) {
         })
         .catch(function (error) {
             return false;
+        });   
+}
+
+function GetAllGroupRulesetsForAllNodes(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/master/getAllGroupRulesetsForAllNodes';
+    axios({
+        method: 'get',
+        url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user
+        },
+        timeout: 30000
+    })
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                for(uuid in response.data){
+                    var html = '';
+                    for(group in response.data[uuid]){
+                        rulesets = response.data[uuid][group].split(",");
+                        for(x in rulesets){
+                            html = html + rulesets[x] +' ('+group+')<br>';                        
+                        }
+                    }
+                    document.getElementById('all-data-'+uuid).innerHTML = html;
+                }
+            }
+        })
+        .catch(function (error) {
         });   
 }
 

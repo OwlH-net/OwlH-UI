@@ -205,6 +205,7 @@ function GetAllRulesetSource(){
         }
     })
     .then(function (response) {
+        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -275,7 +276,7 @@ function DefaultRulesetRadioButtonListener(){
             document.getElementById("ruleset-source-secret-key").style.display = "block";
             document.getElementById("ruleset-source-name").value="Emerging Threats Pro Ruleset";
             document.getElementById("ruleset-source-desc").value="Proofpoint ET Pro is a timely and accurate rule set for detecting and blocking advanced threats";
-            document.getElementById("ruleset-source-url").value="https://rules.emergingthreatspro.com/%(secret-code)s/suricata-%(__version__)s/etpro.rules.tar.gz";
+            document.getElementById("ruleset-source-url").value="https://rules.emergingthreatspro.com/<SECRET-CODE>/suricata-%(__version__)s/etpro.rules.tar.gz";
         }else if (inputRadioClicked.attr('data') == "traffic-id"){
             document.getElementById("ruleset-source-user").style.display = "block";
             document.getElementById("ruleset-source-passwd").style.display = "block";
@@ -295,21 +296,21 @@ function DefaultRulesetRadioButtonListener(){
             document.getElementById("ruleset-source-secret-key").style.display = "block";
             document.getElementById("ruleset-source-name").value="Secureworks suricata-enhanced ruleset";
             document.getElementById("ruleset-source-desc").value="Broad ruleset composed of malware rules and other security-related countermeasures, and curated by the Secureworks Counter Threat Unit research team.  This ruleset has been enhanced with comprehensive and fully standard-compliant BETTER metadata (https://better-schema.readthedocs.io/).";
-            document.getElementById("ruleset-source-url").value="https://ws.secureworks.com/ti/ruleset/%(secret-code)s/Suricata_suricata-enhanced_latest.tgz";
+            document.getElementById("ruleset-source-url").value="https://ws.secureworks.com/ti/ruleset/<SECRET-CODE>/Suricata_suricata-enhanced_latest.tgz";
         }else if (inputRadioClicked.attr('data') == "suricata-malware"){
             document.getElementById("ruleset-source-user").style.display = "block";
             document.getElementById("ruleset-source-passwd").style.display = "block";
             document.getElementById("ruleset-source-secret-key").style.display = "block";
             document.getElementById("ruleset-source-name").value="Secureworks suricata-malware ruleset";
             document.getElementById("ruleset-source-desc").value="High-fidelity, high-priority ruleset composed mainly of malware-related countermeasures and curated by the Secureworks Counter Threat Unit research team.";
-            document.getElementById("ruleset-source-url").value="https://ws.secureworks.com/ti/ruleset/%(secret-code)s/Suricata_suricata-malware_latest.tgz";
+            document.getElementById("ruleset-source-url").value="https://ws.secureworks.com/ti/ruleset/<SECRET-CODE>/Suricata_suricata-malware_latest.tgz";
         }else if (inputRadioClicked.attr('data') == "threat-intelligence"){
             document.getElementById("ruleset-source-user").style.display = "block";
             document.getElementById("ruleset-source-passwd").style.display = "block";
             document.getElementById("ruleset-source-secret-key").style.display = "block";
             document.getElementById("ruleset-source-name").value="Secureworks suricata-security ruleset";
             document.getElementById("ruleset-source-desc").value="Broad ruleset composed of malware rules and other security-related countermeasures, and curated by the Secureworks Counter Threat Unit research team.";
-            document.getElementById("ruleset-source-url").value="https://ws.secureworks.com/ti/ruleset/%(secret-code)s/Suricata_suricata-security_latest.tgz";
+            document.getElementById("ruleset-source-url").value="https://ws.secureworks.com/ti/ruleset/<SECRET-CODE>/Suricata_suricata-security_latest.tgz";
         }else if (inputRadioClicked.attr('data') == "sslblacklist"){
             document.getElementById("ruleset-source-user").style.display = "block";
             document.getElementById("ruleset-source-passwd").style.display = "block";
@@ -373,6 +374,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
         '</thead>                                                     ' +
         '<tbody>                                                      '
     for (source in sources) {
+        console.log(sources[source]['url']);
         isEmpty = false;
         html = html + '<tr>'+
             '<td style="word-wrap: break-word;">'+
@@ -382,7 +384,13 @@ function generateAllRulesetSourceHTMLOutput(response) {
             '</td><td style="word-wrap: break-word;">'+
             sources[source]['path']+
             '</td><td style="word-wrap: break-word;">';
-            if (sources[source]['sourceType'] != "custom"){html = html + sources[source]['url'];}
+            if (sources[source]['sourceType'] != "custom"){
+                //reeplace <> characters
+                // string.replace(/GeeksForGeeks/, 'gfg');
+                var left = sources[source]['url'].replace('<', '&lt;');
+                var right = left.replace('>', "&gt;");
+                html = html + right;
+            }
             html = html + '</td><td align="right" style="word-wrap: break-word;">'+
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<input id="download-status-'+source+'" type="hidden" class="form-control" value = "'+sources[source]['isDownloaded']+'">';

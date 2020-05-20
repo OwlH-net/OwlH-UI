@@ -228,7 +228,7 @@ function GetAllNodes() {
     document.getElementById('add-nid-bottom').style.display = "none";
     document.getElementById('add-nid-top').style.display = "none";
     document.getElementById('search-node-details').style.display = "none";
-    document.getElementById('node-search-value').style.display = "none";
+    // document.getElementById('node-search-value').style.display = "none";
     document.getElementById('progressBar-node').style.display = "block";
     document.getElementById('progressBar-node-div').style.display = "block";
 
@@ -257,7 +257,7 @@ function GetAllNodes() {
                     document.getElementById('add-nid-bottom').style.display = "none";
                     document.getElementById('add-nid-top').style.display = "none";
                     document.getElementById('search-node-details').style.display = "none";
-                    document.getElementById('node-search-value').style.display = "none";
+                    // document.getElementById('node-search-value').style.display = "none";
                     document.getElementById('progressBar-node').style.display = "none";
                     document.getElementById('progressBar-node-div').style.display = "none";
                     resultElement.innerHTML =  '<div style="text-align:center"><h3 style="color:red;">Error retrieving nodes</h3></div>';
@@ -265,7 +265,7 @@ function GetAllNodes() {
                     document.getElementById('add-nid-bottom').style.display = "block";
                     document.getElementById('add-nid-top').style.display = "block";
                     document.getElementById('search-node-details').style.display = "block";
-                    document.getElementById('node-search-value').style.display = "block";
+                    // document.getElementById('node-search-value').style.display = "block";
                     document.getElementById('progressBar-node').style.display = "none";
                     document.getElementById('progressBar-node-div').style.display = "none";
                     
@@ -350,7 +350,7 @@ function GetAllNodes() {
                         resultElement.innerHTML = html;
                         
                         //search bar
-                        $('#node-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-node-details').value)});
+                        $('#search-node-details').keyup(function(){ loadNodeBySearch(document.getElementById('search-node-details').value)});
                     
                         //listener for search bar
                         document.getElementById('search-node-details').addEventListener('input', evt => {
@@ -436,13 +436,12 @@ function showAllHiddenNodes(){
 }
 
 function loadNodeBySearch(search){
-    showAllHiddenNodes();
+    // showAllHiddenNodes();
     if (search.length == 0){
-        $('#search-node-details').css('border', '2px solid red');
-        $('#search-node-details').attr("placeholder", "Insert a valid name for search...");
-    }else{
+        // $('#search-node-details').css('border', '2px solid red');
         $('#search-node-details').css('border', '2px solid #ced4da');
-        $('#search-node-details').attr("placeholder", "");
+        $('#search-node-details').attr("placeholder", "Search by name or ip...");
+    }else{
         $('#node-table tbody').each(function(){
             $(this).find('tr').each(function(){
                 if ($(this).attr("name").toLowerCase().includes(search.toLowerCase()) || $(this).attr("ip").toLowerCase().includes(search.toLowerCase())){

@@ -98,14 +98,14 @@ function generateAllRuleDataHTMLOutput(sources) {
     }
     html = html + 
     '<div>'+
-        '<div class="input-group col-md-6">'+
+        '<div class="input-group">'+
             '<div class="input-group-prepend">'+
                 '<span class="input-group-text">New Name</span>'+
             '</div>'+
             '<input type="text" class="form-control" placeholder="Ruleset name" id="new-ruleset-name-input">'+
         '</div>'+
         '<br>'+
-        '<div class="input-group col-md-6">'+
+        '<div class="input-group">'+
             '<div class="input-group-prepend">'+
                 '<span class="input-group-text">New Description</span>'+
             '</div>'+
@@ -113,7 +113,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         '</div>'+
         '<br>'+
     '</div>'+
-    '<br><br><br>'+
+    '<br>'+
 
     '<h5>Select rulesets</h5>'+
     '<div class="form-check">';
@@ -135,17 +135,10 @@ function generateAllRuleDataHTMLOutput(sources) {
         
     '<br><br>'+
     '<br><br><br>'+
-    '<div>'+
-        '<div class="input-group col-md-6">'+
-            '<div class="input-group-prepend">'+
-                '<span class="input-group-text">Search rule file</span>'+
-            '</div>'+
-            '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')"'+
-                'placeholder="Search for rule file name..." title="Insert a ruleset name for search">'+
-        '</div>'+
-    '</div>'+
-    '<div class="mt-3">'+
-        '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mb-0" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
+
+    '<div class="input-group mt-1" width="100%">'+
+        '<span id="sort-nodes-name" width="5%" style="display: inline-flex; align-items: center;" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary text-white float-left mb-0 align-middle" style="cursor:pointer;" title="Sort table by Name">Sort by file name</span> &nbsp'+
+        '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')" placeholder="Search by rule file name..." title="Insert a ruleset name for search"> &nbsp'+
         '<button id="top-add-btn" class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
     '</div>'+
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
@@ -226,8 +219,10 @@ function addRulesetFilesToTable(sources){
         var checked = $(this).prop("value");
         for (source in sources){
             if (checked == sources[source]["name"]){
-                document.getElementById("row-"+source).style.display = "";//in this case display is void, not none
-                document.getElementById("row-"+source).value = "true"; //true == visible at table
+                $('#row-'+source).show();
+                $('#row-'+source).val("true");
+                // document.getElementById("row-"+source).style.display = "";//in this case display is void, not none
+                // document.getElementById("row-"+source).value = "true"; //true == visible at table
             }
         }
     });
@@ -235,24 +230,27 @@ function addRulesetFilesToTable(sources){
         var checked = $(this).prop("value");
         for (source in sources){
             if (checked == sources[source]["name"]){
-                document.getElementById("row-"+source).style.display = "none";
-                document.getElementById("row-"+source).value = "false"; //false == hidden at table
-                document.getElementById(source).checked = false; 
+                $('#row-'+source).hide();
+                $('#row-'+source).val("false");
+                $('#'+source).prop('checked', false);
+                // document.getElementById("row-"+source).style.display = "none";
+                // document.getElementById("row-"+source).value = "false"; //false == hidden at table
+                // document.getElementById(source).checked = false; 
             }
         }
     });
 }
 
-function searchRuleset(rulesetNames, checkboxIds){
+function searchRuleset(rulesetNames, checkboxIds){    
     var boxes = checkboxIds.split(",");
-
-    var input, filter, table, tr, td, i, txtValue;
+    var input, filter, table, tr;
     input = document.getElementById("ruleset-search-input");
     filter = input.value.toUpperCase();
     table = document.getElementById("create-ruleset-table");
     tr = table.getElementsByTagName("tr");
+
     $.each( boxes, function( key, value ) {
-        if($('#checkbox-'+value).is(':checked')){
+        if($('#selector-checkbox-'+value).is(':checked')){            
             $('#create-ruleset-table-body tr').each(function () {
                 if($(this).attr('sourceUUID') == value){
                     var tdContent = $(this).find(".fileName").html();

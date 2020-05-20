@@ -164,7 +164,7 @@ async function GetAllPermissions(){
             html = html = 
             '<div class="input-group" style="width:100%;">'+
                 '<input class="form-control mx-3" type="text" placeholder="Search by permission..." aria-label="Search" id="search-permission-details">'+
-                '<a type="button" class="btn btn-primary mr-2" id="permission-search-value"><i class="fas fa-search" style="color: white;"></i></a>'+
+                // '<a type="button" class="btn btn-primary mr-2" id="permission-search-value" onkeyup=""><i class="fas fa-search" style="color: white;"></i></a>'+
             '</div>'+
             '<br>'+
             '<div class="input-group col-md-6" inline>'+
@@ -221,7 +221,8 @@ async function GetAllPermissions(){
         }
 
         //onclick for search bar
-        $('#permission-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-permission-details').value)});
+        // $('#permission-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-permission-details').value)});
+        $('#search-permission-details').keyup(function(){ loadNodeBySearch(document.getElementById('search-permission-details').value)});
         //listener for search bar
         document.getElementById('search-permission-details').addEventListener('input', evt => {
             if (document.getElementById('search-permission-details').value.trim() == ""){ showAllHiddenPermissions();} 
@@ -360,11 +361,11 @@ function showAllHiddenPermissions(){
 function loadNodeBySearch(search){
     showAllHiddenPermissions();
     if (search.length == 0){
-        $('#search-permission-details').css('border', '2px solid red');
+        // $('#search-permission-details').css('border', '2px solid red');
+        // $('#search-permission-details').attr("placeholder", "Insert a valid name for search...");
+        $('#search-permission-details').css('border', '2px solid #ced4da');
         $('#search-permission-details').attr("placeholder", "Insert a valid name for search...");
     }else{
-        $('#search-permission-details').css('border', '2px solid #ced4da');
-        $('#search-permission-details').attr("placeholder", "");
 
         $('.permission-row').each(function(){
             $(this).hide();

@@ -196,7 +196,7 @@ function GetAllGroups(){
                     '<tbody>'; 
                         for(x=0; x<response.data.length; x++){
                             var groups = response.data[x];
-                            html = html + '<tr bgcolor="powderblue">'+
+                            html = html + '<tr>'+
                                 '<td style="word-wrap: break-word;">'+
                                     groups['gname']+
                                 '</td><td style="word-wrap: break-word;">'+

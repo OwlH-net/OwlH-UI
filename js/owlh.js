@@ -17,7 +17,7 @@ function loadJSONdata() {
         try {payload = JSON.parse(atob(tokens[1]));}
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
         //login button
-                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user
          
         var ipLoad = document.getElementById('ip-master');
@@ -110,7 +110,6 @@ async function PingNode(uuid, token) {
         .catch(function (error) {
             document.getElementById('node-monitor-'+uuid).onclick = "";
             document.getElementById('node-services-'+uuid).onclick = "";
-            // document.getElementById('node-modify-'+uuid).onclick = "";
             document.getElementById('node-config-'+uuid).onclick = "";
             document.getElementById('node-files-'+uuid).onclick = "";
             document.getElementById('node-change-'+uuid).onclick = "";
@@ -119,7 +118,6 @@ async function PingNode(uuid, token) {
 
             document.getElementById('node-monitor-'+uuid).style.cursor = " default";
             document.getElementById('node-services-'+uuid).style.cursor = "default";
-            // document.getElementById('node-modify-'+uuid).style.cursor = "default";
             document.getElementById('node-config-'+uuid).style.cursor = "default";
             document.getElementById('node-files-'+uuid).style.cursor = "default";
             document.getElementById('node-change-'+uuid).style.cursor = "default";
@@ -299,19 +297,20 @@ function GetAllNodes() {
                                     port = "10443";
                                 }
                                 var uuid = node;
-                                PingNode(uuid, nodes[node]['token']);
-                                getRulesetUID(uuid);
-                        
+                                PingNode(uuid, nodes[node]['token']);                       
                                 
                                 html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
                                     '<td></td>'+
                                     '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'+
                                         '<p class="text-muted">' + nodes[node]['ip'] + '</p>'+
                                         // '<i class="fas fa-code" title="Ruleset Management"></i> '+
-                                        '<p><b>Rulesets</b></p>'+
-                                        '<span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
-                                        '<div id="all-data-'+uuid+'"></div>'+
-                                        '<br><br>'+                                        
+                                        '<p><b>Suricata rulesets</b></p>'+
+                                        '<p id="all-data-'+uuid+'" class="text-muted small">No ruleset selected...</p>'+
+                                        '<p><b>Zeek</b></p>'+
+                                        '<p id="zeek-data-'+uuid+'" class="text-muted small">Zeek is not available...</p>'+
+                                        // '<div>'+
+                                        // '</div>'+
+                                        // '<br><br>'+                                        
                                         // '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
                                     '</td>' +
                                     '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
@@ -340,7 +339,11 @@ function GetAllNodes() {
                                             '</div>';
                                         '</span>'+
                                     '</td> ' +
-                                '</tr>';                             
+                                '</tr>';  
+                                
+                                //Get node local ruleset
+                                getRulesetUID(uuid);
+                                PingZeek(uuid);
                             }
                     html = html + '</tbody></table>';
                 
@@ -357,10 +360,7 @@ function GetAllNodes() {
                             if (document.getElementById('search-node-details').value.trim() == ""){ showAllHiddenNodes();} 
                         });
                     }                    
-                }            
-                // $('#node-table').click(function(){sortTable(); });
-                // DisableOfflineNodes();
-                
+                }                           
                 //hide progressBar when nodes have finished loading
                 document.getElementById('progressBar-node').style.display = "none";
                 document.getElementById('progressBar-node-div').style.display = "none";
@@ -385,31 +385,6 @@ function GetAllNodes() {
                 checkStatus();
         });
 }
-
-
-
-// function sortTable() {
-    // var $table = $('node-table');
-    // var $tableBody = $table.find('tbody');
-    // var rows, sortedRows;
-
-    // function sortRows(a, b){
-    //     if ( $(a).find('tr:first-Child').text() > $(b).find('td:first-Child').text() ) {
-    //         return 1;
-    //     }
-
-    //     if ( $(a).find('td:first-Child').text() < $(b).find('td:first-Child').text() ) {
-    //         return -1;
-    //     }
-
-    //     return 0;
-    // }
-
-
-    // $($('#node-table > tbody  > tr')).val('');
-    // // $('#node-table > tbody  > tr').each(function() {
-    // // });
-// }
 
 function showNodes(status){
     if (status == "all"){
@@ -495,19 +470,30 @@ function GetAllGroupRulesetsForAllNodes(){
         timeout: 30000
     })
         .then(function (response) {
+            console.log("Group rulesets");
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
                 for(uuid in response.data){
                     var html = '';
+                    var isEmpty = true;
                     for(group in response.data[uuid]){
-                        rulesets = response.data[uuid][group].split(",");
-                        for(x in rulesets){
-                            html = html + rulesets[x] +' ('+group+')<br>';                        
+                        if (response.data[uuid][group] != ""){
+                            isEmpty = false;
+                            rulesets = response.data[uuid][group].split(",");
+                            for(x in rulesets){
+                                html = html + rulesets[x] +' ('+group+')<br>';                        
+                            }
                         }
                     }
-                    document.getElementById('all-data-'+uuid).innerHTML = html;
+                    if (!isEmpty){
+                        if (document.getElementById('all-data-'+uuid).innerHTML == "No ruleset selected..."){
+                            document.getElementById('all-data-'+uuid).innerHTML = html;
+                        }else{
+                            document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + html+'<br>';
+                        }
+                    }
                 }
             }
         })
@@ -619,9 +605,6 @@ function ShowMonitoring(uuid, name){
 function showServicesConfig(uuid, name){
     document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name;
 }
-// function showMasterFile(file){
-//     document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+file;
-// }
 function editAnalyzer(uuid, file, nodeName){
     document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
@@ -694,11 +677,11 @@ function ChangeStatus(uuid){
     });
 }
 
-function getRulesetUID(uuid) {
+async function getRulesetUID(uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/' + uuid;
-    axios({
+    await axios({
         method: 'get',
         url: nodeurl,
         headers:{
@@ -709,6 +692,7 @@ function getRulesetUID(uuid) {
         timeout: 30000
     })
     .then(function (response) {
+        console.log("ruleset ID");
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -722,11 +706,11 @@ function getRulesetUID(uuid) {
     });
 }
 
-function getRuleName(uuidRuleset, uuid) {
+async function getRuleName(uuidRuleset, uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + uuidRuleset;
-    axios({
+    await axios({
         method: 'get',
         url: nodeurl,
         headers:{
@@ -737,17 +721,25 @@ function getRuleName(uuidRuleset, uuid) {
         timeout: 30000
     })
         .then(function (response) {
+            console.log("ruleset Name");
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
-            }else{   
-                if (typeof response.data.error != "undefined" || response.data == ""){
-                    document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
-                    document.getElementById(uuid + '-ruleset').className = "text-danger";
-                } else {
-                    document.getElementById(uuid + '-ruleset').innerHTML = response.data;
-                    document.getElementById(uuid + '-ruleset').className = "text-muted-small";
+            }else{
+                if (response.data != ""){
+                    if (document.getElementById('all-data-'+uuid).innerHTML == "No ruleset selected..."){
+                        document.getElementById('all-data-'+uuid).innerHTML = response.data;
+                    }else{
+                        document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + response.data+'<br>';
+                    }
                 }
+                // if (typeof response.data.error != "undefined" || response.data == ""){
+                    // document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
+                    // document.getElementById(uuid + '-ruleset').className = "text-danger";
+                // } else {
+                    // document.getElementById(uuid + '-ruleset').innerHTML = response.data;
+                    // document.getElementById(uuid + '-ruleset').className = "text-muted-small";
+                // }
                 return response.data;
             }
         })
@@ -1112,121 +1104,6 @@ function saveBPF(nid){
     });   
 }
 
-// function loadRuleset(nid){
-//   var modalWindow = document.getElementById('modal-window');
-//   modalWindow.innerHTML = 
-//   '<div class="modal-dialog modal-lg">'+
-//     '<div class="modal-content">'+
-
-//       '<div class="modal-header">'+
-//         '<h4 class="modal-title" id="ruleset-manager-header">Rules</h4>'+
-//         '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-//       '</div>'+
-
-//       '<div class="modal-body" id="ruleset-manager-footer-table">'+ 
-//       '</div>'+
-
-//       '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
-//         '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-//       '</div>'+
-
-//     '</div>'+
-//   '</div>';
-//   var resultElement = document.getElementById('ruleset-manager-footer-table');
-//   var ipmaster = document.getElementById('ip-master').value;
-//   var portmaster = document.getElementById('port-master').value;
-//   axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
-//     headers:{
-//       'token': document.cookie,
-//       'user': payload.user
-      
-//     },
-//   })
-
-//     .then(function (response) {
-//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-//         if(response.data.permissions == "none"){
-//             PrivilegesMessage();              
-//         }else{   
-//             if (typeof response.data.error != "undefined"){
-//                 resultElement.innerHTML = '<p>No rules available...</p>';
-//             }else{
-//                 resultElement.innerHTML = generateAllRulesModal(response, nid);
-//             }
-//         }
-//     })
-//     .catch(function (error) {
-//       resultElement.innerHTML = '<p>Error retrieving rules</p>';
-//     }); 
-  
-// }
-
-// function generateAllRulesModal(response, nid) {
-//     var rules = response.data;
-//     var isEmpty = true;
-//     var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-//                 	'<thead>' +
-//                 		'<tr>' +
-// 							'<th width="30%">Name</th>' +
-// 							'<th>Description</th>' +
-// 							'<th width="15%">Options</th>' +
-//                 		'</tr>' +
-//                 	'</thead>' +
-//                 	'<tbody>';
-//     for (rule in rules) {
-//         isEmpty = false;
-//         html = html + '<tr><td style="word-wrap: break-word;" width="30%"> ' +
-//         rules[rule]["name"] +
-//         '</td><td style="word-wrap: break-word;"> ' +
-//         rules[rule]["desc"] +
-//         '</td><td style="word-wrap: break-word;" width="15%"> ' +
-//         	'<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button> ' +
-//         '</td></tr> ';
-//     }
-//     html = html + '</tbody></table>';
-    
-//     if (isEmpty){
-//         return '<p>No rules available...</p>';
-//     }else{
-//         return html;
-//     }
-// }
-
-
-// function saveRuleSelected(rule, nid){
-//     var ipmaster = document.getElementById('ip-master').value;
-//     var portmaster = document.getElementById('port-master').value;
-//     var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
-
-//     var jsonRuleUID = {}
-//     jsonRuleUID["nid"] = nid;
-//     jsonRuleUID["rule_uid"] = rule;
-//     var uidJSON = JSON.stringify(jsonRuleUID);
-//     axios({
-//         method: 'put',
-//         url: urlSetRuleset,
-//         headers:{
-//           'token': document.cookie,
-//           'user': payload.user
-          
-//         },
-//         timeout: 30000,
-//         data: uidJSON
-//     })
-//         .then(function (response) {
-//             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-//             if(response.data.permissions == "none"){
-//                 PrivilegesMessage();              
-//             }else{   
-//                 getRulesetUID(nid);
-//                 return true;
-//             }
-//         })
-//             .catch(function (error) {
-//             return false;
-//         }); 
-// }
-
 function deleteNodeModal(node, name){
   var modalWindow = document.getElementById('modal-window');
   modalWindow.innerHTML = 
@@ -1274,3 +1151,37 @@ function syncRulesetModal(node, name){
       '</div>'+
     '</div>';
   }
+
+  function PingZeek(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user                
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.mode != "") {
+                if (response.data.mode == "standalone") {
+                    document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Standalone";
+                }else if (response.data.mode == "cluster" && !response.data.managed){
+                    document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Cluster";
+                }else if (response.data.mode == "cluster" && response.data.managed){
+                    document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Cluster (Manager)";
+
+                }
+            }
+        }
+    })
+    .catch(function (error) {
+    });
+}

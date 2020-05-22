@@ -77,7 +77,7 @@ function loadPlugins(){
 
             //zeek
             var htmlzeek = '<div id="zeek-managed-mode">'+
-                '<div id="zeek-cluster-banner" class="p-3 my-3 border rounded border-warning rounded-sm" style="display: none; cursor:pointer;">'+
+                '<div id="zeek-cluster-banner" class="p-3 my-3 border rounded border-warning rounded-sm" style="display: none;">'+
                     '<div class="w-100">'+
                         '<h4 class="mb-0 w-100" style="text-align: center;">This node belongs to a cluster and is not the manager</h4>'+
                         '<h5 id="zeek-manager-node" class="mb-0 w-100" style="text-align: center;"></h>'+
@@ -3974,7 +3974,7 @@ function PingZeek(uuid) {
             }
             document.getElementById("zeek-status-details").innerHTML = html;
 
-            if(response.data.mode == "standalone" || (response.data.mode == "cluster" && response.data.managed)){
+            if(response.data.mode == "standalone" || (response.data.mode == "cluster" && response.data.manager)){
                 $('#zeek-cluster-banner').hide();
                 $('#zeek-managed-mode').hide();
                 $('#zeek-standalone-mode').show();
@@ -3984,7 +3984,7 @@ function PingZeek(uuid) {
                 $('#zeek-standalone-mode').hide();
                 for (node in response.data.nodes){
                     if (response.data.nodes[node]["type"] == "manager"){
-                        document.getElementById('zeek-manager-node').innerHTML = '<div onclick="LoadManagerZeek(\''+response.data.manageruuid+'\', \''+response.data.managername+'\')">Node cluster manager: <b>'+response.data.managerip+'</b></div>';
+                        document.getElementById('zeek-manager-node').innerHTML = '<div onclick="LoadManagerZeek(\''+response.data.manageruuid+'\', \''+response.data.managername+'\')">Node cluster manager: '+response.data.managername+' (<b style="cursor:pointer;">'+response.data.managerip+'</b>)</div>';
                     }
                 }
             }

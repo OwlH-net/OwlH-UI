@@ -95,7 +95,7 @@ function loadPlugins(){
                                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
                                 '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp '+
                                 '<span id="btn-zeek-node-status" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-status-tab\')">Current status</span> &nbsp '+
-                                '<span id="btn-zeek-node-configuration" class="badge bg-secondary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-configuration-tab\')">Change Zeek configuration</span>'+
+                                // '<span id="btn-zeek-node-configuration" class="badge bg-secondary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-configuration-tab\')">Change Zeek configuration</span>'+
                             '</div></br>';
 
                             // ZEEK STATUS - GLOBAL
@@ -1236,13 +1236,13 @@ function ChangeZeekStatusTable(tab){
 
 
         document.getElementById('btn-zeek-node-status').className = 'badge bg-primary align-text-bottom text-white';
-        document.getElementById('btn-zeek-node-configuration').className = 'badge bg-secondary align-text-bottom text-white';
+        // document.getElementById('btn-zeek-node-configuration').className = 'badge bg-secondary align-text-bottom text-white';
     } else if (tab == "zeek-configuration-tab") {
         document.getElementById('zeek-status-tab').style.display = 'none';
         document.getElementById('zeek-configuration-tab').style.display = 'block';
 
         document.getElementById('btn-zeek-node-status').className = 'badge bg-secondary align-text-bottom text-white';
-        document.getElementById('btn-zeek-node-configuration').className = 'badge bg-primary align-text-bottom text-white';
+        // document.getElementById('btn-zeek-node-configuration').className = 'badge bg-primary align-text-bottom text-white';
     }
 }
 
@@ -1834,8 +1834,11 @@ function loadEditURL(uuid, nodeName){
     document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+nodeName+'&node='+nodeName;
 }
 function editFile(uuid, file, nodeName, status){
-    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&status='+status;
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
+// function editFile(uuid, file, nodeName, status){
+//     document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&status='+status;
+// }
 
 function ChangeAnalyzerStatus(uuid){
     var ipmaster = document.getElementById('ip-master').value;

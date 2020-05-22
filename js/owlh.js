@@ -470,7 +470,6 @@ function GetAllGroupRulesetsForAllNodes(){
         timeout: 30000
     })
         .then(function (response) {
-            console.log("Group rulesets");
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
@@ -692,7 +691,6 @@ async function getRulesetUID(uuid) {
         timeout: 30000
     })
     .then(function (response) {
-        console.log("ruleset ID");
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -721,7 +719,6 @@ async function getRuleName(uuidRuleset, uuid) {
         timeout: 30000
     })
         .then(function (response) {
-            console.log("ruleset Name");
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
@@ -1173,9 +1170,9 @@ function syncRulesetModal(node, name){
             if (response.data.mode != "") {
                 if (response.data.mode == "standalone") {
                     document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Standalone";
-                }else if (response.data.mode == "cluster" && !response.data.managed){
+                }else if (response.data.mode == "cluster" && !response.data.manager){
                     document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Cluster";
-                }else if (response.data.mode == "cluster" && response.data.managed){
+                }else if (response.data.mode == "cluster" && response.data.manager){
                     document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Cluster (Manager)";
 
                 }

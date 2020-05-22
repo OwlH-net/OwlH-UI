@@ -138,8 +138,10 @@ function generateAllRuleDataHTMLOutput(sources) {
 
     '<div class="input-group mt-1" width="100%">'+
         '<span id="sort-nodes-name" width="5%" style="display: inline-flex; align-items: center;" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary text-white float-left mb-0 align-middle" style="cursor:pointer;" title="Sort table by Name">Sort by file name</span> &nbsp'+
-        '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')" placeholder="Search by rule file name..." title="Insert a ruleset name for search"> &nbsp'+
         '<button id="top-add-btn" class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
+    '</div>'+
+    '<div class="input-group mt-1" width="100%">'+
+        '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')" placeholder="Search by rule file name..." title="Insert a ruleset name for search"> &nbsp'+
     '</div>'+
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
         '<thead>                                                      ' +

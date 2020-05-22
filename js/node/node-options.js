@@ -77,7 +77,7 @@ function loadPlugins(){
 
             //zeek
             var htmlzeek = '<div id="zeek-managed-mode">'+
-                '<div id="zeek-cluster-banner" class="p-3 my-3 border rounded border-warning rounded-sm" style="display: none;">'+
+                '<div id="zeek-cluster-banner" class="p-3 my-3 border rounded border-warning rounded-sm" style="display: none; cursor:pointer;">'+
                     '<div class="w-100">'+
                         '<h4 class="mb-0 w-100" style="text-align: center;">This node belongs to a cluster and is not the manager</h4>'+
                         '<h5 id="zeek-manager-node" class="mb-0 w-100" style="text-align: center;"></h>'+
@@ -3974,7 +3974,6 @@ function PingZeek(uuid) {
             }
             document.getElementById("zeek-status-details").innerHTML = html;
 
-            // response.data.mode = "standalone";
             if(response.data.mode == "standalone" || (response.data.mode == "cluster" && response.data.managed)){
                 $('#zeek-cluster-banner').hide();
                 $('#zeek-managed-mode').hide();
@@ -3984,9 +3983,8 @@ function PingZeek(uuid) {
                 $('#zeek-managed-mode').show();
                 $('#zeek-standalone-mode').hide();
                 for (node in response.data.nodes){
-                    console.log(response.data.nodes);
                     if (response.data.nodes[node]["type"] == "manager"){
-                        document.getElementById('zeek-manager-node').innerHTML = "Node cluster manager: <b>"+response.data.nodes[node]["host"]+'</b>';
+                        document.getElementById('zeek-manager-node').innerHTML = '<div onclick="LoadManagerZeek(\''+response.data.manageruuid+'\', \''+response.data.managername+'\')">Node cluster manager: <b>'+response.data.managerip+'</b></div>';
                     }
                 }
             }
@@ -4005,6 +4003,10 @@ function PingZeek(uuid) {
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
+}
+
+function LoadManagerZeek(uuid, name){
+    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name;
 }
 
 //Run Zeek system

@@ -3975,20 +3975,25 @@ function PingZeek(uuid) {
             }
             document.getElementById("zeek-status-details").innerHTML = html;
 
+            response.data.manageruuid = ""
+            response.data.mode = "cluster"
+            response.data.manager = true
             //check banner status
-            if (response.data.mode == ""){
-                // $('#zeek-managed-mode').show();
-                $('#zeek-standalone-mode').hide();
-                $('#zeek-cluster-banner').show();
-                document.getElementById('zeek-banner-main-title').innerHTML = "Zeek is not available";
-
+            if (response.data.mode == "" || response.data.manageruuid == "" ){
+                if (response.data.mode == ""){
+                    $('#zeek-standalone-mode').hide();
+                    $('#zeek-cluster-banner').show();
+                    document.getElementById('zeek-banner-main-title').innerHTML = "Zeek is not available";
+                }else{
+                    $('#zeek-standalone-mode').hide();
+                    $('#zeek-cluster-banner').show();
+                    document.getElementById('zeek-manager-node').innerHTML = '<div>Node cluster manager: '+ipmaster+' (<b>Not an OwlH Node</b>)</div>';
+                }
             }else if(response.data.mode == "standalone" || (response.data.mode == "cluster" && response.data.manager == true)){
                 $('#zeek-cluster-banner').hide();
-                // $('#zeek-managed-mode').hide();
                 $('#zeek-standalone-mode').show();
             }else{
                 $('#zeek-cluster-banner').show();
-                // $('#zeek-managed-mode').show();
                 $('#zeek-standalone-mode').hide();
                 for (node in response.data.nodes){
                     if (response.data.nodes[node]["type"] == "manager"){

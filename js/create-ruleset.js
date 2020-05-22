@@ -137,9 +137,9 @@ function generateAllRuleDataHTMLOutput(sources) {
     '<br><br>'+
     '<br><br><br>'+
 
-    '<div class="input-group mt-1" width="100%">'+
-        '<span id="sort-nodes-name" width="5%" style="display: inline-flex; align-items: center;" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary text-white float-left mb-0 align-middle" style="cursor:pointer;" title="Sort table by Name">Sort by file name</span> &nbsp'+
-    '</div>'+
+    // '<div class="input-group mt-1" width="100%">'+
+    //     '<span id="sort-nodes-name" width="5%" style="display: inline-flex; align-items: center;" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary text-white float-left mb-0 align-middle" style="cursor:pointer;" title="Sort table by Name">Sort by file name</span> &nbsp'+
+    // '</div>'+
     '<div class="input-group mt-1" width="100%">'+
         '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')" placeholder="Search by rule file name..." title="Insert a ruleset name for search"> &nbsp'+
     '</div>'+
@@ -148,7 +148,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         '<tr>                                                         ' +
         '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset" onchange="CheckAll(this)"></th>' +
         '<th>Ruleset name</th>                                          ' +
-        '<th>File name</th>                                          ' +
+        '<th>File name <i id="sort-nodes-name" class="fas fa-sort" sort="asc" style="cursor: pointer;" onclick="sortTableName()"></i></th>' +
         '<th>File path</th>                                          ' +
         '<th>Source</th>                                          ' +
         '</tr>                                                        ' +

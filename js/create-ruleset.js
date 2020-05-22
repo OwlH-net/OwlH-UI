@@ -100,18 +100,19 @@ function generateAllRuleDataHTMLOutput(sources) {
     '<div>'+
         '<div class="input-group">'+
             '<div class="input-group-prepend">'+
-                '<span class="input-group-text">New Name</span>'+
+                '<span class="input-group-text">Ruleset Name</span>'+
             '</div>'+
             '<input type="text" class="form-control" placeholder="Ruleset name" id="new-ruleset-name-input">'+
         '</div>'+
         '<br>'+
         '<div class="input-group">'+
             '<div class="input-group-prepend">'+
-                '<span class="input-group-text">New Description</span>'+
+                '<span class="input-group-text">Ruleset Description</span>'+
             '</div>'+
             '<input type="text" class="form-control" placeholder="Ruleset description" id="new-ruleset-description-input">'+
         '</div>'+
         '<br>'+
+        '<button id="top-add-btn" class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
     '</div>'+
     '<br>'+
 
@@ -138,7 +139,6 @@ function generateAllRuleDataHTMLOutput(sources) {
 
     '<div class="input-group mt-1" width="100%">'+
         '<span id="sort-nodes-name" width="5%" style="display: inline-flex; align-items: center;" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary text-white float-left mb-0 align-middle" style="cursor:pointer;" title="Sort table by Name">Sort by file name</span> &nbsp'+
-        '<button id="top-add-btn" class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
     '</div>'+
     '<div class="input-group mt-1" width="100%">'+
         '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')" placeholder="Search by rule file name..." title="Insert a ruleset name for search"> &nbsp'+

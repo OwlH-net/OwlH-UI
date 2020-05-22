@@ -3976,8 +3976,7 @@ function PingZeek(uuid) {
             document.getElementById("zeek-status-details").innerHTML = html;
 
             //check banner status
-            response.data.mode = "sd"
-            if (response.data.mode == "" || response.data.managerip == "" || response.data.managername == "" || response.data.manageruuid == ""){
+            if (response.data.mode == ""){
                 // $('#zeek-managed-mode').show();
                 $('#zeek-standalone-mode').hide();
                 $('#zeek-cluster-banner').show();

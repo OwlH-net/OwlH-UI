@@ -3984,7 +3984,7 @@ function PingZeek(uuid) {
                 $('#zeek-standalone-mode').hide();
                 for (node in response.data.nodes){
                     if (response.data.nodes[node]["type"] == "manager"){
-                        document.getElementById('zeek-manager-node').innerHTML = '<div onclick="LoadManagerZeek(\''+response.data.manageruuid+'\', \''+response.data.managername+'\')">Node cluster manager: '+response.data.managername+' (<b style="cursor:pointer;">'+response.data.managerip+'</b>)</div>';
+                        document.getElementById('zeek-manager-node').innerHTML = '<div onclick="LoadManagerZeek(\''+response.data.manageruuid+'\', \''+response.data.managername+'\')">Node cluster manager: '+response.data.managername+' (<b style="cursor:pointer;"><u>'+response.data.managerip+'</u></b>)</div>';
                     }
                 }
             }

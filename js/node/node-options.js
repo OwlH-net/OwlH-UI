@@ -3950,7 +3950,6 @@ function PingZeek(uuid) {
             }
     })
     .then(function (response) {   
-        console.log(response.data);     
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -3975,9 +3974,6 @@ function PingZeek(uuid) {
             }
             document.getElementById("zeek-status-details").innerHTML = html;
 
-            response.data.manageruuid = ""
-            response.data.mode = "cluster"
-            response.data.manager = true
             //check banner status
             if (response.data.mode == "" || response.data.manageruuid == "" ){
                 if (response.data.mode == ""){

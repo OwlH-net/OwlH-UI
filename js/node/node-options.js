@@ -76,16 +76,17 @@ function loadPlugins(){
             '</div>';
 
             //zeek
-            var htmlzeek = '<div id="zeek-managed-mode">'+
+            var htmlzeek = 
+            // '<div id="zeek-managed-mode">'+
                 '<div id="zeek-cluster-banner" class="p-3 my-3 border rounded border-warning rounded-sm" style="display: none;">'+
                     '<div class="w-100">'+
-                        '<h4 class="mb-0 w-100" style="text-align: center;">This node belongs to a cluster and is not the manager</h4>'+
+                        '<h4 class="mb-0 w-100" style="text-align: center;" id="zeek-banner-main-title">This node belongs to a cluster and is not the manager</h4>'+
                         '<h5 id="zeek-manager-node" class="mb-0 w-100" style="text-align: center;"></h>'+
                     '</div>'+
                 '</div>'+
-                '<br>'+
+                '<br>';
                 
-            '</div>';
+            // '</div>';
 
             htmlzeek = htmlzeek + 
             '<div id="zeek-standalone-mode">'+
@@ -3974,13 +3975,21 @@ function PingZeek(uuid) {
             }
             document.getElementById("zeek-status-details").innerHTML = html;
 
-            if(response.data.mode == "standalone" || (response.data.mode == "cluster" && response.data.manager)){
+            //check banner status
+            response.data.mode = "sd"
+            if (response.data.mode == "" || response.data.managerip == "" || response.data.managername == "" || response.data.manageruuid == ""){
+                // $('#zeek-managed-mode').show();
+                $('#zeek-standalone-mode').hide();
+                $('#zeek-cluster-banner').show();
+                document.getElementById('zeek-banner-main-title').innerHTML = "Zeek is not available";
+
+            }else if(response.data.mode == "standalone" || (response.data.mode == "cluster" && response.data.manager == true)){
                 $('#zeek-cluster-banner').hide();
-                $('#zeek-managed-mode').hide();
+                // $('#zeek-managed-mode').hide();
                 $('#zeek-standalone-mode').show();
             }else{
                 $('#zeek-cluster-banner').show();
-                $('#zeek-managed-mode').show();
+                // $('#zeek-managed-mode').show();
                 $('#zeek-standalone-mode').hide();
                 for (node in response.data.nodes){
                     if (response.data.nodes[node]["type"] == "manager"){

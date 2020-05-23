@@ -93,8 +93,8 @@ function loadPlugins(){
 
                             '<div><img src="img/zeek.png" alt="" width="30"> &nbsp'+
                                 '<span id="zeek-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
-                                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp '+
-                                '<span id="btn-zeek-node-status" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-status-tab\')">Current status</span> &nbsp '+
+                                '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-zeek-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'zeek\')"></i> &nbsp Enable or Disable OwlH node management of Zeek service when node start/exit'+
+                                // '<span id="btn-zeek-node-status" class="badge bg-primary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-status-tab\')">Current status</span> &nbsp '+
                                 // '<span id="btn-zeek-node-configuration" class="badge bg-secondary align-text-bottom text-white" style="cursor:pointer;" onclick="ChangeZeekStatusTable(\'zeek-configuration-tab\')">Change Zeek configuration</span>'+
                             '</div></br>';
 
@@ -105,7 +105,8 @@ function loadPlugins(){
                                     '<span style="cursor: pointer;" title="Stop Zeek using main.conf" class="badge bg-danger align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'stop\')">Stop</span> &nbsp '+
                                     '<span style="cursor: pointer;" title="Start Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'start\')">Start</span> &nbsp '+
                                     '<span style="cursor: pointer;" title="Deploy Zeek using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="LaunchZeekMainConf(\''+uuid+'\', \'deploy\')">Deploy</span> &nbsp '+
-                                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Status</span> &nbsp'+
+                                    '<span style="cursor: pointer;" title="Status Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="PingZeek(\''+uuid+'\')">Refresh Status</span> &nbsp'+
+                                    '<span style="cursor: pointer;" title="Diag Zeek using main.conf" class="badge bg-success align-text-bottom text-white" onclick="ZeekDiag(\''+uuid+'\')">Diagnostics</span> &nbsp'+
                                     // ' Save Zeek Data? &nbsp &nbsp &nbsp &nbsp<input class="form-check-input my-0" type="checkbox" id="save-zeek-values">'+
                                 '</span>'+
                                 '&nbsp <span class="badge badge-pill bg-dark align-text-bottom text-white">View Configuration file: &nbsp '+
@@ -324,6 +325,7 @@ function loadPlugins(){
                                     '</div><br>'+
                                 '</div>'+
                             '</div>'+
+                            '<div id="zeek-diag-body" style="display:block;"></div>'+
             '</div>';
 
     //wazuh
@@ -3966,7 +3968,7 @@ function PingZeek(uuid) {
             var html = '';
             for(node in response.data.nodes){
                 html = html + '<tr>'+
-                    '<td>'+response.data.nodes[node]["host"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["name"]+'&nbsp('+response.data.nodes[node]["host"]+')'+'</td>'+
                     '<td>'+response.data.nodes[node]["status"]+'</td>'+
                     '<td>'+response.data.nodes[node]["type"]+'</td>'+
                     // '<td>'+response.data.nodes[node]["interface"]+'</td>'+
@@ -4016,6 +4018,58 @@ function PingZeek(uuid) {
         setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
+
+function ZeekDiag(uuid) {
+    document.getElementById("zeek-diag-body").innerHTML = "";
+    var progressBar = document.getElementById('progressBar-options');
+    var progressBarDiv = document.getElementById('progressBar-options-div');
+    progressBar.style.display = "block";
+    progressBarDiv.style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/' + uuid+'/diag';
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user
+                
+            }
+    })
+    .then(function (response) {   
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            var jsonViewer = new JSONViewer();
+            document.querySelector("#zeek-diag-body").appendChild(jsonViewer.getContainer());
+            var obj = JSON.parse(response.data["result"])
+            // jsonViewer.showJSON(json, maxLvl, colAt);
+            // maxLvl: Process only to max level, where 0..n, -1 unlimited
+            // colAt: Collapse at level, where 0..n, -1 unlimited
+
+            jsonViewer.showJSON(obj, -1, -1);
+        }
+    })
+    .catch(function (error) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Ping Zeek: '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
+    });
+}
+
 
 function LoadManagerZeek(uuid, name){
     document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name;

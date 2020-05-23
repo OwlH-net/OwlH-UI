@@ -3968,7 +3968,7 @@ function PingZeek(uuid) {
             var html = '';
             for(node in response.data.nodes){
                 html = html + '<tr>'+
-                    '<td>'+response.data.nodes[node]["host"]+'</td>'+
+                    '<td>'+response.data.nodes[node]["name"]+'&nbsp('+response.data.nodes[node]["host"]+')'+'</td>'+
                     '<td>'+response.data.nodes[node]["status"]+'</td>'+
                     '<td>'+response.data.nodes[node]["type"]+'</td>'+
                     // '<td>'+response.data.nodes[node]["interface"]+'</td>'+
@@ -4048,6 +4048,10 @@ function ZeekDiag(uuid) {
             var jsonViewer = new JSONViewer();
             document.querySelector("#zeek-diag-body").appendChild(jsonViewer.getContainer());
             var obj = JSON.parse(response.data["result"])
+            // jsonViewer.showJSON(json, maxLvl, colAt);
+            // maxLvl: Process only to max level, where 0..n, -1 unlimited
+            // colAt: Collapse at level, where 0..n, -1 unlimited
+
             jsonViewer.showJSON(obj, -1, -1);
         }
     })

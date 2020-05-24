@@ -30,6 +30,8 @@ function loadPlugins(){
     var urlWeb = new URL(window.location.href);
     var name = urlWeb.searchParams.get("node");
     var uuid = urlWeb.searchParams.get("uuid");
+    var currenttab = urlWeb.searchParams.get("tab");
+
     document.getElementById('node-config-title').innerHTML = name;
 
     //SURICATA & ZEEK
@@ -572,6 +574,27 @@ function loadPlugins(){
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
+
+    if (currenttab == "zeek"){ 
+        console.log("click Zeek")
+        $('#pills-zeek-tab').click();
+    }
+    if (currenttab == "suricata"){ 
+        console.log("click suricata")
+        $('#pills-suricata-tab').click();
+    }
+    if (currenttab == "wazuh"){ 
+        console.log("click wazuh")
+        $('#pills-wazuh-tab').click();
+    }
+    if (currenttab == "stap"){ 
+        console.log("click stap")
+        $('#pills-stap-tab').click();
+    }
+    if (currenttab == "analyzer"){ 
+        console.log("click analyzer")
+        $('#pills-analyzer-tab').click();
+    }
 
 }
 function GetCommandsLog(uuid,service, name){
@@ -1837,6 +1860,9 @@ function loadEditURL(uuid, nodeName){
 }
 function editFile(uuid, file, nodeName, status){
     document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+}
+function editFileBack(uuid, file, nodeName, status, tab){
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&tab='+tab;
 }
 // function editFile(uuid, file, nodeName, status){
 //     document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&status='+status;

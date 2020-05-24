@@ -30,6 +30,8 @@ function loadPlugins(){
     var urlWeb = new URL(window.location.href);
     var name = urlWeb.searchParams.get("node");
     var uuid = urlWeb.searchParams.get("uuid");
+    var currenttab = urlWeb.searchParams.get("tab");
+
     document.getElementById('node-config-title').innerHTML = name;
 
     //SURICATA & ZEEK
@@ -572,6 +574,27 @@ function loadPlugins(){
     $('#show-collector-info').click(function(){ showCollector(uuid);});
     $('#show-ports-plugin').click(function(){ showPorts(uuid);});
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
+
+    if (currenttab == "zeek"){ 
+        console.log("click Zeek")
+        $('#pills-zeek-tab').click();
+    }
+    if (currenttab == "suricata"){ 
+        console.log("click suricata")
+        $('#pills-suricata-tab').click();
+    }
+    if (currenttab == "wazuh"){ 
+        console.log("click wazuh")
+        $('#pills-wazuh-tab').click();
+    }
+    if (currenttab == "stap"){ 
+        console.log("click stap")
+        $('#pills-stap-tab').click();
+    }
+    if (currenttab == "analyzer"){ 
+        console.log("click analyzer")
+        $('#pills-analyzer-tab').click();
+    }
 
 }
 function GetCommandsLog(uuid,service, name){
@@ -1838,6 +1861,9 @@ function loadEditURL(uuid, nodeName){
 function editFile(uuid, file, nodeName, status){
     document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
+function editFileBack(uuid, file, nodeName, status, tab){
+    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&tab='+tab;
+}
 // function editFile(uuid, file, nodeName, status){
 //     document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName+'&status='+status;
 // }
@@ -2334,34 +2360,34 @@ function StopSuricata(uuid) {
 
 }
 
-// function AddServiceModal(uuid, type){
-//   var modalWindow = document.getElementById('modal-window');
-//   modalWindow.innerHTML =
-//   '<div class="modal-dialog">'+
-//     '<div class="modal-content">'+
+function AddServiceModal(uuid, type){
+  var modalWindow = document.getElementById('modal-window');
+  modalWindow.innerHTML =
+  '<div class="modal-dialog">'+
+    '<div class="modal-content">'+
 
-//       '<div class="modal-header">'+
-//         '<h4 class="modal-title">Add '+type+' service</h4>'+
-//         '<button type="button" class="close" id="add-service-modal-cross">&times;</button>'+
-//       '</div>'+
+      '<div class="modal-header">'+
+        '<h4 class="modal-title">Add '+type+' service</h4>'+
+        '<button type="button" class="close" id="add-service-modal-cross">&times;</button>'+
+      '</div>'+
 
-//       '<div class="modal-body">'+
-//         '<p>Insert a description for the new '+type+' service:</p>'+
-//         '<input type="text" class="form-control" id="new-service-name" value="">'+
-//       '</div>'+
+      '<div class="modal-body">'+
+        '<p>Insert a description for the new '+type+' service:</p>'+
+        '<input type="text" class="form-control" id="new-service-name" value="">'+
+      '</div>'+
 
-//       '<div class="modal-footer" id="sync-node-footer-btn">'+
-//         '<button type="button" class="btn btn-secondary" id="add-service-modal-close">Cancel</button>'+
-//         '<button type="button" class="btn btn-primary" id="add-service-modal">Add</button>'+
-//       '</div>'+
+      '<div class="modal-footer" id="sync-node-footer-btn">'+
+        '<button type="button" class="btn btn-secondary" id="add-service-modal-close">Cancel</button>'+
+        '<button type="button" class="btn btn-primary" id="add-service-modal">Add</button>'+
+      '</div>'+
 
-//     '</div>'+
-//   '</div>';
-//   $('#modal-window').modal("show");
-//   $('#add-service-modal').click(function(){ AddPluginService(uuid, document.getElementById('new-service-name').value.trim(), type); });
-//   $('#add-service-modal-close').click(function(){ $('#modal-window').modal("hide");});
-//   $('#add-service-modal-cross').click(function(){ $('#modal-window').modal("hide");});
-// }
+    '</div>'+
+  '</div>';
+  $('#modal-window').modal("show");
+  $('#add-service-modal').click(function(){ AddPluginService(uuid, document.getElementById('new-service-name').value.trim(), type); });
+  $('#add-service-modal-close').click(function(){ $('#modal-window').modal("hide");});
+  $('#add-service-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+}
 
 function AddSTAPModal(uuid, type){
     var ipmaster = document.getElementById('ip-master').value;
@@ -2632,95 +2658,95 @@ function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('sof
     }
 }
 
-// function AddPluginService(uuid, name, type){
-//     if (name == ""){
-//         $('#new-service-name').css('border', '2px solid red');
-//         $('#new-service-name').attr("placeholder", "Please, insert a description");
-//     }else{
-//         var ipmaster = document.getElementById('ip-master').value;
-//         var portmaster = document.getElementById('port-master').value;
-//         var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/add';
-//         var newSuriData = {}
-//         newSuriData["uuid"] = uuid;
-//         newSuriData["name"] = name;
-//         newSuriData["type"] = type;
-//         var dataMap = JSON.stringify(newSuriData);
-//         axios({
-//             method: 'post',
-//             url: nodeurl,
-//             timeout: 30000,
-//         headers:{
-//                 'token': document.cookie,
-//                 'user': payload.user
+function AddPluginService(uuid, name, type){
+    if (name == ""){
+        $('#new-service-name').css('border', '2px solid red');
+        $('#new-service-name').attr("placeholder", "Please, insert a description");
+    }else{
+        var ipmaster = document.getElementById('ip-master').value;
+        var portmaster = document.getElementById('port-master').value;
+        var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/add';
+        var newSuriData = {}
+        newSuriData["uuid"] = uuid;
+        newSuriData["name"] = name;
+        newSuriData["type"] = type;
+        var dataMap = JSON.stringify(newSuriData);
+        axios({
+            method: 'post',
+            url: nodeurl,
+            timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user
                 
-//             },
-//             data: dataMap
-//         })
-//         .then(function (response) {
-//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-//         if(response.data.permissions == "none"){
-//             $('#modal-window').modal("hide");
-//             PrivilegesMessage();
-//         }else{
-//             $('#modal-window').modal("hide");
-//             if (response.data.ack == "true") {
-//                 $('html,body').scrollTop(0);
-//                 var alert = document.getElementById('floating-alert');
-//                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-//                     '<strong>Success!</strong> Add plugin service: '+type+' service added successfully!'+
-//                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-//                         '<span aria-hidden="true">&times;</span>'+
-//                     '</button>'+
-//                 '</div>';
-//                 setTimeout(function() {$(".alert").alert('close')}, 30000);
-//             }else{
-//                 $('html,body').scrollTop(0);
-//                 var alert = document.getElementById('floating-alert');
-//                 alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
-//                     '<strong>Error!</strong> Add plugin service: '+response.data.error+''+
-//                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-//                         '<span aria-hidden="true">&times;</span>'+
-//                     '</button>'+
-//                 '</div>';
-//                 setTimeout(function() {$(".alert").alert('close')}, 30000);
-//             }
-//             loadPlugins();
-//         }
-//         })
-//         .catch(function (error) {
-//             $('html,body').scrollTop(0);
-//             var alert = document.getElementById('floating-alert');
-//             alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
-//                 '<strong>Error!</strong> Add plugin service: '+error+''+
-//                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-//                     '<span aria-hidden="true">&times;</span>'+
-//                 '</button>'+
-//             '</div>';
-//             setTimeout(function() {$(".alert").alert('close')}, 30000);
-//         });
-//     }
-// }
+            },
+            data: dataMap
+        })
+        .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            $('#modal-window').modal("hide");
+            PrivilegesMessage();
+        }else{
+            $('#modal-window').modal("hide");
+            if (response.data.ack == "true") {
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success!</strong> Add plugin service: '+type+' service added successfully!'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Add plugin service: '+response.data.error+''+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }
+            loadPlugins();
+        }
+        })
+        .catch(function (error) {
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error!</strong> Add plugin service: '+error+''+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
+        });
+    }
+}
 
-// function GetSuricataServices(uuid){
-//     var ipmaster = document.getElementById('ip-master').value;
-//     var portmaster = document.getElementById('port-master').value;
-//     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/get/'+uuid;
-//     axios({
-//         method: 'get',
-//         url: nodeurl,
-//         timeout: 30000,
-        // headers:{
-        //         'token': document.cookie,
-        //         'user': payload.user
-        //         
-        //     }
-//     })
-//     .then(function (response) {
-        // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-//     })
-//     .catch(function (error) {
-//     });
-// }
+function GetSuricataServices(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/suricata/get/'+uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+                'token': document.cookie,
+                'user': payload.user
+                
+            }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+    })
+    .catch(function (error) {
+    });
+}
 
 function syncRulesetModal(node, serviceUuid, name){
   var modalWindow = document.getElementById('modal-window');

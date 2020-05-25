@@ -30,7 +30,7 @@ function loadPlugins(){
     var urlWeb = new URL(window.location.href);
     var name = urlWeb.searchParams.get("node");
     var uuid = urlWeb.searchParams.get("uuid");
-    var currenttab = urlWeb.searchParams.get("tab");
+    var currenttab = urlWeb.searchParams.get("nodetab");
 
     document.getElementById('node-config-title').innerHTML = name;
 
@@ -576,23 +576,18 @@ function loadPlugins(){
     $('#show-wazuh-add-file').click(function(){ $('#wazuh-insert').show(); });
 
     if (currenttab == "zeek"){ 
-        console.log("click Zeek")
         $('#pills-zeek-tab').click();
     }
     if (currenttab == "suricata"){ 
-        console.log("click suricata")
         $('#pills-suricata-tab').click();
     }
     if (currenttab == "wazuh"){ 
-        console.log("click wazuh")
         $('#pills-wazuh-tab').click();
     }
     if (currenttab == "stap"){ 
-        console.log("click stap")
         $('#pills-stap-tab').click();
     }
     if (currenttab == "analyzer"){ 
-        console.log("click analyzer")
         $('#pills-analyzer-tab').click();
     }
 
@@ -4098,7 +4093,7 @@ function ZeekDiag(uuid) {
 
 
 function LoadManagerZeek(uuid, name){
-    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name+'&nodetab=zeek';
 }
 
 //Run Zeek system

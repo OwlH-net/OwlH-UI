@@ -602,7 +602,7 @@ function ShowMonitoring(uuid, name){
     document.location.href = 'https://' + location.hostname + '/node-monitor.html?uuid='+uuid+'&node='+name;
 }
 function showServicesConfig(uuid, name){
-    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name+'&nodetab=suricata';
 }
 function editAnalyzer(uuid, file, nodeName){
     document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
@@ -846,15 +846,15 @@ function sortTableIP() {
     }
 }
 
-function addNode() {
-    document.getElementById('progressBar-node').style.display = "block";
-    document.getElementById('progressBar-node-div').style.display = "block";
+function addNode() {                 
     var nname = document.getElementById('nodename').value.trim();
     var nip = document.getElementById('nodeip').value.trim();
     var nport = document.getElementById('nodeport').value.trim();
     var nuser = document.getElementById('nodeuser').value.trim();
     var npass = document.getElementById('nodepass').value.trim();
     if(nname=="" || nip=="" || nport==""){
+        document.getElementById('progressBar-node').style.display = "none";
+        document.getElementById('progressBar-node-div').style.display = "none";
 		$('html,body').scrollTop(0);
 		var alert = document.getElementById('floating-alert');
 		alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+

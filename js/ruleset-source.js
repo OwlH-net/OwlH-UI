@@ -20,7 +20,7 @@ function addRulesetSource() {
     var formDesc = document.getElementById('ruleset-source-desc').value.trim();
     var formUrl = document.getElementById('ruleset-source-url').value.trim();
     var formUser = document.getElementById('ruleset-source-user').value.trim();
-    var formUser = document.getElementById('ruleset-source-secret-key').value.trim();
+    // var formSecretKey = document.getElementById('ruleset-source-secret-key').value.trim();
     var formPasswd = document.getElementById('ruleset-source-passwd').value.trim();
     var fileName = formUrl.split(/[\s/]+/);
     var ipmaster = document.getElementById('ip-master').value;
@@ -36,48 +36,59 @@ function addRulesetSource() {
         }
     });
 
-
     if ((sourceType == "url" || sourceType == "threat") && (formName == "" || formDesc == "" || formUrl == "" || 
     ((formUser == ""  && formPasswd != "") || (formUser != ""  && formPasswd == ""))) ||
     ($("#ruleset-source-secret-key").is(":visible") && document.getElementById('ruleset-source-secret-key').value == "")){
+        //add alert dialog for complete form
+        $('html,body').scrollTop(0);
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error adding a new ruleset source! </strong> Please, complete the form to continue.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
+
+        //check every input text 
         if(formName == ""){
-            document.getElementById('ruleset-source-name').placeholder = "Please, insert a valid name.";
-            document.getElementById('ruleset-source-name').required = "true";
+            $('#ruleset-source-name').css('placeholder', 'Please, insert a valid name.');
+            $('#ruleset-source-name').css('border', '2px solid red');
         }
         if(formDesc == ""){
             document.getElementById('ruleset-source-desc').placeholder = "Please, insert a valid description.";
-            document.getElementById('ruleset-source-desc').required = "true";
+            $('#ruleset-source-desc').css('border', '2px solid red');
         }
         if(formUrl == ""){
             document.getElementById('ruleset-source-url').placeholder = "Please, insert a valid url.";
-            document.getElementById('ruleset-source-url').required = "true";
+            $('#ruleset-source-url').css('border', '2px solid red');
         }
         if(formUser == "" ){
             document.getElementById('ruleset-source-user').placeholder = "Please, insert a valid username and password.";
             document.getElementById('ruleset-source-user').value = "";
-            document.getElementById('ruleset-source-user').required = "true";
+            $('#ruleset-source-user').css('border', '2px solid red');
         }
         if(formPasswd == ""){
-            document.getElementById('ruleset-source-user').placeholder = "Please, insert a valid username and password.";
-            document.getElementById('ruleset-source-user').value = "";
-            document.getElementById('ruleset-source-user').required = "true";
+            document.getElementById('ruleset-source-passwd').placeholder = "Please, insert a valid username and password.";
+            document.getElementById('ruleset-source-passwd').value = "";
+            $('#ruleset-source-passwd').css('border', '2px solid red');
         }
         if ($("#ruleset-source-secret-key").is(":visible") && document.getElementById('ruleset-source-secret-key').value == ""){
             document.getElementById('ruleset-source-secret-key').placeholder = "URL secret key is needed.";
-            document.getElementById('ruleset-source-secret-key').required = "true";
+            $('#ruleset-source-secret-key').css('border', '2px solid red');
             document.getElementById('ruleset-source-user').placeholder = "User";
             document.getElementById('ruleset-source-user').value = "";
-            document.getElementById('ruleset-source-user').required = "";
+            $('#ruleset-source-user').css('border', '2px solid red');
         }
     }else if ((sourceType == "custom") && (formName == "" || formDesc == "")){
-        document.getElementById('ruleset-source-url').required = "";
+        // document.getElementById('ruleset-source-url').required = "";
+        $('#ruleset-source-url').css('border', '2px solid #ced4da');
         if(formName == ""){
             document.getElementById('ruleset-source-name').placeholder = "Please, insert a valid name.";
-            document.getElementById('ruleset-source-name').required = "true";
+            $('#ruleset-source-name').css('border', '2px solid red');
         }
         if(formDesc == ""){
             document.getElementById('ruleset-source-desc').placeholder = "Please, insert a valid description.";
-            document.getElementById('ruleset-source-desc').required = "true";
+            $('#ruleset-source-desc').css('border', '2px solid red');
         }
     }else{
         document.getElementById('progressBar-create-div').style.display = "block";
@@ -134,6 +145,14 @@ function addRulesetSource() {
                     '</div>';
                     setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
+                    //clear require attribute for input text
+                    $('#ruleset-source-name').css('border', '2px solid #ced4da');
+                    $('#ruleset-source-desc').css('border', '2px solid #ced4da');
+                    $('#ruleset-source-url').css('border', '2px solid #ced4da');
+                    $('#ruleset-source-user').css('border', '2px solid #ced4da');
+                    $('#ruleset-source-passwd').css('border', '2px solid #ced4da');
+                    $('#ruleset-source-secret-key').css('border', '2px solid #ced4da');
+
                     GetAllRulesetSource();
                     //Clean all fields
                     //check url radiobutton

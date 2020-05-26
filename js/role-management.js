@@ -44,6 +44,7 @@ function GetAllRoles(){
         }
     })
     .then(function (response) {
+        console.log(response.data);
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -64,7 +65,8 @@ function GetAllRoles(){
                 var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
                     '<thead>'+
                         '<tr>'+
-                            '<th>Role</th>'+
+                            '<th width="20%">Role</th>'+
+                            '<th>Description</th>'+
                             '<th style="width: 15%">Actions</th>'+
                         '</tr>'+
                     '</thead>'+
@@ -72,10 +74,10 @@ function GetAllRoles(){
                     for(id in response.data){
                         html = html + '<tr>'+
                             '<td>'+response.data[id]["role"]+'</td>'+
+                            '<td>'+response.data[id]["desc"]+'</td>'+
                             '<td>'+
                                 '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowRoleDetails(\''+id+'\', \''+response.data[id]["role"]+'\')"></i> &nbsp'+
-                                // '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalEditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
-                                '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="EditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
+                                '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="EditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["desc"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteRole(\''+id+'\', \''+response.data[id]["role"]+'\')"></i>'+                                
                             '</td>'+
                         '</tr>';
@@ -152,8 +154,8 @@ function GetAllRoles(){
     });
 }
 
-function EditRole(id, role, permissions){
-    document.location.href = 'https://' + location.hostname + '/role-list.html?id='+id+'&role='+role+'&permissions='+permissions;
+function EditRole(id, role, desc, permissions){
+    document.location.href = 'https://' + location.hostname + '/role-list.html?id='+id+'&role='+role+'&permissions='+permissions+'&desc='+desc;
 }
 
 function RoleDetails(){

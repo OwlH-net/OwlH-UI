@@ -15,12 +15,11 @@ function formAddRulesetSource(){
     }
 }
 
-function addRulesetSource() {    
+function addRulesetSource() {
     var formName = document.getElementById('ruleset-source-name').value.trim();
     var formDesc = document.getElementById('ruleset-source-desc').value.trim();
     var formUrl = document.getElementById('ruleset-source-url').value.trim();
     var formUser = document.getElementById('ruleset-source-user').value.trim();
-    // var formSecretKey = document.getElementById('ruleset-source-secret-key').value.trim();
     var formPasswd = document.getElementById('ruleset-source-passwd').value.trim();
     var fileName = formUrl.split(/[\s/]+/);
     var ipmaster = document.getElementById('ip-master').value;
@@ -36,7 +35,7 @@ function addRulesetSource() {
         }
     });
 
-    if ((sourceType == "url" || sourceType == "threat") && (formName == "" || formDesc == "" || formUrl == "" || 
+    if ((sourceType == "url" || sourceType == "threat") && (formName == "" || formDesc == "" || formUrl == "" ||
     ((formUser == ""  && formPasswd != "") || (formUser != ""  && formPasswd == ""))) ||
     ($("#ruleset-source-secret-key").is(":visible") && document.getElementById('ruleset-source-secret-key').value == "")){
         //add alert dialog for complete form
@@ -49,7 +48,7 @@ function addRulesetSource() {
         '</div>';
         setTimeout(function() {$(".alert").alert('close')}, 30000);
 
-        //check every input text 
+        //check every input text
         if(formName == ""){
             $('#ruleset-source-name').css('placeholder', 'Please, insert a valid name.');
             $('#ruleset-source-name').css('border', '2px solid red');
@@ -91,95 +90,165 @@ function addRulesetSource() {
             $('#ruleset-source-desc').css('border', '2px solid red');
         }
     }else{
-        document.getElementById('progressBar-create-div').style.display = "block";
-        document.getElementById('progressBar-create').style.display = "block";
-
-        if (sourceType == "url" || sourceType == "defaults"){
-            sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
-        }else  if (sourceType == "custom"){
-            sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/custom';
-        }
-        formAddRulesetSource();//close add ruleset source form
-
-        var nodejson = {}
-        if(document.getElementById('ruleset-source-user').value != "" || document.getElementById('ruleset-source-passwd').value != ""){
-            nodejson["user"] = formUser;
-            nodejson["passwd"] = formPasswd;
-        }
-        nodejson["name"] = formName;
-        nodejson["desc"] = formDesc;
-        nodejson["url"] = formUrl;
-        nodejson["fileName"] = fileName[fileName.length-1];
-        nodejson["type"] = "source";
-        nodejson["sourceType"] = sourceType;
-        if (sourceType != "custom"){nodejson["isDownloaded"] = "false";} //only for source and threat, not for custom ruleset source
-        if (document.getElementById('ruleset-source-secret-key').value != ""){nodejson["secretKey"] = document.getElementById('ruleset-source-secret-key').value;} //only when default ruleset needs a secret key
-        var nodeJSON = JSON.stringify(nodejson);
-
-        axios({
-            method: 'post',
-            url: sourceURL,
-            timeout: 30000,
-            headers:{
-                'token': document.cookie,
-                'user': payload.user
-                
-            },
-            data: nodeJSON
-        })
-        .then(function (response) {
-            document.getElementById('progressBar-create-div').style.display = "none";
-            document.getElementById('progressBar-create').style.display = "none";
-
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                if (response.data.ack == "false") {
-                    $('html,body').scrollTop(0);
-                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
-                        '<strong>Error adding ruleset! </strong>'+response.data.error+
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span>'+
-                        '</button>'+
-                    '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 30000);
+        //get all headers
+        var headers = [];
+        var isHeaderError = false;
+        var headerKeys = [];
+        var headerValues = [];
+        $('.header-key').each(function(i, obj) {
+            if($(this).val().trim().includes(",")){
+                isHeaderError = true;
+                var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Can\'t use character ",".'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }else{
+                if ($(this).val() != ""){
+                    headerKeys.push($(this).val().trim())
                 }else{
-                    //clear require attribute for input text
-                    $('#ruleset-source-name').css('border', '2px solid #ced4da');
-                    $('#ruleset-source-desc').css('border', '2px solid #ced4da');
-                    $('#ruleset-source-url').css('border', '2px solid #ced4da');
-                    $('#ruleset-source-user').css('border', '2px solid #ced4da');
-                    $('#ruleset-source-passwd').css('border', '2px solid #ced4da');
-                    $('#ruleset-source-secret-key').css('border', '2px solid #ced4da');
-
-                    GetAllRulesetSource();
-                    //Clean all fields
-                    //check url radiobutton
-                    document.getElementById('create-url').checked="true";
-                    document.getElementById("default-rulesets").style.display = "none";
-                    document.getElementById("ruleset-source-secret-key").style.display = "none";
-                    document.getElementById("ruleset-source-secret-key").value = "";
-                    document.getElementById("ruleset-source-secret-key").placeholder = "URL secret key";
-                    document.getElementById("ruleset-source-secret-key").require = "";
-
+                    headerKeys.push(null)
                 }
             }
-        })
-        .catch(function (error) {
-            document.getElementById('progressBar-create-div').style.display = "none";
-            document.getElementById('progressBar-create').style.display = "none";
-
-            $('html,body').scrollTop(0);
-            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error adding ruleset! </strong>'+error+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
-            '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
-        GetAllRulesetSource();
+        $('.header-value').each(function(i, obj) {
+            if($(this).val().trim().includes(",")){
+                isHeaderError = true;
+                var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> Can\'t use character ",".'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }else{
+                if ($(this).val() != ""){
+                    headerValues.push($(this).val().trim())
+                }else{
+                    headerValues.push(null)
+                }
+            }
+        });
+        //check for empty fields
+        $(headerKeys).each(function(i, obj) {
+            if((headerKeys[i] == null && headeValues[i] != null) || (headerKeys[i] != null && headerValues[i] == null)){
+                isHeaderError = true;
+                var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
+                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> There are Header keys or header empty.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }else{
+                if(headerKeys[i] != null &&  headerValues[i] != null){
+                    headers.push(headerKeys[i] +":"+ headerValues[i]);
+                }
+            }
+        });
+
+        if(!isHeaderError){
+            document.getElementById('progressBar-create-div').style.display = "block";
+            document.getElementById('progressBar-create').style.display = "block";
+    
+            if (sourceType == "url" || sourceType == "defaults"){
+                sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/';
+            }else  if (sourceType == "custom"){
+                sourceURL = 'https://'+ipmaster+':'+portmaster+'/v1/rulesetSource/custom';
+            }
+            formAddRulesetSource();//close add ruleset source form
+    
+            var nodejson = {}
+            if(document.getElementById('ruleset-source-user').value != "" || document.getElementById('ruleset-source-passwd').value != ""){
+                nodejson["user"] = formUser;
+                nodejson["passwd"] = formPasswd;
+            }
+    
+            nodejson["name"] = formName;
+            nodejson["headers"] = headers.toString();
+            nodejson["desc"] = formDesc;
+            nodejson["url"] = formUrl;
+            nodejson["fileName"] = fileName[fileName.length-1];
+            nodejson["type"] = "source";
+            nodejson["sourceType"] = sourceType;
+            if (sourceType != "custom"){nodejson["isDownloaded"] = "false";} //only for source and threat, not for custom ruleset source
+            if (document.getElementById('ruleset-source-secret-key').value != ""){nodejson["secretKey"] = document.getElementById('ruleset-source-secret-key').value;} //only when default ruleset needs a secret key
+            var nodeJSON = JSON.stringify(nodejson);
+    
+            axios({
+                method: 'post',
+                url: sourceURL,
+                timeout: 30000,
+                headers:{
+                    'token': document.cookie,
+                    'user': payload.user
+    
+                },
+                data: nodeJSON
+            })
+            .then(function (response) {
+                document.getElementById('progressBar-create-div').style.display = "none";
+                document.getElementById('progressBar-create').style.display = "none";
+    
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.permissions == "none"){
+                    PrivilegesMessage();
+                }else{
+                    if (response.data.ack == "false") {
+                        $('html,body').scrollTop(0);
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                            '<strong>Error adding ruleset! </strong>'+response.data.error+
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                            '</button>'+
+                        '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
+                    }else{
+                        //clear require attribute for input text
+                        $('#ruleset-source-name').css('border', '2px solid #ced4da');
+                        $('#ruleset-source-desc').css('border', '2px solid #ced4da');
+                        $('#ruleset-source-url').css('border', '2px solid #ced4da');
+                        $('#ruleset-source-user').css('border', '2px solid #ced4da');
+                        $('#ruleset-source-passwd').css('border', '2px solid #ced4da');
+                        $('#ruleset-source-secret-key').css('border', '2px solid #ced4da');
+    
+                        GetAllRulesetSource();
+                        //Clean all fields
+                        //check url radiobutton
+                        document.getElementById('create-url').checked="true";
+                        document.getElementById("default-rulesets").style.display = "none";
+                        document.getElementById("ruleset-source-secret-key").style.display = "none";
+                        document.getElementById("ruleset-source-secret-key").value = "";
+                        document.getElementById("ruleset-source-secret-key").placeholder = "URL secret key";
+                        document.getElementById("ruleset-source-secret-key").require = "";
+    
+                    }
+                }
+            })
+            .catch(function (error) {
+                document.getElementById('progressBar-create-div').style.display = "none";
+                document.getElementById('progressBar-create').style.display = "none";
+    
+                $('html,body').scrollTop(0);
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error adding ruleset! </strong>'+error+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            });
+            GetAllRulesetSource();
+        }
+
     }
 }
 
@@ -220,15 +289,14 @@ function GetAllRulesetSource(){
         headers:{
             'token': document.cookie,
             'user': payload.user
-            
+
         }
     })
     .then(function (response) {
-        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             document.getElementById('ruleset-source-text-top').style.display ="block";
             document.getElementById('ruleset-source-text-bot').style.display ="block";
             result.innerHTML = generateAllRulesetSourceHTMLOutput(response);
@@ -256,6 +324,7 @@ function RadioButtonListener(){
             document.getElementById("ruleset-source-secret-key").placeholder = "URL secret key";
             document.getElementById("ruleset-source-secret-key").required = "";
             document.getElementById("default-rulesets").style.display = "none";
+            document.getElementById("header-div").style.display = "none";
         }else if (inputRadioClicked.attr('value') == "url"){
             document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
             document.getElementById("ruleset-source-user").style.display = "block";
@@ -265,6 +334,7 @@ function RadioButtonListener(){
             document.getElementById("ruleset-source-secret-key").placeholder = "URL secret key";
             document.getElementById("ruleset-source-secret-key").required = "";
             document.getElementById("default-rulesets").style.display = "none";
+            document.getElementById("header-div").style.display = "block";
             // }else if (inputRadioClicked.attr('value') == "thread"){
                 //     document.getElementById("ruleset-source-url").placeholder=inputRadioClicked.attr('value');
                 // }
@@ -275,6 +345,7 @@ function RadioButtonListener(){
             document.getElementById("ruleset-source-secret-key").style.display = "block";
             document.getElementById("ruleset-source-secret-key").value = "";
             document.getElementById('ruleset-source-url').placeholder =  "url";
+            document.getElementById("header-div").style.display = "block";
         }
     });
 }
@@ -393,7 +464,6 @@ function generateAllRulesetSourceHTMLOutput(response) {
         '</thead>                                                     ' +
         '<tbody>                                                      '
     for (source in sources) {
-        console.log(sources[source]['url']);
         isEmpty = false;
         html = html + '<tr>'+
             '<td style="word-wrap: break-word;">'+
@@ -454,14 +524,14 @@ function loadCustomRulesetRules(uuid,path,type){
         headers:{
             'token': document.cookie,
             'user': payload.user
-            
+
         }
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             document.location.href = 'https://' + location.hostname + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
         }
     })
@@ -514,7 +584,7 @@ function loadCustomRulesetRules(uuid,path,type){
         // headers:{
         //     'token': document.cookie,
         //     'user': payload.user
-        //     
+        //
         // },
 //         data: dataJSON
 //     })
@@ -541,7 +611,7 @@ function loadCustomRulesetRules(uuid,path,type){
         // headers:{
         //     'token': document.cookie,
         //     'user': payload.user
-        //     
+        //
         // },
 //         data: nodeJSON
 //         })
@@ -632,15 +702,15 @@ function editRulesetSourceData(){
             headers:{
                 'token': document.cookie,
                 'user': payload.user
-                
+
             },
             data: nodeJSON
             })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                 if(response.data.permissions == "none"){
-                    PrivilegesMessage();              
-                }else{   
+                    PrivilegesMessage();
+                }else{
                     GetAllRulesetSource();
                 }
             })
@@ -667,15 +737,15 @@ function deleteRulesetSource(sourceUUID,sourceType){
         headers:{
             'token': document.cookie,
             'user': payload.user
-            
+
         },
         data: nodeJSON
     })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
+                PrivilegesMessage();
+            }else{
                 GetAllRulesetSource();
             }
         })
@@ -708,15 +778,15 @@ function downloadFile(name, path, url, sourceUUID){
             headers:{
                 'token': document.cookie,
                 'user': payload.user
-                
+
             },
             data: nodeJSON
         })
             .then(function (response) {
                 if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
                 if(response.data.permissions == "none"){
-                    PrivilegesMessage();              
-                }else{   
+                    PrivilegesMessage();
+                }else{
                     if (response.data.ack == "true") {
                         var alert = document.getElementById('floating-alert');
                         $('html,body').scrollTop(0);
@@ -726,10 +796,10 @@ function downloadFile(name, path, url, sourceUUID){
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);
                         icon.style.color="Dodgerblue";
                         downloadStatus.value = "true";
-                        setTimeout(function() {$(".alert").alert('close')}, 30000);
-    
+
                         document.getElementById('progressBar-create').style.display = "none";
                         document.getElementById('progressBar-create-div').style.display = "none";
                     }else{
@@ -743,7 +813,7 @@ function downloadFile(name, path, url, sourceUUID){
                         '</div>';
                         downloadStatus.value = "false";
                         setTimeout(function() {$(".alert").alert('close')}, 30000);
-    
+
                         document.getElementById('progressBar-create').style.display = "none";
                         document.getElementById('progressBar-create-div').style.display = "none";
                     }
@@ -816,7 +886,7 @@ function overwriteDownload(name, path, url, uuid){
         headers:{
             'token': document.cookie,
             'user': payload.user
-            
+
         },
         data: nodeJSON
     })
@@ -825,8 +895,8 @@ function overwriteDownload(name, path, url, uuid){
         if(response.data.permissions == "none"){
             document.getElementById('progressBar-create').style.display = "none";
             document.getElementById('progressBar-create-div').style.display = "none";
-            PrivilegesMessage();              
-        }else{   
+            PrivilegesMessage();
+        }else{
             if (response.data.ack == "true") {
                 $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
@@ -838,7 +908,7 @@ function overwriteDownload(name, path, url, uuid){
                 icon.style.color="Dodgerblue";
                 downloadStatus.value = "true";
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
-    
+
                 document.getElementById('progressBar-create').style.display = "none";
                 document.getElementById('progressBar-create-div').style.display = "none";
             }else{
@@ -852,7 +922,7 @@ function overwriteDownload(name, path, url, uuid){
                 // icon.style.color="Grey";
                 // downloadStatus.value = "false";
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
-    
+
                 document.getElementById('progressBar-create').style.display = "none";
                 document.getElementById('progressBar-create-div').style.display = "none";
         }
@@ -873,6 +943,20 @@ function overwriteDownload(name, path, url, uuid){
         document.getElementById('progressBar-create').style.display = "none";
         document.getElementById('progressBar-create-div').style.display = "none";
     });
+}
+
+function addHeaderInput() {
+    var html = '<div class="input-group header-line mt-2 mb-2 mr-sm-2 mb-sm-0">'+
+        '<div class="input-group-prepend">'+
+            '<span class="input-group-text wt-125">Header key</span>'+
+        '</div>'+
+        '<input type="text" class="form-control header-key" placeholder="Add header key">'+
+        '<div class="input-group-prepend ml-1">'+
+            '<span class="input-group-text wt-125">Header value</span>'+
+        '</div>'+
+        '<input type="text" class="form-control header-value" placeholder="Add header value">'+
+    '</div>';
+    document.getElementById('header-content-input').innerHTML = document.getElementById('header-content-input').innerHTML + html;
 }
 
 function checkStatus() {
@@ -898,7 +982,7 @@ function loadJSONdata(){
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user
-        
+
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');

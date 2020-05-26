@@ -24,12 +24,13 @@ function loadJSONdata(){
         var urlData = new URL(window.location.href);
         var editRoleID = urlData.searchParams.get("id");
         var editRoleName = urlData.searchParams.get("role");
+        var editRoleDesc = urlData.searchParams.get("desc");
         var editRolePerms = urlData.searchParams.get("permissions");
 
-        if(editRoleID == null){ 
+        if(editRoleID == null && editRoleName == null && editRoleDesc == null && editRolePerms == null){ 
             GetAllPermissions(); 
         }else{
-            EditRoleDetails(editRoleID, editRoleName, editRolePerms);
+            EditRoleDetails(editRoleID, editRoleName, editRoleDesc, editRolePerms);
         }
 
         
@@ -38,13 +39,14 @@ function loadJSONdata(){
 var payload = "";
 loadJSONdata();
 
-function EditRoleDetails(editRoleID, editRoleName, editRolePerms){
+function EditRoleDetails(editRoleID, editRoleName, editRoleDesc, editRolePerms){
     var allRoles = editRolePerms.split(",");
 
     GetAllPermissions().then(result => {
         document.getElementById('title-banner').innerHTML = "Edit "+document.getElementById('title-banner').innerHTML;
         document.getElementById('subtitle-banner').innerHTML = "Role "+editRoleName;
         document.getElementById('role-name-input').value = editRoleName;
+        document.getElementById('role-desc-input').value = editRoleDesc;
         $("#btn-role").html("Edit role");
         $("#btn-role").attr('onclick','EditCurrentRole(\''+editRoleID+'\')');
         
@@ -89,6 +91,7 @@ function EditCurrentRole(uuid){
     var jsonData = {}
     jsonData["id"] = uuid;
     jsonData["role"] = document.getElementById('role-name-input').value.trim();
+    jsonData["desc"] = document.getElementById('role-desc-input').value.trim();
     jsonData["permissions"] = list.toString();
     var dataValues = JSON.stringify(jsonData);
 
@@ -167,12 +170,19 @@ async function GetAllPermissions(){
                 // '<a type="button" class="btn btn-primary mr-2" id="permission-search-value" onkeyup=""><i class="fas fa-search" style="color: white;"></i></a>'+
             '</div>'+
             '<br>'+
-            '<div class="input-group col-md-6" inline>'+
+            '<div class="input-group col-md-12" inline>'+
                 '<div class="input-group-prepend">'+
                     '<span class="input-group-text">New Name</span>'+
                 '</div>'+
                 '<input type="text" class="form-control" placeholder="New role name" id="role-name-input">'+
             '</div>'+
+            '<div class="input-group col-md-12 mt-2" inline>'+
+                '<div class="input-group-prepend">'+
+                    '<span class="input-group-text">Description</span>'+
+                '</div>'+
+                '<input type="text" class="form-control" placeholder="New description" id="role-desc-input">'+
+            '</div>'+
+            '<br>'+
             '<button id="btn-role" type="button" class="btn btn-primary float-right" onclick="addNewRole()">Add role</button>'+
             '<br>';
             var groups = [];
@@ -247,11 +257,17 @@ async function GetAllPermissions(){
 function addNewRole(){
     document.getElementById('progressBar-create-div').style.display = "block";
     document.getElementById('progressBar-create').style.display = "block";
-    if(document.getElementById('role-name-input').value.trim() == ""){
+    if(document.getElementById('role-name-input').value.trim() == "" || document.getElementById('role-desc-input').value.trim() == "" ){
         document.getElementById('progressBar-create-div').style.display = "none";
         document.getElementById('progressBar-create').style.display = "none";
-        $('#role-name-input').css('border', '2px solid red');
-        $('#role-name-input').attr("placeholder", "Please, insert role name"); 
+        if(document.getElementById('role-name-input').value.trim() == ""){
+            $('#role-name-input').css('border', '2px solid red');
+            $('#role-name-input').attr("placeholder", "Please, insert role name"); 
+        }
+        if(document.getElementById('role-desc-input').value.trim() == ""){
+            $('#role-desc-input').css('border', '2px solid red');
+            $('#role-desc-input').attr("placeholder", "Please, insert role name"); 
+        }
     }else{  
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
@@ -278,6 +294,7 @@ function addNewRole(){
             setTimeout(function() {$(".alert").alert('close')}, 30000);
         }else{
             var jsonData = {}
+            jsonData["desc"] = document.getElementById('role-desc-input').value.trim();
             jsonData["role"] = document.getElementById('role-name-input').value.trim();
             jsonData["permissions"] = roles.toString();
             var newData = JSON.stringify(jsonData);

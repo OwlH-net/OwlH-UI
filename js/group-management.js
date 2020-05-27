@@ -12,7 +12,8 @@ function loadJSONdata(){
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
 
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
         
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
@@ -39,8 +40,8 @@ function GetAllGroups(){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -53,13 +54,13 @@ function GetAllGroups(){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Get all groups: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
                     '<thead>'+
@@ -127,13 +128,13 @@ function GetAllGroups(){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Get all groups: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -194,8 +195,8 @@ function AddGroup(){
             data: userDelete,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
         })
         .then(function (response) {
@@ -208,13 +209,13 @@ function AddGroup(){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Add group: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);                    
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);                    
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -224,7 +225,7 @@ function AddGroup(){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                     GetAllGroups();
                 }
             }
@@ -234,13 +235,13 @@ function AddGroup(){
             document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Add group: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -299,8 +300,8 @@ function DeleteGroup(id){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -313,13 +314,13 @@ function DeleteGroup(id){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete group: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -329,7 +330,7 @@ function DeleteGroup(id){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 GetAllGroups();
             }
         }
@@ -339,13 +340,13 @@ function DeleteGroup(id){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete group: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -414,8 +415,8 @@ function EditGroup(id, name){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -428,13 +429,13 @@ function EditGroup(id, name){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Edit group: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -444,7 +445,7 @@ function EditGroup(id, name){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 GetAllGroups();
             }
         }
@@ -454,13 +455,13 @@ function EditGroup(id, name){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Edit group: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -474,8 +475,8 @@ function modalAddRoleToGroup(idUser, name){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -550,8 +551,8 @@ function AddRoleToGroup(id){
         data: userTo,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -564,13 +565,13 @@ function AddRoleToGroup(id){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Add role to group: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -580,7 +581,7 @@ function AddRoleToGroup(id){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 GetAllGroups();
             }
         }
@@ -590,13 +591,13 @@ function AddRoleToGroup(id){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Add role to group: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -619,8 +620,8 @@ function DeleteGroupUser(id, user){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -633,13 +634,13 @@ function DeleteGroupUser(id, user){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete group user: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -649,7 +650,7 @@ function DeleteGroupUser(id, user){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 GetAllGroups();
             }
         }
@@ -659,13 +660,13 @@ function DeleteGroupUser(id, user){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete group user: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -688,8 +689,8 @@ function DeleteGroupRole(id, role){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -702,13 +703,13 @@ function DeleteGroupRole(id, role){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete group role: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -718,7 +719,7 @@ function DeleteGroupRole(id, role){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 GetAllGroups();
             }
         }
@@ -728,12 +729,12 @@ function DeleteGroupRole(id, role){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete group role: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }

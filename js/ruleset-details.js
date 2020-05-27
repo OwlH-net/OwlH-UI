@@ -15,8 +15,8 @@ function GetAllRulesetDetails(){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -25,7 +25,7 @@ function GetAllRulesetDetails(){
             PrivilegesMessage();              
         }else{   
             if (response.data.ack){
-                result.innerHTML = '<h3 align="center">Error retrieving files</h3>';
+                result.innerHTML = '<h3 align="center" style="color: red;">Error retrieving files</h3>';
             }else{
                 result.innerHTML = generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid);
                 // changeIconAttributes(response.data);
@@ -33,7 +33,6 @@ function GetAllRulesetDetails(){
         }
     })
     .catch(function (error) {
-        console.log(error);
         result.innerHTML = '<h3 align="center">No connection</h3>'+
         '<a id="check-status-config" href="" class="btn btn-success float-right" target="_blank">Check Master API connection</a> ';
         checkStatus();
@@ -143,8 +142,8 @@ function addNewLines(uuid){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
     })
         .then(function (response) {
@@ -224,8 +223,8 @@ function overwriteRuleFile(uuid){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
         .then(function (response) {
@@ -250,8 +249,8 @@ function deleteRulesetDetails(uuid){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
         .then(function (response) {
@@ -286,7 +285,8 @@ function loadJSONdata(){
         try {payload = JSON.parse(atob(tokens[1]));}
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
                  
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;

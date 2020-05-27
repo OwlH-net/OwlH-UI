@@ -14,6 +14,7 @@ function loadJSONdata() {
 
         //login button
         document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
 
         var ipmaster = document.getElementById('ip-master');
         ipmaster.value = data.master.ip;

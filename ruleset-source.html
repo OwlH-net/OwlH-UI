@@ -43,7 +43,7 @@
                     <a class="nav-link" href="rulesets.html">Open Rules</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="response.html">Adapt & Response</a>
+                    <!-- <a class="nav-link" href="response.html">Adapt & Response</a> -->
                 </li>
                 <!-- <li class="nav-item">
                     <a class="nav-link" href="kibana.html">Kibana</a>
@@ -57,7 +57,7 @@
             </ul>
                     <!-- loged button -->
         <div class="dropdown mr-4">
-          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Loged as: </b></button>
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b id="loger-user-name" value="">Loged as: </b></button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
             <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
             <div class="dropdown-divider"></div>
@@ -104,42 +104,125 @@
         <div class="container" style="display: none" id="add-ruleset-source">
             <form id="ruleset-source-details">
                 <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                             <input type="text" class="form-control" id="ruleset-source-name" placeholder="Name">
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                             <input type="text" class="form-control" id="ruleset-source-desc" placeholder="Description">
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                             <input type="text" class="form-control" id="ruleset-source-url" placeholder="url">
                         </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <input type="text" class="form-control" id="ruleset-source-user" placeholder="User">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <input type="password" class="form-control" id="ruleset-source-passwd" placeholder="Password">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <input type="password" class="form-control" id="ruleset-source-secret-key" placeholder="Set the URL SECRET-CODE" style="display:none;">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row" id="header-div">
+                    <p>Add headers</p> &nbsp; <i title="Add a header" onclick=addHeaderInput() class="fas fa-plus-square" style="color:dodgerblue; cursor:pointer; font-size: 20px;"></i>
+                    <div class="form-group col-md-12" id="header-content-input">
                     </div>
                 </div>
                 <br>
                 <h5>Select Ruleset type:</h5>
                 <div class="radio">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="create-url" name="create-new-source-radiobuttons" value="url" class="custom-control-input">
+                        <input type="radio" id="create-url" name="create-new-source-radiobuttons" value="url" main="main-radio-buttons" class="custom-control-input">
                         <label class="custom-control-label" for="create-url">URL</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="create-path-custom" name="create-new-source-radiobuttons" value="custom" class="custom-control-input">
+                        <input type="radio" id="create-path-custom" name="create-new-source-radiobuttons" value="custom" main="main-radio-buttons" class="custom-control-input">
                         <label class="custom-control-label" for="create-path-custom">Custom</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="create-default-custom" name="create-new-source-radiobuttons" value="defaults" main="main-radio-buttons" class="custom-control-input">
+                        <label class="custom-control-label" for="create-default-custom">Defaults</label>
                     </div>  
                     <!-- <div class="custom-control custom-radio custom-control-inline">
                         <input type="radio" id="create-threat" name="create-new-source-radiobuttons" value="threat" class="custom-control-input">
                         <label class="custom-control-label" for="create-threat">Threat Intelligence</label>
                     </div>   -->
                 </div>
+                <div id="default-rulesets" style="display:none;">
+                    <br>
+                    <h5>Select default ruleset (click to see ruleset details) </h5>
+                    <h6><i>note: Insert SECRET-CODE in form field when URL needs it. </i></h6>
+
+                    <!-- Default ruleset sources -->
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-open-ruleset" name="create-new-source-radiobuttons-defaults" data="open-rules" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-open-ruleset">Open rules</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-pro-ruleset" name="create-new-source-radiobuttons-defaults" data="pro-ruleset" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-pro-ruleset">Pro rulesets</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-traffic-id" name="create-new-source-radiobuttons-defaults" data="traffic-id" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-traffic-id">Traffic ID</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-attack-detection" name="create-new-source-radiobuttons-defaults" data="attack-detection" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-attack-detection">Attack detection</label>
+                    </div>  
+                    <br>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-suricata-latest" name="create-new-source-radiobuttons-defaults" data="suricata-latest" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-suricata-latest">Suricata latest</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-suricata-malware" name="create-new-source-radiobuttons-defaults" data="suricata-malware" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-suricata-malware">Suricata malware</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-threat-intelligence" name="create-new-source-radiobuttons-defaults" data="threat-intelligence" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-threat-intelligence">Threat Intelligence</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-sslblacklist" name="create-new-source-radiobuttons-defaults" data="sslblacklist" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-sslblacklist">SSLBlackList</label>
+                    </div>  
+                    <br>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-ja3-fingerprints" name="create-new-source-radiobuttons-defaults" data="ja3-fingerprint" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-ja3-fingerprints">JA3-Fingerprints</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-ip-blacklist" name="create-new-source-radiobuttons-defaults" data="ip-blacklist" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-ip-blacklist">IP Blacklist</label>
+                    </div>  
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="default-ruleset-threat-hunting" name="create-new-source-radiobuttons-defaults" data="threat-hunting" class="custom-control-input">
+                        <label class="custom-control-label" for="default-ruleset-threat-hunting">Threat hunting</label>
+                    </div>  
+                </div>  
 
 
 
@@ -153,14 +236,14 @@
         <div class="container" style="display: none" id="edit-ruleset-source">
             <form id="group-ruleset-source-details">
                 <div class="form-row" >
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="input-group mb-4 mr-sm-4 mb-sm-0">
                             <input type="text" class="form-control" id="ruleset-source-name-edit" placeholder="New ruleset name">
                         </div>
                     </div>
                 </div>
                 <div class="form-row" >
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                             <input type="text" class="form-control" id="ruleset-source-edit-desc" placeholder="New ruleset description">
                             <input type="hidden" class="form-control" id="ruleset-source-uuid">
@@ -168,13 +251,13 @@
                     </div>
                 </div>
                 <div class="form-row" >
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                             <input type="text" class="form-control" id="ruleset-source-edit-url" placeholder="New url">
                         </div>
                     </div>
                 </div>
-                <div class="text-primary form-group col-md-6">
+                <div class="text-primary form-group col-md-12">
                     <a class="text-white btn btn-primary float-right ml-0" href="#" onclick="editRulesetSourceData()">Modify</a>
                     <a class="text-white btn btn-secondary float-right mr-1" href="#" onclick="editRulesetSourceClose()">Close</a>
                 </div>

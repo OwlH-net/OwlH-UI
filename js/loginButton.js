@@ -13,9 +13,9 @@ function modalChangePasswordLogin(){
             
             '<div class="modal-body">'+ 
                 '<p>Insert new password:</p>'+
-                '<input type="text" class="form-control" id="user-change-password" placeholder="new password..."><br>'+
+                '<input type="password" class="form-control" id="user-change-password" placeholder="new password..."><br>'+
                 '<p>Verify new password:</p>'+
-                '<input type="text" class="form-control" id="user-verify-password" placeholder="Verify password..."><br>'+
+                '<input type="password" class="form-control" id="user-verify-password" placeholder="Verify password..."><br>'+
             '</div>'+
 
             '<div class="modal-footer">'+
@@ -59,9 +59,9 @@ function ChangePasswordLogin(){
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
         var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/changePassword';
-    
+
         var jsonDeployService = {}
-        jsonDeployService["user"] = payload.uuid;
+        jsonDeployService["user"] = document.getElementById('loger-user-name').value.trim();
         jsonDeployService["pass"] = document.getElementById('user-verify-password').value.trim();
         var dataJSON = JSON.stringify(jsonDeployService);
     
@@ -71,8 +71,8 @@ function ChangePasswordLogin(){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -84,13 +84,13 @@ function ChangePasswordLogin(){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Change password: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -100,20 +100,20 @@ function ChangePasswordLogin(){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }
             }
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Change password: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -132,5 +132,5 @@ function PrivilegesMessage(){
             '<span aria-hidden="true">&times;</span>'+
         '</button>'+
     '</div>';
-    setTimeout(function() {$(".alert").alert('close')}, 5000);
+    setTimeout(function() {$(".alert").alert('close')}, 30000);
 }

@@ -11,7 +11,8 @@ function loadJSONdata(){
         try {payload = JSON.parse(atob(tokens[1]));}
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
                  
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
@@ -55,8 +56,8 @@ function getRulesetsBySearch(){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         data: searchJSON
     })

@@ -12,7 +12,8 @@ function loadJSONdata(){
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
          
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
         
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
@@ -29,6 +30,7 @@ function loadControlData(){
     var urlData = new URL(window.location.href);
     var type = urlData.searchParams.get("type");
     var uuid = urlData.searchParams.get("uuid");
+    var name = urlData.searchParams.get("node");
 
     var progressBar = document.getElementById('progressBar-control');
     var progressBarDiv = document.getElementById('progressBar-control-div');
@@ -49,7 +51,7 @@ function loadControlData(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -61,7 +63,7 @@ function loadControlData(){
             if(response.data.ack == "false"){
                 progressBar.style.display = "none";
                 progressBarDiv.style.display = "none";
-                document.getElementById("control-data-content").innerHTML = '<h3 class="text-center">There are not change control</h3>';
+                document.getElementById("control-data-content").innerHTML = '<h3 class="text-center">There are not change control for node <b>'+name+'</b></h3>';
             }else{
                 var isEmpty = true;
                 progressBar.style.display = "none";
@@ -120,7 +122,7 @@ function loadControlData(){
                 '</table>';
     
                 if (isEmpty == true){
-                    html = '<h2 class="text-center">There is no change control available</h2>';
+                    html = '<h2 class="text-center">There is no change control available for node <b>'+name+'</b></h2>';
                 }
                 document.getElementById("control-data-content").innerHTML = html;
     
@@ -138,6 +140,9 @@ function loadControlData(){
         }
     })
     .catch(function (error) {
+        progressBar.style.display = "none";
+        progressBarDiv.style.display = "none";
+        document.getElementById("command-content").innerHTML = '<h3 class="text-center">Error getting change control data for node <b>'+name+'</b></h3>';
     });
 }
 

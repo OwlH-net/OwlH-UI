@@ -18,6 +18,7 @@ function loadJSONdata() {
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
         //login button
         document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
          
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
@@ -32,6 +33,9 @@ function loadJSONdata() {
 }
 
 function showConfig(oip, oname, oport, ouuid){
+    document.getElementById('nidsform').style.display = "none";
+    document.getElementById('add-nid-top').innerHTML = "Add NID";
+    document.getElementById('add-nid-bottom').innerHTML = "Add NID";
     document.getElementById('divconfigform').style.display = "block";
     document.getElementById('divconfigform').scrollIntoView();
 
@@ -56,8 +60,8 @@ async function PingNode(uuid, token) {
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
         .then(function (response) {
@@ -76,7 +80,7 @@ async function PingNode(uuid, token) {
                 }else{
                     document.getElementById('node-monitor-'+uuid).onclick = "";
                     document.getElementById('node-services-'+uuid).onclick = "";
-                    document.getElementById('node-modify-'+uuid).onclick = "";
+                    // document.getElementById('node-modify-'+uuid).onclick = "";
                     document.getElementById('node-config-'+uuid).onclick = "";
                     document.getElementById('node-files-'+uuid).onclick = "";
                     document.getElementById('node-change-'+uuid).onclick = "";
@@ -85,7 +89,7 @@ async function PingNode(uuid, token) {
     
                     document.getElementById('node-monitor-'+uuid).style.cursor = " default";
                     document.getElementById('node-services-'+uuid).style.cursor = "default";
-                    document.getElementById('node-modify-'+uuid).style.cursor = "default";
+                    // document.getElementById('node-modify-'+uuid).style.cursor = "default";
                     document.getElementById('node-config-'+uuid).style.cursor = "default";
                     document.getElementById('node-files-'+uuid).style.cursor = "default";
                     document.getElementById('node-change-'+uuid).style.cursor = "default";
@@ -106,7 +110,6 @@ async function PingNode(uuid, token) {
         .catch(function (error) {
             document.getElementById('node-monitor-'+uuid).onclick = "";
             document.getElementById('node-services-'+uuid).onclick = "";
-            document.getElementById('node-modify-'+uuid).onclick = "";
             document.getElementById('node-config-'+uuid).onclick = "";
             document.getElementById('node-files-'+uuid).onclick = "";
             document.getElementById('node-change-'+uuid).onclick = "";
@@ -115,7 +118,6 @@ async function PingNode(uuid, token) {
 
             document.getElementById('node-monitor-'+uuid).style.cursor = " default";
             document.getElementById('node-services-'+uuid).style.cursor = "default";
-            document.getElementById('node-modify-'+uuid).style.cursor = "default";
             document.getElementById('node-config-'+uuid).style.cursor = "default";
             document.getElementById('node-files-'+uuid).style.cursor = "default";
             document.getElementById('node-change-'+uuid).style.cursor = "default";
@@ -134,8 +136,8 @@ function PingService(uuid){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
         .then(function (response) {
@@ -165,8 +167,8 @@ function PingMonitor(uuid){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -197,8 +199,8 @@ function DeployService(uuid) {
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -224,7 +226,7 @@ function GetAllNodes() {
     document.getElementById('add-nid-bottom').style.display = "none";
     document.getElementById('add-nid-top').style.display = "none";
     document.getElementById('search-node-details').style.display = "none";
-    document.getElementById('node-search-value').style.display = "none";
+    // document.getElementById('node-search-value').style.display = "none";
     document.getElementById('progressBar-node').style.display = "block";
     document.getElementById('progressBar-node-div').style.display = "block";
 
@@ -237,12 +239,12 @@ function GetAllNodes() {
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/node', {
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }//Authorization
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
-        .then(function (response) {    
+        .then(function (response) {   
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
             if(response.data.permissions == "none"){
                 document.getElementById('progressBar-node').style.display = "none";
@@ -253,7 +255,7 @@ function GetAllNodes() {
                     document.getElementById('add-nid-bottom').style.display = "none";
                     document.getElementById('add-nid-top').style.display = "none";
                     document.getElementById('search-node-details').style.display = "none";
-                    document.getElementById('node-search-value').style.display = "none";
+                    // document.getElementById('node-search-value').style.display = "none";
                     document.getElementById('progressBar-node').style.display = "none";
                     document.getElementById('progressBar-node-div').style.display = "none";
                     resultElement.innerHTML =  '<div style="text-align:center"><h3 style="color:red;">Error retrieving nodes</h3></div>';
@@ -261,7 +263,7 @@ function GetAllNodes() {
                     document.getElementById('add-nid-bottom').style.display = "block";
                     document.getElementById('add-nid-top').style.display = "block";
                     document.getElementById('search-node-details').style.display = "block";
-                    document.getElementById('node-search-value').style.display = "block";
+                    // document.getElementById('node-search-value').style.display = "block";
                     document.getElementById('progressBar-node').style.display = "none";
                     document.getElementById('progressBar-node-div').style.display = "none";
                     
@@ -295,17 +297,21 @@ function GetAllNodes() {
                                     port = "10443";
                                 }
                                 var uuid = node;
-                                PingNode(uuid, nodes[node]['token']);
-                                getRulesetUID(uuid);
-                        
+                                PingNode(uuid, nodes[node]['token']);                       
                                 
                                 html = html + '<tr class="node-search" id="node-row-'+node+'" name="'+nodes[node]['name']+'" ip="'+nodes[node]['ip']+'" status="offline">'+
                                     '<td></td>'+
-                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'           +
-                                        '<p class="text-muted">' + nodes[node]['ip'] + '</p>'                        +
-                                        '<i class="fas fa-code" title="Ruleset Management"></i> <span id="'+uuid+'-ruleset" class="text-muted small"></span>'+
-                                        '<br><br>'+
-                                        '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
+                                    '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'+
+                                        '<p class="text-muted">' + nodes[node]['ip'] + '</p>'+
+                                        // '<i class="fas fa-code" title="Ruleset Management"></i> '+
+                                        '<p><b>Suricata rulesets</b></p>'+
+                                        '<p id="all-data-'+uuid+'" class="text-muted small">No ruleset selected...</p>'+
+                                        '<p><b>Zeek</b></p>'+
+                                        '<p id="zeek-data-'+uuid+'" class="text-muted small">Zeek is not available...</p>'+
+                                        // '<div>'+
+                                        // '</div>'+
+                                        // '<br><br>'+                                        
+                                        // '<span id="'+uuid+'-owlhservice" style="display:none; font-size: 15px; cursor: default;" class="col-md-4 badge bg-warning align-text-bottom text-white" onclick="DeployService(\''+uuid+'\')">Install service</span>'+
                                     '</td>' +
                                     '<td width="33%" style="word-wrap: break-word;" class="align-middle">'+
                                         '<span id="'+uuid+'-online" class="badge bg-dark align-text-bottom text-white">N/A</span> <br>'+
@@ -321,17 +327,23 @@ function GetAllNodes() {
                                     '<td></td>'+        
                                     '<td width="33%" style="word-wrap: break-word;" class="align-middle"> '+                                   
                                         '<span style="font-size: 15px; color: Grey;" id="node-actions-'+uuid+'">'+                                                                          
-                                            '<i id="node-monitor-'+uuid+'" class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring' +
-                                            '<br><i id="node-services-'+uuid+'" class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration' +
-                                            '<br><i id="node-modify-'+uuid+'" class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node' +
+                                            '<i id="node-services-'+uuid+'" class="fas fa-box-open" style="cursor: pointer;" title="node services configuration" onclick="showServicesConfig(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node services configuration' +
+                                            '<br><i id="node-monitor-'+uuid+'" class="fas fa-desktop" style="cursor: pointer;" id="details-'+uuid+'" title="Node monitoring" onclick="ShowMonitoring(\''+uuid+'\', \''+nodes[node]['name']+'\');"></i> | Node monitoring' +
                                             '<br><i id="node-config-'+uuid+'" class="fas fa-cog" style="cursor: pointer;" title="Edit node configuration" onclick="loadEditURL(\''+node+'\', \'main.conf\', \''+nodes[node]['name']+'\')"></i> | Edit node configuration' +
                                             '<br><i id="node-files-'+uuid+'" class="fas fa-arrow-alt-circle-down" style="cursor: pointer;" title="See node files" onclick="loadFilesURL(\''+uuid+'\', \''+nodes[node]['name']+'\')"></i> | See node files' +
-                                            '<br><i id="node-change-'+uuid+'" class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\')"></i> | Change control' +
-                                            '<br><i id="node-incident-'+uuid+'" class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\')"></i> | Incident data' +
-                                            '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node';
+                                            '<br><i id="node-change-'+uuid+'" class="fas fa-clipboard-list" style="cursor: pointer;" title="Change control data" onclick="loadChangeControl(\''+uuid+'\', \'node\', \''+nodes[node]['name']+'\')"></i> | Change control' +
+                                            '<br><i id="node-incident-'+uuid+'" class="fas fa-archive" style="cursor: pointer;" title="Incident data" onclick="loadIncidentMaster(\''+uuid+'\', \'node\', \''+nodes[node]['name']+'\')"></i> | Incident data' +
+                                            '<div style="color:dodgerblue; border-top: 1px solid">'+
+                                                '<i id="node-modify-'+uuid+'" class="fas fa-cogs" style="cursor: pointer;" title="Modify node details" onclick="showConfig('+"'"+nodes[node]['ip']+"','"+nodes[node]['name']+"','"+nodes[node]['port']+"','"+uuid+"'"+');"></i> | Modify node' +
+                                                '<br><i class="fas fa-trash-alt" style="color: red; cursor: pointer;" title="Delete Node" data-toggle="modal" data-target="#modal-window" onclick="deleteNodeModal('+"'"+node+"'"+', '+"'"+nodes[node]['name']+"'"+');"></i> | Delete node'+
+                                            '</div>';
                                         '</span>'+
                                     '</td> ' +
-                                '</tr>';                             
+                                '</tr>';  
+                                
+                                //Get node local ruleset
+                                getRulesetUID(uuid);
+                                PingZeek(uuid);
                             }
                     html = html + '</tbody></table>';
                 
@@ -341,32 +353,30 @@ function GetAllNodes() {
                         resultElement.innerHTML = html;
                         
                         //search bar
-                        $('#node-search-value').click(function(){ loadNodeBySearch(document.getElementById('search-node-details').value)});
+                        $('#search-node-details').keyup(function(){ loadNodeBySearch(document.getElementById('search-node-details').value)});
                     
-                        //listener for seach bar
+                        //listener for search bar
                         document.getElementById('search-node-details').addEventListener('input', evt => {
                             if (document.getElementById('search-node-details').value.trim() == ""){ showAllHiddenNodes();} 
                         });
                     }                    
-                }            
-                // $('#node-table').click(function(){sortTable(); });
-                // DisableOfflineNodes();
-                
+                }                           
                 //hide progressBar when nodes have finished loading
                 document.getElementById('progressBar-node').style.display = "none";
                 document.getElementById('progressBar-node-div').style.display = "none";
             }
+            GetAllGroupRulesetsForAllNodes();
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);   
+            setTimeout(function() {$(".alert").alert('close')}, 30000);   
 
             document.getElementById('progressBar-node').style.display = "none";
             document.getElementById('progressBar-node-div').style.display = "none";
@@ -375,31 +385,6 @@ function GetAllNodes() {
                 checkStatus();
         });
 }
-
-
-
-// function sortTable() {
-    // var $table = $('node-table');
-    // var $tableBody = $table.find('tbody');
-    // var rows, sortedRows;
-
-    // function sortRows(a, b){
-    //     if ( $(a).find('tr:first-Child').text() > $(b).find('td:first-Child').text() ) {
-    //         return 1;
-    //     }
-
-    //     if ( $(a).find('td:first-Child').text() < $(b).find('td:first-Child').text() ) {
-    //         return -1;
-    //     }
-
-    //     return 0;
-    // }
-
-
-    // $($('#node-table > tbody  > tr')).val('');
-    // // $('#node-table > tbody  > tr').each(function() {
-    // // });
-// }
 
 function showNodes(status){
     if (status == "all"){
@@ -426,13 +411,12 @@ function showAllHiddenNodes(){
 }
 
 function loadNodeBySearch(search){
-    showAllHiddenNodes();
+    // showAllHiddenNodes();
     if (search.length == 0){
-        $('#search-node-details').css('border', '2px solid red');
-        $('#search-node-details').attr("placeholder", "Insert a valid name for search...");
-    }else{
+        // $('#search-node-details').css('border', '2px solid red');
         $('#search-node-details').css('border', '2px solid #ced4da');
-        $('#search-node-details').attr("placeholder", "");
+        $('#search-node-details').attr("placeholder", "Search by name or ip...");
+    }else{
         $('#node-table tbody').each(function(){
             $(this).find('tr').each(function(){
                 if ($(this).attr("name").toLowerCase().includes(search.toLowerCase()) || $(this).attr("ip").toLowerCase().includes(search.toLowerCase())){
@@ -453,8 +437,8 @@ function deleteNode(node) {
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -472,10 +456,55 @@ function deleteNode(node) {
         });   
 }
 
+function GetAllGroupRulesetsForAllNodes(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/master/getAllGroupRulesetsForAllNodes';
+    axios({
+        method: 'get',
+        url: nodeurl,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user
+        },
+        timeout: 30000
+    })
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.permissions == "none"){
+                PrivilegesMessage();              
+            }else{   
+                for(uuid in response.data){
+                    var html = '';
+                    var isEmpty = true;
+                    for(group in response.data[uuid]){
+                        if (response.data[uuid][group] != ""){
+                            isEmpty = false;
+                            rulesets = response.data[uuid][group].split(",");
+                            for(x in rulesets){
+                                html = html + rulesets[x] +' ('+group+')<br>';                        
+                            }
+                        }
+                    }
+                    if (!isEmpty){
+                        if (document.getElementById('all-data-'+uuid).innerHTML == "No ruleset selected..."){
+                            document.getElementById('all-data-'+uuid).innerHTML = html;
+                        }else{
+                            document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + html+'<br>';
+                        }
+                    }
+                }
+            }
+        })
+        .catch(function (error) {
+        });   
+}
+
 function formAddNids(){
     var addnidsbot = document.getElementById('add-nid-bottom');
     var addnidstop = document.getElementById('add-nid-top');
     var nform = document.getElementById('nidsform');
+    document.getElementById('divconfigform').style.display = "none";
 
     if (nform.style.display == "none") {
         nform.style.display = "block";
@@ -498,8 +527,8 @@ function PingDataflow(uuid){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -531,8 +560,8 @@ function deployNode(value,uuid,nodeName){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000,
         data: dataJSON
@@ -551,17 +580,17 @@ function deployNode(value,uuid,nodeName){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> '+value+' has not been deployed for node '+nodeName+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }
         }
     })
@@ -569,23 +598,20 @@ function deployNode(value,uuid,nodeName){
     });
 }
 
-function loadIncidentMaster(uuid, type){
-    document.location.href = 'https://' + location.hostname + '/incident-data.html?type='+type+'&uuid='+uuid;
-}
 function ShowMonitoring(uuid, name){
     document.location.href = 'https://' + location.hostname + '/node-monitor.html?uuid='+uuid+'&node='+name;
 }
 function showServicesConfig(uuid, name){
-    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name+'&nodetab=suricata';
 }
-// function showMasterFile(file){
-//     document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+file;
-// }
 function editAnalyzer(uuid, file, nodeName){
     document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
-function loadChangeControl(uuid, type){
-    document.location.href = 'https://' + location.hostname + '/control-data.html?type='+type+'&uuid='+uuid;
+function loadIncidentMaster(uuid, type, name){
+    document.location.href = 'https://' + location.hostname + '/incident-data.html?type='+type+'&uuid='+uuid+'&node='+name;
+}
+function loadChangeControl(uuid, type, name){
+    document.location.href = 'https://' + location.hostname + '/control-data.html?type='+type+'&uuid='+uuid+'&node='+name;
 }
 function loadStapURL(uuid, nodeName){
     document.location.href = 'https://' + location.hostname + '/stap.html?uuid='+uuid+'&node='+nodeName;
@@ -632,8 +658,8 @@ function ChangeStatus(uuid){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000,
         data: dataJSON
@@ -650,17 +676,17 @@ function ChangeStatus(uuid){
     });
 }
 
-function getRulesetUID(uuid) {
+async function getRulesetUID(uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/' + uuid;
-    axios({
+    await axios({
         method: 'get',
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -678,17 +704,17 @@ function getRulesetUID(uuid) {
     });
 }
 
-function getRuleName(uuidRuleset, uuid) {
+async function getRuleName(uuidRuleset, uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/get/name/' + uuidRuleset;
-    axios({
+    await axios({
         method: 'get',
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         },
         timeout: 30000
     })
@@ -696,14 +722,21 @@ function getRuleName(uuidRuleset, uuid) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
-            }else{   
-                if (typeof response.data.error != "undefined") {
-                    document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
-                    document.getElementById(uuid + '-ruleset').className = "text-danger";
-                } else {
-                    document.getElementById(uuid + '-ruleset').innerHTML = response.data;
-                    document.getElementById(uuid + '-ruleset').className = "text-muted-small";
+            }else{
+                if (response.data != ""){
+                    if (document.getElementById('all-data-'+uuid).innerHTML == "No ruleset selected..."){
+                        document.getElementById('all-data-'+uuid).innerHTML = response.data;
+                    }else{
+                        document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + response.data+'<br>';
+                    }
                 }
+                // if (typeof response.data.error != "undefined" || response.data == ""){
+                    // document.getElementById(uuid + '-ruleset').innerHTML = "No ruleset selected...";
+                    // document.getElementById(uuid + '-ruleset').className = "text-danger";
+                // } else {
+                    // document.getElementById(uuid + '-ruleset').innerHTML = response.data;
+                    // document.getElementById(uuid + '-ruleset').className = "text-muted-small";
+                // }
                 return response.data;
             }
         })
@@ -813,22 +846,24 @@ function sortTableIP() {
     }
 }
 
-function addNode() {
+function addNode() {                 
     var nname = document.getElementById('nodename').value.trim();
     var nip = document.getElementById('nodeip').value.trim();
     var nport = document.getElementById('nodeport').value.trim();
     var nuser = document.getElementById('nodeuser').value.trim();
     var npass = document.getElementById('nodepass').value.trim();
     if(nname=="" || nip=="" || nport==""){
+        document.getElementById('progressBar-node').style.display = "none";
+        document.getElementById('progressBar-node-div').style.display = "none";
 		$('html,body').scrollTop(0);
 		var alert = document.getElementById('floating-alert');
-		alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+		alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 			'<strong>Error!</strong> Please, insert a name, port and IP for add a new node.'+
 			'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 				'<span aria-hidden="true">&times;</span>'+
 			'</button>'+
 		'</div>';
-      setTimeout(function() {$(".alert").alert('close')}, 5000);
+      setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else{
 		formAddNids();//close add nids form
 		var nodejson = {}
@@ -846,13 +881,15 @@ function addNode() {
             url: nodeurl,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
 			timeout: 30000,
 			data: nodeJSON
 		})
 		.then(function (response) {
+            document.getElementById('progressBar-node').style.display = "none";
+            document.getElementById('progressBar-node-div').style.display = "none";
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
@@ -860,13 +897,13 @@ function addNode() {
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error adding node!</strong> '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -876,21 +913,23 @@ function addNode() {
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }
                 GetAllNodes();
             }
 		})
 		.catch(function (error) {
+            document.getElementById('progressBar-node').style.display = "none";
+            document.getElementById('progressBar-node-div').style.display = "none";
 			$('html,body').scrollTop(0);
 			var alert = document.getElementById('floating-alert');
-			alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+			alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
 				'<strong>Error adding node!</strong> '+error+'.'+
 				'<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
 					'<span aria-hidden="true">&times;</span>'+
 				'</button>'+
 			'</div>';
-			setTimeout(function() {$(".alert").alert('close')}, 5000);
+			setTimeout(function() {$(".alert").alert('close')}, 30000);
 		});   
     }
 }
@@ -900,25 +939,31 @@ function modifyNodeInformation() {
     var ip = document.getElementById('cfgnodeip').value;
     var port = document.getElementById('cfgnodeport').value;
     var nid = document.getElementById('cfgnodeid').value;
+    var usr = document.getElementById('cfgnodeuser').value;
+    var pass = document.getElementById('cfgnodepass').value;
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/node';
     
-    if(name=="" || ip=="" || port==""){
+    if(name=="" || ip=="" || port=="" || usr=="" || pass==""){
       if(name == ""){$('#cfgnodename').attr("placeholder", "Please, insert a valid name"); $('#cfgnodename').css('border', '2px solid red'); }else{$('#cfgnodename').css('border', '2px solid #ced4da');}
       if(ip == ""){$('#cfgnodeip').attr("placeholder", "Please, insert a valid ip"); $('#cfgnodeip').css('border', '2px solid red'); }else{$('#cfgnodeip').css('border', '2px solid #ced4da');}
       if(port == ""){$('#cfgnodeport').attr("placeholder", "Please, insert a valid port"); $('#cfgnodeport').css('border', '2px solid red'); }else{$('#cfgnodeport').css('border', '2px solid #ced4da');}
+      if(usr == ""){$('#cfgnodeuser').attr("placeholder", "Please, insert a valid user"); $('#cfgnodeuser').css('border', '2px solid red'); }else{$('#cfgnodeuser').css('border', '2px solid #ced4da');}
+      if(pass == ""){$('#cfgnodepass').attr("placeholder", "Please, insert a valid pass"); $('#cfgnodepass').css('border', '2px solid red'); }else{$('#cfgnodepass').css('border', '2px solid #ced4da');}
     }else{
       var nodejson = {}
       nodejson["name"] = name;
       nodejson["port"] = port;
       nodejson["ip"] = ip;
       nodejson["id"] = nid;
+      nodejson["user"] = usr;
+      nodejson["pass"] = pass;
       var newValues = JSON.stringify(nodejson);
 
       axios({
         method: 'put',
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid,},
+        headers:{'token': document.cookie,'user': payload.user},
         url: nodeurl,
         timeout: 30000,
         data: newValues
@@ -931,13 +976,13 @@ function modifyNodeInformation() {
                 if(response.data.ack == "false"){
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Modify node error!</strong> '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     GetAllNodes();
                 }
@@ -946,13 +991,13 @@ function modifyNodeInformation() {
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Modify node error!</strong> '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });   
         document.getElementById('divconfigform').style.display = "none";
         return false;
@@ -996,8 +1041,8 @@ function loadBPF(nid, name){
     method: 'get',
     headers:{
         'token': document.cookie,
-        'user': payload.user,
-        'uuid': payload.uuid,
+        'user': payload.user
+        
     },
     url: nodeurl,
     timeout: 3000
@@ -1036,8 +1081,8 @@ function saveBPF(nid){
     method: 'put',
     headers:{
         'token': document.cookie,
-        'user': payload.user,
-        'uuid': payload.uuid,
+        'user': payload.user
+        
     },
     url: nodeurl,
     timeout: 30000,
@@ -1054,121 +1099,6 @@ function saveBPF(nid){
     .catch(function (error) {
       return false;
     });   
-}
-
-function loadRuleset(nid){
-  var modalWindow = document.getElementById('modal-window');
-  modalWindow.innerHTML = 
-  '<div class="modal-dialog modal-lg">'+
-    '<div class="modal-content">'+
-
-      '<div class="modal-header">'+
-        '<h4 class="modal-title" id="ruleset-manager-header">Rules</h4>'+
-        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-      '</div>'+
-
-      '<div class="modal-body" id="ruleset-manager-footer-table">'+ 
-      '</div>'+
-
-      '<div class="modal-footer" id="ruleset-manager-footer-btn">'+
-        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-      '</div>'+
-
-    '</div>'+
-  '</div>';
-  var resultElement = document.getElementById('ruleset-manager-footer-table');
-  var ipmaster = document.getElementById('ip-master').value;
-  var portmaster = document.getElementById('port-master').value;
-  axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {
-    headers:{
-      'token': document.cookie,
-      'user': payload.user,
-      'uuid': payload.uuid,
-    },
-  })
-
-    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
-            if (typeof response.data.error != "undefined"){
-                resultElement.innerHTML = '<p>No rules available...</p>';
-            }else{
-                resultElement.innerHTML = generateAllRulesModal(response, nid);
-            }
-        }
-    })
-    .catch(function (error) {
-      resultElement.innerHTML = '<p>Error retrieving rules</p>';
-    }); 
-  
-}
-
-function generateAllRulesModal(response, nid) {
-    var rules = response.data;
-    var isEmpty = true;
-    var html =  '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                	'<thead>' +
-                		'<tr>' +
-							'<th width="30%">Name</th>' +
-							'<th>Description</th>' +
-							'<th width="15%">Options</th>' +
-                		'</tr>' +
-                	'</thead>' +
-                	'<tbody>';
-    for (rule in rules) {
-        isEmpty = false;
-        html = html + '<tr><td style="word-wrap: break-word;" width="30%"> ' +
-        rules[rule]["name"] +
-        '</td><td style="word-wrap: break-word;"> ' +
-        rules[rule]["desc"] +
-        '</td><td style="word-wrap: break-word;" width="15%"> ' +
-        	'<button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="saveRuleSelected(\''+rule+'\', \''+nid+'\')">Select</button> ' +
-        '</td></tr> ';
-    }
-    html = html + '</tbody></table>';
-    
-    if (isEmpty){
-        return '<p>No rules available...</p>';
-    }else{
-        return html;
-    }
-}
-
-
-function saveRuleSelected(rule, nid){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/ruleset/set';
-
-    var jsonRuleUID = {}
-    jsonRuleUID["nid"] = nid;
-    jsonRuleUID["rule_uid"] = rule;
-    var uidJSON = JSON.stringify(jsonRuleUID);
-    axios({
-        method: 'put',
-        url: urlSetRuleset,
-        headers:{
-          'token': document.cookie,
-          'user': payload.user,
-          'uuid': payload.uuid,
-        },
-        timeout: 30000,
-        data: uidJSON
-    })
-        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-            if(response.data.permissions == "none"){
-                PrivilegesMessage();              
-            }else{   
-                getRulesetUID(nid);
-                return true;
-            }
-        })
-            .catch(function (error) {
-            return false;
-        }); 
 }
 
 function deleteNodeModal(node, name){
@@ -1218,3 +1148,37 @@ function syncRulesetModal(node, name){
       '</div>'+
     '</div>';
   }
+
+  function PingZeek(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/zeek/' + uuid;
+    axios({
+        method: 'get',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user                
+        }
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();
+        }else{
+            if (response.data.mode != "") {
+                if (response.data.mode == "standalone") {
+                    document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Standalone";
+                }else if (response.data.mode == "cluster" && !response.data.manager){
+                    document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Cluster";
+                }else if (response.data.mode == "cluster" && response.data.manager){
+                    document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Cluster (Manager)";
+
+                }
+            }
+        }
+    })
+    .catch(function (error) {
+    });
+}

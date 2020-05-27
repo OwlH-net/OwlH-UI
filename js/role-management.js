@@ -12,7 +12,8 @@ function loadJSONdata(){
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
 
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
         
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
@@ -38,11 +39,12 @@ function GetAllRoles(){
         timeout: 30000,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
+        console.log(response.data);
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -52,18 +54,19 @@ function GetAllRoles(){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Get all roles: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 var html = '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
                     '<thead>'+
                         '<tr>'+
-                            '<th>Role</th>'+
+                            '<th width="20%">Role</th>'+
+                            '<th>Description</th>'+
                             '<th style="width: 15%">Actions</th>'+
                         '</tr>'+
                     '</thead>'+
@@ -71,63 +74,64 @@ function GetAllRoles(){
                     for(id in response.data){
                         html = html + '<tr>'+
                             '<td>'+response.data[id]["role"]+'</td>'+
+                            '<td>'+response.data[id]["desc"]+'</td>'+
                             '<td>'+
-                                '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowRoleDetails(\''+id+'\')"></i> &nbsp'+
-                                '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalEditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
+                                '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowRoleDetails(\''+id+'\', \''+response.data[id]["role"]+'\')"></i> &nbsp'+
+                                '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="EditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["desc"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteRole(\''+id+'\', \''+response.data[id]["role"]+'\')"></i>'+                                
                             '</td>'+
-                        '</tr>'+
-                        '<tr id="role-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                                     
-                            '<td>'+
-                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                                    '<tr>'+
-                                        '<th width="20%">Permissions</th>'+
-                                    '</tr>';
-                                    var roles = response.data[id]["permissions"].split(",");
-                                    for (x in roles){
-                                        if(roles[x] != ""){
-                                            html = html + '<tr>'+
-                                                '<td>'+roles[x]+'</td>'+
-                                            '</tr>';
-                                        }
-                                    }
-                                html = html + '</table>'+
-                            '</td>'+
-                            '<td>'+
-                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                                    '<tr>'+
-                                        '<th>Users</th>'+
-                                        '<th>Actions</th>'+
-                                    '</tr>';
-                                    var users = response.data[id]["users"].split(",");
-                                    for (x in users){
-                                        if(users[x] != ""){
-                                            html = html + '<tr>'+
-                                                '<td>'+users[x]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleUser(\''+id+'\', \''+users[x]+'\')"></i></td>';                                                
-                                            '</tr>';
-                                        }
-                                    }
-                                html = html + '</table>'+
-                            '</td>'+
-                            '<td>'+
-                                '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                                    '<tr>'+
-                                        '<th>Groups</th>'+
-                                        '<th>Actions</th>'+
-                                    '</tr>';
-                                    var groups = response.data[id]["groups"].split(",");
-                                    for (x in groups){
-                                        if(groups[x] != ""){
-                                            html = html + '<tr>'+
-                                                '<td>'+groups[x]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleGroup(\''+id+'\', \''+groups[x]+'\')"></i></td>';
-                                            '</tr>';
-                                        }
-                                    }
-                                html = html + '</table>'+
-                            '</td>'+
                         '</tr>';
+                        // '<tr id="role-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                                     
+                        //     '<td>'+
+                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                        //             '<tr>'+
+                        //                 '<th width="20%">Permissions</th>'+
+                        //             '</tr>';
+                        //             var roles = response.data[id]["permissions"].split(",");
+                        //             for (x in roles){
+                        //                 if(roles[x] != ""){
+                        //                     html = html + '<tr>'+
+                        //                         '<td>'+roles[x]+'</td>'+
+                        //                     '</tr>';
+                        //                 }
+                        //             }
+                        //         html = html + '</table>'+
+                        //     '</td>'+
+                        //     '<td>'+
+                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                        //             '<tr>'+
+                        //                 '<th>Users</th>'+
+                        //                 '<th>Actions</th>'+
+                        //             '</tr>';
+                        //             var users = response.data[id]["users"].split(",");
+                        //             for (x in users){
+                        //                 if(users[x] != ""){
+                        //                     html = html + '<tr>'+
+                        //                         '<td>'+users[x]+'</td>'+
+                        //                         '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleUser(\''+id+'\', \''+users[x]+'\')"></i></td>';                                                
+                        //                     '</tr>';
+                        //                 }
+                        //             }
+                        //         html = html + '</table>'+
+                        //     '</td>'+
+                        //     '<td>'+
+                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
+                        //             '<tr>'+
+                        //                 '<th>Groups</th>'+
+                        //                 '<th>Actions</th>'+
+                        //             '</tr>';
+                        //             var groups = response.data[id]["groups"].split(",");
+                        //             for (x in groups){
+                        //                 if(groups[x] != ""){
+                        //                     html = html + '<tr>'+
+                        //                         '<td>'+groups[x]+'</td>'+
+                        //                         '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleGroup(\''+id+'\', \''+groups[x]+'\')"></i></td>';
+                        //                     '</tr>';
+                        //                 }
+                        //             }
+                        //         html = html + '</table>'+
+                        //     '</td>'+
+                        // '</tr>';
                     }
                     html = html + '</tbody>'+
                 '</table>';
@@ -140,14 +144,26 @@ function GetAllRoles(){
         document.getElementById('progressBar-options-div').style.display = "block";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Get all roles: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
+}
+
+function EditRole(id, role, desc, permissions){
+    document.location.href = 'https://' + location.hostname + '/role-list.html?id='+id+'&role='+role+'&permissions='+permissions+'&desc='+desc;
+}
+
+function RoleDetails(){
+    document.location.href = 'https://' + location.hostname + '/role-list.html';
+}
+
+function ShowRoleDetails(id, role){
+    document.location.href = 'https://' + location.hostname + '/role-details.html?id='+id+'&role='+role;
 }
 
 function modalAddRole(){
@@ -159,7 +175,7 @@ function modalAddRole(){
         '<div class="modal-header">'+
             '<h4 class="modal-title">Add new role</h4>'+
             '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-            '</div>'+
+        '</div>'+
         
         '<div class="modal-body">'+ 
             '<p>Insert user name:</p>'+
@@ -207,7 +223,7 @@ function AddRole(){
         });
           
         var jsonDelete = {}
-        jsonDelete["role"] = document.getElementById('role-name').value;
+        jsonDelete["role"] = document.getElementById('role-name').value.trim();
         jsonDelete["permissions"] = list.toString();
         var userDelete = JSON.stringify(jsonDelete);
     
@@ -218,8 +234,8 @@ function AddRole(){
             data: userDelete,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
         })
         .then(function (response) {
@@ -232,13 +248,13 @@ function AddRole(){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error!</strong> Add Role: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);                    
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);                    
                 }else{
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
@@ -248,7 +264,7 @@ function AddRole(){
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                     GetAllRoles();
                 }
             }
@@ -258,26 +274,16 @@ function AddRole(){
             document.getElementById('progressBar-options-div').style.display = "none";
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Add Role: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
-
-function ShowRoleDetails(id){
-    var info = document.getElementById('role-info-'+id);
-    if(info.style.display == "block"){
-        info.style.display = "none"
-    }else if(info.style.display == "none"){
-        info.style.display = "block"
-    }
-}
-
 
 function modalDeleteRole(id, user){
     var modalWindow = document.getElementById('modal-window');
@@ -324,8 +330,8 @@ function DeleteRole(id){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -338,13 +344,13 @@ function DeleteRole(id){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete role: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -354,7 +360,7 @@ function DeleteRole(id){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 GetAllRoles();
             }
         }
@@ -364,140 +370,140 @@ function DeleteRole(id){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete role: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
 
-function modalEditRole(id, name, permissions){    
-    var html = '<div class="modal-dialog" role="document">'+
-        '<div class="modal-content">'+
+// function modalEditRole(id, name, permissions){    
+//     var html = '<div class="modal-dialog" role="document">'+
+//         '<div class="modal-content">'+
 
-        '<div class="modal-header">'+
-            '<h4 class="modal-title">Edit Role '+name+'</h4>'+
-            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-            '</div>'+
+//         '<div class="modal-header">'+
+//             '<h4 class="modal-title">Edit Role '+name+'</h4>'+
+//             '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+//             '</div>'+
         
-        '<div class="modal-body">'+ 
-            '<p>Edit username:</p>'+
-            '<input type="text" class="form-control" id="edit-role-name" value='+name+'><br>'+
-            '<p>Edit permissions:</p>'+
-            '<div class="form-check">'+
-                '<input type="checkbox" class="form-check-input" id="edit-role-check-get" value="get" disabled checked>'+
-                '<label class="form-check-label" for="role-check-get">GET</label><br>'+
-                '<input type="checkbox" class="form-check-input" id="edit-role-check-put" value="put">'+
-                '<label class="form-check-label" for="role-check-put">PUT</label><br>'+
-                '<input type="checkbox" class="form-check-input" id="edit-role-check-post" value="post">'+
-                '<label class="form-check-label" for="role-check-post">POST</label><br>'+
-                '<input type="checkbox" class="form-check-input" id="edit-role-check-delete" value="delete">'+
-                '<label class="form-check-label" for="role-check-delete">DELETE</label>'+
-            '</div>'+
-        '</div>'+
+//         '<div class="modal-body">'+ 
+//             '<p>Edit username:</p>'+
+//             '<input type="text" class="form-control" id="edit-role-name" value='+name+'><br>'+
+//             '<p>Edit permissions:</p>'+
+//             '<div class="form-check">'+
+//                 '<input type="checkbox" class="form-check-input" id="edit-role-check-get" value="get" disabled checked>'+
+//                 '<label class="form-check-label" for="role-check-get">GET</label><br>'+
+//                 '<input type="checkbox" class="form-check-input" id="edit-role-check-put" value="put">'+
+//                 '<label class="form-check-label" for="role-check-put">PUT</label><br>'+
+//                 '<input type="checkbox" class="form-check-input" id="edit-role-check-post" value="post">'+
+//                 '<label class="form-check-label" for="role-check-post">POST</label><br>'+
+//                 '<input type="checkbox" class="form-check-input" id="edit-role-check-delete" value="delete">'+
+//                 '<label class="form-check-label" for="role-check-delete">DELETE</label>'+
+//             '</div>'+
+//         '</div>'+
 
-        '<div class="modal-footer">'+
-            '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-            '<button type="submit" class="btn btn-primary" id="role-user-btn">Edit</button>'+
-        '</div>'+
+//         '<div class="modal-footer">'+
+//             '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+//             '<button type="submit" class="btn btn-primary" id="role-user-btn">Edit</button>'+
+//         '</div>'+
 
-        '</div>'+
-    '</div>';
+//         '</div>'+
+//     '</div>';
 
-    document.getElementById('modal-window').innerHTML = html;
+//     document.getElementById('modal-window').innerHTML = html;
 
-    var permissions = permissions.split(",");
-    for(x in permissions){
-        html = html + '';
-        if(permissions[x] == "get"){document.getElementById("edit-role-check-get").checked = true;}
-        if(permissions[x] == "put"){document.getElementById("edit-role-check-put").checked = true;}
-        if(permissions[x] == "post"){document.getElementById("edit-role-check-post").checked = true;}
-        if(permissions[x] == "delete"){document.getElementById("edit-role-check-delete").checked = true;}
-    }
+//     var permissions = permissions.split(",");
+//     for(x in permissions){
+//         html = html + '';
+//         if(permissions[x] == "get"){document.getElementById("edit-role-check-get").checked = true;}
+//         if(permissions[x] == "put"){document.getElementById("edit-role-check-put").checked = true;}
+//         if(permissions[x] == "post"){document.getElementById("edit-role-check-post").checked = true;}
+//         if(permissions[x] == "delete"){document.getElementById("edit-role-check-delete").checked = true;}
+//     }
 
-    $('#modal-window').modal().show();
-    $('#role-user-btn').click(function(){EditRole(id, document.getElementById("edit-role-name").value); });
-}
+//     $('#modal-window').modal().show();
+//     $('#role-user-btn').click(function(){EditRole(id, document.getElementById("edit-role-name").value); });
+// }
 
-function EditRole(id, name){
-    document.getElementById('progressBar-options').style.display = "block";
-    document.getElementById('progressBar-options-div').style.display = "block";
-    $('#modal-window').modal('hide');
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/editRole';
+// function EditRole(id, name){
+//     document.getElementById('progressBar-options').style.display = "block";
+//     document.getElementById('progressBar-options-div').style.display = "block";
+//     $('#modal-window').modal('hide');
+//     var ipmaster = document.getElementById('ip-master').value;
+//     var portmaster = document.getElementById('port-master').value;
+//     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/master/editRole';
 
-    var list = [];
-    $('input[type=checkbox]:checked').each(function(index){
-        list.push($(this).val());
-    });
+//     var list = [];
+//     $('input[type=checkbox]:checked').each(function(index){
+//         list.push($(this).val());
+//     });
 
-    var jsonDelete = {}
-    jsonDelete["id"] = id;
-    jsonDelete["role"] = name;
-    jsonDelete["permissions"] = list.toString();
-    var userDelete = JSON.stringify(jsonDelete);
+//     var jsonDelete = {}
+//     jsonDelete["id"] = id;
+//     jsonDelete["role"] = name;
+//     jsonDelete["permissions"] = list.toString();
+//     var userDelete = JSON.stringify(jsonDelete);
 
-    axios({
-        method: 'put',
-        url: nodeurl,
-        timeout: 30000,
-        data: userDelete,
-        headers:{
-            'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
-        }
-    })
-    .then(function (response) {
-        document.getElementById('progressBar-options').style.display = "none";
-        document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
-        if(response.data.permissions == "none"){
-            PrivilegesMessage();              
-        }else{   
-            if (response.data.ack == "false") {
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-                    '<strong>Error!</strong> Edit role: '+response.data.error+'.'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-            }else{
-                $('html,body').scrollTop(0);
-                var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
-                    '<strong>Success!</strong> Role edited successfully!'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                        '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
-                '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
-                GetAllRoles();
-            }
-        }
-    })
-    .catch(function (error) {
-        document.getElementById('progressBar-options').style.display = "none";
-        document.getElementById('progressBar-options-div').style.display = "none";
-        $('html,body').scrollTop(0);
-        var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
-            '<strong>Error!</strong> Edit role: '+error+'.'+
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                '<span aria-hidden="true">&times;</span>'+
-            '</button>'+
-        '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
-    });
-}
+//     axios({
+//         method: 'put',
+//         url: nodeurl,
+//         timeout: 30000,
+//         data: userDelete,
+//         headers:{
+//             'token': document.cookie,
+//             'user': payload.user
+//             
+//         }
+//     })
+//     .then(function (response) {
+//         document.getElementById('progressBar-options').style.display = "none";
+//         document.getElementById('progressBar-options-div').style.display = "none";
+//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(response.data.permissions == "none"){
+//             PrivilegesMessage();              
+//         }else{   
+//             if (response.data.ack == "false") {
+//                 $('html,body').scrollTop(0);
+//                 var alert = document.getElementById('floating-alert');
+//                 alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+//                     '<strong>Error!</strong> Edit role: '+response.data.error+'.'+
+//                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                         '<span aria-hidden="true">&times;</span>'+
+//                     '</button>'+
+//                 '</div>';
+//                 setTimeout(function() {$(".alert").alert('close')}, 30000);
+//             }else{
+//                 $('html,body').scrollTop(0);
+//                 var alert = document.getElementById('floating-alert');
+//                 alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+//                     '<strong>Success!</strong> Role edited successfully!'+
+//                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                         '<span aria-hidden="true">&times;</span>'+
+//                     '</button>'+
+//                 '</div>';
+//                 setTimeout(function() {$(".alert").alert('close')}, 30000);
+//                 GetAllRoles();
+//             }
+//         }
+//     })
+//     .catch(function (error) {
+//         document.getElementById('progressBar-options').style.display = "none";
+//         document.getElementById('progressBar-options-div').style.display = "none";
+//         $('html,body').scrollTop(0);
+//         var alert = document.getElementById('floating-alert');
+//         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+//             '<strong>Error!</strong> Edit role: '+error+'.'+
+//             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                 '<span aria-hidden="true">&times;</span>'+
+//             '</button>'+
+//         '</div>';
+//         setTimeout(function() {$(".alert").alert('close')}, 30000);
+//     });
+// }
 
 function DeleteRoleUser(id, user){
     document.getElementById('progressBar-options').style.display = "block";
@@ -518,8 +524,8 @@ function DeleteRoleUser(id, user){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -532,13 +538,13 @@ function DeleteRoleUser(id, user){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete role user: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -548,7 +554,7 @@ function DeleteRoleUser(id, user){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 GetAllRoles();
             }
         }
@@ -558,13 +564,13 @@ function DeleteRoleUser(id, user){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete role user: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -587,8 +593,8 @@ function DeleteRoleGroup(id, group){
         data: userDelete,
         headers:{
             'token': document.cookie,
-            'user': payload.user,
-            'uuid': payload.uuid,
+            'user': payload.user
+            
         }
     })
     .then(function (response) {
@@ -601,13 +607,13 @@ function DeleteRoleGroup(id, group){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error!</strong> Delete role group: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -617,7 +623,7 @@ function DeleteRoleGroup(id, group){
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
                 GetAllRoles();
             }
         }
@@ -627,12 +633,12 @@ function DeleteRoleGroup(id, group){
         document.getElementById('progressBar-options-div').style.display = "none";
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error!</strong> Delete role group: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }

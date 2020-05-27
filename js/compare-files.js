@@ -13,7 +13,7 @@ function compareFiles(){
         method: 'get',
         url: nodeurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
         })
         .then(function (response) {
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}    
@@ -120,7 +120,7 @@ function generateAllLinesHTMLOutput (response){
 //         method: 'post',
 //         url: nodeurl,
 //         timeout: 30000,
-        // headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+        // headers:{'token': document.cookie,'user': payload.user},
 //         data: nodeJSON
 //         })
 //         .then(function (response) {
@@ -144,7 +144,8 @@ function loadJSONdata(){
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
 
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
         
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;

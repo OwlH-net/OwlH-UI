@@ -43,7 +43,7 @@
                     <a class="nav-link" href="rulesets.html">Open Rules</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="response.html">Adapt & Response</a>
+                    <!-- <a class="nav-link" href="response.html">Adapt & Response</a> -->
                 </li>
                 <!-- <li class="nav-item">
                 <a class="nav-link" href="kibana.html">Kibana</a>
@@ -57,7 +57,7 @@
             </ul>
                     <!-- loged button -->
         <div class="dropdown mr-4">
-          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Loged as: </b></button>
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b id="loger-user-name" value="">Loged as: </b></button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
             <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
             <div class="dropdown-divider"></div>
@@ -89,10 +89,10 @@
         <div id="progressBar-node-div"class="progress" style="display:none;">
             <div id="progressBar-node" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> &nbsp </div>
         </div>
-
-        <div class="input-group" width="100%" id="search-input-nodes">
+        
+        <div class="input-group mt-2" width="100%" id="search-input-nodes">
             <input class="form-control mx-3 searchInputNodes" type="text" placeholder="Search by name or ip..." aria-label="Search" id="search-node-details">
-            <a type="button" class="btn btn-primary mr-2" id="node-search-value"><i class="fas fa-search" style="color: white;"></i></a>
+            <!-- <a type="button" class="btn btn-primary mr-2" id="node-search-value"><i class="fas fa-search" style="color: white;"></i></a> -->
             <a class="btn btn-primary float-right text-decoration-none text-white mr-2" id="add-nid-top" onclick="formAddNids()">Add NIDS Node</a>
         </div><br>
 
@@ -136,7 +136,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text wt-125">Node Port</span>
                             </div>
-                            <input type="text" class="form-control" id="nodeport" placeholder="50002" required>
+                            <input type="text" class="form-control" id="nodeport" placeholder="e.g: 50002" required>
                         </div>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text wt-125">Node password</span>
                             </div>
-                            <input type="text" class="form-control" id="nodepass" placeholder="Node password..." required>
+                            <input type="password" class="form-control" id="nodepass" placeholder="Node password..." required>
                         </div>
                     </div>
                 </div>
@@ -193,8 +193,26 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text wt-125">Node Port</span>
                             </div>
-                            <input type="text" class="form-control" id="cfgnodeport" placeholder="50002" required>
+                            <input type="text" class="form-control" id="cfgnodeport" placeholder="eg: 50002" required>
                             <input type="hidden" class="form-control" id="cfgnodeid" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text wt-125">Node user</span>
+                            </div>
+                            <input type="text" class="form-control" id="cfgnodeuser" placeholder="Node user..." required>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text wt-125">Node password</span>
+                            </div>
+                            <input type="password" class="form-control" id="cfgnodepass" placeholder="Node password..." required>
                         </div>
                     </div>
                 </div>
@@ -230,8 +248,6 @@
     <script src="js/jquery-3.4.1.js"></script>
     <script src="css/dist/js/bootstrap.min.js"></script>
     <script src="js/offcanvas.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/enc-base64-min.js"></script>
     <script src="js/login.js"></script>
     <script src="js/node/dataflow.js"></script>
     <script src="js/owlh.js"></script>

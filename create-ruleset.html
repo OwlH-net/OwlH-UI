@@ -40,7 +40,7 @@
                         <a class="nav-link" href="rulesets.html">Open Rules</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="response.html">Adapt & Response</a>
+                        <!-- <a class="nav-link" href="response.html">Adapt & Response</a> -->
                     </li>
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="kibana.html">Kibana</a>
@@ -55,7 +55,7 @@
                 
                 <!-- loged button -->
                 <div class="dropdown mr-4">
-                    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Loged as: </b></button>
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b id="loger-user-name" value="">Loged as: </b></button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
                         <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
                         <div class="dropdown-divider"></div>
@@ -76,8 +76,8 @@
             <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
                 <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
                 <div class="lh-100">
-                    <h3 class="mb-0 text-white lh-100">Create new ruleset</h3>
-                    <small>Summary</small>
+                    <h3 id="title-banner" class="mb-0 text-white lh-100">Create new ruleset</h3>
+                    <small id="subtitle-banner">Summary</small>
                 </div>
             </div>
 

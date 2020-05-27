@@ -12,7 +12,8 @@ function loadJSONdata(){
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
 
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
         
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
@@ -73,7 +74,7 @@ function loadMonitor(){
                         '<th>Path</th>'+
                         '<th width="10%">Rotation</th>'+
                         '<th width="15%">Status</th>'+
-                        '<th width="20%">Actions</th>'+
+                        '<th width="25%">Actions</th>'+
                     '</tr>'+
                 '</thead>'+
                 '<tbody id="file-data-monitor">'+
@@ -184,8 +185,8 @@ function DeleteMonitorFile(uuid, file){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -197,13 +198,13 @@ function DeleteMonitorFile(uuid, file){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error: </strong>Delete monitor file: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadMonitor();
             }
@@ -212,13 +213,13 @@ function DeleteMonitorFile(uuid, file){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error: </strong>Delete monitor file: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -272,8 +273,8 @@ function AddMonitorFile(uuid, path){
             timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
             data: dataJSON
         })
@@ -285,13 +286,13 @@ function AddMonitorFile(uuid, path){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error: </strong>AddMonitorFile '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadMonitor();
             }
@@ -300,13 +301,13 @@ function AddMonitorFile(uuid, path){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error: </strong>AddMonitorFile '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 }
@@ -322,8 +323,8 @@ function PingMonitorFiles(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -359,7 +360,8 @@ function PingMonitorFiles(uuid){
                                 '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'50\', \''+response.data[file]["path"]+'\')">50</span> &nbsp'+
                                 '<span style="cursor:pointer;" class="badge badge-pill bg-secondary align-text-bottom text-white" onclick="LoadPageLastLines(\''+uuid+'\', \'100\', \''+response.data[file]["path"]+'\')">100</span> &nbsp';
                             }
-                            html = html + '<i class="fas fa-sync-alt" style="color:dodgerblue;cursor: pointer;" title="Change rotation file status" onclick="ChangeRotationStatus(\''+uuid+'\', \''+file+'\', \''+response.data[file]["rotate"]+'\')"></i> &nbsp'+
+                            html = html + '<i class="fas fa-exchange-alt" style="color:dodgerblue;cursor: pointer;" title="Change rotation file status" onclick="ChangeRotationStatus(\''+uuid+'\', \''+file+'\', \''+response.data[file]["rotate"]+'\')"></i> &nbsp'+
+                            '<i class="fas fa-sync-alt" style="color:dodgerblue;cursor: pointer;" title="Reload files" onclick="loadMonitor()"></i> &nbsp'+
                             '<i class="fas fa-edit" style="color:dodgerblue;cursor: pointer;" title="Edit rotation file values" onclick="showModifyRotation(\''+file+'\')"></i> &nbsp'+
                             '<i class="fas fa-trash-alt" style="color:red;cursor: pointer;" onclick="ModalDeleteMonitorFile(\''+uuid+'\', \''+file+'\', \''+response.data[file]["path"]+'\')"></i>'+
                         '</td>'+
@@ -405,13 +407,13 @@ function PingMonitorFiles(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error: </strong>PingMonitorFiles '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 
 }
@@ -440,8 +442,8 @@ function PingMonitor(uuid){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             }
     })
     .then(function (response) {
@@ -602,13 +604,13 @@ function PingMonitor(uuid){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error: </strong>PingMonitor '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -642,8 +644,8 @@ function ChangeRotationStatus(uuid, file, status){
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
@@ -655,13 +657,13 @@ function ChangeRotationStatus(uuid, file, status){
             if (response.data.ack == "false") {
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error: </strong>Change rotation status: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{
                 loadMonitor();
             }
@@ -670,13 +672,13 @@ function ChangeRotationStatus(uuid, file, status){
     .catch(function (error) {
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
             '<strong>Error: </strong>Change rotation status: '+error+'.'+
             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                 '<span aria-hidden="true">&times;</span>'+
             '</button>'+
         '</div>';
-        setTimeout(function() {$(".alert").alert('close')}, 5000);
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 
@@ -726,8 +728,8 @@ function EditRotation(uuid, file){
             timeout: 30000,
                 headers:{
                     'token': document.cookie,
-                    'user': payload.user,
-                    'uuid': payload.uuid,
+                    'user': payload.user
+                    
                 },
             data: dataJSON
         })
@@ -739,13 +741,13 @@ function EditRotation(uuid, file){
                 if (response.data.ack == "false") {
                     $('html,body').scrollTop(0);
                     var alert = document.getElementById('floating-alert');
-                    alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                    alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                         '<strong>Error: </strong>Edit rotation: '+response.data.error+'.'+
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                             '<span aria-hidden="true">&times;</span>'+
                         '</button>'+
                     '</div>';
-                    setTimeout(function() {$(".alert").alert('close')}, 5000);
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
                     loadMonitor();
                 }
@@ -754,13 +756,13 @@ function EditRotation(uuid, file){
         .catch(function (error) {
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error: </strong>Edit rotation: '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     }
 

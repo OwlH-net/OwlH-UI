@@ -43,7 +43,7 @@
                     <a class="nav-link" href="rulesets.html">Open Rules</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="response.html">Adapt & Response</a>
+                    <!-- <a class="nav-link" href="response.html">Adapt & Response</a> -->
                 </li>
                 <!-- <li class="nav-item">
                     <a class="nav-link" href="kibana.html">Kibana</a>
@@ -57,7 +57,7 @@
             </ul>
                     <!-- loged button -->
         <div class="dropdown mr-4">
-          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b>Loged as: </b></button>
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b id="loger-user-name" value="">Loged as: </b></button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
             <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
             <div class="dropdown-divider"></div>
@@ -97,9 +97,9 @@
               <li class="nav-item">
                 <a class="nav-link" id="pills-suricata-tab" data-toggle="pill" href="#pills-suricata" role="tab" aria-controls="pills-suricata" aria-selected="false">Suricata</a>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link" id="pills-zeek-tab" data-toggle="pill" href="#pills-zeek" role="tab" aria-controls="pills-zeek" aria-selected="false">Zeek</a>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <a class="nav-link" id="pills-analyzer-tab" data-toggle="pill" href="#pills-analyzer" role="tab" aria-controls="pills-analyzer" aria-selected="false">Analyzer</a>
               </li>

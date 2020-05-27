@@ -12,13 +12,15 @@ function loadJSONdata(){
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
         
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
 
         var ipLoad = document.getElementById('ip-master'); 
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;      
         loadRulesData();
+
         loadTitleJSONdata();      
     });
 }
@@ -26,6 +28,11 @@ var payload = "";
 loadJSONdata();
 
 function loadRulesData(){
+    var urlData = new URL(window.location.href);
+    var rulesetUuid = urlData.searchParams.get("uuid");
+    var rulesetName = urlData.searchParams.get("name");
+    var rulesetDesc = urlData.searchParams.get("desc");
+
     var result = document.getElementById('new-ruleset-table');
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -36,7 +43,7 @@ function loadRulesData(){
         method: 'get',
         url: sourceurl,
         timeout: 30000,
-        headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid}
+        headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -44,7 +51,11 @@ function loadRulesData(){
             PrivilegesMessage();              
         }else{
             result.innerHTML = generateAllRuleDataHTMLOutput(response.data);
-            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+            if(rulesetUuid != null && rulesetName != null){
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, "modify");});
+            }else{
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, "create");});
+            }
             for (source in response.data){
                 if (response.data[source]["type"] && document.getElementById('selector-checkbox-'+response.data[source]["sourceUUID"]) != null){
                     document.getElementById('selector-checkbox-'+response.data[source]["sourceUUID"]).addEventListener("click", function(){addRulesetFilesToTable(response.data)} ); 
@@ -52,6 +63,20 @@ function loadRulesData(){
                     continue;
                 }
             }         
+        }
+
+        //check for modify status
+        if(rulesetUuid != null && rulesetName != null){
+            //change input name and desc
+            document.getElementById('new-ruleset-name-input').value = rulesetName;
+            document.getElementById('new-ruleset-description-input').value = rulesetDesc;
+            //change button text
+            document.getElementById('top-add-btn').innerHTML = "Modify";
+            document.getElementById('bot-add-btn').innerHTML = "Modify";
+            //change title and subtitle
+            document.getElementById('title-banner').innerHTML = "Modify ruleset";
+            document.getElementById('subtitle-banner').innerHTML = "Ruleset: "+rulesetName;
+            loadCurrentRules(rulesetUuid);
         }
     })
     .catch(function (error) {
@@ -73,22 +98,23 @@ function generateAllRuleDataHTMLOutput(sources) {
     }
     html = html + 
     '<div>'+
-        '<div class="input-group col-md-6">'+
-        '<div class="input-group-prepend">'+
-            '<span class="input-group-text">New Name</span>'+
+        '<div class="input-group">'+
+            '<div class="input-group-prepend">'+
+                '<span class="input-group-text">Ruleset Name</span>'+
+            '</div>'+
+            '<input type="text" class="form-control" placeholder="Ruleset name" id="new-ruleset-name-input">'+
         '</div>'+
-        '<input type="text" class="form-control" placeholder="Ruleset name" id="new-ruleset-name-input">'+
+        '<br>'+
+        '<div class="input-group">'+
+            '<div class="input-group-prepend">'+
+                '<span class="input-group-text">Ruleset Description</span>'+
+            '</div>'+
+            '<input type="text" class="form-control" placeholder="Ruleset description" id="new-ruleset-description-input">'+
+        '</div>'+
+        '<br>'+
+        '<button id="top-add-btn" class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
     '</div>'+
     '<br>'+
-    '<div class="input-group col-md-6">'+
-        '<div class="input-group-prepend">'+
-            '<span class="input-group-text">New Description</span>'+
-        '</div>'+
-        '<input type="text" class="form-control" placeholder="Ruleset description" id="new-ruleset-description-input">'+
-    '</div>'+
-    '<br>'+
-    '</div>'+
-    '<br><br><br>'+
 
     '<h5>Select rulesets</h5>'+
     '<div class="form-check">';
@@ -110,25 +136,19 @@ function generateAllRuleDataHTMLOutput(sources) {
         
     '<br><br>'+
     '<br><br><br>'+
-    '<div>'+
-        '<div class="input-group col-md-6">'+
-            '<div class="input-group-prepend">'+
-                '<span class="input-group-text">Search rule file</span>'+
-            '</div>'+
-            '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')"'+
-                'placeholder="Search for rule file name..." title="Insert a ruleset name for search">'+
-        '</div>'+
-    '</div>'+
-    '<div class="mt-3">'+
-        '<span id="sort-nodes-name" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary align-text-bottom text-white float-left mb-0" style="cursor:pointer;" title="Sort table by Name">Sort by Name</span>'+
-        '<button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button>'+
+
+    // '<div class="input-group mt-1" width="100%">'+
+    //     '<span id="sort-nodes-name" width="5%" style="display: inline-flex; align-items: center;" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary text-white float-left mb-0 align-middle" style="cursor:pointer;" title="Sort table by Name">Sort by file name</span> &nbsp'+
+    // '</div>'+
+    '<div class="input-group mt-1" width="100%">'+
+        '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')" placeholder="Search by rule file name..." title="Insert a ruleset name for search"> &nbsp'+
     '</div>'+
     '<table class="table table-hover" style="table-layout: fixed" style="width:1px" id="create-ruleset-table">' +
         '<thead>                                                      ' +
         '<tr>                                                         ' +
         '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset" onchange="CheckAll(this)"></th>' +
         '<th>Ruleset name</th>                                          ' +
-        '<th>File name</th>                                          ' +
+        '<th>File name <i id="sort-nodes-name" class="fas fa-sort" sort="asc" style="cursor: pointer;" onclick="sortTableName()"></i></th>' +
         '<th>File path</th>                                          ' +
         '<th>Source</th>                                          ' +
         '</tr>                                                        ' +
@@ -161,10 +181,16 @@ function generateAllRuleDataHTMLOutput(sources) {
                 }
             }
     html = html + '</tbody></table>'+
-    '<br><button class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
+    '<br><button id="bot-add-btn" class="btn btn-primary float-right createNewRulesetLocal" type="button">Add</button><br><br>';     
 
     if (isEmpty){
-        return '<h3 style="text-align:center">No sources created</h3>';
+        return '<h3 style="text-align:center">There are no ruleset sources created</h3>'+
+        '<br>'+
+        '<h3 style="text-align:center">Please, create a new ruleset source first</h3>'+
+        '<br>'+
+        '<div class="text-center">'+
+            '<a class="text-white btn btn-primary" href="ruleset-source.html">Edit ruleset source</a>'+
+        '</div>';
     }else{
         return html;
     }
@@ -195,8 +221,10 @@ function addRulesetFilesToTable(sources){
         var checked = $(this).prop("value");
         for (source in sources){
             if (checked == sources[source]["name"]){
-                document.getElementById("row-"+source).style.display = "";//in this case display is void, not none
-                document.getElementById("row-"+source).value = "true"; //true == visible at table
+                $('#row-'+source).show();
+                $('#row-'+source).val("true");
+                // document.getElementById("row-"+source).style.display = "";//in this case display is void, not none
+                // document.getElementById("row-"+source).value = "true"; //true == visible at table
             }
         }
     });
@@ -204,24 +232,27 @@ function addRulesetFilesToTable(sources){
         var checked = $(this).prop("value");
         for (source in sources){
             if (checked == sources[source]["name"]){
-                document.getElementById("row-"+source).style.display = "none";
-                document.getElementById("row-"+source).value = "false"; //false == hidden at table
-                document.getElementById(source).checked = false; 
+                $('#row-'+source).hide();
+                $('#row-'+source).val("false");
+                $('#'+source).prop('checked', false);
+                // document.getElementById("row-"+source).style.display = "none";
+                // document.getElementById("row-"+source).value = "false"; //false == hidden at table
+                // document.getElementById(source).checked = false; 
             }
         }
     });
 }
 
-function searchRuleset(rulesetNames, checkboxIds){
+function searchRuleset(rulesetNames, checkboxIds){    
     var boxes = checkboxIds.split(",");
-
-    var input, filter, table, tr, td, i, txtValue;
+    var input, filter, table, tr;
     input = document.getElementById("ruleset-search-input");
     filter = input.value.toUpperCase();
     table = document.getElementById("create-ruleset-table");
     tr = table.getElementsByTagName("tr");
+
     $.each( boxes, function( key, value ) {
-        if($('#checkbox-'+value).is(':checked')){
+        if($('#selector-checkbox-'+value).is(':checked')){            
             $('#create-ruleset-table-body tr').each(function () {
                 if($(this).attr('sourceUUID') == value){
                     var tdContent = $(this).find(".fileName").html();
@@ -237,7 +268,7 @@ function searchRuleset(rulesetNames, checkboxIds){
     });
 }
 
-function modalAddNewRuleset(){   
+function modalAddNewRuleset(rulesetUuid, status){   
     $(".createNewRulesetLocal").unbind("click");
 
     //show progress-bar
@@ -256,6 +287,7 @@ function modalAddNewRuleset(){
             newRuleset[uuid]["rulesetName"] = document.getElementById('new-ruleset-name-input').value.trim();
             newRuleset[uuid]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value.trim();
             newRuleset[uuid]["sourceType"] = document.getElementById('source-type-'+uuid).innerHTML;
+            newRuleset[uuid]["uuid"] = rulesetUuid;
             length++;
         }
     });
@@ -275,14 +307,14 @@ function modalAddNewRuleset(){
 
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Name or description fields are null.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else if (isDuplicated){      
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none";
@@ -308,33 +340,37 @@ function modalAddNewRuleset(){
         '</div>';
 
         $('#modal-window').modal('show');
-        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});     
+        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});     
     } else {        
         $('#modal-window').modal('dispose');        
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
-        var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
+        if(status == "modify"){
+            var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/modify';
+        }else{
+            var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
+        }
         var nodeJSON = JSON.stringify(newRuleset);
         if (length == 0){
             document.getElementById('progressBar-create-div').style.display="none";
             document.getElementById('progressBar-create').style.display="none";
-            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
             
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');
-            alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                 '<strong>Error!</strong> Cannot create an empty ruleset.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 5000);
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         }else{
             axios({
                 method: 'put',
                 url: sourceurl,
                 timeout: 30000,
-                headers:{'token': document.cookie,'user': payload.user,'uuid': payload.uuid},
+                headers:{'token': document.cookie,'user': payload.user},
                 data: nodeJSON
             })
             .then(function (response) {
@@ -349,19 +385,19 @@ function modalAddNewRuleset(){
                         document.getElementById('progressBar-create').style.display="none";
                         document.location.href = 'https://' + location.hostname + '/rulesets.html';
                     }else if (response.data.ack == "false"){
-                        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
                         document.getElementById('progressBar-create-div').style.display="none";
                         document.getElementById('progressBar-create').style.display="none";
         
                         $('html,body').scrollTop(0);
                         var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                             '<strong>Error!</strong> '+response.data.error+'.'+
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                                 '<span aria-hidden="true">&times;</span>'+
                             '</button>'+
                         '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 5000);                    
+                        setTimeout(function() {$(".alert").alert('close')}, 30000);                    
                     }else{
                         // var enabled = true;
                         // for(sid in response.data){
@@ -370,7 +406,7 @@ function modalAddNewRuleset(){
                         //     }
                         // }
                         // if (enabled){
-                            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset();});
+                            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
                             document.getElementById('progressBar-create-div').style.display="none";
                             document.getElementById('progressBar-create').style.display="none";
                                 
@@ -482,4 +518,33 @@ function sortTableName() {
     }else{
         document.getElementById('sort-nodes-name').setAttribute("sort", "asc");
     }
+}
+
+function loadCurrentRules(uuid){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/getDetails/'+uuid;
+    axios({
+        method: 'get',
+        url: sourceurl,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user}
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{
+           $('input:checkbox:not(checked)').each(function() {
+                var id = $(this).prop("id");
+                for(x in response.data){
+                    if(id == response.data[x]["sourceFileUUID"]){
+                        $(this).prop("checked", true);                      
+                    }
+                }
+            });        
+        }
+    })
+    .catch(function (error) {
+    });
 }

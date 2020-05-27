@@ -12,7 +12,8 @@ function loadJSONdata(){
         catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
 
         //login button
-        document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+                document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
+        document.getElementById('loger-user-name').value = payload.user
         
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
@@ -26,7 +27,10 @@ var payload = "";
 loadJSONdata();
 
 
-function LoadFileLastLines(uuid, line, path) {
+function LoadFileLastLines() {
+    document.getElementById('progressBar-options-div').style.display = "block";
+    document.getElementById('progressBar-options').style.display = "block";
+
     var url = new URL(window.location.href);
     var uuid = url.searchParams.get("uuid");
     var line = url.searchParams.get("line");
@@ -53,12 +57,14 @@ function LoadFileLastLines(uuid, line, path) {
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
         .then(function (response) {
+        document.getElementById('progressBar-options-div').style.display = "none";
+        document.getElementById('progressBar-options').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
@@ -66,13 +72,13 @@ function LoadFileLastLines(uuid, line, path) {
             if(response.data.ack == "false"){
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
-                alert.innerHTML = '<div class="alert alert-danger alert-dismissible fade show">'+
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
                     '<strong>Error: </strong>'+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
                     '</button>'+
                 '</div>';
-                setTimeout(function() {$(".alert").alert('close')}, 5000);
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else if (line != "none") {
                 document.getElementById('inputTextTailLines').disabled='true';
                 document.getElementById('inputTextTailLines').style.backgroundColor='white';
@@ -87,12 +93,24 @@ function LoadFileLastLines(uuid, line, path) {
         }
         })
         .catch(function (error) {
-
+            document.getElementById('progressBar-options-div').style.display = "none";
+            document.getElementById('progressBar-options').style.display = "none";
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Error: </strong>'+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
         });
     return false;
 }
 
 function saveCurrentContent() {
+    document.getElementById('progressBar-options-div').style.display = "block";
+    document.getElementById('progressBar-options').style.display = "block";
     var url = new URL(window.location.href);
     var uuid = url.searchParams.get("uuid");
     var path = url.searchParams.get("path");
@@ -113,20 +131,55 @@ function saveCurrentContent() {
         timeout: 30000,
             headers:{
                 'token': document.cookie,
-                'user': payload.user,
-                'uuid': payload.uuid,
+                'user': payload.user
+                
             },
         data: dataJSON
     })
     .then(function (response) {
+        document.getElementById('progressBar-options-div').style.display = "none";
+        document.getElementById('progressBar-options').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
-            LoadFileLastLines(uuid, "none", path);
+            if(response.data.ack == "false"){
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error! </strong>'+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }else{
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = '<div class="alert alert-success alert-dismissible fade show">'+
+                    '<strong>Success! </strong>File modified successfully.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+    
+                LoadFileLastLines();
+            }
         }
     })
     .catch(function (error) {
+        document.getElementById('progressBar-options-div').style.display = "none";
+        document.getElementById('progressBar-options').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error! </strong>'+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);
     });
 }
 

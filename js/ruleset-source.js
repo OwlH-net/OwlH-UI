@@ -220,6 +220,12 @@ function addRulesetSource() {
                         $('#ruleset-source-passwd').css('border', '2px solid #ced4da');
                         $('#ruleset-source-secret-key').css('border', '2px solid #ced4da');
     
+                        //clean all ruleset default
+                        document.getElementById('default-rulesets').innerHTML = '<br>'+
+                        '<h5>Select default ruleset (click to see ruleset details) </h5>'+
+                        '<h6><i>note: Insert SECRET-CODE in form field when URL needs it. </i></h6>'+
+                        '<br>';
+
                         GetAllRulesetSource();
                         //Clean all fields
                         //check url radiobutton
@@ -246,7 +252,7 @@ function addRulesetSource() {
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
             });
-            GetAllRulesetSource();
+            // GetAllRulesetSource();
         }
 
     }
@@ -364,7 +370,6 @@ function LoadDefaultRulesets(){
         }
     })
     .then(function (response) {
-        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();

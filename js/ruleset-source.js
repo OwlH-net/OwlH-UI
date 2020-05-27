@@ -137,7 +137,7 @@ function addRulesetSource() {
         });
         //check for empty fields
         $(headerKeys).each(function(i, obj) {
-            if((headerKeys[i] == null && headeValues[i] != null) || (headerKeys[i] != null && headerValues[i] == null)){
+            if((headerKeys[i] == null && headerKeys[i] != null) || (headerKeys[i] != null && headerValues[i] == null)){
                 isHeaderError = true;
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
@@ -945,18 +945,27 @@ function overwriteDownload(name, path, url, uuid){
     });
 }
 
+function deleteHeaderRow(id) {
+    $('#header-key-'+id).val("")
+    $('#header-value-'+id).val("")
+    $('#header-'+id).hide()
+}
+
+var headerCount = 0;
 function addHeaderInput() {
-    var html = '<div class="input-group header-line mt-2 mb-2 mr-sm-2 mb-sm-0">'+
+    var html = '<div class="input-group header-line mt-2 mb-2 mr-sm-2 mb-sm-0" id="header-'+headerCount+'">'+
         '<div class="input-group-prepend">'+
             '<span class="input-group-text wt-125">Header key</span>'+
         '</div>'+
-        '<input type="text" class="form-control header-key" placeholder="Add header key">'+
+        '<input type="text" class="form-control header-key" placeholder="Add header key" id="header-key-'+headerCount+'">'+
         '<div class="input-group-prepend ml-1">'+
             '<span class="input-group-text wt-125">Header value</span>'+
         '</div>'+
-        '<input type="text" class="form-control header-value" placeholder="Add header value">'+
+        '<input type="text" class="form-control header-value" placeholder="Add header value" id="header-value-'+headerCount+'"> &nbsp;'+
+        '<i class="fas fa-minus-square" style="color:red; cursor:pointer; font-size: 20px;" onclick="deleteHeaderRow(\''+headerCount+'\')"></i>'+
     '</div>';
     document.getElementById('header-content-input').innerHTML = document.getElementById('header-content-input').innerHTML + html;
+    headerCount++;
 }
 
 function checkStatus() {

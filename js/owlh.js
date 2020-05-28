@@ -305,9 +305,9 @@ function GetAllNodes() {
                                         '<p class="text-muted">' + nodes[node]['ip'] + '</p>'+
                                         // '<i class="fas fa-code" title="Ruleset Management"></i> '+
                                         '<p><b>Suricata rulesets</b></p>'+
-                                        '<p id="all-data-'+uuid+'" class="text-muted small">No ruleset selected...</p>'+
+                                        '<p id="all-data-'+uuid+'" class="text-danger small">No ruleset selected...</p>'+
                                         '<p><b>Zeek</b></p>'+
-                                        '<p id="zeek-data-'+uuid+'" class="text-muted small">Zeek is not available...</p>'+
+                                        '<p id="zeek-data-'+uuid+'" class="text-danger small">Zeek is not available...</p>'+
                                         // '<div>'+
                                         // '</div>'+
                                         // '<br><br>'+                                        
@@ -488,6 +488,7 @@ function GetAllGroupRulesetsForAllNodes(){
                     }
                     if (!isEmpty){
                         if (document.getElementById('all-data-'+uuid).innerHTML == "No ruleset selected..."){
+                            document.getElementById('all-data-'+uuid).className = 'text-dark small';
                             document.getElementById('all-data-'+uuid).innerHTML = html;
                         }else{
                             document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + html+'<br>';
@@ -725,6 +726,7 @@ async function getRuleName(uuidRuleset, uuid) {
             }else{
                 if (response.data != ""){
                     if (document.getElementById('all-data-'+uuid).innerHTML == "No ruleset selected..."){
+                        document.getElementById('all-data-'+uuid).className = 'text-dark small';
                         document.getElementById('all-data-'+uuid).innerHTML = response.data;
                     }else{
                         document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + response.data+'<br>';
@@ -846,7 +848,9 @@ function sortTableIP() {
     }
 }
 
-function addNode() {                 
+function addNode() {          
+    document.getElementById('progressBar-node').style.display = "block";
+    document.getElementById('progressBar-node-div').style.display = "block";       
     var nname = document.getElementById('nodename').value.trim();
     var nip = document.getElementById('nodeip').value.trim();
     var nport = document.getElementById('nodeport').value.trim();
@@ -1170,10 +1174,13 @@ function syncRulesetModal(node, name){
             if (response.data.mode != "") {
                 if (response.data.mode == "standalone") {
                     document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Standalone";
+                    document.getElementById('zeek-data-'+uuid).className = 'text-dark small';
                 }else if (response.data.mode == "cluster" && !response.data.manager){
                     document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Cluster";
+                    document.getElementById('zeek-data-'+uuid).className = 'text-dark small';
                 }else if (response.data.mode == "cluster" && response.data.manager){
                     document.getElementById('zeek-data-'+uuid).innerHTML = "Mode: Cluster (Manager)";
+                    document.getElementById('zeek-data-'+uuid).className = 'text-dark small';
 
                 }
             }

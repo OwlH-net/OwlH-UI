@@ -1140,6 +1140,10 @@ async function GetMainconfData(uuid){
                         document.getElementById('suricata-current-status').innerHTML = 'Expert';
                         document.getElementById('managed-expert-span').innerHTML = 'To managed';
                         document.getElementById('main-suricata-status-btn').style.display = 'none';
+                    }else{
+                        document.getElementById('suricata-current-status').className = 'badge badge-pill bg-dark align-text-bottom text-white';
+                        document.getElementById('suricata-current-status').innerHTML = 'N/A';
+                        document.getElementById('main-suricata-status-btn').className = 'fas fa-play-circle';
                     }
                 }else if(service == "zeek"){
                     if(response.data[service]["status"] == "disabled"){

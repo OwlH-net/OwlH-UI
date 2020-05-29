@@ -76,9 +76,11 @@ function GetAllGroups(){
                             '<td>'+
                                 '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowGroupDetails(\''+id+'\')"></i> &nbsp'+
                                 '<i class="fas fa-edit" title="Edit group" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalEditGroup(\''+id+'\', \''+response.data[id]["group"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
-                                '<i class="fas fa-user-friends" title="Add roles to this group" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddRoleToGroup(\''+id+'\', \''+response.data[id]["group"]+'\')"></i> &nbsp'+
-                                '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteGroup(\''+id+'\', \''+response.data[id]["group"]+'\')"></i>'+                                
-                            '</td>'+
+                                '<i class="fas fa-user-friends" title="Add roles to this group" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddRoleToGroup(\''+id+'\', \''+response.data[id]["group"]+'\')"></i> &nbsp';
+                                if(response.data[id]["deleteable"] != "false"){
+                                    html = html + '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteGroup(\''+id+'\', \''+response.data[id]["group"]+'\')"></i>';
+                                }
+                                html = html + '</td>'+
                         '</tr>'+
                         '<tr id="group-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                                     
                             '<td>'+
@@ -91,9 +93,11 @@ function GetAllGroups(){
                                     for (x in users){
                                         if(users[x] != ""){
                                             html = html + '<tr>'+
-                                                '<td>'+users[x]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteGroupUser(\''+id+'\', \''+users[x]+'\')"></i></td>';
-                                            '</tr>';
+                                                '<td>'+users[x]+'</td>';
+                                                if(response.data[id]["deleteable"] != "false"){
+                                                    html = html + '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteGroupUser(\''+id+'\', \''+users[x]+'\')"></i></td>';
+                                                }
+                                                html = html + '</tr>';
                                         }
                                     }
                                 html = html + '</table>'+
@@ -108,9 +112,11 @@ function GetAllGroups(){
                                     for (x in roles){
                                         if(roles[x] != ""){
                                             html = html + '<tr>'+
-                                                '<td>'+roles[x]+'</td>'+
-                                                '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteGroupRole(\''+id+'\', \''+roles[x]+'\')"></i></td>';
-                                            '</tr>';
+                                                '<td>'+roles[x]+'</td>';
+                                                if(response.data[id]["deleteable"] != "false"){
+                                                    html = html + '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteGroupRole(\''+id+'\', \''+roles[x]+'\')"></i></td>';
+                                                }
+                                                html = html + '</tr>';
                                         }
                                     }
                                 html = html + '</table>'+
@@ -150,19 +156,19 @@ function modalAddGroup(){
             '</div>'+
         
         '<div class="modal-body">'+ 
-            '<p>Insert user name:</p>'+
+            '<p>Insert group name:</p>'+
             '<input type="text" class="form-control" id="group-name" placeholder="Insert here the new group"><br>'+
         '</div>'+
 
         '<div class="modal-footer">'+
             '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-            '<button type="submit" class="btn btn-primary" id="group-user-btn">Add</button>'+
+            '<button type="submit" class="btn btn-primary" id="group-group-btn">Add</button>'+
         '</div>'+
 
         '</div>'+
     '</div>';
     $('#modal-window').modal().show();
-    $('#group-user-btn').click(function(){ AddGroup();});
+    $('#group-group-btn').click(function(){ AddGroup();});
 }
 
 function AddGroup(){
@@ -255,30 +261,30 @@ function ShowGroupDetails(id){
     }
 }
 
-function modalDeleteGroup(id, user){
+function modalDeleteGroup(id, group){
     var modalWindow = document.getElementById('modal-window');
     modalWindow.innerHTML = 
     '<div class="modal-dialog" role="document">'+
         '<div class="modal-content">'+
 
         '<div class="modal-header">'+
-            '<h4 class="modal-title">Delete user</h4>'+
+            '<h4 class="modal-title">Delete group</h4>'+
             '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
             '</div>'+
         
         '<div class="modal-body" style="word-break: break-all;">'+ 
-            '<p>Do you want to delete user <b>'+user+'</b>?</p>'+
+            '<p>Do you want to delete group <b>'+group+'</b>?</p>'+
           '</div>'+
 
         '<div class="modal-footer">'+
             '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-            '<button type="submit" class="btn btn-danger" id="delete-user-btn">Delete</button>'+
+            '<button type="submit" class="btn btn-danger" id="delete-group-btn">Delete</button>'+
         '</div>'+
 
         '</div>'+
     '</div>';
     $('#modal-window').modal().show();
-    $('#delete-user-btn').click(function(){ DeleteGroup(id);});
+    $('#delete-group-btn').click(function(){ DeleteGroup(id);});
 }
 
 function DeleteGroup(id){

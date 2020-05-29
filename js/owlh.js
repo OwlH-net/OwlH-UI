@@ -69,7 +69,13 @@ async function PingNode(uuid, token) {
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
-                if (response.data.ping=='pong') {
+                if (token=="wait") {
+                    document.getElementById(uuid+'-online').className = "badge bg-warning align-text-bottom text-white";
+                    document.getElementById(uuid+'-online').innerHTML = "PENDING REGISTRATION";
+                    document.getElementById('node-values-'+uuid).innerHTML = '<span class="badge bg-primary align-text-bottom text-white float-" style="cursor: pointer;" onclick="registerNode(\''+uuid+'\')">Try registration now</span>';
+                    document.getElementById('node-info-'+uuid).style.display = 'none';
+
+                }else if (response.data.ping=='pong') {
                     document.getElementById('node-actions-'+uuid).style.color = "Dodgerblue";
                     document.getElementById(uuid+'-online').className = "badge bg-success align-text-bottom text-white";
                     document.getElementById(uuid+'-online').innerHTML = "ON LINE";
@@ -78,31 +84,26 @@ async function PingNode(uuid, token) {
                     PingMonitor(uuid);
                     var myVar = setInterval(function(){PingMonitor(uuid)}, 3000);
                 }else{
+                    //disable actions onclick
                     document.getElementById('node-monitor-'+uuid).onclick = "";
                     document.getElementById('node-services-'+uuid).onclick = "";
-                    // document.getElementById('node-modify-'+uuid).onclick = "";
                     document.getElementById('node-config-'+uuid).onclick = "";
                     document.getElementById('node-files-'+uuid).onclick = "";
                     document.getElementById('node-change-'+uuid).onclick = "";
                     document.getElementById('node-incident-'+uuid).onclick = "";
                     document.getElementById('node-actions-'+uuid).onclick = "";
-    
+                    //disable actions style
                     document.getElementById('node-monitor-'+uuid).style.cursor = " default";
                     document.getElementById('node-services-'+uuid).style.cursor = "default";
-                    // document.getElementById('node-modify-'+uuid).style.cursor = "default";
                     document.getElementById('node-config-'+uuid).style.cursor = "default";
                     document.getElementById('node-files-'+uuid).style.cursor = "default";
                     document.getElementById('node-change-'+uuid).style.cursor = "default";
                     document.getElementById('node-incident-'+uuid).style.cursor = "default";
                     document.getElementById('node-actions-'+uuid).style.cursor = "default";
-    
-                    if(token=='wait'){
-                        document.getElementById(uuid+'-online').className = "badge bg-warning align-text-bottom text-white";
-                        document.getElementById(uuid+'-online').innerHTML = "PENDING REGISTRATION";
-                    }else{
-                        document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
-                        document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
-                    }
+                    //set node status to OFFLINE
+                    document.getElementById(uuid+'-online').className = "badge bg-danger align-text-bottom text-white";
+                    document.getElementById(uuid+'-online').innerHTML = "OFF LINE";
+                    //Set attr to offline
                     document.getElementById('node-row-'+uuid).setAttribute("status", "offline");
                 }   
             }            
@@ -124,6 +125,47 @@ async function PingNode(uuid, token) {
             document.getElementById('node-incident-'+uuid).style.cursor = "default";
             document.getElementById('node-actions-'+uuid).style.cursor = "default";
         });   
+}
+
+function registerNode(uuid){
+    document.getElementById('progressBar-node').style.display = "block";
+    document.getElementById('progressBar-node-div').style.display = "block";
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/registerNode/' + uuid;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user            
+        }
+    })
+    .then(function (response) {
+        document.getElementById('progressBar-node').style.display = "none";
+        document.getElementById('progressBar-node-div').style.display = "none";
+
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.permissions == "none"){
+            PrivilegesMessage();              
+        }else{   
+            GetAllNodes();
+        }
+    })
+    .catch(function (error) {
+        document.getElementById('progressBar-node').style.display = "none";
+        document.getElementById('progressBar-node-div').style.display = "none";
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Registration Error!</strong> '+error+'.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);   
+    }); 
 }
 
 function PingService(uuid){
@@ -304,10 +346,12 @@ function GetAllNodes() {
                                     '<td width="33%" style="word-wrap: break-word;" class="align-middle"> <strong>' + nodes[node]['name'] + '</strong>'+
                                         '<p class="text-muted">' + nodes[node]['ip'] + '</p>'+
                                         // '<i class="fas fa-code" title="Ruleset Management"></i> '+
-                                        '<p><b>Suricata rulesets</b></p>'+
-                                        '<p id="all-data-'+uuid+'" class="text-danger small">No ruleset selected...</p>'+
-                                        '<p><b>Zeek</b></p>'+
-                                        '<p id="zeek-data-'+uuid+'" class="text-danger small">Zeek is not available...</p>'+
+                                        '<div id="node-info-'+node+'">'+
+                                            '<p><b>Suricata rulesets</b></p>'+
+                                            '<p id="all-data-'+uuid+'" class="text-danger small">No ruleset selected...</p>'+
+                                            '<p><b>Zeek</b></p>'+
+                                            '<p id="zeek-data-'+uuid+'" class="text-danger small">Zeek is not available...</p>'+
+                                        '</div>'+
                                         // '<div>'+
                                         // '</div>'+
                                         // '<br><br>'+                                        

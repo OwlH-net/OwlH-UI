@@ -77,61 +77,12 @@ function GetAllRoles(){
                             '<td>'+response.data[id]["desc"]+'</td>'+
                             '<td>'+
                                 '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowRoleDetails(\''+id+'\', \''+response.data[id]["role"]+'\')"></i> &nbsp'+
-                                '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="EditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["desc"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp'+
-                                '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteRole(\''+id+'\', \''+response.data[id]["role"]+'\')"></i>'+                                
-                            '</td>'+
+                                '<i class="fas fa-edit" title="Edit roles permissions" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="EditRole(\''+id+'\', \''+response.data[id]["role"]+'\', \''+response.data[id]["desc"]+'\', \''+response.data[id]["permissions"]+'\')"></i> &nbsp';
+                                if(response.data[id]["deleteable"] != "false"){
+                                    html = html + '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteRole(\''+id+'\', \''+response.data[id]["role"]+'\')"></i>';
+                                }
+                                html = html + '</td>'+
                         '</tr>';
-                        // '<tr id="role-info-'+id+'" style="display:none;" bgcolor="LightSteelBlue">'+                                                     
-                        //     '<td>'+
-                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                        //             '<tr>'+
-                        //                 '<th width="20%">Permissions</th>'+
-                        //             '</tr>';
-                        //             var roles = response.data[id]["permissions"].split(",");
-                        //             for (x in roles){
-                        //                 if(roles[x] != ""){
-                        //                     html = html + '<tr>'+
-                        //                         '<td>'+roles[x]+'</td>'+
-                        //                     '</tr>';
-                        //                 }
-                        //             }
-                        //         html = html + '</table>'+
-                        //     '</td>'+
-                        //     '<td>'+
-                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                        //             '<tr>'+
-                        //                 '<th>Users</th>'+
-                        //                 '<th>Actions</th>'+
-                        //             '</tr>';
-                        //             var users = response.data[id]["users"].split(",");
-                        //             for (x in users){
-                        //                 if(users[x] != ""){
-                        //                     html = html + '<tr>'+
-                        //                         '<td>'+users[x]+'</td>'+
-                        //                         '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleUser(\''+id+'\', \''+users[x]+'\')"></i></td>';                                                
-                        //                     '</tr>';
-                        //                 }
-                        //             }
-                        //         html = html + '</table>'+
-                        //     '</td>'+
-                        //     '<td>'+
-                        //         '<table class="table table-hover" style="table-layout: fixed" style="width:1px">'+
-                        //             '<tr>'+
-                        //                 '<th>Groups</th>'+
-                        //                 '<th>Actions</th>'+
-                        //             '</tr>';
-                        //             var groups = response.data[id]["groups"].split(",");
-                        //             for (x in groups){
-                        //                 if(groups[x] != ""){
-                        //                     html = html + '<tr>'+
-                        //                         '<td>'+groups[x]+'</td>'+
-                        //                         '<td><i class="fas fa-trash-alt" style="color:red;cursor:pointer;" onclick="DeleteRoleGroup(\''+id+'\', \''+groups[x]+'\')"></i></td>';
-                        //                     '</tr>';
-                        //                 }
-                        //             }
-                        //         html = html + '</table>'+
-                        //     '</td>'+
-                        // '</tr>';
                     }
                     html = html + '</tbody>'+
                 '</table>';

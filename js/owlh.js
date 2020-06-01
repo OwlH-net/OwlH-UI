@@ -535,7 +535,7 @@ function GetAllGroupRulesetsForAllNodes(){
                             document.getElementById('all-data-'+uuid).className = 'text-dark small';
                             document.getElementById('all-data-'+uuid).innerHTML = html;
                         }else{
-                            document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + html+'<br>';
+                            document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + '<br>'+html;
                         }
                     }
                 }
@@ -773,7 +773,7 @@ async function getRuleName(uuidRuleset, uuid) {
                         document.getElementById('all-data-'+uuid).className = 'text-dark small';
                         document.getElementById('all-data-'+uuid).innerHTML = response.data;
                     }else{
-                        document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + response.data+'<br>';
+                        document.getElementById('all-data-'+uuid).innerHTML = document.getElementById('all-data-'+uuid).innerHTML + response.data;
                     }
                 }
                 // if (typeof response.data.error != "undefined" || response.data == ""){

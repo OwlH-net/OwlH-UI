@@ -148,7 +148,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         '<tr>                                                         ' +
         '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset" onchange="CheckAll(this)"></th>' +
         '<th>Ruleset name</th>                                          ' +
-        '<th>File name <i id="sort-nodes-name" class="fas fa-sort" sort="asc" style="cursor: pointer;" onclick="sortTableName()"></i></th>' +
+        '<th>File name <i id="sort-nodes-name" class="fas fa-sort" sort="desc" style="cursor: pointer;" onclick="sortTableName()"></i></th>' +
         '<th>File path</th>                                          ' +
         '<th>Source</th>                                          ' +
         '</tr>                                                        ' +
@@ -158,7 +158,7 @@ function generateAllRuleDataHTMLOutput(sources) {
                 if(sources[source]["type"]){
                     if(sources[source]["exists"]=="true"){
                         isEmpty = false;
-                        html = html + '<tr id="row-'+source+'" rulesetname="'+sources[source]["name"]+'" sourceUUID="'+sources[source]["sourceUUID"]+'">'+
+                        html = html + '<tr id="row-'+source+'" rulesetfile="'+sources[source]["file"]+'" sourceUUID="'+sources[source]["sourceUUID"]+'">'+
                             '<td style="width: 100%; word-wrap: break-word;" align="center">'+
                                 '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
                             '</td>'+
@@ -491,8 +491,8 @@ function sortTableName() {
 		rows = table.rows;
 		for (i = 1; i < (rows.length - 1); i++) {
 			shouldSwitch = false;
-			x = rows[i].getAttribute("rulesetname");
-            y = rows[i + 1].getAttribute("rulesetname");
+			x = rows[i].getAttribute("rulesetfile");
+            y = rows[i + 1].getAttribute("rulesetfile");
 
             if (type == "asc"){
                 if (x.toLowerCase() > y.toLowerCase()) {

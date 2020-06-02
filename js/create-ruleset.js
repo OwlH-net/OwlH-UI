@@ -124,7 +124,7 @@ function generateAllRuleDataHTMLOutput(sources) {
                 arrayRulesets.push(sources[source]["name"]);
                 rulesetsIds.push(sources[source]["sourceUUID"]);
                 html = html +'<ul class="checkbox-grid">'+
-                ' <li style="display: block; float: left; width: 25%"><input class="ruleset-input" type="checkbox" sourceUUID="'+sources[source]["sourceUUID"]+'" value="'+sources[source]["name"]+'" id="selector-checkbox-'+sources[source]["sourceUUID"]+'" checked/><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
+                ' <li style="display: block; float: left; width: 25%"><input class="ruleset-input ruleset-source" type="checkbox" sourceUUID="'+sources[source]["sourceUUID"]+'" value="'+sources[source]["name"]+'" id="selector-checkbox-'+sources[source]["sourceUUID"]+'" checked/><label for="'+sources[source]["name"]+'">&nbsp'+sources[source]["name"]+'</label></li>'+
                 '</ul>';
                 
             }
@@ -137,9 +137,6 @@ function generateAllRuleDataHTMLOutput(sources) {
     '<br><br>'+
     '<br><br><br>'+
 
-    // '<div class="input-group mt-1" width="100%">'+
-    //     '<span id="sort-nodes-name" width="5%" style="display: inline-flex; align-items: center;" onclick="sortTableName()" sort="asc" class="sort-table badge bg-secondary text-white float-left mb-0 align-middle" style="cursor:pointer;" title="Sort table by Name">Sort by file name</span> &nbsp'+
-    // '</div>'+
     '<div class="input-group mt-1" width="100%">'+
         '<input class="form-control" type="text" id="ruleset-search-input" onkeyup="searchRuleset(\''+arrayRulesets+'\', \''+rulesetsIds+'\')" placeholder="Search by rule file name..." title="Insert a ruleset name for search"> &nbsp'+
     '</div>'+
@@ -148,7 +145,7 @@ function generateAllRuleDataHTMLOutput(sources) {
         '<tr>                                                         ' +
         '<th style="width: 10%"><input type="checkbox" id="select-all-create-ruleset" onchange="CheckAll(this)"></th>' +
         '<th>Ruleset name</th>                                          ' +
-        '<th>File name <i id="sort-nodes-name" class="fas fa-sort" sort="asc" style="cursor: pointer;" onclick="sortTableName()"></i></th>' +
+        '<th>File name <i id="sort-nodes-name" class="fas fa-sort" sort="desc" style="cursor: pointer;" onclick="sortTableName()"></i></th>' +
         '<th>File path</th>                                          ' +
         '<th>Source</th>                                          ' +
         '</tr>                                                        ' +
@@ -158,7 +155,7 @@ function generateAllRuleDataHTMLOutput(sources) {
                 if(sources[source]["type"]){
                     if(sources[source]["exists"]=="true"){
                         isEmpty = false;
-                        html = html + '<tr id="row-'+source+'" rulesetname="'+sources[source]["name"]+'" sourceUUID="'+sources[source]["sourceUUID"]+'">'+
+                        html = html + '<tr id="row-'+source+'" rulesetfile="'+sources[source]["file"]+'" sourceUUID="'+sources[source]["sourceUUID"]+'">'+
                             '<td style="width: 100%; word-wrap: break-word;" align="center">'+
                                 '<input class="form-check-input" type="checkbox" value="table-elements" id="'+source+'"></input>'+
                             '</td>'+
@@ -270,16 +267,59 @@ function searchRuleset(rulesetNames, checkboxIds){
 
 function modalAddNewRuleset(rulesetUuid, status){   
     $(".createNewRulesetLocal").unbind("click");
+    // //show modal with number of rulesets selected Which ruleset sources has been selected
+    // var count = 0;
+    // var flag = false;
+    // var sources = [];
+    // $('input[type=checkbox]').each(function () {
+    //     if($(this).hasClass('ruleset-source')){
+    //         if($(this).attr('checked')){
+    //             sources.push($(this).val());
+    //             count++;
+    //         }
+    //     }
+    // });
+    // if(count > 1){
+    //     document.getElementById('progressBar-create-div').style.display="none";
+    //     document.getElementById('progressBar-create').style.display="none";
+    //     document.getElementById('modal-window').innerHTML = 
+    //     '<div class="modal-dialog">'+
+    //         '<div class="modal-content">'+
+        
+    //             '<div class="modal-header" style="word-break: break-all;">'+
+    //                 '<h4 class="modal-title">Files selected</h4>'+
+    //                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+    //             '</div>'+
+        
+    //             '<div class="modal-body" style="word-break: break-all;">'+ 
+    //                 '<p>Ruleset sources selected: '+sources.toString()+'</p>'+
+    //                 '<p>Yo selected <b>'+rulesetCount+'</b> rulesets</p>'+
+    //             '</div>'+
+        
+    //             '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+    //                 '<button id="modalClose" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+    //                 '<button id="modalSend" type="button" class="btn btn-primary" data-dismiss="modal">Add</button>'+
+    //             '</div>'+
+        
+    //         '</div>'+
+    //     '</div>';
+    //     $('#modal-window').modal('show');
+    //     $('#modalClose').click(function(){ $('#modal-window').modal('hide');});
+    //     $('#modalSend').click(function(){ flag = true; $('#modal-window').modal('hide');});
+    // }
 
     //show progress-bar
     document.getElementById('progressBar-create-div').style.display="block";
     document.getElementById('progressBar-create').style.display="block";    
     var length = 0;
+    var rulesetCount = 0;
+
     var newRuleset = new Map();
     $('input:checkbox:checked').each(function() {
         var uuid = $(this).prop("id");
         var value = $(this).prop("value");
         if (value == "table-elements"){
+            rulesetCount++;
             newRuleset[uuid] = new Map();
             newRuleset[uuid]["sourceName"] = document.getElementById('nameNewRuleset-'+uuid+'').innerHTML;
             newRuleset[uuid]["fileName"] = document.getElementById('fileNewRuleset-'+uuid+'').innerHTML;
@@ -365,7 +405,7 @@ function modalAddNewRuleset(rulesetUuid, status){
                 '</button>'+
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 30000);
-        }else{
+        }else{            
             axios({
                 method: 'put',
                 url: sourceurl,
@@ -399,77 +439,65 @@ function modalAddNewRuleset(rulesetUuid, status){
                         '</div>';
                         setTimeout(function() {$(".alert").alert('close')}, 30000);                    
                     }else{
-                        // var enabled = true;
-                        // for(sid in response.data){
-                        //     if(response.data[sid]["enabled"] != "Enabled"){
-                        //         enabled = false;
-                        //     }
-                        // }
-                        // if (enabled){
-                            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
-                            document.getElementById('progressBar-create-div').style.display="none";
-                            document.getElementById('progressBar-create').style.display="none";
-                                
-                            lines = JSON.parse(response.data)
-                            var html =
-                            '<div class="modal-dialog modal-lg">'+
-                                '<div class="modal-content">'+
+                        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
+                        document.getElementById('progressBar-create-div').style.display="none";
+                        document.getElementById('progressBar-create').style.display="none";
                             
-                                    '<div class="modal-header">'+
-                                        '<h4 class="modal-title">Lines duplicated</h4>'+
-                                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                                    '</div>'+
-                            
-                                    '<div class="modal-body">'+
-                                        '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                                            '<thead>                                                      ' +
-                                                '<tr>                                                         ' +
-                                                '<th>SID</th>                                                ' +
-                                                '<th>Files</th>                                         ' +
-                                                '</tr>                                                        ' +
-                                            '</thead>                                                     ' +
-                                            '<tbody>                                                     '
-                                                for (sid in lines){
-                                                    for(values in lines[sid]){
-                                                        var cont = true;
-                                                        for(data in lines[sid][values]){                                                    
-                                                            html = html + '<tr>'
-                                                            if (cont){
-                                                                html = html + 
-                                                                '<th rowspan="'+lines[sid]["counter"]+'">' +
-                                                                    sid +
-                                                                '</th>'
-                                                                cont = false;
-                                                            }
+                        lines = JSON.parse(response.data)
+                        var html =
+                        '<div class="modal-dialog modal-lg">'+
+                            '<div class="modal-content">'+
+                        
+                                '<div class="modal-header">'+
+                                    '<h4 class="modal-title">Lines duplicated</h4>'+
+                                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                                '</div>'+
+                        
+                                '<div class="modal-body">'+
+                                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                        '<thead>                                                      ' +
+                                            '<tr>                                                         ' +
+                                            '<th>SID</th>                                                ' +
+                                            '<th>Files</th>                                         ' +
+                                            '</tr>                                                        ' +
+                                        '</thead>                                                     ' +
+                                        '<tbody>                                                     '
+                                            for (sid in lines){
+                                                for(values in lines[sid]){
+                                                    var cont = true;
+                                                    for(data in lines[sid][values]){                                                    
+                                                        html = html + '<tr>'
+                                                        if (cont){
                                                             html = html + 
-                                                            '<td style="word-wrap: break-word;">'+
-                                                                lines[sid][values][data]["fileName"] +
-                                                            '</td></tr>'
+                                                            '<th rowspan="'+lines[sid]["counter"]+'">' +
+                                                                sid +
+                                                            '</th>'
+                                                            cont = false;
                                                         }
+                                                        html = html + 
+                                                        '<td style="word-wrap: break-word;">'+
+                                                            lines[sid][values][data]["fileName"] +
+                                                        '</td></tr>'
                                                     }
                                                 }
-                                            html = html + '</tbody></table>'+
-                                    '</div>'+
-                            
-                                    '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
-                                        '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                                    '</div>'+
-                            
+                                            }
+                                        html = html + '</tbody></table>'+
                                 '</div>'+
-                            '</div>';
-                    
-                            document.getElementById('modal-window').innerHTML = html;
-                            $('#modal-window').modal('show')     
-                        // }else{
-                        //     document.getElementById('progressBar-create-div').style.display="none";
-                        //     document.getElementById('progressBar-create').style.display="none";
-                        //     document.location.href = 'https://' + location.hostname + '/rulesets.html';
-                        // }
+                        
+                                '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                                    '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                                '</div>'+
+                        
+                            '</div>'+
+                        '</div>';
+                
+                        document.getElementById('modal-window').innerHTML = html;
+                        $('#modal-window').modal('show')     
                     }
                 }
             })
             .catch(function (error) {
-            });
+            });            
         }
     }
 }
@@ -491,8 +519,8 @@ function sortTableName() {
 		rows = table.rows;
 		for (i = 1; i < (rows.length - 1); i++) {
 			shouldSwitch = false;
-			x = rows[i].getAttribute("rulesetname");
-            y = rows[i + 1].getAttribute("rulesetname");
+			x = rows[i].getAttribute("rulesetfile");
+            y = rows[i + 1].getAttribute("rulesetfile");
 
             if (type == "asc"){
                 if (x.toLowerCase() > y.toLowerCase()) {

@@ -3648,6 +3648,7 @@ function sendRulesetToNode(uuid, service){
     jsonRuleUID["ruleset"] = document.getElementById('suricata-ruleset-edit-id-'+service).value;    
     jsonRuleUID["type"] = "node";
     var dataJSON = JSON.stringify(jsonRuleUID);
+    console.log(jsonRuleUID);
     axios({
         method: 'put',
         url: nodeurl,

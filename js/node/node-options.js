@@ -2431,8 +2431,7 @@ function AddSTAPModal(uuid, type){
             axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid, {
                 headers:{
                     'token': document.cookie,
-                    'user': payload.user
-                    
+                    'user': payload.user                    
                 }
             })
             .then(function (response) {
@@ -2442,7 +2441,9 @@ function AddSTAPModal(uuid, type){
                 }else{
                     var isChecked = false;
                     var inner = "";
+                    var count = 0;
                     for (net in response.data){
+                        count++;
                         inner = inner + '<tr>'+
                             '<td style="word-wrap: break-word;">' +
                                 '<p class="ml-4">'+response.data[net]+'</p>'+
@@ -2457,28 +2458,35 @@ function AddSTAPModal(uuid, type){
                             inner = inner + '</td>'+
                         '</tr>';
                     }
-                    document.getElementById('socket-network-modal-table').innerHTML = inner;
+                    count = 0;
+                    if(count == 0){
+                        var content = '&nbsp <i style="cursor:pointer; color:orange" class="fas fa-exclamation-triangle fa-lg" onclick="GetCommandsLog(\''+uuid+'\', \'interface\', \'interface\')"></i>'+
+                            '&nbsp <span style="cursor:pointer; color:orange" class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \'interface\', \'interface\')">View Log</span>';
+                        document.getElementById('socket-network-modal-table').innerHTML = content;
+                    }else{
+                        document.getElementById('socket-network-modal-table').innerHTML = inner;
+                    }
                 }
             });
-    }
-    html = html + '</div>'+
-    '<div class="modal-footer" id="sync-node-footer-btn">'+
-        '<button type="button" class="btn btn-secondary" id="add-stap-modal-close">Cancel</button>'+
-        '<button type="button" class="btn btn-primary" id="add-stap-modal">Add</button>'+
-    '</div>'+
+        }
+        html = html + '</div>'+
+        '<div class="modal-footer" id="sync-node-footer-btn">'+
+            '<button type="button" class="btn btn-secondary" id="add-stap-modal-close">Cancel</button>'+
+            '<button type="button" class="btn btn-primary" id="add-stap-modal">Add</button>'+
+        '</div>'+
 
-    '</div>'+
-  '</div>';
+        '</div>'+
+    '</div>';
 
 
 
-  //   $('#add-stap-modal').click(function(){ $('#modal-window').modal("hide"); saveSoftwareTAP(uuid, type); });
-  document.getElementById('modal-window').innerHTML = html;
+    //   $('#add-stap-modal').click(function(){ $('#modal-window').modal("hide"); saveSoftwareTAP(uuid, type); });
+    document.getElementById('modal-window').innerHTML = html;
 
-  $('#modal-window').modal("show");
-  $('#add-stap-modal').click(function(){ saveSoftwareTAP(uuid, type); });
-  $('#add-stap-modal-close').click(function(){ $('#modal-window').modal("hide");});
-  $('#add-stap-modal-cross').click(function(){ $('#modal-window').modal("hide");});
+    $('#modal-window').modal("show");
+    $('#add-stap-modal').click(function(){ saveSoftwareTAP(uuid, type); });
+    $('#add-stap-modal-close').click(function(){ $('#modal-window').modal("hide");});
+    $('#add-stap-modal-cross').click(function(){ $('#modal-window').modal("hide");});
 }
 
 function saveSoftwareTAP(uuid, type){  ///\s/g.test(document.getElementById('soft-tap-name').value)
@@ -4694,7 +4702,13 @@ function PingPluginsNode(uuid) {
                             '<tr>';
                         }else{
                             tableSuricata = tableSuricata + '<tr>'+
-                                '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'</td>'+
+                                '<td style="word-wrap: break-word;">'+response.data[line]["name"]+
+                                    '<br>'+
+                                    '<div id="suricata-error-alert-'+line+'" style="cursor:pointer; color:Orange; display:none;">'+
+                                    '&nbsp <i class="fas fa-exclamation-triangle fa-lg" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i>'+
+                                        '&nbsp <span class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">View Log</span>'+
+                                    '</div>'+
+                                '</td>'+
                                 '<td style="word-wrap: break-word;" id="status-suricata-'+line+'">';
                                     if(response.data[line]["status"]=="enabled"){
                                         tableSuricata = tableSuricata + '<span class="badge bg-success align-text-bottom text-white">ON</span>';
@@ -5455,29 +5469,26 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
                 progressBarDiv.style.display = "none";
                 PrivilegesMessage();
             }else{
-                if(response.data.permissions == "none"){
+                // response.data.ack = "false";
+                if (response.data.ack == "false") {
                     progressBar.style.display = "none";
                     progressBarDiv.style.display = "none";
-                    PrivilegesMessage();
-                }else{
-                    if (response.data.ack == "false") {
-                        progressBar.style.display = "none";
-                        progressBarDiv.style.display = "none";
-                        $('html,body').scrollTop(0);
-                        var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                    $('html,body').scrollTop(0);
+                    var alert = document.getElementById('floating-alert');
+                    var htmlAlert = '<div class="alert alert-danger alert-dismissible fade show">'+
                             '<strong>Error!</strong> Change Service Status: '+response.data.error+'.'+
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                                '<span aria-hidden="true">&times;</span>'+
-                            '</button>'+
-                        '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 30000);
-                    }else{
-                        progressBar.style.display = "none";
-                        progressBarDiv.style.display = "none";
-                        loadPlugins();
-                    }
-                }
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                    '</div>';
+                    alert.innerHTML = alert.innerHTML + htmlAlert;
+                    document.getElementById('suricata-error-alert-'+service).style.display = "block";
+                    setTimeout(function() {$(".alert").alert('close')}, 30000);
+                }else{
+                    progressBar.style.display = "none";
+                    progressBarDiv.style.display = "none";
+                    loadPlugins();
+                }                
             }
         })
         .catch(function (error) {
@@ -5646,12 +5657,11 @@ function loadNetworkValuesService(uuid, name, service, type){
               '<div class="modal-content">'+
 
                 '<div class="modal-header" style="word-break: break-all;">'+
-                  '<h4 class="modal-title" id="delete-node-header">'+name+' interface</h4>'+
+                  '<h4 class="modal-title" id="interface-node-header">'+name+' interface</h4>'+
                   '<button type="button" class="close" id="btn-select-interface-cross">&times;</button>'+
                 '</div>'+
 
-                '<div class="modal-body" id="delete-node-footer-table">';
-
+                '<div class="modal-body" id="interface-node-footer-table">';
                     if (response.data.ack == "false"){
                         html = html + '<span><h6>Error loading interfaces</h6></span>';
                     } else {
@@ -5663,7 +5673,9 @@ function loadNetworkValuesService(uuid, name, service, type){
                         '</tr>                ' +
                         '</thead>             ' +
                         '<tbody >             ' ;
+                        var count = 0;
                         for (net in response.data){
+                            count++;
                             html = html +
                             '<tr>'+
                                 '<td style="word-wrap: break-word;">' +
@@ -5678,13 +5690,13 @@ function loadNetworkValuesService(uuid, name, service, type){
                     }
                 html = html + '</div>'+
 
-                '<div class="modal-footer" id="delete-node-footer-btn">'+
+                '<div class="modal-footer" id="interface-node-footer-btn">'+
                     '<button type="button" class="btn btn-secondary" id="btn-select-interface-close">Close</button>';
                         if (response.data.ack != "false"){
                             if(type == "zeek"){
-                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\', \''+service+'\')">Save</button>';
+                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-interface-node" onclick="updateNetworkInterface(\''+uuid+'\', \''+type+'\', \''+service+'\')">Save</button>';
                             }else {
-                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-delete-node" onclick="UpdateSuricataValue(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Save</button>';
+                                html = html + '<button type="submit" class="btn btn-primary" id="btn-deploy-network-value" data-dismiss="modal" id="btn-interface-node" onclick="UpdateSuricataValue(\''+uuid+'\', \''+name+'\', \''+service+'\', \''+type+'\')">Save</button>';
                             }
                         }
                     html = html + '</div>'+
@@ -5695,6 +5707,14 @@ function loadNetworkValuesService(uuid, name, service, type){
 
             document.getElementById('modal-window').innerHTML = html;
             // LoadNetworkValuesSelected(uuid);
+
+            count = 0;
+            if(count == 0){
+                document.getElementById('btn-deploy-network-value').style.display="none";
+                var content = '&nbsp <i style="cursor:pointer; color:orange" class="fas fa-exclamation-triangle fa-lg" onclick="GetCommandsLog(\''+uuid+'\', \'interface\', \'interface\')"></i>'+
+                    '&nbsp <span style="cursor:pointer; color:orange" class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \'interface\', \'interface\')">View Log</span>';
+                document.getElementById('interface-node-footer-table').innerHTML = content;
+            }
 
             $('#modal-window').modal("show");
             $('#btn-select-interface-cross').click(function(){ $('#modal-window').modal("hide"); });

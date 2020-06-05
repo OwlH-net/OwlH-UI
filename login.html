@@ -37,12 +37,18 @@
                         <input type="text" id="owlh-input-user" class="form-control">
                     </div>
                 </div>
+                
                 <div class="media text-muted pt-3">                      
                     <div class="input-group">
                         <span class="input-group-text">Password</span>
                         <input type="password" id="owlh-input-psswd" class="form-control">
                     </div>
                 </div>
+                <div id="default-user-credentials" style="display:none;">
+                    <p>WARNING If this is your first login, remember default credentials are admin/admin</p>
+                    <p style="color:red;">Please, change default credentials as soon as possible</p>
+                </div>
+
                 <button onclick="Login()" type="button" class="mt-3 pt-3 w-50 btn btn-primary" id="btn-login"><h5>Login</h5></button>
                 <br>
                 <a id="check-status-login" class="btn btn-success float-center mt-3 text-white" style="display:none;" onclick="checkStatus()" target="_blank">Check Master API connection</a>                

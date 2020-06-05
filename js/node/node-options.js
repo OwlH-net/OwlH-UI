@@ -2458,7 +2458,7 @@ function AddSTAPModal(uuid, type){
                             inner = inner + '</td>'+
                         '</tr>';
                     }
-                    count = 0;
+                    
                     if(count == 0){
                         var content = '&nbsp <i style="cursor:pointer; color:orange" class="fas fa-exclamation-triangle fa-lg" onclick="GetCommandsLog(\''+uuid+'\', \'interface\', \'interface\')"></i>'+
                             '&nbsp <span style="cursor:pointer; color:orange" class="badge bg-warning align-text-bottom text-white" onclick="GetCommandsLog(\''+uuid+'\', \'interface\', \'interface\')">View Log</span>';
@@ -5708,7 +5708,6 @@ function loadNetworkValuesService(uuid, name, service, type){
             document.getElementById('modal-window').innerHTML = html;
             // LoadNetworkValuesSelected(uuid);
 
-            count = 0;
             if(count == 0){
                 document.getElementById('btn-deploy-network-value').style.display="none";
                 var content = '&nbsp <i style="cursor:pointer; color:orange" class="fas fa-exclamation-triangle fa-lg" onclick="GetCommandsLog(\''+uuid+'\', \'interface\', \'interface\')"></i>'+

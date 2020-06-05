@@ -1,12 +1,38 @@
 function loadJSONdata() {
-    $.getJSON('../conf/ui.conf', function (data) {        
+    $.getJSON('../conf/ui.conf', function (data) {
+        if(data.master.ip == '<MASTERIP>' || data.master.ip == ""){
+            $('html,body').scrollTop(0);
+            var alert = document.getElementById('floating-alert');
+            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                '<strong>Master IP Error!</strong> Please, change your master IP at /var/www/owlh/conf/ui.conf.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
+        }
         var ipLoad = document.getElementById('ip-master');
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
+            
     });
 }
 loadJSONdata();
+CheckDefaultCredentials();
+
+function CheckDefaultCredentials(){
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/home')
+    .then(function (response) {
+        if (response.data.defaults == "true"){
+            // if (document.getElementById("default-user-credentials")){
+                document.getElementById("default-user-credentials").style.display = "block";
+            // }
+        }
+    })
+}
 
 function checkStatus() {
     var ipmaster = document.getElementById('ip-master').value;

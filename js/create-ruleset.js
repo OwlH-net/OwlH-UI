@@ -266,19 +266,20 @@ function searchRuleset(rulesetNames, checkboxIds){
 }
 
 function modalAddNewRuleset(rulesetUuid, status){   
-    $(".createNewRulesetLocal").unbind("click");
+    // $(".createNewRulesetLocal").unbind("click");
     // //show modal with number of rulesets selected Which ruleset sources has been selected
-    // var count = 0;
-    // var flag = false;
-    // var sources = [];
-    // $('input[type=checkbox]').each(function () {
-    //     if($(this).hasClass('ruleset-source')){
-    //         if($(this).attr('checked')){
-    //             sources.push($(this).val());
-    //             count++;
-    //         }
-    //     }
-    // });
+    var count = 0;
+    var flag = false;
+    var sources = [];
+    $('input[type=checkbox]').each(function () {
+        if($(this).hasClass('ruleset-source')){
+            if($(this).prop('checked')){
+                console.log($(this).val());
+                sources.push($(this).val());
+                count++;
+            }
+        }
+    });
     // if(count > 1){
     //     document.getElementById('progressBar-create-div').style.display="none";
     //     document.getElementById('progressBar-create').style.display="none";
@@ -293,7 +294,7 @@ function modalAddNewRuleset(rulesetUuid, status){
         
     //             '<div class="modal-body" style="word-break: break-all;">'+ 
     //                 '<p>Ruleset sources selected: '+sources.toString()+'</p>'+
-    //                 '<p>Yo selected <b>'+rulesetCount+'</b> rulesets</p>'+
+    //                 '<p>You selected <b>'+rulesetCount+'</b> rulesets</p>'+
     //             '</div>'+
         
     //             '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
@@ -381,125 +382,174 @@ function modalAddNewRuleset(rulesetUuid, status){
 
         $('#modal-window').modal('show');
         $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});     
-    } else {        
-        $('#modal-window').modal('dispose');        
-        var ipmaster = document.getElementById('ip-master').value;
-        var portmaster = document.getElementById('port-master').value;
-        if(status == "modify"){
-            var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/modify';
-        }else{
-            var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
-        }
-        var nodeJSON = JSON.stringify(newRuleset);
-        if (length == 0){
+    } else if (length == 0){
+        document.getElementById('progressBar-create-div').style.display="none";
+        document.getElementById('progressBar-create').style.display="none";
+        
+        $('html,body').scrollTop(0);
+        var alert = document.getElementById('floating-alert');
+        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+            '<strong>Error!</strong> Cannot create an empty ruleset.'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+
+        '</div>';
+        setTimeout(function() {$(".alert").alert('close')}, 30000);      
+    } else {  
+        if(count > 1){
             document.getElementById('progressBar-create-div').style.display="none";
             document.getElementById('progressBar-create').style.display="none";
-            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
+            document.getElementById('modal-window').innerHTML = 
+            '<div class="modal-dialog">'+
+                '<div class="modal-content">'+
             
-            $('html,body').scrollTop(0);
-            var alert = document.getElementById('floating-alert');
-            alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
-                '<strong>Error!</strong> Cannot create an empty ruleset.'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                    '<span aria-hidden="true">&times;</span>'+
-                '</button>'+
+                    '<div class="modal-header" style="word-break: break-all;">'+
+                        '<h4 class="modal-title">Files selected</h4>'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                    '</div>'+
+            
+                    '<div class="modal-body" style="word-break: break-all;">'+ 
+                        '<p>Ruleset sources selected: '+sources.toString()+'</p>'+
+                        '<p>You selected <b>'+rulesetCount+'</b> rulesets</p>'+
+                    '</div>'+
+            
+                    '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                        '<button id="modalClose" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                        '<button id="modalSend" type="button" class="btn btn-primary" data-dismiss="modal">Add</button>'+
+                    '</div>'+
+            
+                '</div>'+
             '</div>';
-            setTimeout(function() {$(".alert").alert('close')}, 30000);
-        }else{            
-            axios({
-                method: 'put',
-                url: sourceurl,
-                timeout: 30000,
-                headers:{'token': document.cookie,'user': payload.user},
-                data: nodeJSON
-            })
-            .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}               
-                if(response.data.permissions == "none"){
-                    document.getElementById('progressBar-create-div').style.display="none";
-                    document.getElementById('progressBar-create').style.display="none";
-                    PrivilegesMessage();              
-                }else{
-                    if (response.data.ack == "true"){                
-                        document.getElementById('progressBar-create-div').style.display="none";
-                        document.getElementById('progressBar-create').style.display="none";
-                        document.location.href = 'https://' + location.hostname + '/rulesets.html';
-                    }else if (response.data.ack == "false"){
-                        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
-                        document.getElementById('progressBar-create-div').style.display="none";
-                        document.getElementById('progressBar-create').style.display="none";
-        
-                        $('html,body').scrollTop(0);
-                        var alert = document.getElementById('floating-alert');
-                        alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
-                            '<strong>Error!</strong> '+response.data.error+'.'+
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                                '<span aria-hidden="true">&times;</span>'+
-                            '</button>'+
-                        '</div>';
-                        setTimeout(function() {$(".alert").alert('close')}, 30000);                    
-                    }else{
-                        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
-                        document.getElementById('progressBar-create-div').style.display="none";
-                        document.getElementById('progressBar-create').style.display="none";
-                            
-                        lines = JSON.parse(response.data)
-                        var html =
-                        '<div class="modal-dialog modal-lg">'+
-                            '<div class="modal-content">'+
-                        
-                                '<div class="modal-header">'+
-                                    '<h4 class="modal-title">Lines duplicated</h4>'+
-                                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-                                '</div>'+
-                        
-                                '<div class="modal-body">'+
-                                    '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
-                                        '<thead>                                                      ' +
-                                            '<tr>                                                         ' +
-                                            '<th>SID</th>                                                ' +
-                                            '<th>Files</th>                                         ' +
-                                            '</tr>                                                        ' +
-                                        '</thead>                                                     ' +
-                                        '<tbody>                                                     '
-                                            for (sid in lines){
-                                                for(values in lines[sid]){
-                                                    var cont = true;
-                                                    for(data in lines[sid][values]){                                                    
-                                                        html = html + '<tr>'
-                                                        if (cont){
-                                                            html = html + 
-                                                            '<th rowspan="'+lines[sid]["counter"]+'">' +
-                                                                sid +
-                                                            '</th>'
-                                                            cont = false;
-                                                        }
-                                                        html = html + 
-                                                        '<td style="word-wrap: break-word;">'+
-                                                            lines[sid][values][data]["fileName"] +
-                                                        '</td></tr>'
-                                                    }
-                                                }
-                                            }
-                                        html = html + '</tbody></table>'+
-                                '</div>'+
-                        
-                                '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
-                                    '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                                '</div>'+
-                        
-                            '</div>'+
-                        '</div>';
-                
-                        document.getElementById('modal-window').innerHTML = html;
-                        $('#modal-window').modal('show')     
-                    }
-                }
-            })
-            .catch(function (error) {
-            });            
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
+            $('#modal-window').modal('show');
+            $('#modalClose').click(function(){ $('#modal-window').modal('hide');});            
+            $('#modalSend').click(function(){ CreateRulesetAfterCheckData(newRuleset); $('#modal-window').modal('hide');});
+        }else{
+            CreateRulesetAfterCheckData(newRuleset);   
         }
+        // if(flag){
+        //     if (length == 0){
+        //         document.getElementById('progressBar-create-div').style.display="none";
+        //         document.getElementById('progressBar-create').style.display="none";
+                
+        //         $('html,body').scrollTop(0);
+        //         var alert = document.getElementById('floating-alert');
+        //         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+        //             '<strong>Error!</strong> Cannot create an empty ruleset.'+
+        //             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+        //                 '<span aria-hidden="true">&times;</span>'+
+        //             '</button>'+
+        //         '</div>';
+        //         setTimeout(function() {$(".alert").alert('close')}, 30000);
+        //     }else{    
+        //         CreateRulesetAfterCheckData(newRuleset)     
+        //     }
+        // }
     }
+}
+function CreateRulesetAfterCheckData(newRuleset){
+    $('#modal-window').modal('hide');        
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    if(status == "modify"){
+        var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/modify';
+    }else{
+        var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/addNewRuleset';
+    }
+    var nodeJSON = JSON.stringify(newRuleset);
+
+    axios({
+        method: 'put',
+        url: sourceurl,
+        timeout: 30000,
+        headers:{'token': document.cookie,'user': payload.user},
+        data: nodeJSON
+    })
+    .then(function (response) {
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}               
+        if(response.data.permissions == "none"){
+            document.getElementById('progressBar-create-div').style.display="none";
+            document.getElementById('progressBar-create').style.display="none";
+            PrivilegesMessage();              
+        }else{
+            if (response.data.ack == "true"){                
+                document.getElementById('progressBar-create-div').style.display="none";
+                document.getElementById('progressBar-create').style.display="none";
+                document.location.href = 'https://' + location.hostname + '/rulesets.html';
+            }else if (response.data.ack == "false"){
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
+                document.getElementById('progressBar-create-div').style.display="none";
+                document.getElementById('progressBar-create').style.display="none";
+
+                $('html,body').scrollTop(0);
+                var alert = document.getElementById('floating-alert');
+                alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
+                    '<strong>Error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);                    
+            }else{
+                $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
+                document.getElementById('progressBar-create-div').style.display="none";
+                document.getElementById('progressBar-create').style.display="none";
+                    
+                lines = JSON.parse(response.data)
+                var html =
+                '<div class="modal-dialog modal-lg">'+
+                    '<div class="modal-content">'+
+                
+                        '<div class="modal-header">'+
+                            '<h4 class="modal-title">Lines duplicated</h4>'+
+                            '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                        '</div>'+
+                
+                        '<div class="modal-body">'+
+                            '<table class="table table-hover" style="table-layout: fixed" style="width:1px">' +
+                                '<thead>                                                      ' +
+                                    '<tr>                                                         ' +
+                                    '<th>SID</th>                                                ' +
+                                    '<th>Files</th>                                         ' +
+                                    '</tr>                                                        ' +
+                                '</thead>                                                     ' +
+                                '<tbody>                                                     '
+                                    for (sid in lines){
+                                        for(values in lines[sid]){
+                                            var cont = true;
+                                            for(data in lines[sid][values]){                                                    
+                                                html = html + '<tr>'
+                                                if (cont){
+                                                    html = html + 
+                                                    '<th rowspan="'+lines[sid]["counter"]+'">' +
+                                                        sid +
+                                                    '</th>'
+                                                    cont = false;
+                                                }
+                                                html = html + 
+                                                '<td style="word-wrap: break-word;">'+
+                                                    lines[sid][values][data]["fileName"] +
+                                                '</td></tr>'
+                                            }
+                                        }
+                                    }
+                                html = html + '</tbody></table>'+
+                        '</div>'+
+                
+                        '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                            '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                        '</div>'+
+                
+                    '</div>'+
+                '</div>';
+        
+                document.getElementById('modal-window').innerHTML = html;
+                $('#modal-window').modal('show')     
+            }
+        }
+    })
+    .catch(function (error) {
+    });    
 }
 
 function checkStatus() {

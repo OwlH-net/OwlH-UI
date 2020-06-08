@@ -44,6 +44,7 @@ function GetAllUsers(){
         }
     })
     .then(function (response) {
+        console.log(response.data)
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
@@ -65,6 +66,7 @@ function GetAllUsers(){
                     '<thead>'+
                         '<tr>'+
                             '<th>Username</th>'+
+                            '<th style="width: 15%">Type</th>'+
                             '<th style="width: 15%">Actions</th>'+
                         '</tr>'+
                     '</thead>'+
@@ -72,10 +74,13 @@ function GetAllUsers(){
                     for(id in response.data){
                         html = html + '<tr>'+
                             '<td>'+response.data[id]["user"]+'</td>'+
+                            '<td>'+response.data[id]["type"]+'</td>'+
                             '<td>'+
-                                '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowUserDetails(\''+id+'\')"></i> &nbsp'+
-                                '<i class="fas fa-key" title="Change user password" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalChangePassword(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
-                                '<i class="fas fa-user-friends" title="Add roles to this user" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToRole(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
+                                '<i class="fas fa-info-circle" title="View user information" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="ShowUserDetails(\''+id+'\')"></i> &nbsp';
+                                if(response.data[id]["type"] == "local"){
+                                    html = html + '<i class="fas fa-key" title="Change user password" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalChangePassword(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp';
+                                }
+                                html = html + '<i class="fas fa-user-friends" title="Add roles to this user" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToRole(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp'+
                                 '<i class="fas fa-object-ungroup" title="Add this user to groups" style="font-size:18px; color:dodgerblue; cursor:pointer;" onclick="modalAddUserToGroup(\''+id+'\', \''+response.data[id]["user"]+'\')"></i> &nbsp';
                                 if(response.data[id]["deleteable"] != "false"){
                                     html = html + '<i class="fas fa-trash-alt" title="Delete user" style="font-size:18px; color:red; cursor:pointer;" onclick="modalDeleteUser(\''+id+'\', \''+response.data[id]["user"]+'\')"></i>';
@@ -753,8 +758,10 @@ function AddUser(){
         if(document.getElementById('login-local-radio').checked){
             jsonDeployService["pass"] = document.getElementById('user-pass').value.trim();
             jsonDeployService["ldap"] = "disabled"
+            jsonDeployService["type"] = "local"
         }else if(document.getElementById('login-ldap-radio').checked){
             jsonDeployService["ldap"] = "enabled"
+            jsonDeployService["type"] = "ldap"
         }
         jsonDeployService["pass"] = document.getElementById('user-pass').value.trim();
         var dataJSON = JSON.stringify(jsonDeployService);

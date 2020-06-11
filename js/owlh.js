@@ -286,7 +286,8 @@ function GetAllNodes() {
             }//Authorization
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
-        .then(function (response) {   
+        .then(function (response) { 
+
             if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
             if(response.data.permissions == "none"){
                 document.getElementById('progressBar-node').style.display = "none";
@@ -309,7 +310,8 @@ function GetAllNodes() {
                     document.getElementById('progressBar-node').style.display = "none";
                     document.getElementById('progressBar-node-div').style.display = "none";
                     
-                    var nodes = response.data;
+                    var vals = response.data.result;                      
+                    var nodes = JSON.parse(vals.replace('\\', ''));
                     var isEmpty = true;                
                     var html =  
                     '<div>'+

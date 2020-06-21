@@ -77,7 +77,7 @@ function ChangePasswordLogin(){
             data: dataJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
@@ -120,7 +120,7 @@ function ChangePasswordLogin(){
 
 function Logout(){
     document.cookie = "";
-    document.location.href='https://'+location.hostname+'/login.html';
+    document.location.href='https://'+location.host+'/login.html';
 }
 
 function PrivilegesMessage(){

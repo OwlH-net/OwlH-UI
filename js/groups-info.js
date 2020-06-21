@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user
@@ -53,7 +53,7 @@ function GetGroupsDetails(){
         headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             document.getElementById('progressBar-options-div').style.display="none";
             document.getElementById('progressBar-options').style.display="none";
@@ -402,7 +402,7 @@ async function ChangeAnalyzerStatus(nodes, status){
             data: dataJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -447,7 +447,7 @@ function editAnalyzer(node, type, name){
         setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else{
         var ipmaster = document.getElementById('ip-master').value;
-        document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+node+'&file='+type+'&node='+name;
+        document.location.href = 'https://' + location.host + '/edit.html?uuid='+node+'&file='+type+'&node='+name;
     }
 }
 
@@ -464,7 +464,7 @@ function SuricataNodesStatus(guuid){
         headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
@@ -550,7 +550,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
@@ -608,7 +608,7 @@ async function syncAnalyzer(group){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
@@ -702,7 +702,7 @@ function syncAllGroupElements(uuid){
         // data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
@@ -801,7 +801,7 @@ function changePaths(guuid, type){
             data: grJSON
             })
             .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
                 if(response.data.permissions == "none"){
                     PrivilegesMessage();
                 }else{
@@ -889,7 +889,7 @@ async function GetMD5files(guuid, type){
         headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
@@ -943,7 +943,7 @@ async function GetMD5files(guuid, type){
         data: grJSON
     })
     .then(function (responseBody) {
-        if(responseBody.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(responseBody.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(responseBody.data.permissions == "none"){
             PrivilegesMessage();
         }else{
@@ -1016,7 +1016,7 @@ async function GetMD5files(guuid, type){
 
 // function loadClusterFile(uuid, path, type){
 //     var ipmaster = document.getElementById('ip-master').value;
-//     document.location.hostname.href = 'https://' + ipmaster + '/show-file-content.html?type='+type+'&uuid='+uuid+'&path='+path;
+//     document.location.host.href = 'https://' + ipmaster + '/show-file-content.html?type='+type+'&uuid='+uuid+'&path='+path;
 // }
 
 // async function GetMD5files(guuid, type){
@@ -1032,7 +1032,7 @@ async function GetMD5files(guuid, type){
 //         headers:{'token': document.cookie,'user': payload.user}
 //     })
 //     .then(function (response) {
-//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
 //         if(response.data.permissions == "none"){
 //             PrivilegesMessage();
 //         }else{
@@ -1099,7 +1099,7 @@ async function GetMD5files(guuid, type){
 //         data: grJSON
 //     })
 //     .then(function (responseBody) {
-//         if(responseBody.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(responseBody.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
 //         if(responseBody.data.permissions == "none"){
 //             PrivilegesMessage();
 //         }else{
@@ -1168,7 +1168,7 @@ async function GetMD5files(guuid, type){
 //         data: grJSON
 //     })
 //     .then(function (responseBody) {
-//         if(responseBody.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(responseBody.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
 //         if(responseBody.data.permissions == "none"){
 //             PrivilegesMessage();
 //         }else{
@@ -1250,7 +1250,7 @@ function SyncPathGroup(guuid, type){
             data: grJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -1311,7 +1311,7 @@ function backButton(){
 }
 
 function loadClusterFile(uuid, path, type){
-    document.location.href = 'https://' + location.hostname + '/show-file-content.html?type='+type+'&uuid='+uuid+'&path='+path;
+    document.location.href = 'https://' + location.host + '/show-file-content.html?type='+type+'&uuid='+uuid+'&path='+path;
 }
 
 function modalLoadRuleset(group){
@@ -1340,7 +1340,7 @@ function modalLoadRuleset(group){
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/ruleset', {headers:{'token': document.cookie,'user': payload.user}})
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -1393,7 +1393,7 @@ function syncSuricataGroupService(guuid){
         data: grJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -1445,7 +1445,7 @@ function GetAllClusterFiles(guuid){
         headers:{'token': document.cookie,'user': payload.user}
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -1505,7 +1505,7 @@ function SyncClusterFile(uuid, type){
         data: grJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -1569,7 +1569,7 @@ function changeClusterValue(guuid, uuid){
             data: grJSON
         })
             .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
                 if(response.data.permissions == "none"){
                     PrivilegesMessage();
                 }else{
@@ -1654,7 +1654,7 @@ function deleteCluster(uuid){
         data: grJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -1684,7 +1684,7 @@ function selectGroupRuleset(group, ruleset, rulesetID){
         data: grJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -1711,7 +1711,7 @@ function modalSelectNodeGroup(uuid){
         headers:{'token': document.cookie,'user': payload.user}
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -1794,7 +1794,7 @@ function addNodesToGroup(uuid){
         data: nodeJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -1817,7 +1817,7 @@ function deleteNodeForGroup(uuid){
         headers:{'token': document.cookie,'user': payload.user},
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
@@ -1904,7 +1904,7 @@ function SyncRulesetToAllGroupNodes(guuid){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
             document.getElementById('progressBar-options-div').style.display="none";
@@ -1999,7 +1999,7 @@ function updateGroupService(uuid, type, value){
         data: grJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -2086,7 +2086,7 @@ function addCluster(uuid, path){
         data: grJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -2196,7 +2196,7 @@ function ChangeGroupConfigTable(tab){
 //         data: grJSON
 //     })
 //         .then(function (response) {
-                // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
 //             if(response.data.ack == "false"){
 //                 $('html,body').scrollTop(0);
 //                 var alert = document.getElementById('floating-alert');
@@ -2256,7 +2256,7 @@ function addRulesetsToGroup(group){
         data: nodeJSON
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -2305,7 +2305,7 @@ function modalAddRuleset(group){
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/group/getGroupSelectedRulesets/'+group, {headers:{'token': document.cookie,'user': payload.user}})
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -2432,7 +2432,7 @@ function deleteExpertGroupRuleset(group, id){
     .then(function (response) {
         document.getElementById('progressBar-options-div').style.display="none";
         document.getElementById('progressBar-options').style.display="none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{

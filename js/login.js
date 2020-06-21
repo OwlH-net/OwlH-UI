@@ -67,7 +67,7 @@ function Login() {
         progressBarDiv.style.display = "none";
         if(response.data.ack != "false"){
             document.cookie = response.data;            
-            document.location.href='https://'+location.hostname;
+            document.location.href='https://'+location.host;
         }else{
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');

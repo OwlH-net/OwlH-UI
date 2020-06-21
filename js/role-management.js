@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
 
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
@@ -47,7 +47,7 @@ function GetAllRoles(){
         console.log(response.data);
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -106,15 +106,15 @@ function GetAllRoles(){
 }
 
 function EditRole(id, role, desc, permissions){
-    document.location.href = 'https://' + location.hostname + '/role-list.html?id='+id+'&role='+role+'&permissions='+permissions+'&desc='+desc;
+    document.location.href = 'https://' + location.host + '/role-list.html?id='+id+'&role='+role+'&permissions='+permissions+'&desc='+desc;
 }
 
 function RoleDetails(){
-    document.location.href = 'https://' + location.hostname + '/role-list.html';
+    document.location.href = 'https://' + location.host + '/role-list.html';
 }
 
 function ShowRoleDetails(id, role){
-    document.location.href = 'https://' + location.hostname + '/role-details.html?id='+id+'&role='+role;
+    document.location.href = 'https://' + location.host + '/role-details.html?id='+id+'&role='+role;
 }
 
 function modalAddRole(){
@@ -192,7 +192,7 @@ function AddRole(){
         .then(function (response) {
             document.getElementById('progressBar-options').style.display = "none";
             document.getElementById('progressBar-options-div').style.display = "none";
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -288,7 +288,7 @@ function DeleteRole(id){
     .then(function (response) {
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -413,7 +413,7 @@ function DeleteRole(id){
 //     .then(function (response) {
 //         document.getElementById('progressBar-options').style.display = "none";
 //         document.getElementById('progressBar-options-div').style.display = "none";
-//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
 //         if(response.data.permissions == "none"){
 //             PrivilegesMessage();              
 //         }else{   
@@ -482,7 +482,7 @@ function DeleteRoleUser(id, user){
     .then(function (response) {
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -551,7 +551,7 @@ function DeleteRoleGroup(id, group){
     .then(function (response) {
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   

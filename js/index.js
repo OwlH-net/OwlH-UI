@@ -7,10 +7,10 @@ function loadJSONdata() {
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
 
         //login button
         document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
@@ -29,40 +29,40 @@ loadJSONdata();
 function LoadNodes() {
     // var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+location.hostname+'/login.html';
+        document.location.href='https://'+location.host+'/login.html';
     }else{
-        document.location.href='https://'+location.hostname+'/nodes.html';
+        document.location.href='https://'+location.host+'/nodes.html';
     }
 }
 function LoadGroups(){
     // var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+location.hostname+'/login.html';
+        document.location.href='https://'+location.host+'/login.html';
     }else{
-        document.location.href='https://'+location.hostname+'/groups.html';
+        document.location.href='https://'+location.host+'/groups.html';
     }
 }
 function LoadOpenrules(){
     // var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+location.hostname+'/login.html';
+        document.location.href='https://'+location.host+'/login.html';
     }else{
-        document.location.href='https://'+location.hostname+'/rulesets.html';
+        document.location.href='https://'+location.host+'/rulesets.html';
     }
 }
 function LoadMaster(){
     // var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+location.hostname+'/login.html';
+        document.location.href='https://'+location.host+'/login.html';
     }else{
-        document.location.href='https://'+location.hostname+'/master.html';
+        document.location.href='https://'+location.host+'/master.html';
     }
 }
 function LoadConfig(){
     // var ipmaster = document.getElementById('ip-master').value;
     if (document.cookie == null){
-        document.location.href='https://'+location.hostname+'/login.html';
+        document.location.href='https://'+location.host+'/login.html';
     }else{
-        document.location.href='https://'+location.hostname+'/config.html';
+        document.location.href='https://'+location.host+'/config.html';
     }
 }

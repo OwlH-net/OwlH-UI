@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
 
         //login button
         document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
@@ -120,7 +120,7 @@ function EditCurrentRole(uuid){
             '</div>';
             setTimeout(function() {$(".alert").alert('close')}, 30000);
         }else{
-            document.location.href = 'https://' + location.hostname + '/role-management.html';
+            document.location.href = 'https://' + location.host + '/role-management.html';
         }
     })
     .catch(function (error) {
@@ -158,7 +158,7 @@ async function GetAllPermissions(){
     .then(function (response) {
         document.getElementById('progressBar-create').style.display = "none";
         document.getElementById('progressBar-create-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -326,7 +326,7 @@ function addNewRole(){
                     '</div>';
                     setTimeout(function() {$(".alert").alert('close')}, 30000);
                 }else{
-                    document.location.href = 'https://' + location.hostname + '/role-management.html';
+                    document.location.href = 'https://' + location.host + '/role-management.html';
                 }
             })
             .catch(function (error) {

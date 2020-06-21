@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
         
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
@@ -46,7 +46,7 @@ function loadRulesData(){
         headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
@@ -426,6 +426,7 @@ function modalAddNewRuleset(rulesetUuid, status){
             $('#modalSend').click(function(){ CreateRulesetAfterCheckData(newRuleset); $('#modal-window').modal('hide');});
         }else{
             CreateRulesetAfterCheckData(newRuleset);   
+
         }
         // if(flag){
         //     if (length == 0){
@@ -609,7 +610,7 @@ function loadCurrentRules(uuid){
         headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{

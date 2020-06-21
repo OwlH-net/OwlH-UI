@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user
@@ -62,7 +62,7 @@ function getRulesetsBySearch(){
         data: searchJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
@@ -130,10 +130,10 @@ function getRulesetsBySearch(){
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
         localStorage.setItem("searchError", "error");
-        document.location.href = 'https://' + location.hostname + '/rulesets.html';
+        document.location.href = 'https://' + location.host + '/rulesets.html';
     });
 }
 
 function loadRulesetDetails(sid, fileuuid){
-    document.location.href = 'https://' + location.hostname + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
+    document.location.href = 'https://' + location.host + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
 }

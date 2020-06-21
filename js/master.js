@@ -175,7 +175,7 @@ function loadPlugins(){
 
     // axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/collector/showMasterCollector')
     //.then(function (response) {
-    //    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+    //    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
     //     if (response.data.ack){
     //         document.getElementById('ports-table').innerHTML = "No remote systems yet";
     //     }else if(response.data){
@@ -227,13 +227,13 @@ function loadPlugins(){
 }
 
 function showMasterFile(file){
-    document.location.href = 'https://' + location.hostname + '/edit-master.html?file='+file;
+    document.location.href = 'https://' + location.host + '/edit-master.html?file='+file;
 }
 function loadControlDataMaster(type){
-    document.location.href = 'https://' + location.hostname + '/control-data.html?type='+type;
+    document.location.href = 'https://' + location.host + '/control-data.html?type='+type;
 }
 function loadIncidentMaster(type){
-    document.location.href = 'https://' + location.hostname + '/incident-data.html?type='+type;
+    document.location.href = 'https://' + location.host + '/incident-data.html?type='+type;
 }
 
 function deployMaster(value){
@@ -252,7 +252,7 @@ function deployMaster(value){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
@@ -294,7 +294,7 @@ function loadNetworkValues(){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
@@ -366,7 +366,7 @@ function loadNetworkStapValues(uuid){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             $('#modal-master').modal().hide();
             PrivilegesMessage();              
@@ -446,7 +446,7 @@ function updateMasterStapInterface(uuid){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             $('#modal-master').modal('hide');
             PrivilegesMessage();              
@@ -483,7 +483,7 @@ function updateMasterNetworkInterface(){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}   
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}   
         if(response.data.permissions == "none"){
             $('#modal-master').modal('hide');
             PrivilegesMessage();              
@@ -506,7 +506,7 @@ function DeployServiceMaster(){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
@@ -532,7 +532,7 @@ function PingServiceMaster(){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';} 
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';} 
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
@@ -559,7 +559,7 @@ function LoadMasterNetworkValuesSelected(){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{
@@ -602,7 +602,7 @@ function PingPlugins(){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}  
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
@@ -815,7 +815,7 @@ function saveStapChanges(type, uuid){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
@@ -873,7 +873,7 @@ function saveBPF(uuid, value){
         data: bpfjson
     })
      .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
@@ -931,7 +931,7 @@ function deleteServiceMaster(uuid){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
@@ -961,7 +961,7 @@ function changePluginStatus(uuid,param,value){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
@@ -991,7 +991,7 @@ function changeDataflowStatus(uuid,param,value){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
@@ -1016,7 +1016,7 @@ function PingCollector(){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
@@ -1053,7 +1053,7 @@ function playMasterCollector(){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1085,7 +1085,7 @@ function stopMasterCollector(){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1120,7 +1120,7 @@ function showMasterCollector(){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1247,7 +1247,7 @@ function AddSTAPModal(type){
                 '</table>';   
                 axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/master/interface', {headers:{'token': document.cookie,'user': payload.user}})
                .then(function (response) {
-                    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                    if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
                     if(response.data.permissions == "none"){
                         PrivilegesMessage();              
                     }else{   
@@ -1381,7 +1381,7 @@ function saveSoftwareTAP(type){
             data: dataJSON
         })
        .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -1445,7 +1445,7 @@ function DeployStapServiceMaster(uuid, collector,port,interface, type){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1495,7 +1495,7 @@ function StopStapServiceMaster(uuid, type){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1533,7 +1533,7 @@ function loadNetworkValuesService(name, service){
         headers:{'token': document.cookie,'user': payload.user}
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}  
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}  
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1621,7 +1621,7 @@ function SaveStapInterface(uuid){
         data: dataJSON
     })
    .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1642,10 +1642,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user

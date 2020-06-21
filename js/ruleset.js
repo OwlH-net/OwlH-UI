@@ -13,7 +13,7 @@ function GetAllRuleset() {
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://' + ipmaster + ':' + portmaster + '/v1/ruleset/rules/' + fileuuid,{headers:{'token': document.cookie,'user': payload.user}})
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             progressBar.style.display = "none";
             progressBarDiv.style.display = "none";
@@ -126,11 +126,11 @@ function generateAllRulesHTMLOutput(response, fileuuid, ipmaster, portmaster, ru
 
 function editRuleset(fileuuid, nodeName){
     // document.getElementById('refresh-custom-ruleset').style.display = "block";
-    document.location.href = 'https://' + location.hostname + '/edit-ruleset.html?fileuuid='+fileuuid+'&file='+nodeName;
+    document.location.href = 'https://' + location.host + '/edit-ruleset.html?fileuuid='+fileuuid+'&file='+nodeName;
 }
 
 function loadRulesetDetails(sid, fileuuid){
-    document.location.href = 'https://' + location.hostname + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
+    document.location.href = 'https://' + location.host + '/show-rule-details.html?sid='+sid+'&fileuuid='+fileuuid;
 }
 
 function getToCustomRuleset(rulesetuuid){
@@ -166,7 +166,7 @@ function getToCustomRuleset(rulesetuuid){
             }
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -246,7 +246,7 @@ function addrulesToCustomRuleset(rules, sourcefileuuid,ruleset){
         data: bpfjson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 $('#modal-window-ruleset').modal('hide')   
                 PrivilegesMessage();              
@@ -292,7 +292,7 @@ function changeRulesetStatus(sid, fileuuid, action) {
         data: bpfjson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -353,7 +353,7 @@ function getRuleNote(elementID, fileuuid, sid) {
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -393,7 +393,7 @@ function rulesetNotes(sid, fileuuid) {
         data: bpfjson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -414,10 +414,10 @@ function loadJSONdata() {
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user

@@ -12,10 +12,10 @@ function loadJSONdata() {
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
         //login button
         document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user
@@ -65,7 +65,7 @@ async function PingNode(uuid, token) {
             }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -141,7 +141,7 @@ function PingService(uuid){
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -173,7 +173,7 @@ function PingMonitor(uuid){
         timeout: 30000
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -205,7 +205,7 @@ function DeployService(uuid) {
         timeout: 30000
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -245,7 +245,7 @@ function GetAllNodes() {
             // params: { token: document.cookie}// rejectUnauthorized: false }
         })
         .then(function (response) {   
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}            
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}            
             if(response.data.permissions == "none"){
                 document.getElementById('progressBar-node').style.display = "none";
                 document.getElementById('progressBar-node-div').style.display = "none";
@@ -443,7 +443,7 @@ function deleteNode(node) {
         timeout: 30000
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -470,7 +470,7 @@ function GetAllGroupRulesetsForAllNodes(){
         timeout: 30000
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -533,7 +533,7 @@ function PingDataflow(uuid){
         timeout: 30000
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -567,7 +567,7 @@ function deployNode(value,uuid,nodeName){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -599,28 +599,28 @@ function deployNode(value,uuid,nodeName){
 }
 
 function ShowMonitoring(uuid, name){
-    document.location.href = 'https://' + location.hostname + '/node-monitor.html?uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.host + '/node-monitor.html?uuid='+uuid+'&node='+name;
 }
 function showServicesConfig(uuid, name){
-    document.location.href = 'https://' + location.hostname + '/node-options.html?uuid='+uuid+'&node='+name+'&nodetab=suricata';
+    document.location.href = 'https://' + location.host + '/node-options.html?uuid='+uuid+'&node='+name+'&nodetab=suricata';
 }
 function editAnalyzer(uuid, file, nodeName){
-    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+    document.location.href = 'https://' + location.host + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
 function loadIncidentMaster(uuid, type, name){
-    document.location.href = 'https://' + location.hostname + '/incident-data.html?type='+type+'&uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.host + '/incident-data.html?type='+type+'&uuid='+uuid+'&node='+name;
 }
 function loadChangeControl(uuid, type, name){
-    document.location.href = 'https://' + location.hostname + '/control-data.html?type='+type+'&uuid='+uuid+'&node='+name;
+    document.location.href = 'https://' + location.host + '/control-data.html?type='+type+'&uuid='+uuid+'&node='+name;
 }
 function loadStapURL(uuid, nodeName){
-    document.location.href = 'https://' + location.hostname + '/stap.html?uuid='+uuid+'&node='+nodeName;
+    document.location.href = 'https://' + location.host + '/stap.html?uuid='+uuid+'&node='+nodeName;
 }
 function loadFilesURL(uuid, nodeName){
-    document.location.href = 'https://' + location.hostname + '/files.html?uuid='+uuid+'&node='+nodeName;
+    document.location.href = 'https://' + location.host + '/files.html?uuid='+uuid+'&node='+nodeName;
 }
 function loadEditURL(uuid, file, nodeName){
-    document.location.href = 'https://' + location.hostname + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+    document.location.href = 'https://' + location.host + '/edit.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
 }
 
 function showActions(action,uuid){
@@ -665,7 +665,7 @@ function ChangeStatus(uuid){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -691,7 +691,7 @@ async function getRulesetUID(uuid) {
         timeout: 30000
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -719,7 +719,7 @@ async function getRuleName(uuidRuleset, uuid) {
         timeout: 30000
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{
@@ -890,7 +890,7 @@ function addNode() {
 		.then(function (response) {
             document.getElementById('progressBar-node').style.display = "none";
             document.getElementById('progressBar-node-div').style.display = "none";
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -969,7 +969,7 @@ function modifyNodeInformation() {
         data: newValues
         })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -1048,7 +1048,7 @@ function loadBPF(nid, name){
     timeout: 3000
   })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1089,7 +1089,7 @@ function saveBPF(nid){
     data: bpfjson
   })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1163,7 +1163,7 @@ function syncRulesetModal(node, name){
         }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{

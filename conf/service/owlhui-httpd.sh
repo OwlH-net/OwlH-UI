@@ -24,7 +24,6 @@ EOF
 export MYPUBIP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
 sed -i "s/<MASTERIP>/$MYPUBIP/g" /var/www/owlh/conf/ui.conf
 chmod 666 /var/www/owlh/conf/ui.conf
-ln -s /var/www/owlh/nodes.html /var/www/owlh/index.html
 #sysV
 service httpd start
 chkconfig httpd on

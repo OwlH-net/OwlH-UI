@@ -21,7 +21,6 @@ cat > /etc/apache2/sites-available/owlh.conf <<\EOF
 </VirtualHost>
 EOF
 a2ensite owlh
-ln -s /var/www/owlh/nodes.html /var/www/owlh/index.html
 chmod 666 /var/www/owlh/conf/ui.conf
 #sysV
 service httpd start

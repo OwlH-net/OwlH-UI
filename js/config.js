@@ -73,7 +73,7 @@ function showActions(action){
 //         data: fileContent
 //     })
 //     .then(function (response) {
-//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+//         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
 //         if(response.data.permissions == "none"){
 //             PrivilegesMessage();              
 //         }else{
@@ -102,7 +102,7 @@ function checkStatus() {
 }
 
 function adminUsers() {
-    document.location.href='https://'+location.hostname+'/users.html';
+    document.location.href='https://'+location.host+'/users.html';
 }
 
 // function closeFileChanged(){
@@ -117,7 +117,7 @@ function loadJSONdata() {
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
                             
         var ipLoad = document.getElementById('ip-master');
@@ -138,7 +138,7 @@ function loadJSONdata() {
                 $("#admin-users-btn").show();
             }
         }
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
     });
 }
 var payload = "";

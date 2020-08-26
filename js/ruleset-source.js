@@ -198,7 +198,7 @@ function addRulesetSource() {
                 document.getElementById('progressBar-create-div').style.display = "none";
                 document.getElementById('progressBar-create').style.display = "none";
     
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
                 if(response.data.permissions == "none"){
                     PrivilegesMessage();
                 }else{
@@ -299,7 +299,7 @@ function GetAllRulesetSource(){
         }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
@@ -562,7 +562,7 @@ function generateAllRulesetSourceHTMLOutput(response) {
 function loadRulesetSourceDetails(type, name, uuid){
     var isDownloaded = document.getElementById('download-status-'+uuid).value;
     if (isDownloaded == "true"){
-        document.location.href = 'https://' + location.hostname + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
+        document.location.href = 'https://' + location.host + '/ruleset-details.html?type='+type+'&sourceName='+name+'&uuid='+uuid;
     }
 }
 
@@ -583,11 +583,11 @@ function loadCustomRulesetRules(uuid,path,type){
         }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
-            document.location.href = 'https://' + location.hostname + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
+            document.location.href = 'https://' + location.host + '/ruleset.html?file='+response.data+'&rule='+ruleFileName+'&type='+type+'&type='+response.data;
         }
     })
     .catch(function (error) {
@@ -644,7 +644,7 @@ function loadCustomRulesetRules(uuid,path,type){
 //         data: dataJSON
 //     })
 //         .then(function (response) {
-    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
 //         })
 //         .catch(function (error) {
 //         });
@@ -671,7 +671,7 @@ function loadCustomRulesetRules(uuid,path,type){
 //         data: nodeJSON
 //         })
 //         .then(function (response) {
-    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
 //         })
 //         .catch(function (error) {
 //         });
@@ -762,7 +762,7 @@ function editRulesetSourceData(){
             data: nodeJSON
             })
             .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
                 if(response.data.permissions == "none"){
                     PrivilegesMessage();
                 }else{
@@ -797,7 +797,7 @@ function deleteRulesetSource(sourceUUID,sourceType){
         data: nodeJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
@@ -838,7 +838,7 @@ function downloadFile(name, path, url, sourceUUID){
             data: nodeJSON
         })
             .then(function (response) {
-                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+                if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
                 if(response.data.permissions == "none"){
                     PrivilegesMessage();
                 }else{
@@ -946,7 +946,7 @@ function overwriteDownload(name, path, url, uuid){
         data: nodeJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             document.getElementById('progressBar-create').style.display = "none";
             document.getElementById('progressBar-create-div').style.display = "none";
@@ -1038,10 +1038,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
 
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user

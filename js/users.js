@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.hostname+'/login.html';
+            document.location.href='https://'+location.host+'/login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.hostname+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
 
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
@@ -47,7 +47,7 @@ function GetAllUsers(){
         console.log(response.data)
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -147,11 +147,11 @@ function GetAllUsers(){
 }
 
 function RoleManagement(){
-    // document.location.href = 'https://' + location.hostname + '/role-management.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
-    document.location.href = 'https://' + location.hostname + '/role-management.html';
+    // document.location.href = 'https://' + location.host + '/role-management.html?uuid='+uuid+'&file='+file+'&node='+nodeName;
+    document.location.href = 'https://' + location.host + '/role-management.html';
 }
 function GroupManagement(){
-    document.location.href = 'https://' + location.hostname + '/group-management.html';
+    document.location.href = 'https://' + location.host + '/group-management.html';
 }
 
 function ShowUserDetails(id){
@@ -189,7 +189,7 @@ function DeleteUserRole(userID, role){
     .then(function (response) {
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -258,7 +258,7 @@ function DeleteUserGroup(userID, group){
     .then(function (response) {
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -327,7 +327,7 @@ function DeleteUser(id){
     .then(function (response) {
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -523,7 +523,7 @@ function addUsersTo(id, type){
     .then(function (response) {
         document.getElementById('progressBar-options').style.display = "none";
         document.getElementById('progressBar-options-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -780,7 +780,7 @@ function AddUser(){
         .then(function (response) {
             document.getElementById('progressBar-options').style.display = "none";
             document.getElementById('progressBar-options-div').style.display = "none";
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -870,7 +870,7 @@ function ChangePassword(id){
         .then(function (response) {
             document.getElementById('progressBar-options').style.display = "none";
             document.getElementById('progressBar-options-div').style.display = "none";
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.hostname+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   

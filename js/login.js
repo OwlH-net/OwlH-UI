@@ -15,11 +15,13 @@ function loadJSONdata() {
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
+        
+        //Check default credentials
+        CheckDefaultCredentials();
             
     });
 }
 loadJSONdata();
-CheckDefaultCredentials();
 
 function CheckDefaultCredentials(){
     var ipmaster = document.getElementById('ip-master').value;
@@ -27,9 +29,7 @@ function CheckDefaultCredentials(){
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/home')
     .then(function (response) {
         if (response.data.defaults == "true"){
-            // if (document.getElementById("default-user-credentials")){
-                document.getElementById("default-user-credentials").style.display = "block";
-            // }
+            document.getElementById("default-user-credentials").style.display = "block";
         }
     })
 }
@@ -67,7 +67,7 @@ function Login() {
         progressBarDiv.style.display = "none";
         if(response.data.ack != "false"){
             document.cookie = response.data;            
-            document.location.href='https://'+location.hostname;
+            document.location.href='https://'+location.host;
         }else{
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');

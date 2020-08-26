@@ -29,7 +29,11 @@ function GetAllRulesets() {
 }
 
 function EditExistingRuleset(name,uuid, desc){
+<<<<<<< HEAD
     document.location.href = 'https://' + location.host + '/modify-ruleset.html?name='+name+'&uuid='+uuid+'&desc='+desc;
+=======
+    document.location.href = 'https://' + location.host + '/create-ruleset.html?name='+name+'&uuid='+uuid+'&desc='+desc;
+>>>>>>> a42112550f9b3893fad07fbdf94a6aed4c3bb472
 }
 
 function generateAllRulesetsHTMLOutput(response) {

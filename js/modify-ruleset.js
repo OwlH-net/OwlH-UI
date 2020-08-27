@@ -274,36 +274,33 @@ function modalAddNewRuleset(rulesetUuid, status){
     var rulesetCount = 0;
 
     var modifyRuleset = new Map();
-    var newLocalRulesetList = [];
     $('input:checkbox:checked').each(function() {        
         var uuid = $(this).prop("id");
         var value = $(this).prop("value");
         if (value == "table-elements"){
-            newLocalRulesetList.push(uuid.replace('row-',''))
             rulesetCount++;
-            // newRuleset[uuid] = new Map();
-            // newRuleset[uuid]["sourceName"] = document.getElementById('nameNewRuleset-'+uuid+'').innerHTML;
-            // newRuleset[uuid]["fileName"] = document.getElementById('fileNewRuleset-'+uuid+'').innerHTML;
-            // newRuleset[uuid]["filePath"] = document.getElementById('pathNewRuleset-'+uuid+'').innerHTML;
-            // newRuleset[uuid]["rulesetName"] = document.getElementById('new-ruleset-name-input').value.trim();
-            // newRuleset[uuid]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value.trim();
-            // newRuleset[uuid]["sourceType"] = document.getElementById('source-type-'+uuid).innerHTML;
-            // newRuleset[uuid]["uuid"] = rulesetUuid;
+            modifyRuleset[uuid.replace('row-','')] = new Map();
+            modifyRuleset[uuid.replace('row-','')]["sourceName"] = document.getElementById('nameNewRuleset-'+uuid+'').innerHTML;
+            modifyRuleset[uuid.replace('row-','')]["fileName"] = document.getElementById('fileNewRuleset-'+uuid+'').innerHTML;
+            modifyRuleset[uuid.replace('row-','')]["filePath"] = document.getElementById('pathNewRuleset-'+uuid+'').innerHTML;
+            modifyRuleset[uuid.replace('row-','')]["rulesetName"] = document.getElementById('new-ruleset-name-input').value.trim();
+            modifyRuleset[uuid.replace('row-','')]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value.trim();
+            modifyRuleset[uuid.replace('row-','')]["sourceType"] = document.getElementById('source-type-'+uuid).innerHTML;
+            modifyRuleset[uuid.replace('row-','')]["uuid"] = rulesetUuid;
             length++;
         }
     });
 
-    modifyRuleset["rulesetID"] = rulesetUuid
-    modifyRuleset["newList"] = newLocalRulesetList.toString()
+    console.log(modifyRuleset)
 
-    // var isDuplicated = false;
-    // for (uuid in modifyRuleset){
-    //     for (uuidCheck in modifyRuleset){
-    //         if ((uuid != uuidCheck) && (newRuleset[uuid]["fileName"] == newRuleset[uuidCheck]["fileName"]) ){
-    //             isDuplicated = true;
-    //         }
-    //     }
-    // }
+    var isDuplicated = false;
+    for (uuid in modifyRuleset){
+        for (uuidCheck in modifyRuleset){
+            if ((uuid != uuidCheck) && (modifyRuleset[uuid]["fileName"] == modifyRuleset[uuidCheck]["fileName"]) ){
+                isDuplicated = true;
+            }
+        }
+    }
 
     if(document.getElementById('new-ruleset-name-input').value == "" || document.getElementById('new-ruleset-description-input').value == "") {
         document.getElementById('progressBar-create-div').style.display="none";
@@ -319,32 +316,32 @@ function modalAddNewRuleset(rulesetUuid, status){
             '</div>';
             $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
             setTimeout(function() {$(".alert").alert('close')}, 30000);
-    // }else if (isDuplicated){      
-    //     document.getElementById('progressBar-create-div').style.display="none";
-    //     document.getElementById('progressBar-create').style.display="none";
+    }else if (isDuplicated){      
+        document.getElementById('progressBar-create-div').style.display="none";
+        document.getElementById('progressBar-create').style.display="none";
         
-    //     document.getElementById('modal-window').innerHTML = 
-    //     '<div class="modal-dialog">'+
-    //         '<div class="modal-content">'+
+        document.getElementById('modal-window').innerHTML = 
+        '<div class="modal-dialog">'+
+            '<div class="modal-content">'+
         
-    //             '<div class="modal-header">'+
-    //                 '<h4 class="modal-title">Files duplicated</h4>'+
-    //                 '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
-    //             '</div>'+
+                '<div class="modal-header">'+
+                    '<h4 class="modal-title">Files duplicated</h4>'+
+                    '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                '</div>'+
         
-    //             '<div class="modal-body">'+ 
-    //                 '<p>You have selected duplicate files.</p>'+
-    //             '</div>'+
+                '<div class="modal-body">'+ 
+                    '<p>You have selected duplicate files.</p>'+
+                '</div>'+
         
-    //             '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
-    //                 '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-    //             '</div>'+
+                '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
+                    '<button id="modalDuplicate" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
+                '</div>'+
         
-    //         '</div>'+
-    //     '</div>';
+            '</div>'+
+        '</div>';
 
-    //     $('#modal-window').modal('show');
-    //     $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});     
+        $('#modal-window').modal('show');
+        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});     
     } else if (length == 0){
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none";
@@ -378,7 +375,7 @@ function modalAddNewRuleset(rulesetUuid, status){
             
                     '<div class="modal-footer" id="delete-ruleset-footer-btn">'+
                         '<button id="modalClose" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+
-                        '<button id="modalSend" type="button" class="btn btn-primary" data-dismiss="modal">Add</button>'+
+                        '<button id="modalSend" type="button" class="btn btn-primary" data-dismiss="modal">Modify</button>'+
                     '</div>'+
             
                 '</div>'+
@@ -394,6 +391,7 @@ function modalAddNewRuleset(rulesetUuid, status){
     }
 }
 function CreateRulesetAfterCheckData(rulesetUuid, modifyRuleset){
+    console.log(modifyRuleset)
     $('#modal-window').modal('hide');        
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -551,7 +549,6 @@ function loadCurrentRules(uuid){
         headers:{'token': document.cookie,'user': payload.user}
     })
     .then(function (response) {
-        console.log(response.data)
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              

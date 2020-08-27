@@ -265,7 +265,7 @@ function searchRuleset(rulesetNames, checkboxIds){
     });
 }
 
-function modalAddNewRuleset(rulesetUuid, status){   
+function modalAddNewRuleset(status){   
     // $(".createNewRulesetLocal").unbind("click");
     // //show modal with number of rulesets selected Which ruleset sources has been selected
     var count = 0;
@@ -328,7 +328,6 @@ function modalAddNewRuleset(rulesetUuid, status){
             newRuleset[uuid]["rulesetName"] = document.getElementById('new-ruleset-name-input').value.trim();
             newRuleset[uuid]["rulesetDesc"] = document.getElementById('new-ruleset-description-input').value.trim();
             newRuleset[uuid]["sourceType"] = document.getElementById('source-type-'+uuid).innerHTML;
-            newRuleset[uuid]["uuid"] = rulesetUuid;
             length++;
         }
     });
@@ -354,7 +353,7 @@ function modalAddNewRuleset(rulesetUuid, status){
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
             '</div>';
-            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(status);});
             setTimeout(function() {$(".alert").alert('close')}, 30000);
     }else if (isDuplicated){      
         document.getElementById('progressBar-create-div').style.display="none";
@@ -381,7 +380,7 @@ function modalAddNewRuleset(rulesetUuid, status){
         '</div>';
 
         $('#modal-window').modal('show');
-        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});     
+        $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(status);});     
     } else if (length == 0){
         document.getElementById('progressBar-create-div').style.display="none";
         document.getElementById('progressBar-create').style.display="none";
@@ -420,7 +419,7 @@ function modalAddNewRuleset(rulesetUuid, status){
             
                 '</div>'+
             '</div>';
-            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(rulesetUuid, status);});
+            $(".createNewRulesetLocal").bind("click", function(){modalAddNewRuleset(status);});
             $('#modal-window').modal('show');
             $('#modalClose').click(function(){ $('#modal-window').modal('hide');});            
             $('#modalSend').click(function(){ CreateRulesetAfterCheckData(newRuleset); $('#modal-window').modal('hide');});
@@ -448,6 +447,7 @@ function modalAddNewRuleset(rulesetUuid, status){
         // }
     }
 }
+
 function CreateRulesetAfterCheckData(newRuleset){
     $('#modal-window').modal('hide');        
     var ipmaster = document.getElementById('ip-master').value;

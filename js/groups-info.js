@@ -980,7 +980,7 @@ async function GetMD5files(guuid, type){
                                 document.getElementById('files-'+id).innerHTML = document.getElementById('files-'+id).innerHTML + html2;
                             }
                         }
-                        //cehck if there are error for change main pill color
+                        //check if there are error for change main pill color
                         if(MD5PathError){
                             $('#global-files-status-'+id).attr('class', 'badge badge-pill bg-danger align-text-bottom text-white');
                         }else{
@@ -2360,7 +2360,6 @@ function loadGroupRulesets(group){
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ipmaster+':'+portmaster+'/v1/group/getGroupSelectedRulesets/'+group, {headers:{'token': document.cookie,'user': payload.user}})
     .then(function (response) {
-        console.log(response.data);
         var rulesetNames = [];
         var html = '';
         
@@ -2426,6 +2425,8 @@ function deleteExpertGroupRuleset(group, id){
     values["uuid"] = group;
     values["ruleset"] = id;
     var valuesJSON = JSON.stringify(values);
+
+    console.log(valuesJSON)
 
     axios.delete('https://'+ipmaster+':'+portmaster+'/v1/group/deleteExpertGroupRuleset', {timeout: 30000, data: valuesJSON,
     headers:{'token': document.cookie,'user': payload.user}})

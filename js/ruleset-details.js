@@ -92,7 +92,7 @@ function generateAllRulesetDetailsHTMLOutput(response, sourceName, type, uuid){
                             ' | <i class="fas fa-times-circle" style="color: red;"></i>';
                         }
                     }
-                    html = html + '</span>'+
+                html = html + '</span>'+
             '</td></tr>';
     }
     html = html + '</tbody></table>';

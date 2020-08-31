@@ -5424,7 +5424,8 @@ function deleteService(uuid, service){
 }
 
 function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type){
-    if (type == "suricata" && (interface == "" || bpf == "")){
+    // if (type == "suricata" && (interface == "" || bpf == "")){
+    if (type == "suricata" && interface == ""){
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+

@@ -29,7 +29,7 @@ function GetAllRulesets() {
 }
 
 function EditExistingRuleset(name,uuid, desc){
-    document.location.href = 'https://' + location.host + '/create-ruleset.html?name='+name+'&uuid='+uuid+'&desc='+desc;
+    document.location.href = 'https://' + location.host + '/modify-ruleset.html?name='+name+'&uuid='+uuid+'&desc='+desc;
 }
 
 function generateAllRulesetsHTMLOutput(response) {

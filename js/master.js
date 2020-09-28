@@ -607,6 +607,7 @@ function PingPlugins(){
             PrivilegesMessage();              
         }else{            
             for (line in response.data){
+                console.log(response.data[line]);
                 if (line == "dispatcher"){
                     if (response.data[line]["status"] == "enabled"){
                         document.getElementById(line+'-status').style.color = "green";
@@ -688,6 +689,11 @@ function PingPlugins(){
                                 '</div>'+
                             '</div>'+
                         '</td>'+
+                    '</tr>'+
+                    '<tr>'+
+                        '<td colspan="5">'+
+                            '<p>'+response.data[line]["connections"]+'</p>'
+                        '</td>'+
                     '</tr>';
     
                 }else if (response.data[line]["type"] == "socket-pcap"){                
@@ -764,7 +770,12 @@ function PingPlugins(){
                                 '</div>'+
                             '</div>'+
                         '</td>'+
-                    '</tr>'; 
+                    '</tr>'+
+                    '<tr>'+
+                        '<td colspan="7">'+
+                            '<p>'+response.data[line]["connections"]+'</p>'
+                        '</td>'+
+                    '</tr>';
                 }
                 
                 document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;

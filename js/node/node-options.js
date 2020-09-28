@@ -4646,8 +4646,14 @@ function PingPluginsNode(uuid) {
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
-            }else{
-                for(line in response.data){
+            }else{                
+                for(line in response.data){  
+                    var conns = response.data[line]["connections"].split("\n");
+                    var filtered = conns.filter(function (el) {
+                        return el != "" && !el.includes("0.0.0.0");
+                    });                    
+                    response.data[line]["connections"] = filtered
+
                     // if (line == "knownports"){
                     //     if (response.data[line]["status"] == "Enabled"){
                     //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
@@ -4892,6 +4898,11 @@ function PingPluginsNode(uuid) {
                                     '</div>'+
                                 '</div>'+
                             '</td>'+
+                            '</tr>'+
+                        '<tr>'+
+                            '<td colspan="5">'+
+                                '<p>'+response.data[line]["connections"]+'</p>'+
+                            '</td>'+
                         '</tr>';
                     }else if (response.data[line]["type"] == "socket-pcap"){
                         tableSocketPcap = tableSocketPcap + '<tr>'+
@@ -4971,6 +4982,11 @@ function PingPluginsNode(uuid) {
                                         '<button class="btn btn-primary" onclick="modifyNodeOptionValues(\''+uuid+'\', \'socket-pcap\', \''+line+'\')">Save</button>'+
                                     '</div>'+
                                 '</div>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td colspan="7">'+
+                                '<p>'+response.data[line]["connections"]+'</p>'+
                             '</td>'+
                         '</tr>';
                     }else if (response.data[line]["type"] == "network-socket"){
@@ -5053,6 +5069,11 @@ function PingPluginsNode(uuid) {
                                         '<button class="btn btn-primary" onclick="modifyNodeOptionValues(\''+uuid+'\', \'network-socket\', \''+line+'\')">Save</button>'+
                                     '</div>'+
                                 '</div>'+
+                            '</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td colspan="7">'+
+                                '<p>'+response.data[line]["connections"]+'</p>'+
                             '</td>'+
                         '</tr>';
                     }

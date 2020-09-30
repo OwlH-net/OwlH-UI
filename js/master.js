@@ -607,6 +607,11 @@ function PingPlugins(){
             PrivilegesMessage();              
         }else{            
             for (line in response.data){
+                console.log(response.data[line]["connections"] == "");
+
+                var conns = response.data[line]["connections"].split("\n");
+                const result = conns.filter(con => con != "");                
+
                 if (line == "dispatcher"){
                     if (response.data[line]["status"] == "enabled"){
                         document.getElementById(line+'-status').style.color = "green";
@@ -624,8 +629,14 @@ function PingPlugins(){
                         document.getElementById(line+'-button').className = "fas fa-play-circle";
                     }
                 }else if (response.data[line]["type"] == "socket-network"){                
-                    tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
+                    tableSocketNetwork = tableSocketNetwork + '<tr>';
+
+                        if(response.data[line]["connectionsCount"] > 0){
+                            tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+' <span class="badge badge-pill bg-'+response.data[line]["connectionsColor"]+' align-text-bottom text-white">'+response.data[line]["connectionsCount"]+'</span><br>';
+                        }else{
+                            tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        }
+
                             if (response.data[line]["pid"] == "none"){
                                 tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                                 if(response.data[line]["running"]=="true"){
@@ -689,10 +700,45 @@ function PingPlugins(){
                             '</div>'+
                         '</td>'+
                     '</tr>';
+                    if(response.data[line]["connectionsCount"] > 0){
+                        tableSocketNetwork = tableSocketNetwork +'<tr>'+
+                            '<td colspan="5">'+ 
+                                '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" width="100%">'+
+                                    '<thead>'+
+                                        '<th width="7%">Proto</th>'+
+                                        '<th width="7%">Recv-Q</th>'+
+                                        '<th width="7%">Send-Q</th>'+
+                                        '<th width="">Local Addr</th>'+
+                                        '<th width="">Foreign Addr</th>'+
+                                        '<th width="">State</th>'+
+                                        '<th width="">PID/name</th>'+
+                                    '</thead>'+
+                                    '<tbody>';                                
+                                        result.forEach(function (item, index) {
+                                            tableSocketNetwork = tableSocketNetwork + '<tr>';
+    
+                                            var splittedData = item.split(' ');
+                                            var dataFiltered = splittedData.filter(word => word != '');
+                                            dataFiltered.forEach(function (value, pos) {
+                                                tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+value+'</td>';
+                                            })                                            
+                                            tableSocketNetwork = tableSocketNetwork + '</tr>';
+                                        });
+                                        tableSocketNetwork = tableSocketNetwork +'</tbody>'+
+                                '</table>'+
+                            '</td>'+
+                        '</tr>';
+                    }
     
                 }else if (response.data[line]["type"] == "socket-pcap"){                
-                    tableSocketPcap = tableSocketPcap + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
+                    tableSocketPcap = tableSocketPcap + '<tr>';
+
+                        if(response.data[line]["connectionsCount"] > 0){
+                            tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+' <span class="badge badge-pill bg-'+response.data[line]["connectionsColor"]+' align-text-bottom text-white">'+response.data[line]["connectionsCount"]+'</span><br>';
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        }
+
                         if (response.data[line]["pid"] == "none"){
                             tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                             if(response.data[line]["running"]=="true"){
@@ -764,7 +810,36 @@ function PingPlugins(){
                                 '</div>'+
                             '</div>'+
                         '</td>'+
-                    '</tr>'; 
+                    '</tr>';
+                    if(response.data[line]["connectionsCount"] > 0){
+                        tableSocketPcap = tableSocketPcap + '<tr>'+
+                            '<td colspan="7">'+ 
+                                '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" width="100%">'+
+                                    '<thead>'+
+                                        '<th width="7%">Proto</th>'+
+                                        '<th width="7%">Recv-Q</th>'+
+                                        '<th width="7%">Send-Q</th>'+
+                                        '<th width="">Local Addr</th>'+
+                                        '<th width="">Foreign Addr</th>'+
+                                        '<th width="">State</th>'+
+                                        '<th width="">PID/name</th>'+
+                                    '</thead>'+
+                                    '<tbody>';                                
+                                        result.forEach(function (item, index) {
+                                            tableSocketPcap = tableSocketPcap + '<tr>';
+    
+                                            var splittedData = item.split(' ');
+                                            var dataFiltered = splittedData.filter(word => word != '');
+                                            dataFiltered.forEach(function (value, pos) {
+                                                tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+value+'</td>';
+                                            })                                            
+                                            tableSocketPcap = tableSocketPcap + '</tr>';
+                                        });
+                                        tableSocketPcap = tableSocketPcap +'</tbody>'+
+                                '</table>'+
+                            '</td>'+
+                        '</tr>';
+                    }
                 }
                 
                 document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;

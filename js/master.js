@@ -607,6 +607,7 @@ function PingPlugins(){
             PrivilegesMessage();              
         }else{            
             for (line in response.data){
+                console.log(response.data[line]);
                 var conns = response.data[line]["connections"].split("\n");
                 const result = conns.filter(con => con != "");                
 
@@ -627,8 +628,14 @@ function PingPlugins(){
                         document.getElementById(line+'-button').className = "fas fa-play-circle";
                     }
                 }else if (response.data[line]["type"] == "socket-network"){                
-                    tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<span class="badge badge-pill bg-secondary align-text-bottom text-white">'+result.length+'</span><br>';
+                    tableSocketNetwork = tableSocketNetwork + '<tr>';
+
+                        if(response.data[line]["connectionsCount"] > 0){
+                            tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+' <span class="badge badge-pill bg-'+response.data[line]["connectionsColor"]+' align-text-bottom text-white">'+response.data[line]["connectionsCount"]+'</span><br>';
+                        }else{
+                            tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        }
+
                             if (response.data[line]["pid"] == "none"){
                                 tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                                 if(response.data[line]["running"]=="true"){
@@ -692,7 +699,7 @@ function PingPlugins(){
                             '</div>'+
                         '</td>'+
                     '</tr>';
-                    if(result.length > 0){
+                    if(response.data[line]["connectionsCount"] > 0){
                         tableSocketNetwork = tableSocketNetwork +'<tr>'+
                             '<td colspan="5">'+ 
                                 '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" width="100%">'+
@@ -723,8 +730,14 @@ function PingPlugins(){
                     }
     
                 }else if (response.data[line]["type"] == "socket-pcap"){                
-                    tableSocketPcap = tableSocketPcap + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<span class="badge badge-pill bg-secondary align-text-bottom text-white">'+result.length+'</span><br>';
+                    tableSocketPcap = tableSocketPcap + '<tr>';
+
+                        if(response.data[line]["connectionsCount"] > 0){
+                            tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+' <span class="badge badge-pill bg-'+response.data[line]["connectionsColor"]+' align-text-bottom text-white">'+response.data[line]["connectionsCount"]+'</span><br>';
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        }
+
                         if (response.data[line]["pid"] == "none"){
                             tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                             if(response.data[line]["running"]=="true"){
@@ -797,7 +810,7 @@ function PingPlugins(){
                             '</div>'+
                         '</td>'+
                     '</tr>';
-                    if(result.length > 0){
+                    if(response.data[line]["connectionsCount"] > 0){
                         tableSocketPcap = tableSocketPcap + '<tr>'+
                             '<td colspan="7">'+ 
                                 '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" width="100%">'+

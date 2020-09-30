@@ -607,7 +607,8 @@ function PingPlugins(){
             PrivilegesMessage();              
         }else{            
             for (line in response.data){
-                console.log(response.data[line]);
+                console.log(response.data[line]["connections"] == "");
+
                 var conns = response.data[line]["connections"].split("\n");
                 const result = conns.filter(con => con != "");                
 

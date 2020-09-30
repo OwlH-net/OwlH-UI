@@ -1173,7 +1173,6 @@ async function GetMainconfData(uuid){
         }
     })
     .catch(function (error) {
-        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -3656,7 +3655,7 @@ function sendRulesetToNode(uuid, service){
     jsonRuleUID["ruleset"] = document.getElementById('suricata-ruleset-edit-id-'+service).value;    
     jsonRuleUID["type"] = "node";
     var dataJSON = JSON.stringify(jsonRuleUID);
-    console.log(jsonRuleUID);
+    
     axios({
         method: 'put',
         url: nodeurl,
@@ -4641,18 +4640,17 @@ function PingPluginsNode(uuid) {
                     '<strong>Error!</strong> Ping Plugins: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
+                    '</button>'+    
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{                
                 for(line in response.data){  
-
-                    console.log(response.data[line]);
-
-                    var conns = response.data[line]["connections"].split("\n");
-                    const result = conns.filter(con => con != "");
-
-
+                                        
+                    if(response.data[line]["type"] == "socket-network" || response.data[line]["type"] == "socket-pcap" || response.data[line]["type"] == "network-socket"){
+                        var conns = response.data[line]["connections"].split("\n");
+                        const result = conns.filter(con => con != "");
+                    }
+                    
                     // if (line == "knownports"){
                     //     if (response.data[line]["status"] == "Enabled"){
                     //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
@@ -4915,7 +4913,7 @@ function PingPluginsNode(uuid) {
                                             '<th width="">State</th>'+
                                             '<th width="">PID/name</th>'+
                                         '</thead>'+
-                                        '<tbody>';                                
+                                        '<tbody>';                                                                        
                                             result.forEach(function (item, index) {
                                                 tableSocketNetwork = tableSocketNetwork + '<tr>';
     

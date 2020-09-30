@@ -4644,12 +4644,12 @@ function PingPluginsNode(uuid) {
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{                
-                for(line in response.data){  
-                                        
-                    if(response.data[line]["type"] == "socket-network" || response.data[line]["type"] == "socket-pcap" || response.data[line]["type"] == "network-socket"){
-                        var conns = response.data[line]["connections"].split("\n");
-                        const result = conns.filter(con => con != "");
-                    }
+                for(line in response.data){   
+                    console.log(response.data[line]);                                   
+                    // if(response.data[line]["type"] == "socket-network" || response.data[line]["type"] == "socket-pcap" || response.data[line]["type"] == "network-socket"){
+                    //     var conns = response.data[line]["connections"].split("\n");
+                    //     result = conns.filter(con => con != "");
+                    // }
                     
                     // if (line == "knownports"){
                     //     if (response.data[line]["status"] == "Enabled"){
@@ -4913,7 +4913,9 @@ function PingPluginsNode(uuid) {
                                             '<th width="">State</th>'+
                                             '<th width="">PID/name</th>'+
                                         '</thead>'+
-                                        '<tbody>';                                                                        
+                                        '<tbody>';                                          
+                                            var conns = response.data[line]["connections"].split("\n");
+                                            var result = conns.filter(con => con != "");                                                                                                              
                                             result.forEach(function (item, index) {
                                                 tableSocketNetwork = tableSocketNetwork + '<tr>';
     
@@ -5026,7 +5028,9 @@ function PingPluginsNode(uuid) {
                                             '<th width="">State</th>'+
                                             '<th width="">PID/name</th>'+
                                         '</thead>'+
-                                        '<tbody>';                                
+                                        '<tbody>';        
+                                            var conns = response.data[line]["connections"].split("\n");
+                                            var result = conns.filter(con => con != "");                        
                                             result.forEach(function (item, index) {
                                                 tableSocketPcap = tableSocketPcap + '<tr>';
     
@@ -5141,7 +5145,9 @@ function PingPluginsNode(uuid) {
                                             '<th width="">State</th>'+
                                             '<th width="">PID/name</th>'+
                                         '</thead>'+
-                                        '<tbody>';                                
+                                        '<tbody>';      
+                                            var conns = response.data[line]["connections"].split("\n");
+                                            var result = conns.filter(con => con != "");                                    
                                             result.forEach(function (item, index) {
                                                 tableNetworkSocket = tableNetworkSocket + '<tr>';
     

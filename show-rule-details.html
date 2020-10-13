@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="img/favicon.ico">
+
+        <title>OwlH Master</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="../css/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- fontawesome -->
+        <link rel="stylesheet" href="css/fontawesome/css/all.css">
+
+
+        <!-- Custom styles for this template -->
+        <link href="../css/offcanvas.css" rel="stylesheet">
+    </head>
+    <body class="bg-light">
+        <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <img class="mr-3" src="../img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
+                href="../nodes.html"><small>Master </small><i class="text-warning" id="menu-title"
+                ></i> | </a>    
+            <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+                aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button> -->
+        
+        
+            <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../nodes.html">Nodes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../groups.html">Groups</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="../rulesets.html">Open Rules</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../response.html">Adapt & Response</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="../kibana.html">Kibana</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="master.html">Master</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../config.html">Config</a>
+                    </li>
+                </ul>
+                        <!-- loged button -->
+        <div class="dropdown mr-4">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b id="loger-user-name" value="">Loged as: </b></button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
+            <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" style="cursor:pointer;" onclick="Logout()">Logout</a>
+          </div>
+        </div>
+        <!-- current version -->
+        <p id="current-version-text" class="text-justify align-middle text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+            </div>
+        </nav>
+
+        <main role="main" class="container">
+
+            <!--Alert-->
+            <div id="floating-alert" style="top: 5px;">
+            </div>
+    
+            <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-low-blue rounded shadow-sm">
+                <img class="mr-3" src="img/owlhblack.png" alt="" height="48">
+                <div class="lh-100">
+                    <h3 class="mb-0 text-white lh-100" id="rule-title">Rule description: </h3>
+                    <small id="rule-subtitle">Rule sid: </small>
+                </div>
+            </div>
+
+            <!-- DISCLAIMER FOR VERIFY RULES BEFORE UPDATE -->
+            <div class="d-flex p-3 my-3 text-white-50 bg-red rounded shadow-sm">
+                <div class="lh-100">
+                    <h2 class="mb-0 text-white lh-100" style="float:right;">ONLY FOR EXPERTS. USE AT YOUR OWN RISK</h2>
+                    <!-- <br>
+                    <h4 class="text-justify mb-0 text-white lh-100">We don't make any warranties about the completness, reliability and accuracy of the information after any change.
+                        Any action you take is strictly at your own risk, and we will no't liable for any losses or bad behaviuor of the system.
+                    </h4> -->
+                </div>
+            </div>
+    
+            <!-- Modal -->
+            <div class="fade modal" id="modal-rule"></div>
+            <!-- Modal -->
+            <div class="modal fade" id="modal-window"></div>
+
+            <!-- main content -->
+            <div id="rule-content">
+            </div>
+
+            <!-- Footer -->
+            <div id="footer"></div>
+
+            <!-- Load master ip/port -->
+            <div id="load-json-data" style="display: none;">
+                <input id="ip-master" type="text" class="form-control">
+                <input id="port-master" type="text" class="form-control">
+                <input id="number-of-elements" type="text" class="form-control">
+            </div>
+        </main>
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="js/axios/dist/axios.js"></script>
+        <script src="js/jquery-3.4.1.js"></script>
+        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="../css/site/docs/4.1/assets/js/vendor/jquery-slim.min.js"><\/script>')</script> -->
+        <!-- <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha26-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script> -->
+        <!-- <script src="../css/site/docs/4.1/assets/js/vendor/popper.min.js"></script> -->
+        <script src="css/dist/js/bootstrap.min.js"></script>
+        <!-- <script src="../css/site/docs/4.1/assets/js/vendor/holder.min.js"></script> -->
+        <script src="js/offcanvas.js"></script>
+        <script src="js/show-rule-details.js"></script>
+        <script src="js/loadTitle.js"></script>
+        <script src="js/footer.js"></script>
+        <script src="js/loginButton.js"></script>
+    </body>
+</html>

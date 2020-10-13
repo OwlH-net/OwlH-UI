@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="img/favicon.ico">
+
+    <title>OwlH Master</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="css/fontawesome/css/all.css">
+
+    <!-- Custom styles for this template -->
+    <link href="css/offcanvas.css" rel="stylesheet">
+  </head>
+
+  <body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <img class="mr-3" src="img/owlhblack.png" alt="" height="30"><a class="navbar-brand mr-auto mr-lg-0"
+        href="nodes.html"><small>Master </small><i id="menu-title" class="text-warning"></i> | </a>
+
+      <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item ">
+            <a class="nav-link" href="nodes.html">Nodes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="groups.html">Groups</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="rulesets.html">Open Rules</span></a>
+          </li>
+          <li class="nav-item active">
+            <!-- <a class="nav-link" href="response.html">Adapt & Response</a> -->
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="kibana.html">Kibana</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" href="master.html">Master</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="config.html">Config</a>
+          </li>
+        </ul>
+        <!-- loged button -->
+        <div class="dropdown mr-4">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b id="loger-user-name" value="">Loged as: </b></button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuUser">
+            <a class="dropdown-item" style="cursor:pointer;" onclick="modalChangePasswordLogin()">Change Password</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" style="cursor:pointer;" onclick="Logout()">Logout</a>
+          </div>
+        </div>
+        <!-- current version -->
+        <p id="current-version-text" class="text-justify align-middle text-white">v:</p><p class="text-justify text-white mr-4" id="current-version-show"></p>
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-blue-grey rounded shadow-sm">
+        <img class="mr-3" src="img/owlhblack.png" alt=""  height="48">
+        <div class="lh-100">
+          <h3 class="mb-0 text-white lh-100">Adapt and Response</h3>
+          <small>Summary</small>
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h6 class="border-bottom border-gray pb-2 mb-0">Deferred Capture Nodes</h6>
+        <div class="media text-muted pt-3">
+          <img data-src="holder.js/32x32?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded">
+          <p class="media-body pb-3 mb-0  lh-125 border-bottom border-gray">
+            <strong class="d-block text-dark">Capturer 01 - node-demo-02</strong>
+            <i>IP - 192.168.1.218</i>
+          </p>
+        </div>
+        <small class="d-block text-right mt-3">
+          <a href="#">New Deferred capture node</a>
+        </small>
+      </div>
+
+      <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h6 class="border-bottom border-gray pb-2 mb-0">BPF Filters</h6>
+        <div class="media text-muted pt-3">
+          <img data-src="holder.js/32x32?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded">
+          <p class="media-body pb-3 mb-0  lh-125 border-bottom border-gray">
+            <strong class="d-block text-dark">Default BPF Filter </strong>
+            <i>Exclude local IPs</i>
+          </p>
+        </div>
+        <small class="d-block text-right mt-3">
+          <a href="#">New BPF filter</a>
+        </small>
+      </div>
+
+      <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h6 class="border-bottom border-gray pb-2 mb-0">Deferred Capture Triggers</h6>        <div class="media text-muted pt-3">
+          <img data-src="holder.js/32x32?theme=thumb&bg=007bff&fg=007bff&size=1" alt="" class="mr-2 rounded">
+          <p class="media-body pb-3 mb-0  lh-125 border-bottom border-gray">
+            <strong class="d-block text-dark">Default Trigger</strong>
+            <i>alarm risk higher than 10 and filter by SRC_IP </i>
+          </p>
+        </div>
+
+        <small class="d-block text-right mt-3">
+          <a href="#">New Trigger</a>
+        </small>
+      </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modal-window"></div>
+
+        <!-- Load master ip/port -->
+        <div id="load-json-data" style="display: none;">
+          <input id="ip-master" type="text" class="form-control">
+          <input id="port-master" type="text" class="form-control">
+      </div>
+    </main>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/axios/dist/axios.js"></script>
+    <script src="js/jquery-3.4.1.js"></script>
+    <script src="css/dist/js/bootstrap.min.js"></script>
+    <script src="js/offcanvas.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/loadTitle.js"></script>
+    <script src="js/loginButton.js"></script>
+  </body>
+</html>
+

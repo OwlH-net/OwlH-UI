@@ -3684,7 +3684,10 @@ function sendRulesetToNode(uuid, service){
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
+<<<<<<< HEAD
                 PingPluginsNode(uuid)
+=======
+>>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -4646,6 +4649,10 @@ function PingPluginsNode(uuid) {
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{                
                 for(line in response.data){   
+<<<<<<< HEAD
+=======
+                    console.log(response.data[line]);                                   
+>>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
                     // if(response.data[line]["type"] == "socket-network" || response.data[line]["type"] == "socket-pcap" || response.data[line]["type"] == "network-socket"){
                     //     var conns = response.data[line]["connections"].split("\n");
                     //     result = conns.filter(con => con != "");
@@ -4687,13 +4694,22 @@ function PingPluginsNode(uuid) {
                         }else{
                             document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
                             document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+<<<<<<< HEAD
                         }    
+=======
+                        }
+    
+>>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
                     }else{
                         document.getElementById("stap-installed-status").style.display = "none";
                     }
     
                     //put suricata parameters
+<<<<<<< HEAD
                     if (response.data[line]["type"] == "suricata"){   
+=======
+                    if (response.data[line]["type"] == "suricata"){
+>>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
                         if (response.data[line]["command"]){
                             tableSuricataCommand = tableSuricataCommand + '<tr>'+
                                 '<td>'+response.data[line]["pid"]+'</td>'+
@@ -4702,6 +4718,10 @@ function PingPluginsNode(uuid) {
                                     '<span style="cursor: pointer;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
                                     '<span style="cursor: pointer;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Reload</span>'+
                                 '</td>'+
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
                             '<tr>';
                         }else{
                             tableSuricata = tableSuricata + '<tr>'+
@@ -4733,6 +4753,7 @@ function PingPluginsNode(uuid) {
                                 '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'">'+response.data[line]["rulesetName"]+'</td>';
                                 tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                                 '<td style="word-wrap: break-word;">';
+<<<<<<< HEAD
                                     if(response.data[line]["rulesetSync"] == "true"){
                                         if(response.data[line]["status"]=="enabled"){
                                             tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
@@ -4750,6 +4771,17 @@ function PingPluginsNode(uuid) {
                                         '</div>';
                                     }                                    
                                 tableSuricata = tableSuricata + '</td>'+
+=======
+                                    if(response.data[line]["status"]=="enabled"){
+                                        tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                                    }else if (response.data[line]["status"]=="disabled"){
+                                        tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
+                                    }
+                                    tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                    '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                    '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
+                                '</td>'+
+>>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
                             '</tr>'+
                             '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
                                 '<td style="word-wrap: break-word;" colspan="5">'+

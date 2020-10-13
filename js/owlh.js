@@ -209,12 +209,7 @@ function PingMonitor(uuid){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-<<<<<<< HEAD
             'user': payload.user            
-=======
-            'user': payload.user
-            
->>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
         },
         timeout: 30000
     })
@@ -229,7 +224,6 @@ function PingMonitor(uuid){
                 }
                 document.getElementById('mem-'+uuid).innerHTML = "<b>MEM: </b>" + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
                 document.getElementById('sto-'+uuid).innerHTML = "<b>STO: </b>" + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
-<<<<<<< HEAD
                 document.getElementById('cpu-'+uuid).innerHTML = cpuData
 
                 if(response.data.cpus.length > 8 || document.getElementById('cpu-content-'+uuid).style.display == "none"){
@@ -241,16 +235,12 @@ function PingMonitor(uuid){
                     document.getElementById('cores-icon-'+uuid).classList.remove("fa-sort-down");
                     document.getElementById('cores-icon-'+uuid).classList.add("fa-sort-up");
                 }
-=======
-                document.getElementById('cpu-'+uuid).innerHTML = cpuData;
->>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
             }
         })
         .catch(function (error) {
         }); 
 }
 
-<<<<<<< HEAD
 function ShowCores(uuid) {
     if(document.getElementById('cpu-content-'+uuid).style.display == "none"){
         document.getElementById('cpu-content-'+uuid).style.display = "block";
@@ -263,8 +253,6 @@ function ShowCores(uuid) {
     }
 }
 
-=======
->>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
 function DeployService(uuid) {
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
@@ -399,17 +387,12 @@ function GetAllNodes() {
                                             '<div><p></p></div>'+
                                             '<div id="node-values-'+uuid+'">'+
                                                 '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
-<<<<<<< HEAD
                                                 '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+   
                                                 '<br>'+
                                                 '<h6 onclick="ShowCores(\''+uuid+'\')" style="cursor: pointer;">Cores <i id="cores-icon-'+uuid+'" class="fas fa-sort-up"></i></h6>'+                     
                                                 '<div id="cpu-content-'+uuid+'" style="display:block;">'+
                                                     '<div id="cpu-'+uuid+'"></div>'+                        
                                                 '</div>'+                        
-=======
-                                                '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
-                                                '<div id="cpu-'+uuid+'"></div>'+                        
->>>>>>> 64fd86b14be1e41357fce4f0db3b663c3a15b94b
                                             '</div>'+
                                         '</span>'+
                                     '</td>'+    

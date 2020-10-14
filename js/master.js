@@ -2,7 +2,12 @@ function loadPlugins(){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     content = document.getElementById('master-table-plugins');
-    content.innerHTML =
+    content.innerHTML = '<div class="float-right" id="stap-installed-status" style="display:none;">'+
+        '<b>SOCAT:</b> <span id="stap-installed-socat" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+        
+        '<b>TCPDUMP:</b> <span id="stap-installed-tcpdump" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
+    '</div>'+
+    '<br>'+
+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" onclick="showActions(\'config\')"><b>Master configuration <i class="fas fa-sort-down" id="config-form-icon"></i></b> </h6>'+        
         '<span id="config-form-span">'+
@@ -607,8 +612,7 @@ function PingPlugins(){
             PrivilegesMessage();              
         }else{            
             for (line in response.data){
-                console.log(response.data[line]["connections"] == "");
-
+                console.log(response.data);
                 var conns = response.data[line]["connections"].split("\n");
                 const result = conns.filter(con => con != "");                
 
@@ -844,7 +848,31 @@ function PingPlugins(){
                 
                 document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
                 document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
+
+                if(response.data["installed"]["checkSocat"] == "false" || response.data["installed"]["checkTcpdump"] == "false"){
+                    document.getElementById('stap-installed-status').style.display = "block";
+                    if(response.data["installed"]["checkSocat"] == "true"){
+                        document.getElementById("stap-installed-socat").innerHTML = "Installed";
+                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-socat").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }
+                    if(response.data["installed"]["checkTcpdump"] == "true"){
+                        document.getElementById("stap-installed-tcpdump").innerHTML = "Installed";
+                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }    
+                }else{
+                    document.getElementById("stap-installed-status").style.display = "none";
+                }
             }
+
+
+
+
         } 
     })
     .catch(function (error) {

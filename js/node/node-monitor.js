@@ -118,11 +118,13 @@ function AddMonitorFileModal(uuid){
                 '<label class="form-check-label" for="check-rotation-disabled">Disabled</label>'+
             '</div>'+
             '<br><br>'+
-            '<p>Maximum rotation file size (in Bytes):</p>'+
-            '<input type="text" class="form-control" id="size-file-path" value="256000000">'+
+            '<p>Maximum rotation file size (M for Megas, G for Gigas or T for Teras):</p>'+
+            '<input type="text" class="form-control" id="size-file-path" value="5G">'+
             '<p>Maximum rotation file lines:</p>'+
             '<input type="text" class="form-control" id="lines-file-path" value="1000000000">'+
-            '<p>Maximum rotation file days:</p>'+
+            '<p>Maximum rotation files:</p>'+
+            '<input type="text" class="form-control" id="number-file-path" value="7">'+
+            '<p>Maximum rotation days:</p>'+
             '<input type="text" class="form-control" id="days-file-path" value="7">'+
         '</div>'+
   
@@ -224,7 +226,7 @@ function DeleteMonitorFile(uuid, file){
 }
 
 function AddMonitorFile(uuid, path){
-    if(document.getElementById('new-file-path').value == "" || document.getElementById('size-file-path').value == "" || document.getElementById('lines-file-path').value == "" || document.getElementById('days-file-path').value == ""){
+    if(document.getElementById('new-file-path').value == "" || document.getElementById('size-file-path').value == "" || document.getElementById('lines-file-path').value == "" || document.getElementById('number-file-path').value == ""){
         if(document.getElementById('new-file-path').value == ""){
             $("#new-file-path").css('border', '2px solid red');
             $("#new-file-path").attr('placeholder', 'Please, insert valid path...');
@@ -242,6 +244,12 @@ function AddMonitorFile(uuid, path){
             $("#lines-file-path").attr('placeholder', 'Please, insert number of lines...');
         }else{
             $("#lines-file-path").css('border', '');
+        }   
+        if(document.getElementById('number-file-path').value == ""){
+            $("#number-file-path").css('border', '2px solid red');
+            $("#number-file-path").attr('placeholder', 'Please, insert number of days...');
+        }else{
+            $("#number-file-path").css('border', '');
         }   
         if(document.getElementById('days-file-path').value == ""){
             $("#days-file-path").css('border', '2px solid red');
@@ -265,6 +273,7 @@ function AddMonitorFile(uuid, path){
         jsonSave["path"] = path.trim();
         jsonSave["maxSize"] = document.getElementById('size-file-path').value.trim();
         jsonSave["maxLines"] = document.getElementById('lines-file-path').value.trim();
+        jsonSave["maxFiles"] = document.getElementById('number-file-path').value.trim();
         jsonSave["maxDays"] = document.getElementById('days-file-path').value.trim();
         var dataJSON = JSON.stringify(jsonSave);
         axios({
@@ -373,7 +382,7 @@ function PingMonitorFiles(uuid){
                                     'Path: <input class="form-control" id="rotation-path-'+file+'" value="'+response.data[file]["path"]+'">'+
                                 '</div>'+
                                 '<div class="col">'+
-                                    'Maximum file size (in Bytes): <input class="form-control" id="rotation-size-'+file+'" value="'+response.data[file]["maxSize"]+'">'+
+                                    'Maximum file size: <input class="form-control" id="rotation-size-'+file+'" value="'+response.data[file]["maxSize"]+'">'+
                                 '</div>'+
                             '</div>'+
                             '<div class="form-row">'+
@@ -381,7 +390,12 @@ function PingMonitorFiles(uuid){
                                     'Maximum file lines: <input class="form-control" id="rotation-lines-'+file+'" value="'+response.data[file]["maxLines"]+'">'+
                                 '</div>'+
                                 '<div class="col">'+
-                                    'Maximum rotation days: <input class="form-control" id="rotation-days-'+file+'" value="'+response.data[file]["maxDays"]+'">'+
+                                    'Maximum rotation files: <input class="form-control" id="rotation-files-'+file+'" value="'+response.data[file]["maxFiles"]+'">'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="form-row">'+
+                                '<div class="col">'+
+                                    'Maximum file days rotation: <input class="form-control" id="rotation-days-'+file+'" value="'+response.data[file]["maxDays"]+'">'+
                                 '</div>'+
                             '</div>'+
                         '</td>'+
@@ -683,7 +697,7 @@ function ChangeRotationStatus(uuid, file, status){
 }
 
 function EditRotation(uuid, file){
-    if(document.getElementById('rotation-path-'+file).value == "" || document.getElementById('rotation-lines-'+file).value == "" || document.getElementById('rotation-size-'+file).value == "" || document.getElementById('rotation-days-'+file).value == ""){
+    if(document.getElementById('rotation-path-'+file).value == "" || document.getElementById('rotation-lines-'+file).value == "" || document.getElementById('rotation-size-'+file).value == "" || document.getElementById('rotation-files-'+file).value == ""){
         if(document.getElementById('rotation-path-'+file).value ==""){        
             $('#rotation-path-'+file).css('border', '2px solid red');
             $('#rotation-path-'+file).attr('placeholder', 'Please, insert valid path...');    
@@ -702,9 +716,15 @@ function EditRotation(uuid, file){
         }else{         
             $('#rotation-size-'+file).css('border', '');   
         }
+        if(document.getElementById('rotation-files-'+file).value ==""){        
+            $('#rotation-files-'+file).css('border', '2px solid red');
+            $('#rotation-files-'+file).attr('placeholder', 'Please, insert valid number of files...');    
+        }else{         
+            $('#rotation-files-'+file).css('border', '');   
+        }
         if(document.getElementById('rotation-days-'+file).value ==""){        
             $('#rotation-days-'+file).css('border', '2px solid red');
-            $('#rotation-days-'+file).attr('placeholder', 'Please, insert valid days...');    
+            $('#rotation-days-'+file).attr('placeholder', 'Please, insert valid number of files...');    
         }else{         
             $('#rotation-days-'+file).css('border', '');   
         }
@@ -720,6 +740,7 @@ function EditRotation(uuid, file){
         jsonSave["path"] = document.getElementById('rotation-path-'+file).value;
         jsonSave["size"] = document.getElementById('rotation-size-'+file).value;
         jsonSave["lines"] = document.getElementById('rotation-lines-'+file).value;
+        jsonSave["files"] = document.getElementById('rotation-files-'+file).value;
         jsonSave["days"] = document.getElementById('rotation-days-'+file).value;
         var dataJSON = JSON.stringify(jsonSave);
         axios({

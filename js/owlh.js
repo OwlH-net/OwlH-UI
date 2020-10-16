@@ -209,8 +209,7 @@ function PingMonitor(uuid){
         url: nodeurl,
         headers:{
             'token': document.cookie,
-            'user': payload.user
-            
+            'user': payload.user            
         },
         timeout: 30000
     })
@@ -225,11 +224,33 @@ function PingMonitor(uuid){
                 }
                 document.getElementById('mem-'+uuid).innerHTML = "<b>MEM: </b>" + parseFloat(response.data.mem.percentage).toFixed(2)+" %";
                 document.getElementById('sto-'+uuid).innerHTML = "<b>STO: </b>" + parseFloat(response.data.disk.percentage).toFixed(2)+" %";
-                document.getElementById('cpu-'+uuid).innerHTML = cpuData;
+                document.getElementById('cpu-'+uuid).innerHTML = cpuData
+
+                if(response.data.cpus.length > 8 || document.getElementById('cpu-content-'+uuid).style.display == "none"){
+                    document.getElementById('cpu-content-'+uuid).style.display = "none";
+                    document.getElementById('cores-icon-'+uuid).classList.remove("fa-sort-up");                    
+                    document.getElementById('cores-icon-'+uuid).classList.add("fa-sort-down");
+                }else{
+                    document.getElementById('cpu-content-'+uuid).style.display = "block";
+                    document.getElementById('cores-icon-'+uuid).classList.remove("fa-sort-down");
+                    document.getElementById('cores-icon-'+uuid).classList.add("fa-sort-up");
+                }
             }
         })
         .catch(function (error) {
         }); 
+}
+
+function ShowCores(uuid) {
+    if(document.getElementById('cpu-content-'+uuid).style.display == "none"){
+        document.getElementById('cpu-content-'+uuid).style.display = "block";
+        document.getElementById('cores-icon-'+uuid).classList.add("fa-sort-down");
+        document.getElementById('cores-icon-'+uuid).classList.remove("fa-sort-up");
+    }else{
+        document.getElementById('cpu-content-'+uuid).style.display = "none"
+        document.getElementById('cores-icon-'+uuid).classList.remove("fa-sort-down");
+        document.getElementById('cores-icon-'+uuid).classList.add("fa-sort-up");                    
+    }
 }
 
 function DeployService(uuid) {
@@ -366,8 +387,12 @@ function GetAllNodes() {
                                             '<div><p></p></div>'+
                                             '<div id="node-values-'+uuid+'">'+
                                                 '<div id="mem-'+uuid+'"><b>MEM:</b> </div>'+
-                                                '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+                        
-                                                '<div id="cpu-'+uuid+'"></div>'+                        
+                                                '<div id="sto-'+uuid+'"><b>STO:</b> </div>'+   
+                                                '<br>'+
+                                                '<h6 onclick="ShowCores(\''+uuid+'\')" style="cursor: pointer;">Cores <i id="cores-icon-'+uuid+'" class="fas fa-sort-up"></i></h6>'+                     
+                                                '<div id="cpu-content-'+uuid+'" style="display:block;">'+
+                                                    '<div id="cpu-'+uuid+'"></div>'+                        
+                                                '</div>'+                        
                                             '</div>'+
                                         '</span>'+
                                     '</td>'+    

@@ -2,7 +2,12 @@ function loadPlugins(){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     content = document.getElementById('master-table-plugins');
-    content.innerHTML =
+    content.innerHTML = '<div class="float-right" id="stap-installed-status" style="display:none;">'+
+        '<b>SOCAT:</b> <span id="stap-installed-socat" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+        
+        '<b>TCPDUMP:</b> <span id="stap-installed-tcpdump" class="badge bg-primary align-text-bottom text-white"></span> &nbsp'+
+    '</div>'+
+    '<br>'+
+
     '<div class="my-3 p-3 bg-white rounded shadow-sm">'+
         '<h6 class="border-bottom border-gray pb-2 mb-0" onclick="showActions(\'config\')"><b>Master configuration <i class="fas fa-sort-down" id="config-form-icon"></i></b> </h6>'+        
         '<span id="config-form-span">'+
@@ -44,7 +49,7 @@ function loadPlugins(){
             '<table width="100%">'+
                 '<tr>'+
                     '<td width="25%"><i style="color: Dodgerblue;" class="fas fa-random"></i> Dispatcher</td>'+
-                    '<td width="25%">Status: <span id="dispatcher-status"></span></td>'+
+                    '<td width="25%">Status: <span id="dispatcher-status" class="badge bg-dark align-text-bottom text-white">N/A</span></td>'+
                     '<td width="25%">Start/Stop: <i style="color: grey;cursor:pointer;" class="fas fa-play-circle" id="dispatcher-button" onclick="changePluginStatus(\'dispatcher\', \'status\', \'disabled\')"></i> </td>'+
                     '<td width="25%">Dispatcher nodes: <i style="color: grey;cursor:pointer;" class="fas fa-info-circle" title="Show dispatcher nodes" onclick="showMasterFile(\'dispatcherNodes\')"></i></td>'+
                 '</tr>'+       
@@ -601,31 +606,46 @@ function PingPlugins(){
         timeout: 30000,
         headers:{'token': document.cookie,'user': payload.user}
     })
-   .then(function (response) {
+   .then(function (response) {           
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}  
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{            
-            for (line in response.data){
-                if (line == "dispatcher"){
-                    if (response.data[line]["status"] == "enabled"){
-                        document.getElementById(line+'-status').style.color = "green";
-                        document.getElementById(line+'-status').value = "disabled";
-                        document.getElementById(line+'-status').className = "badge bg-success align-text-bottom text-white";
-                        document.getElementById(line+'-status').innerHTML = "ON";
-                        document.getElementById(line+'-button').title = "Stop "+line;
-                        document.getElementById(line+'-button').className = "fas fa-stop-circle";
-                    }else if (response.data[line]["status"] == "disabled"){
-                        document.getElementById(line+'-status').style.color = "red";
-                        document.getElementById(line+'-status').className = "badge bg-danger align-text-bottom text-white";
-                        document.getElementById(line+'-status').innerHTML = "OFF";
-                        document.getElementById(line+'-status').value = "enabled";
-                        document.getElementById(line+'-button').title = "Play "+line;
-                        document.getElementById(line+'-button').className = "fas fa-play-circle";
-                    }
-                }else if (response.data[line]["type"] == "socket-network"){                
-                    tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
+            
+            //check dispatcher
+            if (response.data["dispatcher"]["status"] == "enabled"){
+                document.getElementById('dispatcher-status').value = "disabled";                        
+                document.getElementById('dispatcher-status').style.color = "green";
+                document.getElementById('dispatcher-status').className = "badge bg-success align-text-bottom text-white";
+                document.getElementById('dispatcher-status').innerHTML = "ON";
+                document.getElementById('dispatcher-button').title = "Stop dispatcher";
+                document.getElementById('dispatcher-button').className = "fas fa-stop-circle";
+            }else if (response.data["dispatcher"]["status"] == "disabled"){
+                document.getElementById('dispatcher-status').value = "enabled";
+                document.getElementById('dispatcher-status').style.color = "red";
+                document.getElementById('dispatcher-status').className = "badge bg-danger align-text-bottom text-white";
+                document.getElementById('dispatcher-status').innerHTML = "OFF";
+                document.getElementById('dispatcher-button').title = "Play dispatcher";
+                document.getElementById('dispatcher-button').className = "fas fa-play-circle";
+            }
+
+            for (line in response.data){                
+                if (response.data[line]["connections"] != "" || response.data[line]["connections"] != null){
+                    var conns = response.data[line]["connections"].split("\n");
+                    const result = conns.filter(con => con != "");                
+                }else{
+                    const result = [];
+                }
+                
+                if (response.data[line]["type"] == "socket-network"){                
+                    tableSocketNetwork = tableSocketNetwork + '<tr>';
+
+                        if(response.data[line]["connectionsCount"] > 0){
+                            tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+' <span class="badge badge-pill bg-'+response.data[line]["connectionsColor"]+' align-text-bottom text-white">'+response.data[line]["connectionsCount"]+'</span><br>';
+                        }else{
+                            tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        }
+
                             if (response.data[line]["pid"] == "none"){
                                 tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                                 if(response.data[line]["running"]=="true"){
@@ -689,10 +709,45 @@ function PingPlugins(){
                             '</div>'+
                         '</td>'+
                     '</tr>';
+                    if(response.data[line]["connectionsCount"] > 0){
+                        tableSocketNetwork = tableSocketNetwork +'<tr>'+
+                            '<td colspan="5">'+ 
+                                '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" width="100%">'+
+                                    '<thead>'+
+                                        '<th width="7%">Proto</th>'+
+                                        '<th width="7%">Recv-Q</th>'+
+                                        '<th width="7%">Send-Q</th>'+
+                                        '<th width="">Local Addr</th>'+
+                                        '<th width="">Foreign Addr</th>'+
+                                        '<th width="">State</th>'+
+                                        '<th width="">PID/name</th>'+
+                                    '</thead>'+
+                                    '<tbody>';                                
+                                        result.forEach(function (item, index) {
+                                            tableSocketNetwork = tableSocketNetwork + '<tr>';
+    
+                                            var splittedData = item.split(' ');
+                                            var dataFiltered = splittedData.filter(word => word != '');
+                                            dataFiltered.forEach(function (value, pos) {
+                                                tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+value+'</td>';
+                                            })                                            
+                                            tableSocketNetwork = tableSocketNetwork + '</tr>';
+                                        });
+                                        tableSocketNetwork = tableSocketNetwork +'</tbody>'+
+                                '</table>'+
+                            '</td>'+
+                        '</tr>';
+                    }
     
                 }else if (response.data[line]["type"] == "socket-pcap"){                
-                    tableSocketPcap = tableSocketPcap + '<tr>'+
-                        '<td style="word-wrap: break-word;">'+ response.data[line]["name"]+'<br>';
+                    tableSocketPcap = tableSocketPcap + '<tr>';
+
+                        if(response.data[line]["connectionsCount"] > 0){
+                            tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+' <span class="badge badge-pill bg-'+response.data[line]["connectionsColor"]+' align-text-bottom text-white">'+response.data[line]["connectionsCount"]+'</span><br>';
+                        }else{
+                            tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        }
+
                         if (response.data[line]["pid"] == "none"){
                             tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                             if(response.data[line]["running"]=="true"){
@@ -764,16 +819,64 @@ function PingPlugins(){
                                 '</div>'+
                             '</div>'+
                         '</td>'+
-                    '</tr>'; 
+                    '</tr>';
+                    if(response.data[line]["connectionsCount"] > 0){
+                        tableSocketPcap = tableSocketPcap + '<tr>'+
+                            '<td colspan="7">'+ 
+                                '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" width="100%">'+
+                                    '<thead>'+
+                                        '<th width="7%">Proto</th>'+
+                                        '<th width="7%">Recv-Q</th>'+
+                                        '<th width="7%">Send-Q</th>'+
+                                        '<th width="">Local Addr</th>'+
+                                        '<th width="">Foreign Addr</th>'+
+                                        '<th width="">State</th>'+
+                                        '<th width="">PID/name</th>'+
+                                    '</thead>'+
+                                    '<tbody>';                                
+                                        result.forEach(function (item, index) {
+                                            tableSocketPcap = tableSocketPcap + '<tr>';
+    
+                                            var splittedData = item.split(' ');
+                                            var dataFiltered = splittedData.filter(word => word != '');
+                                            dataFiltered.forEach(function (value, pos) {
+                                                tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+value+'</td>';
+                                            })                                            
+                                            tableSocketPcap = tableSocketPcap + '</tr>';
+                                        });
+                                        tableSocketPcap = tableSocketPcap +'</tbody>'+
+                                '</table>'+
+                            '</td>'+
+                        '</tr>';
+                    }
                 }
                 
                 document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
                 document.getElementById('socket-pcap-table').innerHTML = tableSocketPcap;
+
+                if(response.data["installed"]["checkSocat"] == "false" || response.data["installed"]["checkTcpdump"] == "false"){
+                    document.getElementById('stap-installed-status').style.display = "block";
+                    if(response.data["installed"]["checkSocat"] == "true"){
+                        document.getElementById("stap-installed-socat").innerHTML = "Installed";
+                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-socat").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-socat").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }
+                    if(response.data["installed"]["checkTcpdump"] == "true"){
+                        document.getElementById("stap-installed-tcpdump").innerHTML = "Installed";
+                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-success align-text-bottom text-white';
+                    }else{
+                        document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
+                        document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
+                    }    
+                }else{
+                    document.getElementById("stap-installed-status").style.display = "none";
+                }
             }
         } 
     })
     .catch(function (error) {
-        // return false;
     });
 }
 
@@ -948,7 +1051,12 @@ function changePluginStatus(uuid,param,value){
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/changePluginStatus';
     var newStatus = {}
     if (uuid == "dispatcher"){
-        newStatus["value"] = document.getElementById(uuid+'-status').value;
+        if(document.getElementById(uuid+'-status').value == null || 
+            document.getElementById(uuid+'-status').value == undefined || document.getElementById(uuid+'-status').value == "N/A"){
+            newStatus["value"] = "disabled";
+        }else{
+            newStatus["value"] = document.getElementById(uuid+'-status').value;
+        }
     }
     newStatus["param"] = param
     newStatus["uuid"] = uuid;
@@ -1223,7 +1331,7 @@ function AddSTAPModal(type){
             '<p>Insert port:</p>'+
                 '<input type="text" class="form-control" id="soft-tap-port-master" value="50010"><br>'+
             '<p>Insert certificate:</p>'+
-                '<input type="text" class="form-control" id="soft-tap-cert-master" value="/usr/local/owlh/src/owlhnode/conf/certs/ca.pem"><br>';
+                '<input type="text" class="form-control" id="soft-tap-cert-master" value="/usr/local/owlh/src/owlhmaster/conf/certs/ca.pem"><br>';
             // if (type == "socket-network"){                  
             // }else 
             if (type == "socket-pcap"){

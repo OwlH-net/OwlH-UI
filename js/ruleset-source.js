@@ -360,6 +360,10 @@ function LoadDefaultRulesets(){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var sourceurl = 'https://' + ipmaster + ':' + portmaster + '/v1/rulesetSource/loadDefaultRulesets';
+    document.getElementById('default-rulesets').innerHTML = '<br>'+
+        '<h5>Select default ruleset (click to see ruleset details) </h5>'+
+        '<h6><i>note: Insert SECRET-CODE or SURICATA-VERSION in form field when URL needs it. </i></h6>'+
+        '<br>';
     axios({
         method: 'get',
         url: sourceurl,
@@ -374,18 +378,26 @@ function LoadDefaultRulesets(){
         if(response.data.permissions == "none"){
             PrivilegesMessage();
         }else{
+            var html ='<table class="table table-hover" style="table-layout: fixed" width="100%">'
             for(x in response.data){
                 // if(response.data[x].name.includes("'")){response.data[x].name.replace("'", "\'");}
                 // if(response.data[x].desc.includes("'")){response.data[x].desc.replace("'", "\'");}
                 // if(response.data[x].url.includes("'")){response.data[x].url.replace("'", "\'");}
-                var html = '<div id="radio-rset-'+x+'" class="custom-control custom-radio custom-control-inline">'+
-                    '<input type="radio" id="default-ruleset-'+x+'" name="default-rsets" data="'+x+'" class="custom-control-input" url="'+response.data[x].url+'" desc="'+response.data[x].desc+'" rsetName="'+response.data[x].name+'" onclick="loadRulesetDefaultDataListener(\''+x+'\', \''+response.data[x].name+'\', \''+response.data[x].desc+'\', \''+response.data[x].url+'\')">'+
-                    '<label class="custom-control-label" for="default-ruleset-'+x+'">'+x+'</label>'+
-                '</div>';
-                document.getElementById('default-rulesets').innerHTML = document.getElementById('default-rulesets').innerHTML + html;
-                //listener
-                // document.getElementById('radio-rset-'+x).addEventListener("click", function(){loadRulesetDefaultDataListener(response.data[x].name, response.data[x].desc, response.data[x].url)} ); 
-            }
+                html = html + '<tr>'+
+                    '<td>'+
+                        '<div id="radio-rset-'+x+'" class="custom-control custom-radio custom-control-inline">'+
+                            '<input type="radio" id="default-ruleset-'+x+'" name="default-rsets" data="'+x+'" class="custom-control-input" url="'+response.data[x].url+'" desc="'+response.data[x].desc+'" rsetName="'+response.data[x].name+'" onclick="loadRulesetDefaultDataListener(\''+x+'\', \''+response.data[x].name+'\', \''+response.data[x].desc+'\', \''+response.data[x].url+'\')">'+
+                            '<label class="custom-control-label" for="default-ruleset-'+x+'">'+x+'</label>'+
+                        '</div>'+
+                    '</td>'+
+                    '<td>'+               
+                        '<h3>'+response.data[x].name+'</h3>'+
+                        '<small>'+response.data[x].desc+'</small>'+
+                    '</td>'+
+                '</tr>';
+                }
+            html = html + '</table>';    
+            document.getElementById('default-rulesets').innerHTML = document.getElementById('default-rulesets').innerHTML + html;
         }
     })
     .catch(function (error) {
@@ -874,7 +886,8 @@ function downloadFile(name, path, url, sourceUUID){
                     }
                 }
             })
-            .catch(function error() {
+            .catch(function error(e) {
+                console.log(e);
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
                 alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+

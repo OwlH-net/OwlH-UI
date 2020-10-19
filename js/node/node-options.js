@@ -40,9 +40,9 @@ function loadPlugins(){
             '<p><img src="img/suricata.png" alt="" width="30"> &nbsp'+
                 '<span id="suricata-current-status" class="badge badge-pill bg-dark align-text-bottom text-white">N/A</span> &nbsp '+
                     '<i class="fas fa-stop-circle" style="color:grey; cursor:pointer;" id="main-suricata-status-btn" onclick="ChangeMainServiceStatus(\''+uuid+'\', \'status\', \'suricata\')"></i> &nbsp|&nbsp '+
-                '<span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')"></span> &nbsp |'+
-                '<span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp '+
-                '<b> Current ruleset: </b><i id="current-ruleset-options"></i>'+
+                '<span class="badge bg-success align-text-bottom text-white" id="managed-expert-span" style="cursor:pointer;" onclick="changeSuricataTable(\''+uuid+'\')"></span> &nbsp '+
+                // '| <span style="cursor: pointer;" title="Ruleset Management" class="badge bg-primary align-text-bottom text-white" data-toggle="modal" data-target="#modal-window" onclick="loadRuleset(\''+uuid+'\', \'main\', \'-\')">Change ruleset</span> &nbsp '+
+                // '<b> Current ruleset: </b><i id="current-ruleset-options"></i>'+
 
                 '<button class="btn btn-primary float-right" style="font-size: 15px; display:block;" id="add-suricata-button" onclick="AddServiceModal(\''+uuid+'\', \'suricata\')">Add Suricata</button>'+
             '</p>' +
@@ -1173,7 +1173,6 @@ async function GetMainconfData(uuid){
         }
     })
     .catch(function (error) {
-        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
@@ -3656,7 +3655,7 @@ function sendRulesetToNode(uuid, service){
     jsonRuleUID["ruleset"] = document.getElementById('suricata-ruleset-edit-id-'+service).value;    
     jsonRuleUID["type"] = "node";
     var dataJSON = JSON.stringify(jsonRuleUID);
-    console.log(jsonRuleUID);
+    
     axios({
         method: 'put',
         url: nodeurl,
@@ -3685,6 +3684,7 @@ function sendRulesetToNode(uuid, service){
                     '</button>'+
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
+                PingPluginsNode(uuid)
             }else{
                 $('html,body').scrollTop(0);
                 var alert = document.getElementById('floating-alert');
@@ -4072,9 +4072,7 @@ function ZeekDiag(uuid) {
                 
             }
     })
-    .then(function (response) {   
-        console.log(response.data["result"])
-        
+    .then(function (response) {         
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
@@ -4643,11 +4641,16 @@ function PingPluginsNode(uuid) {
                     '<strong>Error!</strong> Ping Plugins: '+response.data.error+'.'+
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                         '<span aria-hidden="true">&times;</span>'+
-                    '</button>'+
+                    '</button>'+    
                 '</div>';
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
-            }else{
-                for(line in response.data){
+            }else{                
+                for(line in response.data){   
+                    // if(response.data[line]["type"] == "socket-network" || response.data[line]["type"] == "socket-pcap" || response.data[line]["type"] == "network-socket"){
+                    //     var conns = response.data[line]["connections"].split("\n");
+                    //     result = conns.filter(con => con != "");
+                    // }
+                    
                     // if (line == "knownports"){
                     //     if (response.data[line]["status"] == "Enabled"){
                     //         document.getElementById('ports-status-'+uuid).innerHTML = "ON";
@@ -4684,14 +4687,13 @@ function PingPluginsNode(uuid) {
                         }else{
                             document.getElementById("stap-installed-tcpdump").innerHTML = "Not installed";
                             document.getElementById("stap-installed-tcpdump").className = '"badge badge-pill bg-danger align-text-bottom text-white';
-                        }
-    
+                        }    
                     }else{
                         document.getElementById("stap-installed-status").style.display = "none";
                     }
     
                     //put suricata parameters
-                    if (response.data[line]["type"] == "suricata"){
+                    if (response.data[line]["type"] == "suricata"){   
                         if (response.data[line]["command"]){
                             tableSuricataCommand = tableSuricataCommand + '<tr>'+
                                 '<td>'+response.data[line]["pid"]+'</td>'+
@@ -4700,7 +4702,6 @@ function PingPluginsNode(uuid) {
                                     '<span style="cursor: pointer;" title="Kill Suricata" class="badge bg-primary align-text-bottom text-white" onclick="KillSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Kill</span> &nbsp '+
                                     '<span style="cursor: pointer;" title="Reload Suricata using main.conf" class="badge bg-primary align-text-bottom text-white" onclick="ReloadSuricataMainConf(\''+uuid+'\',\''+response.data[line]["pid"]+'\')">Reload</span>'+
                                 '</td>'+
-    
                             '<tr>';
                         }else{
                             tableSuricata = tableSuricata + '<tr>'+
@@ -4732,15 +4733,23 @@ function PingPluginsNode(uuid) {
                                 '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'">'+response.data[line]["rulesetName"]+'</td>';
                                 tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                                 '<td style="word-wrap: break-word;">';
-                                    if(response.data[line]["status"]=="enabled"){
-                                        tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
-                                    }else if (response.data[line]["status"]=="disabled"){
-                                        tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
+                                    if(response.data[line]["rulesetSync"] == "true"){
+                                        if(response.data[line]["status"]=="enabled"){
+                                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                                        }else if (response.data[line]["status"]=="disabled"){
+                                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
+                                        }                                    
                                     }
                                     tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                                     '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                                    '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>'+
-                                '</td>'+
+                                    '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>';
+                                    if(response.data[line]["rulesetSync"] =="false"){
+                                        tableSuricata = tableSuricata + '<br>'+
+                                        '<div>'+
+                                            '<span style="cursor:pointer;" class="badge bg-warning align-text-bottom text-white" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">Sync ruleset before</span>'+
+                                        '</div>';
+                                    }                                    
+                                tableSuricata = tableSuricata + '</td>'+
                             '</tr>'+
                             '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+
                                 '<td style="word-wrap: break-word;" colspan="5">'+
@@ -4824,8 +4833,12 @@ function PingPluginsNode(uuid) {
                         '</tr>';
     
                     }else if (response.data[line]["type"] == "socket-network"){
-                        tableSocketNetwork = tableSocketNetwork + '<tr>'+
-                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        tableSocketNetwork = tableSocketNetwork + '<tr>';
+                            if(response.data[line]["connectionsCount"] > 0){
+                                tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+' <span class="badge badge-pill bg-'+response.data[line]["connectionsColor"]+' align-text-bottom text-white">'+response.data[line]["connectionsCount"]+'</span><br>';
+                            }else{
+                                tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                            }
                                 if (response.data[line]["pid"] == "none"){
                                     tableSocketNetwork = tableSocketNetwork + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                                     if(response.data[line]["running"]=="true"){
@@ -4893,9 +4906,44 @@ function PingPluginsNode(uuid) {
                                 '</div>'+
                             '</td>'+
                         '</tr>';
+                        if(response.data[line]["connectionsCount"] > 0){
+                            tableSocketNetwork = tableSocketNetwork + '<tr>'+
+                                '<td colspan="5">'+ 
+                                    '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" width="100%">'+
+                                        '<thead>'+
+                                            '<th width="7%">Proto</th>'+
+                                            '<th width="7%">Recv-Q</th>'+
+                                            '<th width="7%">Send-Q</th>'+
+                                            '<th width="">Local Addr</th>'+
+                                            '<th width="">Client Addr</th>'+
+                                            '<th width="">State</th>'+
+                                            '<th width="">PID/name</th>'+
+                                        '</thead>'+
+                                        '<tbody>';                                          
+                                            var conns = response.data[line]["connections"].split("\n");
+                                            var result = conns.filter(con => con != "");                                                                                                              
+                                            result.forEach(function (item, index) {
+                                                tableSocketNetwork = tableSocketNetwork + '<tr>';
+    
+                                                var splittedData = item.split(' ');
+                                                var dataFiltered = splittedData.filter(word => word != '');
+                                                dataFiltered.forEach(function (value, pos) {
+                                                    tableSocketNetwork = tableSocketNetwork + '<td style="word-wrap: break-word;">'+value+'</td>';
+                                                })                                            
+                                                tableSocketNetwork = tableSocketNetwork + '</tr>';
+                                            });
+                                        tableSocketNetwork = tableSocketNetwork +'</tbody>'+
+                                    '</table>'+
+                                '</td>'+
+                            '</tr>';
+                        }
                     }else if (response.data[line]["type"] == "socket-pcap"){
-                        tableSocketPcap = tableSocketPcap + '<tr>'+
-                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        tableSocketPcap = tableSocketPcap + '<tr>';
+                            if(response.data[line]["connectionsCount"] > 0){
+                                tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+' <span class="badge badge-pill bg-'+response.data[line]["connectionsColor"]+' align-text-bottom text-white">'+response.data[line]["connectionsCount"]+'</span><br>';
+                            }else{
+                                tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                            }
                                 if (response.data[line]["pid"] == "none"){
                                     tableSocketPcap = tableSocketPcap + '<span class="badge bg-danger align-text-bottom text-white">OFF</span>';
                                     if(response.data[line]["running"]=="true"){
@@ -4973,9 +5021,44 @@ function PingPluginsNode(uuid) {
                                 '</div>'+
                             '</td>'+
                         '</tr>';
+                        if(response.data[line]["connectionsCount"] > 0){
+                            tableSocketPcap = tableSocketPcap + '<tr>'+
+                                '<td colspan="7">'+ 
+                                    '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" width="100%">'+
+                                        '<thead>'+
+                                            '<th width="7%">Proto</th>'+
+                                            '<th width="7%">Recv-Q</th>'+
+                                            '<th width="7%">Send-Q</th>'+
+                                            '<th width="">Local Addr</th>'+
+                                            '<th width="">Client Addr</th>'+
+                                            '<th width="">State</th>'+
+                                            '<th width="">PID/name</th>'+
+                                        '</thead>'+
+                                        '<tbody>';        
+                                            var conns = response.data[line]["connections"].split("\n");
+                                            var result = conns.filter(con => con != "");                        
+                                            result.forEach(function (item, index) {
+                                                tableSocketPcap = tableSocketPcap + '<tr>';
+    
+                                                var splittedData = item.split(' ');
+                                                var dataFiltered = splittedData.filter(word => word != '');
+                                                dataFiltered.forEach(function (value, pos) {
+                                                    tableSocketPcap = tableSocketPcap + '<td style="word-wrap: break-word;">'+value+'</td>';
+                                                })                                            
+                                                tableSocketPcap = tableSocketPcap + '</tr>';
+                                            });
+                                            tableSocketPcap = tableSocketPcap +'</tbody>'+
+                                    '</table>'+
+                                '</td>'+
+                            '</tr>';
+                        }
                     }else if (response.data[line]["type"] == "network-socket"){
-                        tableNetworkSocket = tableNetworkSocket + '<tr>'+
-                            '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                        tableNetworkSocket = tableNetworkSocket + '<tr>';
+                            if(response.data[line]["connectionsCount"] > 0){
+                                tableNetworkSocket = tableNetworkSocket + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+' <span class="badge badge-pill bg-'+response.data[line]["connectionsColor"]+' align-text-bottom text-white">'+response.data[line]["connectionsCount"]+'</span><br>';
+                            }else{
+                                tableNetworkSocket = tableNetworkSocket + '<td style="word-wrap: break-word;">'+response.data[line]["name"]+'<br>';
+                            }
                                 if (response.data[line]["pid"] == "none"){
                                     tableNetworkSocket = tableNetworkSocket + '<span class="badge bg-danger align-text-bottom text-white">OFF</span> ';
                                     if(response.data[line]["running"]=="true"){
@@ -5055,6 +5138,37 @@ function PingPluginsNode(uuid) {
                                 '</div>'+
                             '</td>'+
                         '</tr>';
+                        if(response.data[line]["connectionsCount"] > 0){
+                            tableNetworkSocket = tableNetworkSocket + '<tr>'+
+                                '<td colspan="7">'+ 
+                                    '<table class="table table-hover" style="table-layout: fixed"tyle="table-layout: fixed" width="100%">'+
+                                        '<thead>'+
+                                            '<th width="7%">Proto</th>'+
+                                            '<th width="7%">Recv-Q</th>'+
+                                            '<th width="7%">Send-Q</th>'+
+                                            '<th width="">Local Addr</th>'+
+                                            '<th width="">Client Addr</th>'+
+                                            '<th width="">State</th>'+
+                                            '<th width="">PID/name</th>'+
+                                        '</thead>'+
+                                        '<tbody>';      
+                                            var conns = response.data[line]["connections"].split("\n");
+                                            var result = conns.filter(con => con != "");                                    
+                                            result.forEach(function (item, index) {
+                                                tableNetworkSocket = tableNetworkSocket + '<tr>';
+    
+                                                var splittedData = item.split(' ');
+                                                var dataFiltered = splittedData.filter(word => word != '');
+                                                dataFiltered.forEach(function (value, pos) {
+                                                    tableNetworkSocket = tableNetworkSocket + '<td style="word-wrap: break-word;">'+value+'</td>';
+                                                })                                            
+                                                tableNetworkSocket = tableNetworkSocket + '</tr>';
+                                            });
+                                            tableNetworkSocket = tableNetworkSocket +'</tbody>'+
+                                    '</table>'+
+                                '</td>'+
+                            '</tr>';
+                        }
                     }
                     document.getElementById('zeek-table-services').innerHTML = tableZeek;
                     document.getElementById('socket-network-table').innerHTML = tableSocketNetwork;
@@ -5110,7 +5224,6 @@ function PingPluginsNode(uuid) {
         }
     })
     .catch(function (error) {
-        console.log(error);
         $('html,body').scrollTop(0);
         var alert = document.getElementById('floating-alert');
         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+

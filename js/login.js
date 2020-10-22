@@ -63,11 +63,12 @@ function Login() {
         data: userLogin
     })
     .then(function (response) {
+        console.log(response.data);
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
         if(response.data.ack != "false"){
             document.cookie = response.data;            
-            document.location.href='https://'+location.host;
+            document.location.href='index.html';
         }else{
             $('html,body').scrollTop(0);
             var alert = document.getElementById('floating-alert');

@@ -14,7 +14,7 @@ function GetAllRulesets() {
         }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -114,7 +114,7 @@ function modalShowLog(uuid, name){
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -446,7 +446,7 @@ function timeSchedule(uuid, status){
         data: schedulejson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';} 
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';} 
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -579,7 +579,7 @@ function synchronizeAllRulesets() {
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -639,7 +639,7 @@ function deleteRuleset(name, uuid) {
         data: bpfjson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if (response.data.ack == "false"){
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
@@ -696,7 +696,7 @@ function deleteRuleset(name, uuid) {
 //             data: bpfjson
 //         })
 //             .then(function (response) {
-    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
 //                 GetAllRulesets();
 //             })
 //             .catch(function (error) {
@@ -727,7 +727,7 @@ function syncRuleset(uuid){
         data: dataJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -787,10 +787,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.host+'/login.html';
+            document.location.href='login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='login.html';}
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user

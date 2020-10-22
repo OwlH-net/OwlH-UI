@@ -15,7 +15,7 @@ function loadNetworkValues(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -96,7 +96,7 @@ function LoadAllVxLAN(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -244,7 +244,7 @@ function CreateNewVxLAN(uuid){
     var portmaster = document.getElementById('port-master').value;
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -328,7 +328,7 @@ function SaveVxLAN(uuid){
             data: dataJSON
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -362,7 +362,7 @@ function LoadAllNewLocal(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -521,7 +521,7 @@ function SaveNewLocal(uuid){
             data: dataJSON
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -561,7 +561,7 @@ function selectNewLocal(uuid, nodeUUID){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }
@@ -586,7 +586,7 @@ function LoadNetworkValuesSelected(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -626,7 +626,7 @@ function updateNetworkInterface(uuid){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }
@@ -664,7 +664,7 @@ function SocketToNetworkList(uuid){
             }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -806,7 +806,7 @@ function createSocketToNetwork(uuid){
 
     axios.get('https://'+ ipmaster + ':' + portmaster + '/v1/node/loadNetworkValues/'+uuid)
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -889,7 +889,7 @@ function saveSocketToNetwork(uuid){
             data: dataJSON
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -928,7 +928,7 @@ function saveSocketToNetworkSelected(uuid, nodeUUID){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }
@@ -966,7 +966,7 @@ function DeleteDataFlowValueSelected(uuid, nodeUUID, type){
             data: dataJSON
         })
         .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -1007,7 +1007,7 @@ function changeDataflowValues(FlowUUID, param, value, uuid){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   

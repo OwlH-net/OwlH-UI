@@ -91,7 +91,7 @@ function getRule(sid, fileuuid){
         }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -449,7 +449,7 @@ function saveCurrentRule(){
         data: dataJSON
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   

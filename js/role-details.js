@@ -6,10 +6,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.host+'/login.html';
+            document.location.href='login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='login.html';}
 
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
@@ -54,7 +54,7 @@ loadJSONdata();
         console.log(response.data);
         document.getElementById('progressBar-create').style.display = "none";
         document.getElementById('progressBar-create-div').style.display = "none";
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   

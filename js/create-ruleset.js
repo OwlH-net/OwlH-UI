@@ -274,7 +274,6 @@ function modalAddNewRuleset(status){
     $('input[type=checkbox]').each(function () {
         if($(this).hasClass('ruleset-source')){
             if($(this).prop('checked')){
-                console.log($(this).val());
                 sources.push($(this).val());
                 count++;
             }
@@ -424,27 +423,8 @@ function modalAddNewRuleset(status){
             $('#modalClose').click(function(){ $('#modal-window').modal('hide');});            
             $('#modalSend').click(function(){ CreateRulesetAfterCheckData(newRuleset); $('#modal-window').modal('hide');});
         }else{
-            CreateRulesetAfterCheckData(newRuleset);   
-
+            CreateRulesetAfterCheckData(newRuleset);
         }
-        // if(flag){
-        //     if (length == 0){
-        //         document.getElementById('progressBar-create-div').style.display="none";
-        //         document.getElementById('progressBar-create').style.display="none";
-                
-        //         $('html,body').scrollTop(0);
-        //         var alert = document.getElementById('floating-alert');
-        //         alert.innerHTML = alert.innerHTML + '<div class="alert alert-danger alert-dismissible fade show">'+
-        //             '<strong>Error!</strong> Cannot create an empty ruleset.'+
-        //             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-        //                 '<span aria-hidden="true">&times;</span>'+
-        //             '</button>'+
-        //         '</div>';
-        //         setTimeout(function() {$(".alert").alert('close')}, 30000);
-        //     }else{    
-        //         CreateRulesetAfterCheckData(newRuleset)     
-        //     }
-        // }
     }
 }
 

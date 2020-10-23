@@ -437,7 +437,7 @@ function GetAllNodes() {
                 document.getElementById('progressBar-node').style.display = "none";
                 document.getElementById('progressBar-node-div').style.display = "none";
             }
-            GetAllGroupRulesetsForAllNodes();
+            GetAllRulesetsForAllNodes();
         })
         .catch(function (error) {
             $('html,body').scrollTop(0);
@@ -528,10 +528,10 @@ function deleteNode(node) {
         });   
 }
 
-function GetAllGroupRulesetsForAllNodes(){
+function GetAllRulesetsForAllNodes(){
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
-    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/master/getAllGroupRulesetsForAllNodes';
+    var nodeurl = 'https://'+ipmaster+':'+portmaster+'/v1/master/getAllRulesetsForAllNodes';
     axios({
         method: 'get',
         url: nodeurl,
@@ -542,6 +542,7 @@ function GetAllGroupRulesetsForAllNodes(){
         timeout: 30000
     })
         .then(function (response) {
+            console.log(response.data);
             if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              

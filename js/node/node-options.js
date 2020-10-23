@@ -4630,7 +4630,6 @@ function PingPluginsNode(uuid) {
             }
     })
     .then(function (response) {  
-        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -4743,7 +4742,6 @@ function PingPluginsNode(uuid) {
                                     '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                                     '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>';
 
-                                    response.data[line]["rulesetSync"] ="false"
                                     if(response.data[line]["rulesetSync"] =="false"){
                                         tableSuricata = tableSuricata + '<br>'+
                                         '<div>'+

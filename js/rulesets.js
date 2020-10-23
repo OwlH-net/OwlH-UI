@@ -14,7 +14,8 @@ function GetAllRulesets() {
         }
     })
     .then(function (response) {
-        if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+        console.log(response.data);
+        if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();              
         }else{   
@@ -44,7 +45,7 @@ function generateAllRulesetsHTMLOutput(response) {
         '<tr>                                                         ' +
         '<th>Name</th>                                                ' +
         '<th>Description</th>                                         ' +
-        '<th>Actions</th>                                             ' +
+        '<th width="20%">Actions</th>                                 ' +
         '</tr>                                                        ' +
         '</thead>                                                     ' +
         '<tbody >                                                     '
@@ -53,13 +54,18 @@ function generateAllRulesetsHTMLOutput(response) {
             continue;
         }
         isEmptyRulesets = false;
-        html = html + '<tr><td style="word-wrap: break-word;">' +
-            ruleset[uuid]["name"] + 
-            '</td><td style="word-wrap: break-word;">                                                            ' +
+        html = html + '<tr><td style="word-wrap: break-word;">' ;
+            if(ruleset[uuid]["default"] == "true"){
+                html = html + ruleset[uuid]["name"] + '&nbsp <span class="badge bg-success align-text-bottom text-white">Default</span>';                 
+            }else{
+                html = html + ruleset[uuid]["name"] ;
+            }
+            html = html + '</td><td style="word-wrap: break-word;">' +
             ruleset[uuid]["desc"] +
-            '</td><td style="word-wrap: break-word;">                                                            ' +
+            '</td><td style="word-wrap: break-word;">' +
                 '<span style="font-size: 20px; color: Dodgerblue;">'+
                     '<i class="fas fa-info-circle" title="Details" style="cursor:pointer;" onclick="loadRulesetsDetails(\''+type+'\',\''+ruleset[uuid]['name']+'\',\''+uuid+'\')"></i> &nbsp'+
+                    '<i class="fas fa-star" title="Set as default ruleset" style="cursor:pointer;" onclick="setDefault(\''+uuid+'\')"></i> &nbsp'+
                     '<i class="fas fa-sync-alt" style="cursor:pointer;" title="Sync ruleset files" id="sync-ruleset-files" data-toggle="modal" data-target="#modal-ruleset" onclick="syncRulesetModal(\''+uuid+'\',\''+ruleset[uuid]['name']+'\')"></i>&nbsp';
                     if(ruleset[uuid]["status"]=="enabled"){
                         html = html + '<i class="fas fa-stopwatch" style="color:green; cursor:pointer;" title="Update schedule" data-toggle="modal" data-target="#modal-ruleset" onclick="modalTimeSchedule(\''+uuid+'\',\''+ruleset[uuid]['name']+'\',\''+ruleset[uuid]["status"]+'\')"></i>&nbsp'+
@@ -114,7 +120,7 @@ function modalShowLog(uuid, name){
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -446,7 +452,7 @@ function timeSchedule(uuid, status){
         data: schedulejson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';} 
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';} 
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -579,7 +585,7 @@ function synchronizeAllRulesets() {
         }
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -639,7 +645,7 @@ function deleteRuleset(name, uuid) {
         data: bpfjson
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if (response.data.ack == "false"){
                 var alert = document.getElementById('floating-alert');
                 $('html,body').scrollTop(0);
@@ -659,6 +665,48 @@ function deleteRuleset(name, uuid) {
             $('html,body').scrollTop(0);
             alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
                 '<strong>Error!</strong> '+error+'.'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                    '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+            '</div>';
+            setTimeout(function() {$(".alert").alert('close')}, 30000);
+        });
+}
+
+function setDefault(uuid) {
+    var ipmaster = document.getElementById('ip-master').value;
+    var portmaster = document.getElementById('port-master').value;
+    var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/ruleset/setDefaultRuleset/'+uuid;
+    axios({
+        method: 'put',
+        url: nodeurl,
+        timeout: 30000,
+        headers:{
+            'token': document.cookie,
+            'user': payload.user            
+        },
+    })
+        .then(function (response) {
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
+            if (response.data.ack == "false"){
+                var alert = document.getElementById('floating-alert');
+                $('html,body').scrollTop(0);
+                alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+                    '<strong>Set default ruleset error!</strong> '+response.data.error+'.'+
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                        '<span aria-hidden="true">&times;</span>'+
+                    '</button>'+
+                '</div>';
+                setTimeout(function() {$(".alert").alert('close')}, 30000);
+            }else{
+                GetAllRulesets();
+            }
+        })
+        .catch(function (error) {
+            var alert = document.getElementById('floating-alert');
+            $('html,body').scrollTop(0);
+            alert.innerHTML = '<div class="alert alert-warning alert-dismissible fade show">'+
+                '<strong>Set default ruleset error!</strong> '+error+'.'+
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
                     '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
@@ -696,7 +744,7 @@ function deleteRuleset(name, uuid) {
 //             data: bpfjson
 //         })
 //             .then(function (response) {
-    // if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+    // if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
 //                 GetAllRulesets();
 //             })
 //             .catch(function (error) {
@@ -727,7 +775,7 @@ function syncRuleset(uuid){
         data: dataJSON
     })
         .then(function (response) {
-            if(response.data.token == "none"){document.cookie=""; document.location.href='https://'+location.host+'/login.html';}
+            if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              
             }else{   
@@ -787,10 +835,10 @@ function loadJSONdata(){
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='https://'+location.host+'/login.html';
+            document.location.href='login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='https://'+location.host+'/login.html';}
+        catch(err) {document.cookie = ""; document.location.href='login.html';}
         //login button
                 document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user

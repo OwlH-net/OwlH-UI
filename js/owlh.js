@@ -542,7 +542,9 @@ function GetAllRulesetsForAllNodes(){
         timeout: 30000
     })
         .then(function (response) {
+            
             console.log(response.data);
+
             if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 PrivilegesMessage();              

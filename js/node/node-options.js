@@ -4630,6 +4630,7 @@ function PingPluginsNode(uuid) {
             }
     })
     .then(function (response) {  
+        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -4733,20 +4734,20 @@ function PingPluginsNode(uuid) {
                                 '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'">'+response.data[line]["rulesetName"]+'</td>';
                                 tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                                 '<td style="word-wrap: break-word;">';
-                                    if(response.data[line]["rulesetSync"] == "true"){
-                                        if(response.data[line]["status"]=="enabled"){
-                                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
-                                        }else if (response.data[line]["status"]=="disabled"){
-                                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';
-                                        }                                    
+                                    if(response.data[line]["status"] == "enabled" || response.data[line]["running"] == "true"){
+                                        tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                                    }else if (response.data[line]["status"]=="disabled" && (response.data[line]["rulesetSync"] == "true" || response.data[line]["running"] == "true")){                                    
+                                        tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';                                        
                                     }
                                     tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                                     '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                                     '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>';
+
+                                    response.data[line]["rulesetSync"] ="false"
                                     if(response.data[line]["rulesetSync"] =="false"){
                                         tableSuricata = tableSuricata + '<br>'+
                                         '<div>'+
-                                            '<span style="cursor:pointer;" class="badge bg-warning align-text-bottom text-white" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')">Sync ruleset before</span>'+
+                                            '<span style="cursor:pointer;" class="badge bg-warning align-text-bottom text-white" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"><i class="fas fa-exclamation-triangle fa-lg" style="color:red;">&nbsp</i>Ruleset not synced</span>'+
                                         '</div>';
                                     }                                    
                                 tableSuricata = tableSuricata + '</td>'+

@@ -4420,7 +4420,6 @@ function LoadPageLastLines(uuid, line, path) {
 }
 
 function PingWazuh(uuid) {
-    console.log("lets ping Wazuh Status")
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/wazuh/' + uuid;
@@ -4439,15 +4438,14 @@ function PingWazuh(uuid) {
             if(response.data.permissions == "none"){
                 PrivilegesMessage();
             }else{
-                nData = JSON.parse(response.data)
-                if (!nData.path && !nData.bin) {
+                if (!response.data.path && !response.data.bin) {
                     document.getElementById(uuid + '-wazuh').className = "badge bg-dark align-text-bottom text-white";
                     document.getElementById(uuid + '-wazuh').innerHTML = "N/A";
                     document.getElementById(uuid + '-wazuh-icon').className = "fas fa-play-circle";
                     document.getElementById(uuid + '-wazuh-icon').onclick = function () { RunWazuh(uuid); };
                     document.getElementById(uuid + '-wazuh-icon').title = "Run Wazuh";
-                } else if (nData.path || nData.bin) {
-                    if (nData.running) {
+                } else if (response.data.path || response.data.bin) {
+                    if (response.data.running) {
                         document.getElementById(uuid + '-wazuh').className = "badge bg-success align-text-bottom text-white";
                         document.getElementById(uuid + '-wazuh').innerHTML = "ON";
                         document.getElementById(uuid + '-wazuh-icon').className = "fas fa-stop-circle";

@@ -4646,6 +4646,8 @@ function PingPluginsNode(uuid) {
                 setTimeout(function() {$(".alert").alert('close')}, 30000);
             }else{                
                 for(line in response.data){   
+
+                    
                     // if(response.data[line]["type"] == "socket-network" || response.data[line]["type"] == "socket-pcap" || response.data[line]["type"] == "network-socket"){
                     //     var conns = response.data[line]["connections"].split("\n");
                     //     result = conns.filter(con => con != "");
@@ -4733,21 +4735,46 @@ function PingPluginsNode(uuid) {
                                 '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'">'+response.data[line]["rulesetName"]+'</td>';
                                 tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                                 '<td style="word-wrap: break-word;">';
-                                    if(response.data[line]["status"] == "enabled" || response.data[line]["running"] == "true"){
-                                        tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
-                                    }else if (response.data[line]["status"]=="disabled" && (response.data[line]["rulesetSync"] == "true" || response.data[line]["running"] == "true")){                                    
-                                        tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';                                        
-                                    }
-                                    tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
-                                    '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
-                                    '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>';
+                                
+                                    delete response.data[line]["rulesetSync"]
+                                    console.log(response.data[line]);
+                                    
 
-                                    if(response.data[line]["rulesetSync"] =="false"){
+                                    //cehck if rulesetSync param came from API for check if ruleset is sync
+                                    if("rulesetSync" in response.data[line]){
+                                        if(response.data[line]["status"] == "enabled" || response.data[line]["running"] == "true"){
+                                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                                        }else if (response.data[line]["status"]=="disabled" && (response.data[line]["rulesetSync"] == "true" || response.data[line]["running"] == "true")){                                    
+                                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';                                        
+                                        }
+                                        tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>';
+    
+                                        if(response.data[line]["rulesetSync"] =="false"){
+                                            tableSuricata = tableSuricata + '<br>'+
+                                            '<div>'+
+                                                '<span style="cursor:pointer;" class="badge bg-warning align-text-bottom text-white" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"><i class="fas fa-exclamation-triangle fa-lg" style="color:red;">&nbsp</i>Ruleset not synced</span>'+
+                                            '</div>';
+                                        }                                    
+                                    }else{
+                                        if(response.data[line]["status"] == "enabled" || response.data[line]["running"] == "true"){
+                                            tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
+                                        }else if (response.data[line]["status"]=="disabled" && response.data[line]["running"] == "false"){                                    
+                                            tableSuricata = tableSuricata + '<i class="fas fa-play-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'enabled\', \''+response.data[line]["interface"]+'\',\''+response.data[line]["bpf"]+'\',  \'suricata\')"></i> &nbsp';                                        
+                                        }
+                                        tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
+                                        '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
+                                        '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>';                              
                                         tableSuricata = tableSuricata + '<br>'+
                                         '<div>'+
-                                            '<span style="cursor:pointer;" class="badge bg-warning align-text-bottom text-white" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"><i class="fas fa-exclamation-triangle fa-lg" style="color:red;">&nbsp</i>Ruleset not synced</span>'+
+                                            '<span style="cursor:pointer;" class="badge bg-warning align-text-bottom text-white">Invalid node version</span>'+
                                         '</div>';
-                                    }                                    
+
+                                    }
+
+
+
                                 tableSuricata = tableSuricata + '</td>'+
                             '</tr>'+
                             '<tr width="100%" id="edit-row-'+line+'" style="display:none;" bgcolor="peachpuff">'+

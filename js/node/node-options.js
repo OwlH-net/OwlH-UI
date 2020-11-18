@@ -4630,6 +4630,7 @@ function PingPluginsNode(uuid) {
             }
     })
     .then(function (response) {  
+        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -4735,12 +4736,8 @@ function PingPluginsNode(uuid) {
                                 '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'">'+response.data[line]["rulesetName"]+'</td>';
                                 tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                                 '<td style="word-wrap: break-word;">';
-                                
-                                    delete response.data[line]["rulesetSync"]
-                                    console.log(response.data[line]);
-                                    
-
-                                    //cehck if rulesetSync param came from API for check if ruleset is sync
+                                                                    
+                                    //check if rulesetSync param came from API for check if ruleset is sync
                                     if("rulesetSync" in response.data[line]){
                                         if(response.data[line]["status"] == "enabled" || response.data[line]["running"] == "true"){
                                             tableSuricata = tableSuricata + '<i class="fas fa-stop-circle" style="color:grey; cursor: pointer;" onclick="ChangeServiceStatus(\''+uuid+'\', \''+line+'\', \'status\', \'disabled\', \''+response.data[line]["interface"]+'\' ,\''+response.data[line]["bpf"]+'\', \'suricata\')"></i> &nbsp';
@@ -5582,7 +5579,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         progressBarDiv.style.display = "block";
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
-        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ChangeServiceStatus';
+        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/changeServiceStatus';
 
         var jsonChangeService = {}
         jsonChangeService["uuid"] = uuid;

@@ -4736,7 +4736,11 @@ function PingPluginsNode(uuid) {
                                 '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'">'+response.data[line]["rulesetName"]+'</td>';
                                 tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                                 '<td style="word-wrap: break-word;">';
+<<<<<<< HEAD
                                                                     
+=======
+
+>>>>>>> 025d7b7f0974bddcf9bdd85eb26cc1ece76e613c
                                     //check if rulesetSync param came from API for check if ruleset is sync
                                     if("rulesetSync" in response.data[line]){
                                         if(response.data[line]["status"] == "enabled" || response.data[line]["running"] == "true"){

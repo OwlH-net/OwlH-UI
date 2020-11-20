@@ -4736,11 +4736,7 @@ function PingPluginsNode(uuid) {
                                 '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'">'+response.data[line]["rulesetName"]+'</td>';
                                 tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                                 '<td style="word-wrap: break-word;">';
-<<<<<<< HEAD
                                                                     
-=======
-
->>>>>>> 025d7b7f0974bddcf9bdd85eb26cc1ece76e613c
                                     //check if rulesetSync param came from API for check if ruleset is sync
                                     if("rulesetSync" in response.data[line]){
                                         if(response.data[line]["status"] == "enabled" || response.data[line]["running"] == "true"){
@@ -5291,7 +5287,7 @@ function modifyNodeOptionValues(uuid, type, service){
         jsonDeployService["configFile"] = document.getElementById('suricata-config-file-'+service).value.trim();
         jsonDeployService["rulesetName"] = document.getElementById('suricata-ruleset-edit-'+service).value.trim();
         jsonDeployService["ruleset"] = document.getElementById('suricata-ruleset-edit-id-'+service).value.trim();
-        jsonDeployService["interface"] = document.getElementById('suricata-bpf-'+service).value.trim();
+        jsonDeployService["interface"] = document.getElementById('suricata-interface-'+service).value.trim();
         jsonDeployService["bpf"] = document.getElementById('suricata-bpf-'+service).value.trim();
         jsonDeployService["bpfFile"] = document.getElementById('suricata-bpf-file-'+service).value.trim();
     }else if (type == "zeek"){
@@ -5312,6 +5308,8 @@ function modifyNodeOptionValues(uuid, type, service){
         jsonDeployService["bpf"] = document.getElementById('network-socket-bpf-'+service).value.trim();
     }
     var dataJSON = JSON.stringify(jsonDeployService);
+
+    console.log(jsonDeployService);
 
     axios({
         method: 'put',
@@ -5941,6 +5939,10 @@ function UpdateSuricataValue(uuid, name, service, type){
     jsonSuricataInterface["value"] = valueSelected;
     jsonSuricataInterface["param"] = "interface";
     var dataJSON = JSON.stringify(jsonSuricataInterface);
+
+
+    console.log(jsonSuricataInterface);
+
     axios({
         method: 'put',
         url: nodeurl,

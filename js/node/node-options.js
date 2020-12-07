@@ -3989,6 +3989,8 @@ function PingZeek(uuid) {
             }
     })
     .then(function (response) {   
+        console.log("ZEEK");
+        console.log(response.data);
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
@@ -4072,7 +4074,7 @@ function ZeekDiag(uuid) {
                 
             }
     })
-    .then(function (response) {         
+    .then(function (response) {   
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
@@ -4085,8 +4087,8 @@ function ZeekDiag(uuid) {
             // jsonViewer.showJSON(json, maxLvl, colAt);
             // maxLvl: Process only to max level, where 0..n, -1 unlimited
             // colAt: Collapse at level, where 0..n, -1 unlimited
-
             jsonViewer.showJSON(obj, -1, -1);
+
         }
     })
     .catch(function (error) {
@@ -5592,6 +5594,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         jsonChangeService["interface"] = interface;
         var dataJSON = JSON.stringify(jsonChangeService);
 
+        console.log(jsonChangeService);
         axios({
             method: 'put',
             url: nodeurl,

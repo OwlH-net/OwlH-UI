@@ -4072,7 +4072,7 @@ function ZeekDiag(uuid) {
                 
             }
     })
-    .then(function (response) {         
+    .then(function (response) {   
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
@@ -4085,8 +4085,8 @@ function ZeekDiag(uuid) {
             // jsonViewer.showJSON(json, maxLvl, colAt);
             // maxLvl: Process only to max level, where 0..n, -1 unlimited
             // colAt: Collapse at level, where 0..n, -1 unlimited
-
             jsonViewer.showJSON(obj, -1, -1);
+
         }
     })
     .catch(function (error) {
@@ -4706,6 +4706,7 @@ function PingPluginsNode(uuid) {
                                 '</td>'+
                             '<tr>';
                         }else{
+                            console.log(response.data);
                             tableSuricata = tableSuricata + '<tr>'+
                                 '<td style="word-wrap: break-word;">'+response.data[line]["name"]+
                                     '<br>'+
@@ -4735,7 +4736,7 @@ function PingPluginsNode(uuid) {
                                 '<td style="word-wrap: break-word;" id="suricata-ruleset-'+line+'">'+response.data[line]["rulesetName"]+'</td>';
                                 tableSuricata = tableSuricata + '<td style="word-wrap: break-word;" id="suricata-interface-default-'+line+'">'+response.data[line]["interface"]+'</td>'+
                                 '<td style="word-wrap: break-word;">';
-                                                                 
+
                                     //check if rulesetSync param came from API for check if ruleset is sync
                                     if("rulesetSync" in response.data[line]){
                                         if(response.data[line]["status"] == "enabled" || response.data[line]["running"] == "true"){
@@ -5286,7 +5287,7 @@ function modifyNodeOptionValues(uuid, type, service){
         jsonDeployService["configFile"] = document.getElementById('suricata-config-file-'+service).value.trim();
         jsonDeployService["rulesetName"] = document.getElementById('suricata-ruleset-edit-'+service).value.trim();
         jsonDeployService["ruleset"] = document.getElementById('suricata-ruleset-edit-id-'+service).value.trim();
-        jsonDeployService["interface"] = document.getElementById('suricata-bpf-'+service).value.trim();
+        jsonDeployService["interface"] = document.getElementById('suricata-interface-'+service).value.trim();
         jsonDeployService["bpf"] = document.getElementById('suricata-bpf-'+service).value.trim();
         jsonDeployService["bpfFile"] = document.getElementById('suricata-bpf-file-'+service).value.trim();
     }else if (type == "zeek"){
@@ -5578,7 +5579,7 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         progressBarDiv.style.display = "block";
         var ipmaster = document.getElementById('ip-master').value;
         var portmaster = document.getElementById('port-master').value;
-        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/ChangeServiceStatus';
+        var nodeurl = 'https://' + ipmaster + ':' + portmaster + '/v1/node/changeServiceStatus';
 
         var jsonChangeService = {}
         jsonChangeService["uuid"] = uuid;
@@ -5601,6 +5602,9 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
             data: dataJSON
         })
         .then(function (response) {
+            console.log("response.data");
+            console.log(response.data);
+            
             if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 progressBar.style.display = "none";
@@ -5929,13 +5933,13 @@ function UpdateSuricataValue(uuid, name, service, type){
         document.getElementById('network-socket-interface-default-'+service).innerHTML = valueSelected;
     }
 
-
     var jsonSuricataInterface = {}
     jsonSuricataInterface["uuid"] = uuid;
     jsonSuricataInterface["service"] = service;
     jsonSuricataInterface["value"] = valueSelected;
     jsonSuricataInterface["param"] = "interface";
     var dataJSON = JSON.stringify(jsonSuricataInterface);
+
     axios({
         method: 'put',
         url: nodeurl,

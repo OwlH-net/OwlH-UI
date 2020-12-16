@@ -3989,8 +3989,6 @@ function PingZeek(uuid) {
             }
     })
     .then(function (response) {   
-        console.log("ZEEK");
-        console.log(response.data);
         progressBar.style.display = "none";
         progressBarDiv.style.display = "none";
         if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
@@ -4632,7 +4630,6 @@ function PingPluginsNode(uuid) {
             }
     })
     .then(function (response) {  
-        console.log(response.data);
         if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
         if(response.data.permissions == "none"){
             PrivilegesMessage();
@@ -4709,6 +4706,7 @@ function PingPluginsNode(uuid) {
                                 '</td>'+
                             '<tr>';
                         }else{
+                            console.log(response.data);
                             tableSuricata = tableSuricata + '<tr>'+
                                 '<td style="word-wrap: break-word;">'+response.data[line]["name"]+
                                     '<br>'+
@@ -5311,8 +5309,6 @@ function modifyNodeOptionValues(uuid, type, service){
     }
     var dataJSON = JSON.stringify(jsonDeployService);
 
-    console.log(jsonDeployService);
-
     axios({
         method: 'put',
         url: nodeurl,
@@ -5594,7 +5590,6 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
         jsonChangeService["interface"] = interface;
         var dataJSON = JSON.stringify(jsonChangeService);
 
-        console.log(jsonChangeService);
         axios({
             method: 'put',
             url: nodeurl,
@@ -5607,6 +5602,9 @@ function ChangeServiceStatus(uuid, service, param, status, interface, bpf, type)
             data: dataJSON
         })
         .then(function (response) {
+            console.log("response.data");
+            console.log(response.data);
+            
             if(response.data.token == "none"){document.cookie=""; document.location.href='login.html';}
             if(response.data.permissions == "none"){
                 progressBar.style.display = "none";
@@ -5935,16 +5933,12 @@ function UpdateSuricataValue(uuid, name, service, type){
         document.getElementById('network-socket-interface-default-'+service).innerHTML = valueSelected;
     }
 
-
     var jsonSuricataInterface = {}
     jsonSuricataInterface["uuid"] = uuid;
     jsonSuricataInterface["service"] = service;
     jsonSuricataInterface["value"] = valueSelected;
     jsonSuricataInterface["param"] = "interface";
     var dataJSON = JSON.stringify(jsonSuricataInterface);
-
-
-    console.log(jsonSuricataInterface);
 
     axios({
         method: 'put',

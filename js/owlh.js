@@ -12,10 +12,14 @@ function loadJSONdata() {
             document.cookie = "";
         }
         if(document.cookie == ""){
-            document.location.href='login.html';
+          document.location.href='login.html';
         }
         try {payload = JSON.parse(atob(tokens[1]));}
-        catch(err) {document.cookie = ""; document.location.href='login.html';}
+        catch(err) {document.cookie = ""; 
+            document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + "admin"
+            document.getElementById('loger-user-name').value = "admin"     
+        }
+        //        catch(err) {document.cookie = ""; document.location.href='login.html';}
         //login button
         document.getElementById('dropdownMenuUser').innerHTML = document.getElementById('dropdownMenuUser').innerHTML + payload.user
         document.getElementById('loger-user-name').value = payload.user
@@ -24,6 +28,11 @@ function loadJSONdata() {
         ipLoad.value = data.master.ip;
         var portLoad = document.getElementById('port-master');
         portLoad.value = data.master.port;
+        console.log("es leido ---")
+        console.log(data.monitor)
+        var monitor = document.getElementById('monitor');
+        monitor.value = data.monitor;
+
 
         //load title and nodes
         loadTitleJSONdata();
@@ -201,6 +210,8 @@ function PingService(uuid){
 }
 
 function PingMonitor(uuid){
+    var monitor = document.getElementById('monitor').value;
+    if (monitor=="true") { console.log("es true") } else {console.log("es false"); return}
     var ipmaster = document.getElementById('ip-master').value;
     var portmaster = document.getElementById('port-master').value;
     var nodeurl = 'https://'+ ipmaster + ':' + portmaster + '/v1/node/pingmonitor/' + uuid;

@@ -4766,10 +4766,7 @@ function PingPluginsNode(uuid) {
                                         tableSuricata = tableSuricata + '<i class="fas fa-sync-alt" style="color: grey; cursor: pointer;" onclick="syncRulesetModal(\''+uuid+'\', \''+line+'\', \''+response.data[line]["name"]+'\')"></i> &nbsp'+
                                         '<i class="fas fa-edit" id="modify-stap-'+line+'" style="color:grey; cursor: pointer;" onclick="showModifyStap(\''+line+'\')"></i>&nbsp'+
                                         '<i class="fas fa-trash-alt" onclick="ModalDeleteService(\''+uuid+'\', \''+line+'\', \'suricata\', \''+response.data[line]["name"]+'\')" style="color: red; cursor: pointer;"></i>';                              
-                                        tableSuricata = tableSuricata + '<br>'+
-                                        '<div>'+
-                                            '<span style="cursor:pointer;" class="badge bg-warning align-text-bottom text-white">Invalid node version</span>'+
-                                        '</div>';
+                                    
 
                                     }
 

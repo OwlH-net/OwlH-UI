@@ -1,40 +1,41 @@
 
-function loadTitleJSONdata(){
-    var ipmaster = document.getElementById('ip-master').value;
-    var portmaster = document.getElementById('port-master').value;
-    var title = document.getElementById('menu-title');
-    var urlSetRuleset = 'https://'+ ipmaster + ':' + portmaster + '/v1/master/getMasterTitle';
+function loadTitleJSONdata() {
 
+  $.get('../conf/current.version', function (data) {
+    document.getElementById('current-version-show').innerHTML = data;
+    document.getElementById('current-version-show').onclick = function () { loadReadme(); };
+    document.getElementById('current-version-show').style.cursor = "pointer";
+  }, 'text');
 
-    $.get('../conf/current.version', function(data) {
-        document.getElementById('current-version-show').innerHTML = data;        
-        document.getElementById('current-version-show').onclick = function(){loadReadme();}; 
-        document.getElementById('current-version-show').style.cursor = "pointer"; 
-        // document.getElementById('current-version-text').onclick = function(){loadReadme();}; 
-        // document.getElementById('current-version-text').style.cursor = "pointer"; 
-               
-    }, 'text');
+  $.getJSON('../conf/ui.conf', function (data) {
+    ipmaster = data.master.ip;
+    portmaster = data.master.port;
+
+    let title = document.getElementById('menu-title');
+    let urlSetRuleset = 'https://' + ipmaster + ':' + portmaster + '/v1/master/getMasterTitle';
 
     axios({
-        method: 'get',
-        url: urlSetRuleset,
-        timeout: 30000,
-        headers:{
-            'token': document.cookie,
-            'user': payload.user            
-        }
+      method: 'get',
+      url: urlSetRuleset,
+      timeout: 30000,
+      headers: {
+        'token': cToken,
+        'user': user
+      }
     })
-   .then(function (response) {
+      .then(function (response) {
         title.innerHTML = response.data;
         return true;
-    })
-    .catch(function (error) {
+      })
+      .catch(function (error) {
+        console.log('loadTitle - error ->', error)
         return false;
-    }); 
+      });
+  })
 }
 
-function loadReadme(){
-    window.open('https://github.com/OwlH-net/roadmap/blob/master/README.md', '_blank').focus();
+function loadReadme() {
+  window.open('https://github.com/OwlH-net/roadmap/blob/master/README.md', '_blank').focus();
 }
 
 loadTitleJSONdata();
